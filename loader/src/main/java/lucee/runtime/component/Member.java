@@ -41,8 +41,7 @@ public interface Member extends Serializable {
 	public Object getValue();
 
 	/**
-	 * return Member.MODIFIER_FINAL, Member.MODIFIER_ABSTRACT or
-	 * Member.MODIFIER_NONE
+	 * return Member.MODIFIER_FINAL, Member.MODIFIER_ABSTRACT or Member.MODIFIER_NONE
 	 * 
 	 * @return
 	 */

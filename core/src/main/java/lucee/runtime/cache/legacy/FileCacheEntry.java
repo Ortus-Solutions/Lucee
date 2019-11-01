@@ -29,24 +29,22 @@ public class FileCacheEntry implements CacheEntry {
 
 	private static final String ENC = "utf-8";
 	private Resource res;
-	//private Resource directory;
-	//private String name,raw;
-	
-	
-	
+	// private Resource directory;
+	// private String name,raw;
+
 	private boolean isOK(TimeSpan timeSpan) {
-		return res.exists() && (res.lastModified()+timeSpan.getMillis()>=System.currentTimeMillis());
+		return res.exists() && (res.lastModified() + timeSpan.getMillis() >= System.currentTimeMillis());
 	}
+
 	@Override
-	public String readEntry(TimeSpan timeSpan,String defaultValue) throws IOException {
-		if(isOK(timeSpan))
-			return IOUtil.toString(res,ENC);
+	public String readEntry(TimeSpan timeSpan, String defaultValue) throws IOException {
+		if (isOK(timeSpan)) return IOUtil.toString(res, ENC);
 		return defaultValue;
 	}
 
 	@Override
-	public void writeEntry(String entry,boolean append) throws IOException {
-		IOUtil.copy(new ByteArrayInputStream(entry.getBytes(ENC)), res.getOutputStream(append),true,true);
+	public void writeEntry(String entry, boolean append) throws IOException {
+		IOUtil.copy(new ByteArrayInputStream(entry.getBytes(ENC)), res.getOutputStream(append), true, true);
 	}
 
 }

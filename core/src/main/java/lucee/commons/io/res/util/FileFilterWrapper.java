@@ -29,11 +29,12 @@ public final class FileFilterWrapper implements FileResourceFilter {
 	private final FileFilter filter;
 
 	public FileFilterWrapper(FileFilter fileFilter) {
-		this.filter=fileFilter;
+		this.filter = fileFilter;
 	}
+
 	@Override
 	public boolean accept(Resource res) {
-		if(res instanceof File) return accept(((File)res));
+		if (res instanceof File) return accept(((File) res));
 		return accept(FileWrapper.toFile(res));
 	}
 

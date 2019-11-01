@@ -21,7 +21,7 @@ package lucee.transformer.bytecode.statement.tag;
 import lucee.transformer.expression.Expression;
 
 public final class Attribute {
-	
+
 	final String nameOC;
 	final String nameLC;
 	final Expression value;
@@ -30,12 +30,12 @@ public final class Attribute {
 	private boolean defaultAttribute;
 	private String setterName;
 	private final boolean isDefaultValue;
-	
-	public Attribute(boolean dynamicType,String name, Expression value, String type) {
-		this(dynamicType,name, value, type, false);
+
+	public Attribute(boolean dynamicType, String name, Expression value, String type) {
+		this(dynamicType, name, value, type, false);
 	}
-	
-	public Attribute(boolean dynamicType,String name, Expression value, String type, boolean isDefaultValue) {
+
+	public Attribute(boolean dynamicType, String name, Expression value, String type, boolean isDefaultValue) {
 		this.dynamicType = dynamicType;
 		this.nameOC = name;
 		this.nameLC = name.toLowerCase();
@@ -43,11 +43,11 @@ public final class Attribute {
 		this.type = type;
 		this.isDefaultValue = isDefaultValue;
 	}
-	
 
 	public boolean isDefaultValue() {
 		return isDefaultValue;
 	}
+
 	public boolean isDefaultAttribute() {
 		return defaultAttribute;
 	}
@@ -62,6 +62,7 @@ public final class Attribute {
 	public String getName() {
 		return nameLC;
 	}
+
 	// TODO make this method obsolete
 	public String getNameOC() {
 		return nameOC;
@@ -87,13 +88,9 @@ public final class Attribute {
 	public boolean isDynamicType() {
 		return dynamicType;
 	}
-	
+
 	@Override
-	public String toString(){
-		return "name:"+this.nameLC
-		+";value:"+this.value
-		+";type:"+this.type
-		+";dynamicType:"+this.dynamicType
-		+";setterName:"+this.setterName;
+	public String toString() {
+		return "name:" + this.nameLC + ";value:" + this.value + ";type:" + this.type + ";dynamicType:" + this.dynamicType + ";setterName:" + this.setterName;
 	}
 }

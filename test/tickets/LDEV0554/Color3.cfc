@@ -16,12 +16,12 @@
  */
 component {
     static {
-        public final RED = new Color4(255,0,0); // calling someone else
+        final RED = new Color4(255,0,0); // calling someone else
     }
 
-    private this.r;
-    private this.g;
-    private this.b;
+    this.r;
+    this.g;
+    this.b;
 
     package function init(numeric r, numeric g, numeric b) {
         this.r = arguments.r;

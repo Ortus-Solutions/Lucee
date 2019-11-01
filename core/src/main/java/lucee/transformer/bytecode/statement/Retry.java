@@ -28,8 +28,8 @@ import lucee.transformer.bytecode.util.ASMUtil;
 public final class Retry extends StatementBaseNoFinal {
 
 	public Retry(Factory f, Position start, Position end) {
-		super(f,start,end);
-		//setHasFlowController(true);
+		super(f, start, end);
+		// setHasFlowController(true);
 	}
 
 	/**
@@ -38,9 +38,9 @@ public final class Retry extends StatementBaseNoFinal {
 	 */
 	@Override
 	public void _writeOut(BytecodeContext bc) throws TransformerException {
-		ASMUtil.leadFlow(bc,this,FlowControl.RETRY,null);
+		ASMUtil.leadFlow(bc, this, FlowControl.RETRY, null);
 	}
-	
+
 	/**
 	 *
 	 * @see lucee.transformer.bytecode.statement.StatementBase#setParent(lucee.transformer.bytecode.Statement)

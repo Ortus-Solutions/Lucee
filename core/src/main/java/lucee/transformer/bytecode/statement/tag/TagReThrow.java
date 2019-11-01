@@ -18,23 +18,23 @@
  **/
 package lucee.transformer.bytecode.statement.tag;
 
+import org.objectweb.asm.Type;
+import org.objectweb.asm.commons.Method;
+
 import lucee.transformer.Factory;
 import lucee.transformer.Position;
 import lucee.transformer.TransformerException;
 import lucee.transformer.bytecode.BytecodeContext;
 import lucee.transformer.bytecode.util.Types;
 
-import org.objectweb.asm.Type;
-import org.objectweb.asm.commons.Method;
-
 public final class TagReThrow extends TagBaseNoFinal {
 
-	public TagReThrow(Factory f, Position start,Position end) {
-		super(f,start,end);
+	public TagReThrow(Factory f, Position start, Position end) {
+		super(f, start, end);
 	}
 
 	// void throwCatch()
-	private static final Method THROW_CATCH = new Method("throwCatch",Type.VOID_TYPE,new Type[]{});
+	private static final Method THROW_CATCH = new Method("throwCatch", Type.VOID_TYPE, new Type[] {});
 
 	/**
 	 *

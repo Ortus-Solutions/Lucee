@@ -493,7 +493,7 @@ A return value from the CreateTimeSpan function, for example, "#CreateTimeSpan(0
 		<body-content>must</body-content>
 		<allow-removing-literal>yes</allow-removing-literal>
 		<body-rtexprvalue>false</body-rtexprvalue>
-		<description>Handle one case of a cfswicth</description>
+		<description>Handle one case of a cfswitch</description>
 		<attribute-type>fixed</attribute-type>
 		<attribute>
 			<type>string</type>
@@ -932,7 +932,7 @@ A return value from the CreateTimeSpan function, for example, "#CreateTimeSpan(0
 			<name>preservecase</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
-			<description>if set to true Lucee keep the original case for the name, otherise the name is converted to a upper case string</description>
+			<description>if set to true Lucee keep the original case for the name, otherwise the name is converted to a upper case string</description>
 		</attribute>
 		<attribute>
 			<type>boolean</type>
@@ -956,7 +956,7 @@ A return value from the CreateTimeSpan function, for example, "#CreateTimeSpan(0
 		<description>Lets you retrieve information about a data source, including details about the database, tables, queries, procedures, foreign keys, indexes, and version information about the database, driver, and JDBC. This tag supports only JDBC drivers, and does not support ODBC-based drivers, including the Microsoft Access driver.</description>
 		<attribute-type>fixed</attribute-type>
 		<attribute>
-			<type>string</type>
+			<type>object</type>
 			<name>datasource</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
@@ -1202,438 +1202,6 @@ Example:
 	   			if set to false, expects all parent directories to exist, true (default) will generate necessary directories
 	   		</description>
 		</attribute>
-	</tag>
-
-	<!-- Document -->
-	<tag>
-		<name>document</name>
-		<tag-class>lucee.runtime.tag.Document</tag-class>
-		<!-- tte-class>lucee.transformer.cfml.evaluator.impl.Directory</tte-class -->
-		<body-content>free</body-content>
-		<body-rtexprvalue>false</body-rtexprvalue>
-		<script>
-			<type>multiple</type>
-			<rtexprvalue>true</rtexprvalue>
-		</script>
-		<description>Creates a PDF document from a text block containing CFML and HTML.</description>
-		<attribute-type>fixed</attribute-type>
-		<attribute>
-			<type>boolean</type>
-			<name>backgroundvisible</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		    <status>unimplemented</status>
-			<description>Specifies whether the background prints when the user prints the document</description>
-		</attribute>
-		<attribute>
-			<type>String</type>
-			<name>encryption</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<description>define if the output should be encrypted and how deep</description>
-		</attribute>
-		<attribute>
-			<type>String</type>
-			<name>filename</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<description>name for output file, if not defined output will be written to response stream</description>
-		</attribute>
-		<attribute>
-			<type>string</type>
-			<name>fontembed</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<description>define if fonts will embedded with the file</description>
-		</attribute>
-		<attribute>
-			<type>string</type>
-			<name>format</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<description>format of the created file</description>
-		</attribute>
-		<attribute>
-			<type>number</type>
-			<name>marginbottom</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<description>Specifies the bottom margin in inches (default) or
-            centimeters. To specify bottom margin in
-            centimeters, include the unit=cm attribute.</description>
-		</attribute>
-		<attribute>
-			<type>number</type>
-			<name>marginleft</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<description>Specifies the left margin in inches (default) or
-            centimeters. To specify left margin in centimeters,
-            include the unit=cm attribute.</description>
-		</attribute>
-		<attribute>
-			<type>number</type>
-			<name>marginright</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<description>Specifies the right margin in inches (default) or
-            centimeters. To specify right margin in centimeters,
-            include the unit=cm attribute.</description>
-		</attribute>
-		<attribute>
-			<type>number</type>
-			<name>margintop</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<description>Specifies the top margin in inches (default) or
-            centimeters. To specify top margin in centimeters,
-            include the unit=cm attribute.</description>
-		</attribute>
-		<attribute>
-			<type>string</type>
-			<name>mimetype</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<description>mimetype of the source (when attribute src or srcfile are defined)</description>
-		</attribute>
-		<attribute>
-			<type>string</type>
-			<name>name</name>
-			<alias>variable</alias>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<description>name of a variable to store the output in it</description>
-		</attribute>
-		<attribute>
-			<type>string</type>
-			<name>orientation</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<description>is the orientation landscape or portrait</description>
-		</attribute>
-		<attribute>
-			<type>boolean</type>
-			<name>overwrite</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<description>define if a existing file will be overwritten or not</description>
-		</attribute>
-		<attribute>
-			<type>string</type>
-			<name>ownerpassword</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<description>Specifies an owner password (format="PDF" only).</description>
-		</attribute>
-		<attribute>
-			<type>number</type>
-			<name>pageheight</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<description>used when pagetype is custom</description>
-		</attribute>
-		<attribute>
-			<type>number</type>
-			<name>pagewidth</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<description>used when pagetype is custom</description>
-		</attribute>
-		<attribute>
-			<type>string</type>
-			<name>pagetype</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<description>defined the used format for the page (,legal,letter,A4,A5,B4,B5,B4-JIS,B5-JIS and custom)</description>
-		</attribute>
-		<attribute>
-			<type>string</type>
-			<name>permissions</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<description>define permissions for the file (AllowPrinting,AllowModifyContents,AllowCopy,AllowModifyAnnotations,AllowFillIn,AllowScreenReaders,AllowAssembly,AllowDegradedPrinting)</description>
-		</attribute>
-		<attribute>
-			<type>number</type>
-			<name>scale</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		    <status>unimplemented</status>
-			<description>define a scale factor as a percentage. this option is used to reduce the size of the HTML output so that it fits on that paper. define a number less than 100.</description>
-		</attribute>
-		<attribute>
-			<type>string</type>
-			<name>src</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<description>define a url or or a relative path on the local system to a file that should be transferred to a pdf</description>
-		</attribute>
-		<attribute>
-			<type>string</type>
-			<name>srcfile</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<description>define a absolute path to a file that should be transferred to a pdf</description>
-		</attribute>
-		<attribute>
-			<type>string</type>
-			<name>unit</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<description>set the unit for pageheight, pagewidth, and margin... </description>
-		</attribute>
-		<attribute>
-			<type>string</type>
-			<name>userpassword</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<description>Specifies a user password (format="PDF" only).</description>
-		</attribute>
-
-		<attribute>
-			<type>string</type>
-			<name>proxyHost</name>
-			<alias>proxyServer</alias>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<description>alias for proxyHost</description>
-		</attribute>
-		<attribute>
-			<type>number</type>
-			<name>proxyPort</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<description>The port number on the proxy server from which the object is requested. Default is 80. When
-	used with resolveURL, the URLs of retrieved documents that specify a port number are automatically
-	resolved to preserve links in the retrieved document.</description>
-		</attribute>
-		<attribute>
-			<type>string</type>
-			<name>proxyUser</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<description>When required by a proxy server, a valid username.</description>
-		</attribute>
-		<attribute>
-			<type>string</type>
-			<name>proxyPassword</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<description>When required by a proxy server, a valid password.</description>
-		</attribute>
-		<attribute>
-			<type>boolean</type>
-			<name>bookmark</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<description>Specifies whether bookmarks are created in the document</description>
-		</attribute>
-		<attribute>
-			<type>boolean</type>
-			<name>htmlbookmark</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<description>
-				if true it is possible to convert to outlines a list of named anchors (&lt;a name="anchor_id"&gt;label&lt;/a&gt;)
-				or a headings structure (&lt;h1&gt;...&lt;h6&gt;).
-				Transforming of HTML hyperlinks to PDF hyperlinks (if not explicitly disabled).
-				Hyperlink jumps within the same document are supported as well</description>
-		</attribute>
-
-		<attribute>
-			<type>boolean</type>
-			<name>localUrl</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<description>Specifies whether to retrieve image files directly from the local drive</description>
-		</attribute>
-
-		<attribute>
-			<type>string</type>
-			<name>authUser</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<description>User name sent to the target URL for Basic Authentication. Combined with password to form a base64 encoded string that is passed in the Authenticate header. Does not provide support for Integrated Windows, NTLM, or Kerberos authentication.</description>
-		</attribute>
-		<attribute>
-			<type>string</type>
-			<name>authPassword</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<description>Password sent to the target URL for Basic Authentication. Combined with username to form a base64 encoded string that is passed in the Authenticate header. Does not provide support for Integrated Windows, NTLM, or Kerberos authentication.</description>
-		</attribute>
-		<attribute>
-			<type>string</type>
-			<name>userAgent</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<description>Text to put in the HTTP User-Agent request header field. Used to identify the request client software.</description>
-		</attribute>
-		<attribute>
-			<type>string</type>
-			<name>saveAsName</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<description>(format="PDF" only) The filename that appears in the SaveAs dialog when a user saves a PDF file written to the browser.</description>
-		</attribute>
-
-
-	</tag>
-
-	<!-- DocumentItem -->
-	<tag>
-		<name>documentitem</name>
-		<tag-class>lucee.runtime.tag.DocumentItem</tag-class>
-		<body-content>free</body-content>
-		<body-rtexprvalue>false</body-rtexprvalue>
-		<script>
-			<type>multiple</type>
-			<rtexprvalue>true</rtexprvalue>
-		</script>
-		<description>Specifies action items for a PDF document created by the cfdocument tag.</description>
-		<attribute-type>fixed</attribute-type>
-		<attribute>
-			<type>string</type>
-			<name>type</name>
-			<required>true</required>
-			<rtexprvalue>true</rtexprvalue>
-			<description>Specifies the action:
-- pagebreak (starts a new page at the location of the tag)
-- header (uses the text between in the body of the tag as the running header)
-- footer (uses the text between the the body of the tag as the running footer)
-- bookmark (set a bookmark, use the attribute name to define the name of the bookmark)
-</description>
-		</attribute>
-		<attribute>
-			<type>string</type>
-			<name>name</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<description>used only for type bookmark, name of the bookmark to define.</description>
-		</attribute>
-		<attribute>
-			<type>boolean</type>
-			<name>evalAtPrint</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<status>unimplemented</status>
-			<description>
-Determines if the contents of the cfdocumentitem tag body has to be evaluated at the time of printing the document.
-- true: evaluates the contents of the cfdocumentitem tag body only at the time of printing the document.
-- false (default): evaluates the contents of the cfdocumentitem tag body immediately.
-			</description>
-		</attribute>
-
-
-
-
-	</tag>
-	<!-- DocumentSection -->
-	<tag>
-		<name>documentsection</name>
-		<tag-class>lucee.runtime.tag.DocumentSection</tag-class>
-		<body-content>free</body-content>
-		<body-rtexprvalue>false</body-rtexprvalue>
-		<script>
-			<type>multiple</type>
-			<rtexprvalue>true</rtexprvalue>
-		</script>
-		<description>Divides a PDF document into sections.
-		By using this tag in conjunction with a cfdocumentitem tag, each section can have unique headers, footers, and page numbers.</description>
-		<attribute-type>fixed</attribute-type>
-		<attribute>
-			<type>number</type>
-			<name>marginbottom</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<description>Specifies the bottom margin in inches (default) or
-            centimeters. To specify the bottom margin in
-            centimeters, include the unit="cm" attribute in the
-            parent cfdocument tag.</description>
-		</attribute>
-		<attribute>
-			<type>number</type>
-			<name>marginleft</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<description>Specifies the left margin in inches (default) or
-            centimeters. To specify the left margin in centimeters,
-            include the unit="cm" attribute in the parent cfdocument
-            tag.</description>
-		</attribute>
-		<attribute>
-			<type>number</type>
-			<name>marginright</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<description>Specifies the right margin in inches (default) or
-            centimeters. To specify the right margin in centimeters,
-            include the unit="cm" attribute in the parent cfdocument
-            tag.</description>
-		</attribute>
-		<attribute>
-			<type>number</type>
-			<name>margintop</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<description>Specifies the top margin in inches (default) or
-            centimeters. To specify the top margin in centimeters,
-            include the unit="cm" attribute in the parent cfdocument
-            tag.</description>
-		</attribute>
-		<attribute>
-			<type>string</type>
-			<name>src</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<description>define a url or or a relative path on the local system to a file that should be transferred to a pdf</description>
-		</attribute>
-		<attribute>
-			<type>string</type>
-			<name>srcfile</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<description>define a absolute path to a file that should be transferred to a pdf</description>
-		</attribute>
-		<attribute>
-			<type>string</type>
-			<name>mimetype</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<description>mimetype of the source (when attribute src or srcfile are defined)</description>
-		</attribute>
-
-		<attribute>
-			<type>string</type>
-			<name>name</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<description>Bookmark name for the section</description>
-		</attribute>
-		<attribute>
-			<type>string</type>
-			<name>authUser</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<description>User name sent to the target URL for Basic Authentication. Combined with password to form a base64 encoded string that is passed in the Authenticate header. Does not provide support for Integrated Windows, NTLM, or Kerberos authentication.</description>
-		</attribute>
-		<attribute>
-			<type>string</type>
-			<name>authPassword</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<description>Password sent to the target URL for Basic Authentication. Combined with username to form a base64 encoded string that is passed in the Authenticate header. Does not provide support for Integrated Windows, NTLM, or Kerberos authentication.</description>
-		</attribute>
-		<attribute>
-			<type>string</type>
-			<name>userAgent</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<description>Text to put in the HTTP User-Agent request header field. Used to identify the request client software.</description>
-		</attribute>
-
-
-
 	</tag>
 
 	<!-- Else -->
@@ -2109,6 +1677,7 @@ If omitted, the file's attributes are maintained.</description>
 			<name>cachedWithin</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
+			<introduced>5.0.0.0</introduced>
 		<description>
 possible values are:
 String "request": If original content was created within the current request, cached content data isused.
@@ -2322,8 +1891,7 @@ To use cached data, the tag must be called with the exact same arguments. Only u
 			<name>ASCIIExtensionList</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
-			<description>Delimited list of file extensions that force ASCII transfer mode, if transferMode = "auto".
-</description>
+			<description>Delimited list of file extensions that force ASCII transfer mode, if transferMode = "auto".</description>
 		</attribute>
 		<attribute>
 			<type>string</type>
@@ -2381,6 +1949,46 @@ To use cached data, the tag must be called with the exact same arguments. Only u
 			<rtexprvalue>true</rtexprvalue>
 			<description>Name of the result value (default:cfftp)</description>
 		</attribute>
+		
+		<attribute>
+			<type>string</type>
+			<name>fingerprint</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>the ssh fingerprint</description>
+		</attribute>
+		<attribute>
+			<type>boolean</type>
+			<name>secure</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>Secure connection (sftp|shh) or not.</description>
+		</attribute>
+		<attribute>
+			<type>boolean</type>
+			<name>recurse</name>
+			<alias>recursive</alias>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>delete content of the directory</description>
+		</attribute>
+
+		<attribute>
+			<type>string</type>
+			<name>key</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>the ssh private key</description>
+		</attribute>
+		<attribute>
+			<type>string</type>
+			<name>passphrase</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>the passphrase that protects ssh private key</description>
+		</attribute>
+		
+		
 	</tag>
 
 	<!-- Graph -->
@@ -2655,6 +2263,7 @@ To use cached data, the tag must be called with the exact same arguments. Only u
 		<attribute>
 			<type>string</type>
 			<name>lineColor</name>
+			<alias>lineColour</alias>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 			<description>
@@ -2682,6 +2291,7 @@ To use cached data, the tag must be called with the exact same arguments. Only u
 		<attribute>
 			<type>string</type>
 			<name>colorList</name>
+			<alias>colourList</alias>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 			<description>
@@ -2716,6 +2326,7 @@ To use cached data, the tag must be called with the exact same arguments. Only u
 		<attribute>
 			<type>string</type>
 			<name>color</name>
+			<alias>colour</alias>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 			<description>The color to use when graphing the data point. The default is to use the values from the cfgraph
@@ -2861,6 +2472,7 @@ To use cached data, the tag must be called with the exact same arguments. Only u
 		<attribute>
 			<type>string</type>
 			<name>textColor</name>
+			<alias>textColour</alias>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 			<description>Color value for text in the grid control. Options are: black (default), magenta, cyan, orange, darkgray,
@@ -2992,6 +2604,7 @@ To use cached data, the tag must be called with the exact same arguments. Only u
 		<attribute>
 			<type>string</type>
 			<name>rowHeaderTextColor</name>
+			<alias>rowHeaderTextColour</alias>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 			<description>Text color value for the grid control row headers. Entries are: black (default), magenta, cyan,
@@ -3050,6 +2663,7 @@ To use cached data, the tag must be called with the exact same arguments. Only u
 		<attribute>
 			<type>string</type>
 			<name>colHeaderTextColor</name>
+			<alias>colHeaderTextColour</alias>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 			<description>Color value for the grid control column headers. Valid entries are: black (default), magenta,
@@ -3060,6 +2674,7 @@ To use cached data, the tag must be called with the exact same arguments. Only u
 		<attribute>
 			<type>string</type>
 			<name>bgColor</name>
+			<alias>bgColour</alias>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 			<description>Background color value for the grid control. Entries are: black, magenta, cyan,
@@ -3069,6 +2684,7 @@ To use cached data, the tag must be called with the exact same arguments. Only u
 		<attribute>
 			<type>string</type>
 			<name>selectColor</name>
+			<alias>selectColour</alias>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 			<description>Background color for a selected item. See bgColor for color options.</description>
@@ -3273,6 +2889,7 @@ To use cached data, the tag must be called with the exact same arguments. Only u
 		<attribute>
 			<type>string</type>
 			<name>textColor</name>
+			<alias>textColour</alias>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 			<description>Color value for grid element text in the grid column, or an expression you can use to manipulate text
@@ -3372,6 +2989,7 @@ To use cached data, the tag must be called with the exact same arguments. Only u
 		<attribute>
 			<type>string</type>
 			<name>headerTextColor</name>
+			<alias>headerTextColour</alias>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 			<description>Color value for the grid control column header text. Entries are: black (default), magenta,
@@ -3656,6 +3274,14 @@ To use cached data, the tag must be called with the exact same arguments. Only u
 			<description>ID of the snippet that is added, used to ensure that the same snippet will not be added more than once.</description>
 		</attribute>
 		<attribute>
+			<type>boolean</type>
+			<name>force</name>
+			<required>false</required>
+			<default>false</default>
+			<rtexprvalue>true</rtexprvalue>
+			<description>if set to true, it works even within a silent block</description>
+		</attribute>
+		<attribute>
 			<type>string</type>
 			<name>action</name>
 			<values>append,read,reset,write</values>
@@ -3692,6 +3318,14 @@ To use cached data, the tag must be called with the exact same arguments. Only u
 			<rtexprvalue>true</rtexprvalue>
 			<description>The text to add to the 'head' area of an HTML page. Everything inside the quotation marks is
 		placed in the 'head' section</description>
+		</attribute>
+		<attribute>
+			<type>boolean</type>
+			<name>force</name>
+			<required>false</required>
+			<default>true</default>
+			<rtexprvalue>true</rtexprvalue>
+			<description>if set to true, it works even within a silent block</description>
 		</attribute>
 		<attribute>
 			<type>string</type>
@@ -3754,7 +3388,7 @@ To use cached data, the tag must be called with the exact same arguments. Only u
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 			<description>
-			if set to true (default value) URL encodes the value of the attribute "URL" if necessary (no double encoding is happeing).
+			if set to true (default value) URL encodes the value of the attribute "URL" if necessary (no double encoding is happening).
 			This setting has no influence on the values from httpparam type="url", for this use the attribute "encoded" from httpparam</description>
 		</attribute>
 		<attribute>
@@ -4020,6 +3654,7 @@ To use cached data, the tag must be called with the exact same arguments. Only u
 			<name>clientCert</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
+			<introduced>5.0.0.0</introduced>
 			<description>The full path to a PKCS12 format file that contains the client certificate for the request.</description>
 		</attribute>
 		<attribute>
@@ -4027,6 +3662,7 @@ To use cached data, the tag must be called with the exact same arguments. Only u
 			<name>clientCertPassword</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
+			<introduced>5.0.0.0</introduced>
 			<description>Password used to decrypt the client certificate.</description>
 		</attribute>
 		<attribute>
@@ -4034,6 +3670,7 @@ To use cached data, the tag must be called with the exact same arguments. Only u
 			<name>cachedWithin</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
+			<introduced>5.0.0.0</introduced>
 		<description>
 possible values are:
 String "request": If original content was created within the current request, cached content data isused.
@@ -4065,8 +3702,8 @@ To use cached data, the tag must be called with the exact same arguments.</descr
 		<attribute>
 			<type>string</type>
 			<name>type</name>
-			<required>true</required>
 			<rtexprvalue>true</rtexprvalue>
+			<default-value>URL</default-value>
 			<values>body,CGI,cookie,file,form,formfield,header,URL,XML</values>
 			<description>valid values are:
 - header: specifies an HTTP header.
@@ -4131,191 +3768,6 @@ To use cached data, the tag must be called with the exact same arguments.</descr
 			<description>condition o the expression</description>
 		</attribute>
 	</tag>
-	<!-- Image -->
-	<tag>
-		<name>Image</name>
-		<tag-class>lucee.runtime.tag.Image</tag-class>
-		<body-content>empty</body-content>
-		<body-rtexprvalue>false</body-rtexprvalue>
-		<script>
-			<type>multiple</type>
-			<rtexprvalue>true</rtexprvalue>
-		</script>
-		<description>Lets you resize and add labels to GIF and JPEG format images.</description>
-		<attribute-type>fixed</attribute-type>
-
-		<attribute>
-			<type>string</type>
-			<name>action</name>
-			<values>border,captcha,convert,writetobrowser,write,rotate,resize,read,info</values>
-			<default-value>read</default-value>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<description>Action to execute.</description>
-		</attribute>
-		<attribute>
-			<type>number</type>
-			<name>angle</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<description>Angle in degrees to rotate the image.</description>
-		</attribute>
-		<attribute>
-			<type>string</type>
-			<name>passthrough</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<description>
-			HTML attributes that are not explicitly supported by cfimage.
-				If you specify an attribute and value,
-				they are passed to the tag "img".
-			</description>
-		</attribute>
-
-
-
-		<attribute>
-			<type>string</type>
-			<name>color</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<description>Border color. Hexadecimal value or supported named color. For a hexadecimal value, use the form "#xxxxxx" or "xxxxxx", where x = 0-9 or A-F; use two number signs or none.</description>
-		</attribute>
-		<attribute>
-			<type>string</type>
-			<name>destination</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<description>Absolute or relative pathname where the image output is written.
-				The image format is determined by the file extension.
-				The convert and write actions require a destination attribute.
-				The border, captcha, resize, and rotate actions require a name attribute or a destination attribute.
-				You can specify both.
-				If you do not enter a destination,
-				the CAPTCHA image is placed inline in the HTML output and displayed in the web browser.</description>
-		</attribute>
-		<attribute>
-			<type>string</type>
-			<name>difficulty</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<description>Level of complexity of the CAPTCHA text.
-			Specify one of the following levels of text distortion:
-			low, medium, high
-			</description>
-		</attribute>
-		<attribute>
-			<type>string</type>
-			<name>fonts</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<description>One or more valid fonts to use for the CAPTCHA text. Separate multiple fonts with commas.
-			Lucee supports only the system fonts that the JDK can recognize. For example, TTF fonts in the Windows directory are supported on Windows.</description>
-		</attribute>
-		<attribute>
-			<type>number</type>
-			<name>fontSize</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<description>font size of the text in the CAPTCHA image.</description>
-		</attribute>
-		<attribute>
-			<type>string</type>
-			<name>format</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<description>Format of the image displayed in the browser.
-			If you do not specify a format, the image is displayed in PNG format.</description>
-		</attribute>
-		<attribute>
-			<type>string</type>
-			<name>height</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<description>Height in pixels of the image.
-			For the resize attribute, you also can specify the height as a percentage.
-			When you resize an image, if you specify a value for the width.</description>
-		</attribute>
-		<attribute>
-			<type>boolean</type>
-			<name>isBase64</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<description>Specifies whether the source is a Base64 string</description>
-		</attribute>
-		<attribute>
-			<type>string</type>
-			<name>name</name>
-			<alias>variable</alias>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<description>Name of the image variable to create.
-			The read action requires a name attribute.
-			The border, resize, and rotate actions require a name attribute or a destination attribute.
-			You can specify both.</description>
-		</attribute>
-		<attribute>
-			<type>boolean</type>
-			<name>overwrite</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<description>If the destination file already exists, Lucee generates an error if the overwrite action is not set to yes.</description>
-		</attribute>
-		<attribute>
-			<type>number</type>
-			<name>quality</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<description>Quality of the JPEG destination file. Applies only to files with an extension of JPG or JPEG. Valid values are fractions that range from 0 through 1 (the lower the number, the lower the quality).</description>
-		</attribute>
-		<attribute>
-			<type>any</type>
-			<name>source</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<description>source file</description>
-		</attribute>
-		<attribute>
-			<type>string</type>
-			<name>structName</name>
-			<alias>result</alias>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<description>Name of the structure to be created.</description>
-		</attribute>
-		<attribute>
-			<type>string</type>
-			<name>text</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<description>Text string displayed in the CAPTCHA image. Use capital letters for better readability. Do not include spaces because users cannot detect them in the resulting CAPTCHA image.</description>
-		</attribute>
-		<attribute>
-			<type>number</type>
-			<name>thickness</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<description>Border thickness in pixels. The border is added to the outside edge of the source image, increasing the image area accordingly.</description>
-		</attribute>
-		<attribute>
-			<type>string</type>
-			<name>width</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<description>Width in pixels of the image.</description>
-		</attribute>
-		<attribute>
-			<type>boolean</type>
-			<name>base64</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<description>should action "writetobrowser" embed the source of the image as base64 encoded string, default is false.</description>
-		</attribute>
-
-	</tag>
-
-
-
 
 	<!-- Imap -->
 	<tag>
@@ -4338,10 +3790,24 @@ To use cached data, the tag must be called with the exact same arguments.</descr
 		<attribute-type>fixed</attribute-type>
 		<attribute>
 			<type>string</type>
+			<name>connection</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>label for a connection.</description>
+		</attribute>
+		<attribute>
+			<type>string</type>
 			<name>server</name>
-			<required>true</required>
+			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 			<description>Host name biff.upperlip.com or IP address 192.1.2.225 of the Imap server.</description>
+		</attribute>
+		<attribute>
+			<type>number</type>
+			<name>port</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>Defaults to the standard Imap port, 143.</description>
 		</attribute>
 		<attribute>
 			<type>string</type>
@@ -4350,13 +3816,6 @@ To use cached data, the tag must be called with the exact same arguments.</descr
 			<rtexprvalue>true</rtexprvalue>
 		<description>Specifies the unique ID or a comma-delimited list of Uids to retrieve or delete. If you set invalid Uids, then they are ignored.</description>
     </attribute>
-		<attribute>
-			<type>number</type>
-			<name>port</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<description>Defaults to the standard Imap port, 143.</description>
-		</attribute>
 		<attribute>
 			<type>string</type>
 			<name>username</name>
@@ -4370,6 +3829,13 @@ To use cached data, the tag must be called with the exact same arguments.</descr
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 			<description>Password that corresponds to user name.</description>
+		</attribute>
+		<attribute>
+			<type>boolean</type>
+			<name>secure</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>enables SSL for pop requests</description>
 		</attribute>
 		<attribute>
 			<type>string</type>
@@ -4432,7 +3898,7 @@ To use cached data, the tag must be called with the exact same arguments.</descr
 			<status>deprecated</status>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
-			<description>this attribute is deprecated and ignored, log control happens via the logging framwork directly.</description>
+			<description>this attribute is deprecated and ignored, log control happens via the logging framework directly.</description>
 		</attribute>
 		<attribute>
 			<type>boolean</type>
@@ -4441,6 +3907,27 @@ To use cached data, the tag must be called with the exact same arguments.</descr
 			<rtexprvalue>true</rtexprvalue>
 			<description>Boolean indicating whether to generate unique filenames for the files attached to an e-mail
 		message to avoid naming conflicts when the files are saved. Default is NO.</description>
+		</attribute>
+		<attribute>
+			<type>string</type>
+			<name>folder</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description></description>
+		</attribute>
+		<attribute>
+			<type>string</type>
+			<name>newfolder</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description></description>
+		</attribute>
+		<attribute>
+			<type>boolean</type>
+			<name>recurse</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description></description>
 		</attribute>
 	</tag>
 
@@ -4805,7 +4292,7 @@ Permits searching collections by title or displaying a separate title from the k
 		<description>Inserts records in data sources.</description>
 		<attribute-type>fixed</attribute-type>
 		<attribute>
-			<type>string</type>
+			<type>object</type>
 			<name>dataSource</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
@@ -4865,6 +4352,10 @@ Permits searching collections by title or displaying a separate title from the k
 		<tag-class>lucee.runtime.tag.Invoke</tag-class>
 		<body-content>free</body-content>
 		<body-rtexprvalue>false</body-rtexprvalue>
+		<script>
+			<type>multiple</type>
+			<rtexprvalue>true</rtexprvalue>
+		</script>
 		<description>
 			Invokes component methods from within a page or component.
 			You use this tag to reference a WSDL file and consume a web service from within a block of CFML code.
@@ -4969,6 +4460,10 @@ Permits searching collections by title or displaying a separate title from the k
 		<tag-class>lucee.runtime.tag.InvokeArgument</tag-class>
 		<body-content>empty</body-content>
 		<body-rtexprvalue>false</body-rtexprvalue>
+		<script>
+			<type>multiple</type>
+			<rtexprvalue>true</rtexprvalue>
+		</script>
 		<description>Argument for the Invoke Tag</description>
 		<attribute-type>fixed</attribute-type>
 		<attribute>
@@ -5265,11 +4760,11 @@ Permits searching collections by title or displaying a separate title from the k
 		<attribute>
 			<type>object</type>
 			<name>timeout</name>
-			<required>true</required>
+			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 			<description>Specifies the maximum amount of time, in seconds, to wait to obtain a lock. If a lock can be
 		obtained within the specified period, execution continues inside the body of the tag. Otherwise, the
-		behavior depends on the value of the throwOnTimeout attribute.</description>
+		behavior depends on the value of the throwOnTimeout attribute. If not set, the remaining request timeout is used instead.</description>
 		</attribute>
 		<attribute>
 			<type>string</type>
@@ -5310,6 +4805,18 @@ Permits searching collections by title or displaying a separate title from the k
 	A read-only lock allows more than one request to read shared data. An exclusive lock allows only one
 	request to read or write to shared data.</description>
 		</attribute>
+		<attribute>
+			<type>string</type>
+			<name>result</name>
+			<alias>variable,variablename</alias>
+			<required>false</required>
+			<default>cflock</default>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				Specifies a name for the structure in which cflock returns the statusCode and ExecutionTime variables.
+				Default variable is is "cflock".
+			</description>
+		</attribute>
 	</tag>
 	<!-- Log -->
 	<tag>
@@ -5348,6 +4855,7 @@ Permits searching collections by title or displaying a separate title from the k
 		<attribute>
 			<type>string</type>
 			<name>log</name>
+			<alias>name</alias>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 			<description>If you omit the file attribute, specifies the log in which to write the message.
@@ -5726,6 +5234,14 @@ Lucee uses the number of characters in the file.</description>
 		is MIME-encoded.</description>
 		</attribute>
 		<attribute>
+			<type>any</type>
+			<name>listener</name>
+			<required>false</required>
+			<status>hidden</status>
+			<rtexprvalue>true</rtexprvalue>
+			<description></description>
+		</attribute>
+		<attribute>
 			<type>string</type>
 			<name>query</name>
 			<required>false</required>
@@ -5964,6 +5480,13 @@ Lucee uses the number of characters in the file.</description>
 		</attribute>
 		<attribute>
 			<type>string</type>
+			<name>filename</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>file name used for the file attached with the attribute "file", if not set the name of the file itself is used.</description>
+		</attribute>
+		<attribute>
+			<type>string</type>
 			<name>name</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
@@ -6181,350 +5704,6 @@ Lucee uses the number of characters in the file.</description>
 		</attribute>
 	</tag>
 
-
-
-
-	<!-- PDF -->
-	<tag>
-		<name>pdf</name>
-		<tag-class>lucee.runtime.tag.PDF</tag-class>
-		<body-content>free</body-content>
-		<body-rtexprvalue>false</body-rtexprvalue>
-		<script>
-			<type>multiple</type>
-			<rtexprvalue>true</rtexprvalue>
-		</script>
-		<description>
-Manipulates existing PDF documents. The following list describes some of the tasks you can perform with the cfpdf tag:
-- Merge several PDF documents into one PDF document.
-- Delete pages from a PDF document.
-- Merge pages from one or more PDF documents and generate a new PDF document.
-- Linearize PDF documents for faster web display.
-- Remove interactivity from forms created in Acrobat(c) to generate flat PDF documents.
-- Encrypt and add password protection to PDF documents.
-- Generate thumbnail images from PDF documents or pages.
-- Add or remove watermarks from PDF documents or pages.
-- Retrieve information associated with a PDF document, such as the software used to generate the file or the author, and set information for a PDF document, such as the title, author and keywords.
-- Create PDF portfolios
-- Add and remove header/footer from PDF documents
-- Optimize PDF documents
-		</description>
-		<attribute-type>fixed</attribute-type>
-		<attribute>
-			<type>string</type>
-			<name>action</name>
-			<values>addWatermark,deletePages,getInfo,merge,protect,read,removeWatermark,setInfo,thumbnail,write</values>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<description>action to take</description>
-		</attribute>
-		<attribute>
-			<type>boolean</type>
-			<name>ascending</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<description>Order in which the PDF files are sorted</description>
-		</attribute>
-		<attribute>
-			<type>string</type>
-			<name>type</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<description>used for action "extractText", defines the format type of the extraction, valid values are: string,xml</description>
-		</attribute>
-		<attribute>
-			<type>any</type>
-			<name>copyFrom</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<description>Pathname of the PDF document from which to use the first page as a watermark</description>
-		</attribute>
-		<attribute>
-			<type>string</type>
-			<name>ddxfile</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<status>unimplemented</status>
-			<description>Pathname of the DDX file, or a string with DDX instructions</description>
-		</attribute>
-		<attribute>
-			<type>string</type>
-			<name>destination</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<description>Pathname of the modified PDF document. If the destination file exists, you must set the overwrite attribute to yes. If the destination file does not exist, CFML creates the file, if the parent directory exists.</description>
-		</attribute>
-		<attribute>
-			<type>string</type>
-			<name>directory</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<description>Directory of the PDF documents to merge. You must specify either the directory attribute or the source attribute. If you specify the directory attribute, CFML orders the documents by filename in descending order, by default. To change the order of the files, use the order attribute.</description>
-		</attribute>
-		<attribute>
-			<type>string</type>
-			<name>encrypt</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<description>Encryption type for the PDF output file</description>
-		</attribute>
-		<attribute>
-			<type>boolean</type>
-			<name>flatten</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<status>unimplemented</status>
-			<description>Applies to forms created in Acrobat only (not forms created in LiveCycle); specifies whether interactivity is turned off</description>
-		</attribute>
-		<attribute>
-			<type>boolean</type>
-			<name>foreground</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<description>Placement of the watermark on the page</description>
-		</attribute>
-		<attribute>
-			<type>string</type>
-			<name>format</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<description>File type of thumbnail image output</description>
-		</attribute>
-		<attribute>
-			<type>any</type>
-			<name>image</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<description>Image used as a watermark. You can specify a pathname, a variable that contains an image file, or a image variable</description>
-		</attribute>
-		<attribute>
-			<type>string</type>
-			<name>imagePrefix</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<description>prefix used for each image thumbnail file generated. The image filenames use the format: imagePrefix_page_n.format.</description>
-		</attribute>
-		<attribute>
-			<type>string</type>
-			<name>filter</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<description>file filter, used with attribute directory</description>
-		</attribute>
-		<attribute>
-			<type>struct</type>
-			<name>info</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<description>Structure variable for relevant information</description>
-		</attribute>
-		<attribute>
-			<type>struct</type>
-			<name>inputFiles</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<status>unimplemented</status>
-			<description>Structure that maps the PDF source files to the input variables in the DDX file, or a string of elements and their pathname.</description>
-		</attribute>
-		<attribute>
-			<type>boolean</type>
-			<name>isBase64</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<status>unimplemented</status>
-			<description>Valid only when the image attribute is specified. Specifies whether the image used as a watermark is in Base64 format</description>
-		</attribute>
-		<attribute>
-			<type>boolean</type>
-			<name>keepBookmark</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<description>Specifies whether bookmarks from the source PDF documents are retained in the merged document</description>
-		</attribute>
-		<attribute>
-			<type>string</type>
-			<name>name</name>
-			<alias>variable</alias>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<description>PDF document variable name</description>
-		</attribute>
-		<attribute>
-			<type>string</type>
-			<name>newOwnerPassword</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<description>Password used to set permissions on a PDF document</description>
-		</attribute>
-		<attribute>
-			<type>string</type>
-			<name>newUserPassword</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<description>Password used to open PDF document</description>
-		</attribute>
-		<attribute>
-			<type>number</type>
-			<name>opacity</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<description>Opacity of the watermark. Valid values are integers in the range 0 (transparent) through 10 (opaque).</description>
-		</attribute>
-		<attribute>
-			<type>string</type>
-			<name>order</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<status>unimplemented</status>
-			<description>Order in which the PDF documents in the directory are merged</description>
-		</attribute>
-		<attribute>
-			<type>struct</type>
-			<name>outputFiles</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<status>unimplemented</status>
-			<description>Structure that contains the output files in the DDX file or string as keys and the pathname to the result file as the value.</description>
-		</attribute>
-		<attribute>
-			<type>boolean</type>
-			<name>overwrite</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<description>Specifies whether PDF output overwrites the destination file</description>
-		</attribute>
-		<attribute>
-			<type>string</type>
-			<name>pages</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<description>Page or pages in the source PDF document on which to perform the action. You can specify multiple pages and page ranges as follows: "1,6-9,56-89,100, 110-120".</description>
-		</attribute>
-		<attribute>
-			<type>string</type>
-			<name>password</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<description>Owner or user password of the source PDF document, if the document is password-protected.</description>
-		</attribute>
-		<attribute>
-			<type>string</type>
-			<name>permissions</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<description>type of permissions on the PDF document</description>
-		</attribute>
-		<attribute>
-			<type>string</type>
-			<name>position</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<description>Position on the page where the watermark is placed. The position represents the top-left corner of the watermark. Specify the x and y coordinates; for example "50,30".</description>
-		</attribute>
-		<attribute>
-			<type>string</type>
-			<name>resolution</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<description>Image quality used to generate thumbnail images</description>
-		</attribute>
-		<attribute>
-			<type>number</type>
-			<name>rotation</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<description>Degree of rotation of the watermark image on the page.</description>
-		</attribute>
-		<attribute>
-			<type>string</type>
-			<name>saveOption</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<status>unimplemented</status>
-			<description>Save options for the PDF output</description>
-		</attribute>
-		<attribute>
-			<type>number</type>
-			<name>scale</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<description>Size of the thumbnail relative to the source page. The value represents a percentage from 1 through 100.</description>
-		</attribute>
-		<attribute>
-			<type>boolean</type>
-			<name>showOnPrint</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<status>unimplemented</status>
-			<description>Specify whether to print the watermark with the PDF document</description>
-		</attribute>
-		<attribute>
-			<type>any</type>
-			<name>source</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<description>PDF document used as the source.</description>
-		</attribute>
-		<attribute>
-			<type>boolean</type>
-			<name>stopOnError</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<description>Valid only if the directory attribute is specified. If the specified directory contains files other then readable PDF files, Lucee either stops merge process or continues.</description>
-		</attribute>
-		<attribute>
-			<type>boolean</type>
-			<name>transparent</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<description>(format="png" only) Specifies whether the image background is transparent or opaque</description>
-		</attribute>
-		<attribute>
-			<type>number</type>
-			<name>version</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<description>Version of the PDF used to write the document</description>
-		</attribute>
-	</tag>
-
-
-	<!-- PDFParam -->
-	<tag>
-		<name>PDFParam</name>
-		<tag-class>lucee.runtime.tag.PDFParam</tag-class>
-		<tte-class>lucee.transformer.cfml.evaluator.impl.PDFParam</tte-class>
-		<body-content>empty</body-content>
-		<body-rtexprvalue>false</body-rtexprvalue>
-		<script>
-			<type>multiple</type>
-			<rtexprvalue>true</rtexprvalue>
-		</script>
-		<description>Provides additional information for the cfpdf tag. The cfpdfparam tag applies only to the merge action of the cfpdf tag and is always a child tag of the cfpdf tag.</description>
-		<attribute-type>fixed</attribute-type>
-		<attribute>
-			<type>string</type>
-			<name>pages</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<description>age or pages of the PDF source file to merge. You can specify a range of pages, for example, "1-5 ", or a comma-separated list of pages, for example, "1-5,9-10,18".</description>
-		</attribute>
-		<attribute>
-			<type>string</type>
-			<name>password</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<description>User or owner password, if the source PDF file is password-protected.</description>
-		</attribute>
-		<attribute>
-			<type>any</type>
-			<name>source</name>
-			<required>true</required>
-			<rtexprvalue>true</rtexprvalue>
-			<description>Source PDF file to merge. You can specify a PDF variable, a cfdocument variable, or the pathname to a file.</description>
-		</attribute>
-	</tag>
-
 	<!-- Pop -->
 	<tag>
 		<name>Pop</name>
@@ -6539,8 +5718,16 @@ Manipulates existing PDF documents. The following list describes some of the tas
 		<attribute-type>fixed</attribute-type>
 		<attribute>
 			<type>string</type>
+			<name>connection</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>label for a connection.</description>
+		</attribute>
+		
+		<attribute>
+			<type>string</type>
 			<name>server</name>
-			<required>true</required>
+			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 			<description>Host name biff.upperlip.com or IP address 192.1.2.225 of the POP server.</description>
 		</attribute>
@@ -6572,6 +5759,13 @@ Manipulates existing PDF documents. The following list describes some of the tas
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 			<description>Password that corresponds to user name.</description>
+		</attribute>
+		<attribute>
+			<type>boolean</type>
+			<name>secure</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>enables SSL for pop requests</description>
 		</attribute>
 		<attribute>
 			<type>string</type>
@@ -6618,7 +5812,7 @@ Manipulates existing PDF documents. The following list describes some of the tas
 			<status>deprecated</status>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
-			<description>this attribute is deprecated and ignored, log control happens via the logging framwork directly.</description>
+			<description>this attribute is deprecated and ignored, log control happens via the logging framework directly.</description>
 		</attribute>
 		<attribute>
 			<type>number</type>
@@ -7070,16 +6264,14 @@ sct["bracketNotation"] --> keyname: "bracketNotation"
 		</attribute>
  -->
 
-
-
-
 	</tag>
+
 	<!-- Query -->
 	<tag>
 		<name>Query</name>
 		<tag-class>lucee.runtime.tag.Query</tag-class>
 		<tte-class>lucee.transformer.cfml.evaluator.impl.Query</tte-class>
-		<body-content>must</body-content>
+		<body-content>free</body-content>
 		<body-rtexprvalue>true</body-rtexprvalue>
 		<handle-exception>true</handle-exception>
 		<script>
@@ -7098,6 +6290,15 @@ sct["bracketNotation"] --> keyname: "bracketNotation"
 			<description>The name query. Must begin with a letter and may consist of letters, numbers, and the underscore
 		character, spaces are not allowed. The query name is used later in the page to reference the query's
 		record set.</description>
+		</attribute>
+		<attribute>
+			<type>string</type>
+			<name>columnkey</name>
+			<alias>columnname,column</alias>
+			<status>hidden</status>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>When return type is set to "struct", the value of this column is used as key in the struct for every record.</description>
 		</attribute>
 		<attribute>
 			<type>string</type>
@@ -7146,6 +6347,15 @@ sct["bracketNotation"] --> keyname: "bracketNotation"
 			<description>This attribute has been deprecated and is non-functional.</description>
 		</attribute>
 		<attribute>
+			<type>any</type>
+			<name>tags</name>
+			<alias>tag</alias>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<status>hidden</status>
+			<description>tags stored with the cache.</description>
+		</attribute>
+		<attribute>
 			<type>string</type>
 			<name>connectString</name>
 			<required>false</required>
@@ -7191,27 +6401,26 @@ sct["bracketNotation"] --> keyname: "bracketNotation"
 			<description>The maximum number of seconds for the query to execute before returning an error
 		indicating that the query has timed-out. Value can be a number (seconds) or a Timespan Object. The minimum and maximum allowable values
 		vary, depending on the driver.</description>
-
 		</attribute>
 		<attribute>
 			<type>datetime</type>
 			<name>cachedAfter</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
-			<description>This is the age of which the query data can be</description>
+			<description>Sets a date/time from when the tag will start to cache the query. In difference to other CFML Engines this attribute only works in combination with the tag "cachedWithin", so you still have to set with "cachedWithin" how long the query remains in the cache. To match other CFML engines simply set "cachedWithin" to "36500", that will hold it in cache for 100 years!</description>
 		</attribute>
 		<attribute>
 			<type>object</type>
 			<name>cachedWithin</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
-		<description>
+			<description>
 possible values are:
 String "request": If original query was created within the current request, cached query data isused.
 a timespan (created with function CreateTimeSpan): If original query date falls within the time span, cached query data isused.
 
 To use cached data, the current query must use the same SQL statement, data source, query name, user name, and password.</description>
-    </attribute>
+    	</attribute>
 		<attribute>
 			<type>string</type>
 			<name>provider</name>
@@ -7301,7 +6510,6 @@ To use cached data, the current query must use the same SQL statement, data sour
 			<rtexprvalue>true</rtexprvalue>
 			<description></description>
 		</attribute>
-
 		<attribute>
 			<type>numeric</type>
 			<name>nestingLevel</name>
@@ -7311,9 +6519,29 @@ To use cached data, the current query must use the same SQL statement, data sour
 			<rtexprvalue>true</rtexprvalue>
 			<description>the level for the current pagesource</description>
 		</attribute>
-
-
+		<attribute>
+			<name>sql</name>
+			<type>string</type>
+			<required>false</required>
+			<description>the SQL query to execute.</description>
+		</attribute>
+		<attribute>
+			<name>listener</name>
+			<type>any</type>
+			<status>hidden</status>
+			<required>false</required>
+			<description></description>
+		</attribute>
+		<attribute>
+			<name>async</name>
+			<type>boolean</type>
+			<default>false</default>
+			<status>hidden</status>
+			<required>false</required>
+			<description></description>
+		</attribute>
 	</tag>
+
 	<!-- QueryParam -->
 	<tag>
 		<name>queryparam</name>
@@ -7655,6 +6883,7 @@ To use cached data, the current query must use the same SQL statement, data sour
 			<description>if true, the saved content will be appended to an already existing variable instead of overwriting it.</description>
 		</attribute>
 	</tag>
+	
 	<!-- Schedule -->
 	<tag>
 		<name>Schedule</name>
@@ -7864,7 +7093,8 @@ To use cached data, the current query must use the same SQL statement, data sour
 		</attribute>
 		<attribute>
 			<type>string</type>
-			<name>returnvariable</name>
+			<name>result</name>
+			<alias>returnvariable</alias>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 			<description>return variable name of action list</description>
@@ -7876,6 +7106,13 @@ To use cached data, the current query must use the same SQL statement, data sour
 			<status>hidden</status>
 			<rtexprvalue>true</rtexprvalue>
 			<description>if set to true, the scheduled task get deleted when there is no possible future execution.</description>
+		</attribute>
+		<attribute>
+			<type>boolean</type>
+			<name>unique</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>if set to true, the scheduled task is only executed once at time.if a task is still running from previous round no new task is started.</description>
 		</attribute>
 	</tag>
 
@@ -8138,6 +7375,7 @@ To use cached data, the current query must use the same SQL statement, data sour
 		</script> -->
 		<body-content>must</body-content>
 		<body-rtexprvalue>false</body-rtexprvalue>
+		<introduced>5.0.0.0</introduced>
 		<description>defines a static constructor within components</description>
 		<attribute-type>fixed</attribute-type>
 	</tag>
@@ -8198,7 +7436,7 @@ To use cached data, the current query must use the same SQL statement, data sour
 			<description>timeout for the stored procedure.</description>
 		</attribute>
 		<attribute>
-			<type>string</type>
+			<type>object</type>
 			<name>dataSource</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
@@ -8307,6 +7545,7 @@ To use cached data, the current query must use the same SQL statement, data sour
 		<name>Thread</name>
 		<tag-class>lucee.runtime.tag.ThreadTag</tag-class>
 		<ttt-class>lucee.transformer.bytecode.statement.tag.TagThread</ttt-class>
+		<tte-class>lucee.transformer.cfml.evaluator.impl.TagThread</tte-class>
 		<body-content>free</body-content>
 		<body-rtexprvalue>false</body-rtexprvalue>
 		<script>
@@ -8337,12 +7576,12 @@ If you terminate a thread, the thread scope includes an ERROR metadata structure
 		<attribute>
 			<type>string</type>
 			<name>type</name>
-			<values>deamon,task</values>
-			<default-value>deamon</default-value>
+			<values>daemon,task</values>
+			<default-value>daemon</default-value>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 			<description>type of the thread:
-			- deamon (default): executes as deamon of the current thread
+			- daemon (default): executes as daemon of the current thread
 			- task: executed by the task manager</description>
 		</attribute>
 		<attribute>
@@ -8675,7 +7914,7 @@ If you terminate a thread, the thread scope includes an ERROR metadata structure
 		<description>Updates existing records in data sources.</description>
 		<attribute-type>fixed</attribute-type>
 		<attribute>
-			<type>string</type>
+			<type>object</type>
 			<name>dataSource</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
@@ -8846,6 +8085,7 @@ If you terminate a thread, the thread scope includes an ERROR metadata structure
 		<attribute>
 			<type>string</type>
 			<name>foregroundcolor</name>
+			<alias>foregroundcolour</alias>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 			<description>alias for fgcolor</description>
@@ -8860,6 +8100,7 @@ If you terminate a thread, the thread scope includes an ERROR metadata structure
 		<attribute>
 			<type>string</type>
 			<name>fgcolor</name>
+			<alias>fgcolour</alias>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 			<description>foreground color</description>
@@ -8867,6 +8108,7 @@ If you terminate a thread, the thread scope includes an ERROR metadata structure
 		<attribute>
 			<type>string</type>
 			<name>bgcolor</name>
+			<alias>bgcolour</alias>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 			<description>background color</description>
@@ -8874,6 +8116,7 @@ If you terminate a thread, the thread scope includes an ERROR metadata structure
 		<attribute>
 			<type>string</type>
 			<name>backgroundcolor</name>
+			<alias>backgroundcolour</alias>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 			<description>alias for bgcolor</description>
@@ -8888,6 +8131,7 @@ If you terminate a thread, the thread scope includes an ERROR metadata structure
 		<attribute>
 			<type>string</type>
 			<name>screencolor</name>
+			<alias>screencolour</alias>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 			<description></description>
@@ -8895,6 +8139,7 @@ If you terminate a thread, the thread scope includes an ERROR metadata structure
 		<attribute>
 			<type>string</type>
 			<name>lightcolor</name>
+			<alias>lightcolour</alias>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 			<description></description>
@@ -9085,6 +8330,7 @@ If you terminate a thread, the thread scope includes an ERROR metadata structure
 		<attribute>
 			<type>string</type>
 			<name>fgcolor</name>
+			<alias>fgcolour</alias>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 			<description></description>
@@ -9092,6 +8338,7 @@ If you terminate a thread, the thread scope includes an ERROR metadata structure
 		<attribute>
 			<type>string</type>
 			<name>bgcolor</name>
+			<alias>bgcolour</alias>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 			<description></description>
@@ -9473,6 +8720,7 @@ If you terminate a thread, the thread scope includes an ERROR metadata structure
 		<tag-class>lucee.runtime.tag.CFXTag</tag-class>
 		<body-content>empty</body-content>
 		<body-rtexprvalue>false</body-rtexprvalue>
+		<status>hidden</status>
 		<description>Creates a CFX Tag</description>
 		<attribute-type>dynamic</attribute-type>
 	</tag>
@@ -9482,6 +8730,7 @@ If you terminate a thread, the thread scope includes an ERROR metadata structure
 		<appendix>true</appendix>
 		<tag-class>lucee.runtime.tag.CFTag</tag-class>
 		<att-default-value>boolean:true</att-default-value>
+		<status>hidden</status>
 		<handle-exception>true</handle-exception>
 		<body-content>free</body-content>
 		<body-rtexprvalue>false</body-rtexprvalue>
@@ -9496,6 +8745,7 @@ If you terminate a thread, the thread scope includes an ERROR metadata structure
 		<handle-exception>true</handle-exception>
 		<body-content>free</body-content>
 		<body-rtexprvalue>false</body-rtexprvalue>
+		<status>hidden</status>
 		<description>Creates a Custom Tag based on a CF Component (CFC)</description>
 		<attribute-type>dynamic</attribute-type>
 	</tag>-->
@@ -9522,280 +8772,16 @@ If you terminate a thread, the thread scope includes an ERROR metadata structure
 			<description>used to a address this loop from a "break" or "continue" statement (instead of the nearest one).</description>
 		</attribute>
 	</tag>
-	<!-- Zip -->
-	<tag>
-		<name>Zip</name>
-		<tag-class>lucee.runtime.tag.Zip</tag-class>
-		<body-content>free</body-content>
-		<body-rtexprvalue>false</body-rtexprvalue>
-		<script>
-			<type>multiple</type>
-			<rtexprvalue>true</rtexprvalue>
-			<context>zip</context>
-		</script>
-		<description>Manipulates ZIP and Java Archive (JAR) files.
-		In addition to the basic zip and unzip functions, use the cfzip tag to delete entries from an archive, filter files,
-		read files in binary format, list the contents of an archive, and specify an entry path used in an executable JAR file.</description>
-		<attribute-type>fixed</attribute-type>
-		<attribute>
-			<type>string</type>
-			<name>action</name>
-			<values>delete,list,read,readbinary,unzip,zip</values>
-			<default-value>zip</default-value>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		<description>The action to take.</description>
-    </attribute>
-		<attribute>
-			<type>string</type>
-			<name>charset</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		<description>The character set used to translate the ZIP or JAR
-            entry into a text string. Examples of character sets are:
-            JIS
-            RFC1345
-            UTF-16 (optional, default=encoding of the host machine)</description>
-    </attribute>
-		<attribute>
-			<type>string</type>
-			<name>destination</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		<description>Destination directory where the ZIP or JAR file is extracted. </description>
-    </attribute>
-		<attribute>
-			<type>string</type>
-			<name>entryPath</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		<description>Pathname on which the action is performed. </description>
-    </attribute>
-		<attribute>
-			<type>string</type>
-			<name>file</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		<description>Absolute pathname of the file on which the action is performed.
-            For example, the full pathname of the ZIP file: c:\temp\log.zip.
-            </description>
-    </attribute>
-		<attribute>
-            <type>any</type>
-            <name>filter</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <description>Optional filter. Can be either a wildcard filter,
-            e.g. "m*", or a UDF/Closure which accepts the file/directory name and returns a boolean value to indicate
-            whether that item should be included in the result or not.</description>
-        </attribute>
-        <attribute>
-            <type>string</type>
-            <name>filterDelimiters</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <description>Optional when passing a filter pattern. This value is used as a delimiter for the patterns.
-            Default is the pipe "|" character.</description>
-        </attribute>
-		<attribute>
-			<type>string</type>
-			<name>name</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		<description>Record set name in which the result of the list action is stored.
-            The record set columns are:
-            name: filename of the entry in the JAR file. For example, if the entry is
-            help/docs/index.htm, the name is index.htm.
-            directory: directory containing the entry. For the example above, the
-            directory is help/docs. You can obtain the full entry name by concatenating
-            directory and name. If an entry is at the root level, the directory is empty ('').
-            size: uncompressed size of the entry, in bytes.
-            compressedSize: compressed size of the entry, in bytes.
-            type: type of entry (directory or file).
-            dateLastModified: last modified date of the entry, cfdate object.
-            comment: any comment, if present, for the entry.
-            crc: crc-32 checksum of the uncompressed entry data. </description>
-    </attribute>
-		<attribute>
-			<type>boolean</type>
-			<name>overwrite</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		<description>unzip: Specifies whether to overwrite the extracted files:
-            yes: if the extracted file already exists at the destination specified,
-            the file is overwritten.
-            no: if the extracted file already exists at the destination specified,
-            the file is not overwritten and that entry is not extracted. The remaining
-            entries are extracted.
-            zip: Specifies whether to overwrite the contents of a ZIP or JAR file:
-            yes: overwrites all of the content in the ZIP or JAR file if it exists.
-            no: updates existing entries and adds new entries to the ZIP or JAR file
-            if it exists. (optional, default=no)</description>
-    </attribute>
-		<attribute>
-			<type>string</type>
-			<name>prefix</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		<description>String added as a prefix to the ZIP or JAR entry.
-            The string is the name of a subdirectory in which the
-            entries are added. </description>
-    </attribute>
-		<attribute>
-			<type>boolean</type>
-			<name>recurse</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		<description>Specifies whether the action
-            applies to subdirectories:
-            yes: includes subdirectories.
-            no: does not include subdirectories. (optional, default=yes)</description>
-    </attribute>
-		<attribute>
-			<type>boolean</type>
-			<name>showDirectory</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		<description>yes: lists the directories.
-            no: does not list directories. (optional, default= no)</description>
-    </attribute>
-		<attribute>
-			<type>string</type>
-			<name>source</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		<description>Source directory to be zipped. Not required
-            if cfzipparam is specified. </description>
-    </attribute>
-		<attribute>
-			<type>boolean</type>
-			<name>storePath</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		<description>zip: Specifies whether pathnames are stored in the ZIP or JAR file:
-            yes: pathnames of entries are stored in the ZIP or JAR file.
-            no: pathnames of the entries are not stored in the ZIP or JAR file.
-            All the files are placed at the root level. In case of a name conflict,
-            the last file in the iteration is added.
-            unzip: Specifies whether files are stored at the entrypath:
-            yes: the files are extracted to the entrypath.
-            no: the entrypath is ignored and all the files are extracted
-            at the root level. (optional, default= yes)</description>
-    </attribute>
-		<attribute>
-			<type>string</type>
-			<name>variable</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		<description>Variable in which the read content is stored. </description>
-    </attribute>
-	</tag>
-	<!-- ZipParam -->
-	<tag>
-		<name>ZipParam</name>
-		<tag-class>lucee.runtime.tag.ZipParam</tag-class>
-		<body-content>empty</body-content>
-		<body-rtexprvalue>false</body-rtexprvalue>
-		<script>
-			<type>multiple</type>
-			<rtexprvalue>true</rtexprvalue>
-		</script>
-		<description>The cfzipparam tag is always a child tag of the cfzip tag. see tag zip for more details.</description>
-		<attribute-type>fixed</attribute-type>
-		<attribute>
-			<type>string</type>
-			<name>charset</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		<description>Converts string content into binary data before putting
-            it into a ZIP or JAR file. Used only when cfzip
-            action="zip" and the cfzipparam content is a string.
-            Examples of character sets are:
-             JIS
-             RFC1345
-             UTF-16 (optional, default=encoding of the host machine)</description>
-    </attribute>
-		<attribute>
-			<type>any</type>
-			<name>content</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		<description>Content written to the ZIP or JAR entry. Used only when cfzip action="zip".
-            Valid content data types are binary and string. If you specify the content
-            attribute, you must specify the entrypath attribute. </description>
-    </attribute>
-		<attribute>
-			<type>string</type>
-			<name>entryPath</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		<description>Pathname used:
-             For cfzip action="zip", it is the entrypath used. This is valid only
-            when the source is a file. The entrypath creates a subdirectory within
-            the ZIP or JAR file.
-             For cfzip action="unzip", it is the pathname to unzip.
-             For cfzip action="delete", it is the pathname to delete from the
-            ZIP or JAR file. </description>
-    </attribute>
-		<attribute>
-            <type>any</type>
-            <name>filter</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <description>Optional filter. Can be either a wildcard filter,
-            e.g. "m*", or a UDF/Closure which accepts the file/directory name and returns a boolean value to indicate
-            whether that item should be included in the result or not.</description>
-        </attribute>
-        <attribute>
-            <type>string</type>
-            <name>filterDelimiters</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <description>Optional when passing a filter pattern. This value is used as a delimiter for the patterns.
-            Default is the pipe "|" character.</description>
-        </attribute>
-		<attribute>
-			<type>string</type>
-			<name>prefix</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		<description>String added as a prefix to the ZIP or JAR entry. Used only
-            when cfzip action="zip". </description>
-    </attribute>
-		<attribute>
-			<type>string</type>
-			<name>source</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		<description>Source directory or file. Used only when cfzip action="zip".
-            Specified file(s) are added to the ZIP or JAR file:
-             If you specify source attribute for the cfzip tag, the
-            cfzipparam source is relative to it.
-             If you do not specify a source attribute for the cfzip
-            tag, the cfzipparam source must be an absolute path. </description>
-    </attribute>
-		<attribute>
-			<type>boolean</type>
-			<name>recurse</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		<description>Recurse the directory to be zipped, unzipped, or deleted,
-            as specified by the cfzip parent tag. (optional, default=yes)</description>
-    </attribute>
-	</tag>
-
-
-
-
 
 
 	<!-- Form -->
 	<tag>
-		<name>form</name>
+		<name>formclassic</name>
 		<tag-class>lucee.runtime.tag.Form</tag-class>
 		<allow-removing-literal>yes</allow-removing-literal>
 		<body-content>must</body-content>
 		<body-rtexprvalue>false</body-rtexprvalue>
+		<status>hidden</status>
 		<description>Builds a form with CFML custom control tags that provide more functionality than standard
   HTML form input elements (XML and Flash type not supported).</description>
 		<attribute-type>fixed</attribute-type>
@@ -10142,10 +9128,11 @@ If you terminate a thread, the thread scope includes an ERROR metadata structure
 
 	<!-- Input -->
 	<tag>
-		<name>input</name>
+		<name>inputclassic</name>
 		<tag-class  >lucee.runtime.tag.Input</tag-class>
 		<body-content>empty</body-content>
 		<body-rtexprvalue>false</body-rtexprvalue>
+		<status>hidden</status>
 		<description>Used inside cfform to place radio buttons, checkboxes, or text boxes. Provides input
   validation for the specified control type.</description>
 		<attribute-type>fixed</attribute-type>
@@ -10876,10 +9863,11 @@ Valid only for cfinput type="text".</description>
 
 	<!-- Select -->
 	<tag>
-		<name>Select</name>
-		<tag-class  >lucee.runtime.tag.Select</tag-class>
+		<name>Selectclassic</name>
+		<tag-class>lucee.runtime.tag.Select</tag-class>
 		<body-content>must</body-content>
 		<body-rtexprvalue>false</body-rtexprvalue>
+		<status>hidden</status>
 		<description>Used inside cfform, cfselect lets you construct a drop-down list box form control. You can
   populate the drop-down list box from a query, or using the option tag. Use option elements to populate
   lists. The syntax for the option tag is the same as for its HTML counterpart.</description>

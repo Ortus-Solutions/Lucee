@@ -1,13 +1,4 @@
 
-<cfset stText.CustomTags.name="Name">
-<cfset stText.CustomTags.nameMissing="Missing the name for the new Mapping, this name is used when you deploy a Lucee Archive (.ra,.ras) based on this Mapping.">
-<cfset stText.CustomTags.nameDesc="The name is used as identifier when you automaticly import a Lucee Archive build based on this Mapping.">
-<cfset stText.CustomTags.PhysicalDesc="Directory path where the custom tags are located.">
-<cfset stText.CustomTags.archiveDesc="File path to a custom tag Lucee Archive (.ra or .ras).">
-<cfset stText.CustomTags.PrimaryDesc="Defines where Lucee does looks first for a requested custom tags">
-<cfset stText.CustomTags.trustedDesc="When does Lucee checks for changes in the source file for a already loaded custom tags">
-
-
 <!--- <cfif isDefined("form")>
 	<cfinclude template="act/resources.act_mapping.cfm">
 </cfif> --->
@@ -164,7 +155,7 @@ Redirtect to entry --->
 	<cfif not hasAccess><cfset noAccess(stText.setting.noAccess)></cfif>
 	
 	<h2>#stText.CustomTags.CustomtagSetting#</h2>
-	<cfform onerror="customError" action="#request.self#?action=#url.action#" method="post">
+	<cfformClassic onerror="customError" action="#request.self#?action=#url.action#" method="post">
 		<input type="hidden" name="subAction" value="setting" />
 		<table class="maintbl">
 			<tbody>
@@ -234,7 +225,7 @@ Redirtect to entry --->
 									<label>
 										<input type="radio" class="radio" name="extensions" value="custom"<cfif not has> checked="checked"</cfif>>
 									</label>
-									<cfinput type="text" onclick="checkTheRadio(this)" name="extensions_custom" value="#ArrayToList(setting.extensions)#" required="no" class="small" />
+									<cfinputClassic type="text" onclick="checkTheRadio(this)" name="extensions_custom" value="#ArrayToList(setting.extensions)#" required="no" class="small" />
 									<div class="comment inline">#stText.CustomTags.mode.custom#</div>
 								</li>
 							</ul>
@@ -259,11 +250,11 @@ Redirtect to entry --->
 				</tfoot>
 			</cfif>
 		</table>
-	</cfform>
+	</cfformClassic>
 	
 	<h2>#stText.CustomTags.CustomtagMappings#</h2>
 	<div class="itemintro">#stText.CustomTags.CustomtagMappingsDesc#</div>
-	<cfform onerror="customError" action="#request.self#?action=#url.action#" method="post">
+	<cfformClassic onerror="customError" action="#request.self#?action=#url.action#" method="post">
 		<table class="maintbl checkboxtbl">
 			<thead>
 				<tr>
@@ -308,7 +299,7 @@ Redirtect to entry --->
 									#mappings.strphysical#
 								</cfif>
 							<cfelse>
-								<cfinput onKeyDown="checkTheBox(this)" type="text" 
+								<cfinputClassic onKeyDown="checkTheBox(this)" type="text" 
 									name="physical_#mappings.currentrow#" value="#mappings.strphysical#" required="no"  
 									class="xlarge"
 									message="#stText.CustomTags.PhysicalMissing##mappings.currentrow#">
@@ -324,7 +315,7 @@ Redirtect to entry --->
 									#mappings.strarchive#
 								</cfif>
 							<cfelse>
-								<cfinput onKeyDown="checkTheBox(this)" type="text" 
+								<cfinputClassic onKeyDown="checkTheBox(this)" type="text" 
 									name="archive_#mappings.currentrow#" value="#mappings.strarchive#" required="no"  
 									class="xlarge" 
 									message="#stText.CustomTags.ArchiveMissing##mappings.currentrow#)">
@@ -371,15 +362,15 @@ Redirtect to entry --->
 							<input type="checkbox" class="checkbox" name="row_#mappings.recordcount+1#" value="#mappings.recordcount+1#">
 						</td>
 						<td>
-							<cfinput onKeyDown="checkTheBox(this)" type="text" 
+							<cfinputClassic onKeyDown="checkTheBox(this)" type="text" 
 								name="name_#mappings.recordcount+1#" value="" required="no" class="xlarge"  message="#stText.customtags.nameMissing#">
 						</td>
 						<td>
-							<cfinput onKeyDown="checkTheBox(this)" type="text" 
+							<cfinputClassic onKeyDown="checkTheBox(this)" type="text" 
 								name="physical_#mappings.recordcount+1#" value="" required="no" class="xlarge">
 						</td>
 						<td>
-							<cfinput onKeyDown="checkTheBox(this)" type="text" 
+							<cfinputClassic onKeyDown="checkTheBox(this)" type="text" 
 								name="archive_#mappings.recordcount+1#" value="" required="no"  class="xlarge">
 						</td>
 						<td>
@@ -414,5 +405,5 @@ Redirtect to entry --->
 				</tfoot>
 			</cfif>
 		</table>
-	</cfform>
+	</cfformClassic>
 </cfoutput>

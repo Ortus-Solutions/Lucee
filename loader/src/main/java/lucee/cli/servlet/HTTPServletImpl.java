@@ -29,8 +29,7 @@ public class HTTPServletImpl extends HttpServlet {
 	private final ServletContext context;
 	private final String servletName;
 
-	public HTTPServletImpl(final ServletConfig config,
-			final ServletContext context, final String servletName) {
+	public HTTPServletImpl(final ServletConfig config, final ServletContext context, final String servletName) {
 		this.config = config;
 		this.context = context;
 		this.servletName = servletName;

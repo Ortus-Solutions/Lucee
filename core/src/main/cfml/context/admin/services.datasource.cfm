@@ -1,38 +1,77 @@
-<cfset error.message="">
-<cfset error.detail="">
+<cfscript>
 
-<cfset driverNames=structnew("linked")>
-<cfset driverNames=ComponentListPackageAsStruct("lucee-server.admin.dbdriver",driverNames)>
-<cfset driverNames=ComponentListPackageAsStruct("lucee.admin.dbdriver",driverNames)>
-<cfset driverNames=ComponentListPackageAsStruct("dbdriver",driverNames)>
+error.message="";
+error.detail="";
 
-<cfset variables.drivers=struct()>
-<cfset variables.selectors	= struct()>
-<cfloop collection="#driverNames#" index="n" item="fn">
-	
-	<cfif n NEQ "Driver" and n NEQ "IDriver">
-		<cfset obj = createObject("component",fn)>
-		<cfif isInstanceOf( obj, "types.IDriverSelector" )>
-			<cfset variables.selectors[n] = obj>
-		<cfelseif isInstanceOf( obj, "types.IDatasource" )>
-			<cfset variables.drivers[n] = obj>
-		</cfif>
-	</cfif>
-</cfloop>
+driverNames=structnew("linked");
+driverNames=ComponentListPackageAsStruct("lucee-server.admin.dbdriver",driverNames);
+driverNames=ComponentListPackageAsStruct("lucee.admin.dbdriver",driverNames);
+driverNames=ComponentListPackageAsStruct("dbdriver",driverNames);
 
-<cffunction name="getDbDriverTypeName">
-	<cfargument name="className" required="true">
-	<cfargument name="dsn" required="true">
-	<cfset var key="">
-    
-	<cfloop collection="#variables.drivers#" item="key">
-		<cfif variables.drivers[key].equals(arguments.className,arguments.dsn)>
-			<cfreturn variables.drivers[key].getName()>
-		</cfif>
-	</cfloop>
-    
-    <cfreturn variables.drivers['other'].getName()>
-</cffunction>
+variables.drivers={};
+variables.selectors	= {};
+loop collection=driverNames index="n" item="fn" {
+	if(n!="Driver" && n!="IDriver") {
+		obj = createObject("component",fn);
+		if(isInstanceOf( obj, "types.IDriverSelector" ))
+			variables.selectors[n] = obj;
+		else if(isInstanceOf( obj, "types.IDatasource" ))
+			variables.drivers[n] = obj;
+	}
+}
+
+installed={};
+loop collection=drivers index="n" item="dr" {
+	try {
+		createObject("java",dr.getClass());
+		installed[dr.getClass()]=true;
+	}
+	catch(e){
+		installed[dr.getClass()]=false;
+	}
+}
+
+mysqls=["org.gjt.mm.mysql.Driver","com.mysql.jdbc.Driver","com.mysql.cj.jdbc.Driver"];
+mssqls=["com.microsoft.jdbc.sqlserver.SQLServerDriver","com.microsoft.sqlserver.jdbc.SQLServerDriver"];
+
+
+
+function getDbDriverTypeName(required className,required dsn) {
+	// find matching driver
+	loop collection=variables.drivers item="local.key" {
+		if(variables.drivers[key].equals(arguments.className,arguments.dsn)) {
+			return variables.drivers[key].getName();		
+		}
+	}
+
+	// mysql
+	if(arrayFind(mysqls,className)) {
+		loop collection=variables.drivers item="local.key" {
+			loop array=mysqls item="local.cn" {
+				if(variables.drivers[key].equals(cn,arguments.dsn)) {
+					return variables.drivers[key].getName();		
+				}
+			}
+		}
+	}
+
+	// mssql
+	if(arrayFind(mssqls,className)) {
+		loop collection=variables.drivers item="local.key" {
+			loop array=mssqls item="local.cn" {
+				if(variables.drivers[key].equals(cn,arguments.dsn)) {
+					return variables.drivers[key].getName();		
+				}
+			}
+		}
+	}
+
+    return variables.drivers['other'].getName();
+}
+
+
+</cfscript>
+
 
 <cffunction name="getDbDriverType">
 	<cfargument name="className" required="true">
@@ -63,10 +102,8 @@ Defaults --->
 <cfelseif access EQ "none" or access EQ "no">
 	<cfset access=0>
 </cfif>
-	
-	
+
 <cfswitch expression="#url.action2#">
 	<cfcase value="list"><cfinclude template="services.datasource.list.cfm"/></cfcase>
 	<cfcase value="create"><cfinclude template="services.datasource.create.cfm"/></cfcase>
-
 </cfswitch>

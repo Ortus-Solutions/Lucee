@@ -18,19 +18,20 @@
  ---><cfscript>
 
 component extends="org.lucee.cfml.test.LuceeTestCase"   {
-    try{
+    /*try{
         dir=getDirectoryFromPath(GetBaseTemplatePath());
         dir=mid(dir,1,len(dir)-1);
     }
     // inside jsr223 getBaseTemplatePath is not supported
     catch(e){
-        dir=server.coldfusion.rootdir;
-    }
-    
+        
+    }*/
+    dir=server.coldfusion.rootdir;
 
     parent=getDirectoryFromPath(dir);
     parent=mid(parent,1,len(parent)-1);
 
+    SEP = Server.separator.file;
 
     public void function testDot(){
         assertEquals(dir,ExpandPath("."));
@@ -39,16 +40,16 @@ component extends="org.lucee.cfml.test.LuceeTestCase"   {
         assertEquals(parent,ExpandPath(".."));
     }
     public void function testDotDotSlash(){
-        assertEquals(parent&"/",ExpandPath("../"));
-        assertEquals("#parent#/tags",ExpandPath("../tags"));
-        assertEquals("#parent#/tagx/",ExpandPath("../tagx/"));
+        assertEquals(parent & SEP, ExpandPath("../"));
+        assertEquals("#parent##SEP#tags",ExpandPath("../tags"));
+        assertEquals("#parent##SEP#tagx#SEP#",ExpandPath("../tagx/"));
     }
 
     public void function testSlashJM(){
-        assertEquals("#server.coldfusion.rootdir#/jm",ExpandPath("/jm"));
+        assertEquals("#server.coldfusion.rootdir##SEP#jm",ExpandPath("/jm"));
     }
     public void function testBackSlashJM(){
-        assertEquals("#server.coldfusion.rootdir#/jm",ExpandPath("\jm"));
+        assertEquals("#server.coldfusion.rootdir##SEP#jm",ExpandPath("\jm"));
     }
 
     public void function testMapping(){
@@ -56,12 +57,23 @@ component extends="org.lucee.cfml.test.LuceeTestCase"   {
         local.curr=getDirectoryFromPath(getCurrentTemplatePath());
         mappings["/susi"]=curr;
         application action="update" mappings=mappings;
-        
-
-
-        assertEquals(curr,ExpandPath("\susi/"));
-        assertEquals(curr,ExpandPath("/susi/"));
+        try {
+            assertEquals(curr,ExpandPath("\susi/"));
+            assertEquals(curr,ExpandPath("/susi/"));
+        }
+        finally {
+            // remove mapping /susi
+            local.mappings=GetApplicationSettings().mappings
+            structDelete(local.mappings,"/susi",false);
+            application action="update" mappings=mappings;
+        }
     }
+
+    public void function testSlash(){
+        expandPath( '/');
+    }
+
+     
         
 }
 </cfscript>

@@ -36,27 +36,28 @@ public final class EvaluateJava implements Function {
 
 	private static final long serialVersionUID = 2665025287805145492L;
 
-	public static Object call(PageContext pc , Object stringOrBinary) throws PageException {
-	   // Binary
-		if(Decision.isBinary(stringOrBinary)){
-		   InputStream is=null;
-		   try {
-	           is=new ByteArrayInputStream(Caster.toBinary(stringOrBinary));
-			   return JavaConverter.deserialize(is);
-	        }
-		    catch (Exception e) {
-	            throw Caster.toPageException(e);
-	        }
-	        finally {
-	        	IOUtil.closeEL(is);
-	        }
-	   }
-		
+	public static Object call(PageContext pc, Object stringOrBinary) throws PageException {
+		// Binary
+		if (Decision.isBinary(stringOrBinary)) {
+			InputStream is = null;
+			try {
+				is = new ByteArrayInputStream(Caster.toBinary(stringOrBinary));
+				return JavaConverter.deserialize(is);
+			}
+			catch (Exception e) {
+				throw Caster.toPageException(e);
+			}
+			finally {
+				IOUtil.closeEL(is);
+			}
+		}
+
 		// STring
 		try {
-            return JavaConverter.deserialize(Caster.toString(stringOrBinary));
-        } catch (Exception e) {
-            throw Caster.toPageException(e);
-        }
+			return JavaConverter.deserialize(Caster.toString(stringOrBinary));
+		}
+		catch (Exception e) {
+			throw Caster.toPageException(e);
+		}
 	}
 }

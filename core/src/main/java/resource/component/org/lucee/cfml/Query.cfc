@@ -1,49 +1,33 @@
-/**
- *
- * Copyright (c) 2014, the Railo Company Ltd. All rights reserved.
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either 
- * version 2.1 of the License, or (at your option) any later version.
- * 
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- * 
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this library.  If not, see <http://www.gnu.org/licenses/>.
- * 
- **/
-component output="false" extends="Base" accessors="true"{
+component output="false" extends="HelperBase" accessors="true"{
 
 	property name="name" type="String";
 	property name="qArray" type="Array";
 
-	/*
+	/**
 	 * Tag Name
 	 */
 	variables.tagname = "query";
 
 
-	/*
+	/**
 	 * @hint Constructor
 	 */
-	public Base function init(){
+	public HelperBase function init(){
 		super.init(argumentCollection=arguments);
 		return this;
 	}
 
-	/*
+	/**
 	 * @hint Execute the query
 	 */
 	public Result function execute(){
 		if(!structIsempty(arguments)){
 			structappend(variables.attributes,arguments,"yes");
 	}
+
 		if(structKeyExists(arguments,"sql") && len(arguments.sql)){
 			 this.setSql(arguments.sql);
+			 trace type="warning" var="arguments.sql";
 		}
 
 		//parse the sql into an array and save it
@@ -53,7 +37,7 @@ component output="false" extends="Base" accessors="true"{
 		return invokeTag();
 	}
 
-	/*
+	/**
 	 * @hint Parse the sql string converting into an array.
 	 *       Named and positional params will populate the array too.
 	 */
@@ -158,7 +142,7 @@ component output="false" extends="Base" accessors="true"{
 		return result;
 	}
 
-	/*
+	/**
 	 * @hint Return just the named params
 	 */
 	private Array function getNamedParams(){
@@ -175,7 +159,7 @@ component output="false" extends="Base" accessors="true"{
 	}
 
 
-	/*
+	/**
 	 * @hint Return just the positional params
 	 */
 	private Array function getPositionalParams(){
@@ -192,7 +176,7 @@ component output="false" extends="Base" accessors="true"{
 	}
 
 
-	/*
+	/**
 	 * @hint Scan the passed array looking for a "name" param match.
 	 */
 	private Struct function findNamedParam(Array params,String name){
@@ -206,4 +190,51 @@ component output="false" extends="Base" accessors="true"{
 
 	}
 
+	/**
+	 * @hint Scan the passed array looking for a "name" param match.
+	 */
+	public static query function new(required columnNames, columnTypes, data) {
+		return queryNew(columnNames,columnTypes?:nullvalue(),data?:nullvalue());
+	}
+
+
+	/**
+		this function overrides HelperBase.invokeTag()
+	*/
+	private function invokeTag() {
+		var tagname = getTagName();
+		var tagAttributes = getAttributes();
+		var tagParams = getParams();
+		var resultVar = "";
+		var result = new Result();
+
+		structDelete(tagAttributes,"sql",false);
+
+		// Makes the attributes available in local scope. Es : query of queries
+		structAppend(local, tagAttributes, true);
+
+		// get the query parts array
+		var qArray = getQArray();
+
+		query name="local.___q" attributeCollection=tagAttributes result="local.tagResult" {
+
+			loop array=local.qArray index="Local.item" {
+				if (!isNull(item.type) && item.type == "string"){
+					echo(preserveSingleQuotes(item.value));
+				}
+				else {
+					queryparam attributecollection=item;
+				}
+			}
+		}
+
+		if (!isNull(local.___q))
+			result.setResult(local.___q);
+
+		if (!isNull(local.tagResult))
+			result.setPrefix(local.tagResult);
+
+		return result;
+	}
+	//*/
 }

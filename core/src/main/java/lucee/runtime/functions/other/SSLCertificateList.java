@@ -22,7 +22,6 @@ import lucee.runtime.PageContext;
 import lucee.runtime.exp.PageException;
 import lucee.runtime.ext.function.Function;
 import lucee.runtime.tag.Admin;
-import lucee.runtime.tag.util.DeprecatedUtil;
 import lucee.runtime.type.Query;
 
 public final class SSLCertificateList implements Function {
@@ -30,12 +29,11 @@ public final class SSLCertificateList implements Function {
 	private static final long serialVersionUID = 1114950592159155566L;
 
 	public static Query call(PageContext pc, String host) throws PageException {
-    	return call(pc, host, 443);
-    }
-    
-    public static Query call(PageContext pc, String host, double port) throws PageException {
-    	DeprecatedUtil.function(pc, "SSLCertificateList");
-    	return Admin.getSSLCertificate(pc.getConfig(), host, (int)port);
-    }
+		return call(pc, host, 443);
+	}
+
+	public static Query call(PageContext pc, String host, double port) throws PageException {
+		return Admin.getSSLCertificate(pc.getConfig(), host, (int) port);
+	}
 
 }

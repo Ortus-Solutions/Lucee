@@ -1,7 +1,6 @@
 package lucee.runtime.script;
 
 import java.io.PrintStream;
-import java.nio.charset.Charset;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
@@ -10,9 +9,7 @@ import lucee.loader.engine.CFMLEngine;
 
 public class Main {
 
-	private static final String USAGE = "Usage: script [-options]\n\n"
-			+ "Where options include:\n" + "-l  language\n" + "-e  code\n";
-	private static final Charset UTF8 = Charset.forName("UTF-8");
+	private static final String USAGE = "Usage: script [-options]\n\n" + "Where options include:\n" + "-l  language\n" + "-e  code\n";
 
 	public static void main(final String args[]) throws Exception {
 
@@ -24,25 +21,19 @@ public class Main {
 		for (int i = 0; i < args.length; i++) {
 			arg = args[i];
 			if ("-l".equals(arg)) {
-				if (args.length > i + 1)
-					lang = args[++i].trim();
-			} else if ("-e".equals(arg))
-				if (args.length > i + 1)
-					code = args[++i].trim();
+				if (args.length > i + 1) lang = args[++i].trim();
+			}
+			else if ("-e".equals(arg)) if (args.length > i + 1) code = args[++i].trim();
 		}
 		final int dialect = CFMLEngine.DIALECT_CFML;
-		if (code == null)
-			printUsage("-e is missing", System.err);
+		if (code == null) printUsage("-e is missing", System.err);
 
 		final LuceeScriptEngineFactory factory = new LuceeScriptEngineFactory();
 		System.out.println(factory.getScriptEngine().eval(code));
 
-		final ScriptEngine engine = new ScriptEngineManager()
-				.getEngineByName(lang);
-		if (engine == null)
-			System.out.println("could not load a engine with the name:" + lang);
-		else
-			System.out.println(engine.eval(code));
+		final ScriptEngine engine = new ScriptEngineManager().getEngineByName(lang);
+		if (engine == null) System.out.println("could not load a engine with the name:" + lang);
+		else System.out.println(engine.eval(code));
 
 	}
 

@@ -33,7 +33,7 @@ import lucee.runtime.type.dt.DateTime;
  * Implements the CFML Function dateformat
  */
 public final class TimeFormat implements Function {
-	
+
 	private static final long serialVersionUID = -1335780260277678959L;
 
 	/**
@@ -42,10 +42,10 @@ public final class TimeFormat implements Function {
 	 * @return Formated Time Object as String
 	 * @throws ExpressionException
 	 */
-	public static String call(PageContext pc , Object object) throws ExpressionException {
-		return _call(pc,object,"hh:mm tt",ThreadLocalPageContext.getTimeZone(pc));
+	public static String call(PageContext pc, Object object) throws ExpressionException {
+		return _call(pc, object, "hh:mm tt", ThreadLocalPageContext.getTimeZone(pc));
 	}
-	
+
 	/**
 	 * @param pc
 	 * @param object
@@ -53,24 +53,23 @@ public final class TimeFormat implements Function {
 	 * @return Formated Time Object as String
 	 * @throws ExpressionException
 	 */
-	public static String call(PageContext pc , Object object, String mask) throws ExpressionException {
-		return _call(pc,object,mask,ThreadLocalPageContext.getTimeZone(pc));
+	public static String call(PageContext pc, Object object, String mask) throws ExpressionException {
+		return _call(pc, object, mask, ThreadLocalPageContext.getTimeZone(pc));
 	}
 
-	public static String call(PageContext pc , Object object, String mask,TimeZone tz) throws ExpressionException {
-		return _call(pc,object,mask, tz==null?ThreadLocalPageContext.getTimeZone(pc):tz);
+	public static String call(PageContext pc, Object object, String mask, TimeZone tz) throws ExpressionException {
+		return _call(pc, object, mask, tz == null ? ThreadLocalPageContext.getTimeZone(pc) : tz);
 	}
-	
-	private static String _call(PageContext pc , Object object, String mask,TimeZone tz) throws ExpressionException {
-		Locale locale=Locale.US;//:pc.getConfig().getLocale();
-		DateTime datetime = Caster.toDate(object,true,tz,null);
-		if(datetime==null) {
-		    if(StringUtil.isEmpty(object,true)) return "";
-		    throw new ExpressionException("can't convert value "+object+" to a datetime value");
+
+	private static String _call(PageContext pc, Object object, String mask, TimeZone tz) throws ExpressionException {
+		Locale locale = Locale.US;// :pc.getConfig().getLocale();
+		DateTime datetime = Caster.toDate(object, true, tz, null);
+		if (datetime == null) {
+			if (StringUtil.isEmpty(object, true)) return "";
+			throw new ExpressionException("can't convert value " + object + " to a datetime value");
 		}
-		
-		
-		return new lucee.runtime.format.TimeFormat(locale).format(datetime,mask,tz);
-		//return new lucee.runtime.text.TimeFormat(locale).format(datetime,mask);
+
+		return new lucee.runtime.format.TimeFormat(locale).format(datetime, mask, tz);
+		// return new lucee.runtime.text.TimeFormat(locale).format(datetime,mask);
 	}
 }

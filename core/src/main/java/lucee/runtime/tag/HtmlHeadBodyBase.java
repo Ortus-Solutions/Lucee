@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import lucee.commons.lang.StringUtil;
+import lucee.runtime.PageContextImpl;
 import lucee.runtime.exp.ApplicationException;
 import lucee.runtime.exp.PageException;
 import lucee.runtime.ext.tag.BodyTagTryCatchFinallyImpl;
@@ -36,13 +37,15 @@ public abstract class HtmlHeadBodyBase extends BodyTagTryCatchFinallyImpl {
 	private final static String REQUEST_ATTRIBUTE_PREFIX = "REQUEST_ATTRIBUTE_IDMAP_";
 
 	/**
-	 * The text to add to the 'head' area of an HTML page. Everything inside the quotation marks is placed in the 'head' section
+	 * The text to add to the 'head' area of an HTML page. Everything inside the quotation marks is
+	 * placed in the 'head' section
 	 */
 	protected String text = null;
 	protected String variable = null;
 
 	private String action = null;
 	private String id = null;
+	private boolean force = getDefaultForce();
 
 	@Override
 	public void release() {
@@ -51,13 +54,21 @@ public abstract class HtmlHeadBodyBase extends BodyTagTryCatchFinallyImpl {
 		variable = null;
 		action = null;
 		id = null;
+		force = getDefaultForce();
 	}
 
+	public abstract boolean getDefaultForce();
+
 	public abstract String getTagName();
+
 	public abstract void actionAppend() throws IOException, ApplicationException;
+
 	public abstract void actionFlush() throws IOException;
+
 	public abstract void actionRead() throws IOException, PageException;
+
 	public abstract void actionReset() throws IOException;
+
 	public abstract void actionWrite() throws IOException, ApplicationException;
 
 	/**
@@ -71,15 +82,14 @@ public abstract class HtmlHeadBodyBase extends BodyTagTryCatchFinallyImpl {
 	 * @param action the action to set
 	 */
 	public void setAction(String action) {
-		if (!StringUtil.isEmpty(action, true))
-			this.action = action.trim().toLowerCase();
+		if (StringUtil.isEmpty(action, true)) return;
+
+		this.action = action.trim().toLowerCase();
 	}
 
-
 	/**
-	 * set the value text
-	 * The text to add to the 'head' area of an HTML page. Everything inside the quotation marks is
-	 * placed in the 'head' section
+	 * set the value text The text to add to the 'head' area of an HTML page. Everything inside the
+	 * quotation marks is placed in the 'head' section
 	 *
 	 * @param text value to set
 	 */
@@ -91,19 +101,19 @@ public abstract class HtmlHeadBodyBase extends BodyTagTryCatchFinallyImpl {
 		this.id = id;
 	}
 
+	public void setForce(boolean force) {
+		this.force = force;
+	}
+
 	@Override
 	public int doStartTag() throws PageException {
 
 		return EVAL_BODY_BUFFERED;
 	}
 
-
 	@Override
 	public int doEndTag() throws PageException {
-
-		if (!StringUtil.isEmpty(text))
-			processTag();
-
+		processTag();
 		return SKIP_BODY;
 	}
 
@@ -111,10 +121,9 @@ public abstract class HtmlHeadBodyBase extends BodyTagTryCatchFinallyImpl {
 	public int doAfterBody() throws PageException {
 
 		if (StringUtil.isEmpty(text) && bodyContent != null) {
-
 			text = bodyContent.getString();
-			processTag();
 		}
+		if (bodyContent != null) bodyContent.clearBody();
 
 		return SKIP_BODY;
 	}
@@ -124,47 +133,44 @@ public abstract class HtmlHeadBodyBase extends BodyTagTryCatchFinallyImpl {
 		try {
 
 			if (StringUtil.isEmpty(action, true) || action.equals("append")) {
-
 				required(getTagName(), "text", text);
-				if (isValid())
-					actionAppend();
+				if (isValid()) actionAppend();
 			}
 			else if (action.equals("reset")) {
-
 				resetIdMap();
 				actionReset();
 			}
 			else if (action.equals("write")) {
-
 				required(getTagName(), "text", text);
 				resetIdMap();
-				if (isValid())          // call isValid() to register the id if set
+				if (isValid()) // call isValid() to register the id if set
 					actionWrite();
 			}
 			else if (action.equals("read")) actionRead();
 			else if (action.equals("flush")) actionFlush();
-			else
-				throw new ApplicationException("invalid value [" + action + "] for attribute action", "values for attribute action are:append,read,reset,write");
-		} catch (IOException e) {
+			else throw new ApplicationException("invalid value [" + action + "] for attribute action", "values for attribute action are:append,read,reset,write");
+		}
+		catch (IOException e) {
 			throw Caster.toPageException(e);
 		}
 	}
 
 	/**
 	 *
-	 * @return - true if the id was not set or was set and was not used yet in the request. if it was not set -- register it for future calls of the tag
+	 * @return - true if the id was not set or was set and was not used yet in the request. if it was
+	 *         not set -- register it for future calls of the tag
 	 */
 	protected boolean isValid() {
 
-		if (StringUtil.isEmpty(id))
-			return true;
+		if (!force && pageContext instanceof PageContextImpl && ((PageContextImpl) pageContext).isSilent()) return false;
+
+		if (StringUtil.isEmpty(id)) return true;
 
 		Map m = getIdMap();
 
 		boolean result = !m.containsKey(id);
 
-		if (!result)
-			m.put(id, Boolean.TRUE);
+		if (result) m.put(id, Boolean.TRUE);
 
 		return result;
 	}
@@ -173,7 +179,7 @@ public abstract class HtmlHeadBodyBase extends BodyTagTryCatchFinallyImpl {
 
 		String reqAttr = REQUEST_ATTRIBUTE_PREFIX + getTagName();
 
-		Map result = (Map)pageContext.getRequest().getAttribute(reqAttr);
+		Map result = (Map) pageContext.getRequest().getAttribute(reqAttr);
 
 		if (result == null) {
 

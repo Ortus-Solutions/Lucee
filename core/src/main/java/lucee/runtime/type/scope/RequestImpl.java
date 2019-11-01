@@ -18,7 +18,6 @@
  */
 package lucee.runtime.type.scope;
 
-
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Iterator;
@@ -41,30 +40,29 @@ import lucee.runtime.type.util.StructSupport;
 
 public final class RequestImpl extends StructSupport implements Request {
 
-	
 	private HttpServletRequest _req;
 	private boolean init;
-	private static int _id=0;
-	private int id=0;
+	private static int _id = 0;
+	private int id = 0;
 
 	public RequestImpl() {
-        id=++_id;
-		//super("request",SCOPE_REQUEST,Struct.TYPE_REGULAR);
-		
+		id = ++_id;
+		// super("request",SCOPE_REQUEST,Struct.TYPE_REGULAR);
+
 	}
-	
-    /**
-     * @return Returns the id.
-     */
-    public int _getId() {
-        return id;
-    }
+
+	/**
+	 * @return Returns the id.
+	 */
+	public int _getId() {
+		return id;
+	}
 
 	@Override
 	public void initialize(PageContext pc) {
-		_req = pc.getHttpServletRequest();//HTTPServletRequestWrap.pure(pc.getHttpServletRequest());
-		init=true;
-		
+		_req = pc.getHttpServletRequest();// HTTPServletRequestWrap.pure(pc.getHttpServletRequest());
+		init = true;
+
 	}
 
 	@Override
@@ -89,53 +87,50 @@ public final class RequestImpl extends StructSupport implements Request {
 
 	@Override
 	public int size() {
-		int size=0;
+		int size = 0;
 		synchronized (_req) {
 			Enumeration<String> names = _req.getAttributeNames();
-			while(names.hasMoreElements()){
+			while (names.hasMoreElements()) {
 				names.nextElement();
 				size++;
 			}
 		}
 		return size;
 	}
-	
+
 	@Override
 	public Iterator<Collection.Key> keyIterator() {
 		return keyList().iterator();
 	}
-	
-	
 
 	private List<Key> keyList() {
 		synchronized (_req) {
 			Enumeration<String> names = _req.getAttributeNames();
-			List<Key> list=new ArrayList<Key>();
-			while(names.hasMoreElements()){
+			List<Key> list = new ArrayList<Key>();
+			while (names.hasMoreElements()) {
 				list.add(KeyImpl.getInstance(names.nextElement()));
 			}
 			return list;
 		}
 	}
-	
+
 	@Override
 	public Iterator<Entry<Key, Object>> entryIterator() {
-		return new EntryIterator(this,keys());
+		return new EntryIterator(this, keys());
 	}
-	
+
 	@Override
 	public Iterator<Object> valueIterator() {
 		synchronized (_req) {
 			Enumeration<String> names = _req.getAttributeNames();
-			List<Object> list=new ArrayList<Object>();
-			while(names.hasMoreElements()){
+			List<Object> list = new ArrayList<Object>();
+			while (names.hasMoreElements()) {
 				list.add(_req.getAttribute(names.nextElement()));
 			}
 			return list.iterator();
 		}
 	}
-	
-	
+
 	@Override
 	public Key[] keys() {
 		List<Key> list = keyList();
@@ -144,51 +139,59 @@ public final class RequestImpl extends StructSupport implements Request {
 
 	@Override
 	public Object remove(Key key) throws PageException {
-		Object value = remove(key,NullSupportHelper.NULL());
-		if(value!=NullSupportHelper.NULL())return value;
-		throw new ExpressionException("can't remove key ["+key+"] from struct, key doesn't exist");
+		Object _null = NullSupportHelper.NULL();
+		Object value = remove(key, _null);
+		if (value != _null) return value;
+		throw new ExpressionException("can't remove key [" + key + "] from struct, key doesn't exist");
 	}
 
 	@Override
 	public void clear() {
 		synchronized (_req) {
 			Enumeration<String> names = _req.getAttributeNames();
-			while(names.hasMoreElements()){
+			while (names.hasMoreElements()) {
 				_req.removeAttribute(names.nextElement());
 			}
 		}
 	}
 
 	@Override
-	public Object get(Key key) throws PageException {
-		Object value = get(key,NullSupportHelper.NULL());
-		if(value==NullSupportHelper.NULL()) throw invalidKey(null,this,key,"request scope");
+	public final Object get(Key key) throws PageException {
+		Object _null = NullSupportHelper.NULL();
+		Object value = get(key, _null);
+		if (value == _null) throw invalidKey(null, this, key, "request scope");
 		return value;
 	}
-	
 
+	@Override
+	public final Object get(PageContext pc, Key key) throws PageException {
+		Object _null = NullSupportHelper.NULL(pc);
+		Object value = get(pc, key, _null);
+		if (value == _null) throw invalidKey(null, this, key, "request scope");
+		return value;
+	}
 
 	@Override
 	public Object removeEL(Key key) {
-		return remove(key,null);
+		return remove(key, null);
 	}
 
 	@Override
 	public Object remove(Key key, Object defaultValue) {
 		synchronized (_req) {
-			Object value = _req.getAttribute(key.getLowerString()); 
-			if(value!=null) {
+			Object value = _req.getAttribute(key.getLowerString());
+			if (value != null) {
 				_req.removeAttribute(key.getLowerString());
 				return value;
 			}
-			
-			value=defaultValue;
+
+			value = defaultValue;
 			Enumeration<String> names = _req.getAttributeNames();
 			String k;
-			while(names.hasMoreElements()){
-				k=names.nextElement();
-				if(k.equalsIgnoreCase(key.getString())) {
-					value= _req.getAttribute(k);
+			while (names.hasMoreElements()) {
+				k = names.nextElement();
+				if (k.equalsIgnoreCase(key.getString())) {
+					value = _req.getAttribute(k);
 					_req.removeAttribute(k);
 					return value;
 				}
@@ -196,18 +199,23 @@ public final class RequestImpl extends StructSupport implements Request {
 			return defaultValue;
 		}
 	}
-	
+
 	@Override
-	public Object get(Key key, Object defaultValue) {
+	public final Object get(Key key, Object defaultValue) {
+		return get((PageContext) null, key, defaultValue);
+	}
+
+	@Override
+	public final Object get(PageContext pc, Key key, Object defaultValue) {
 		synchronized (_req) {
-			Object value = _req.getAttribute(key.getLowerString()); 
-			if(value!=null) return value;
-			
+			Object value = _req.getAttribute(key.getLowerString());
+			if (value != null) return value;
+
 			Enumeration<String> names = _req.getAttributeNames();
 			Collection.Key k;
-			while(names.hasMoreElements()){
-				k=KeyImpl.init(names.nextElement());
-				if(key.equals(k)) return _req.getAttribute(k.getString());
+			while (names.hasMoreElements()) {
+				k = KeyImpl.init(names.nextElement());
+				if (key.equals(k)) return _req.getAttribute(k.getString());
 			}
 			return defaultValue;
 		}
@@ -228,16 +236,23 @@ public final class RequestImpl extends StructSupport implements Request {
 
 	@Override
 	public Collection duplicate(boolean deepCopy) {
-		Struct trg=new StructImpl();
-		StructImpl.copy(this, trg,deepCopy);
+		Struct trg = new StructImpl();
+		StructImpl.copy(this, trg, deepCopy);
 		return trg;
 	}
 
 	@Override
-	public boolean containsKey(Key key) {
-		return get(key,NullSupportHelper.NULL())!=NullSupportHelper.NULL();
+	public final boolean containsKey(Key key) {
+		Object _null = NullSupportHelper.NULL();
+		return get(key, _null) != _null;
 	}
-	
+
+	@Override
+	public final boolean containsKey(PageContext pc, Key key) {
+		Object _null = NullSupportHelper.NULL(pc);
+		return get(pc, key, _null) != _null;
+	}
+
 	@Override
 	public DumpData toDumpData(PageContext pageContext, int maxlevel, DumpProperties dp) {
 		return ScopeSupport.toDumpData(pageContext, maxlevel, dp, this, getTypeAsString());

@@ -28,21 +28,20 @@ public class ImportDefintionImpl implements ImportDefintion {
 	private String packAsPath;
 
 	public ImportDefintionImpl(String pack, String name) {
-		this.pack=pack;
-		this.name=name;
-		this.wildcard=name.equals("*");
-		
+		this.pack = pack;
+		this.name = name;
+		this.wildcard = name.equals("*");
+
 	}
 
-	public static ImportDefintion getInstance(String fullname,ImportDefintion defaultValue) {
-		int index=fullname.lastIndexOf('.');
-		if(index==-1) return defaultValue;
-		String p=fullname.substring(0,index).trim();
-		String n=fullname.substring(index+1,fullname.length()).trim();
-		if(StringUtil.isEmpty(p) || StringUtil.isEmpty(n))
-			return defaultValue;
-		
-		return new ImportDefintionImpl(p,n);
+	public static ImportDefintion getInstance(String fullname, ImportDefintion defaultValue) {
+		int index = fullname.lastIndexOf('.');
+		if (index == -1) return defaultValue;
+		String p = fullname.substring(0, index).trim();
+		String n = fullname.substring(index + 1, fullname.length()).trim();
+		if (StringUtil.isEmpty(p) || StringUtil.isEmpty(n)) return defaultValue;
+
+		return new ImportDefintionImpl(p, n);
 	}
 
 	/**
@@ -71,15 +70,15 @@ public class ImportDefintionImpl implements ImportDefintion {
 
 	@Override
 	public String getPackageAsPath() {
-		if(packAsPath==null) {
-			packAsPath=pack.replace('.','/')+"/";
+		if (packAsPath == null) {
+			packAsPath = pack.replace('.', '/') + "/";
 		}
 		return packAsPath;
 	}
-	
+
 	@Override
-	public String toString(){
-		return pack+"."+name;
+	public String toString() {
+		return pack + "." + name;
 	}
-	
+
 }

@@ -36,37 +36,38 @@ public final class CompressResource extends ResourceSupport {
 	private final String path;
 	private final String name;
 	private final String parent;
-	private final boolean caseSensitive; 
+	private final boolean caseSensitive;
 
 	/**
 	 * Constructor of the class
+	 * 
 	 * @param provider
 	 * @param zip
 	 * @param path
 	 * @param caseSensitive
 	 */
 	CompressResource(CompressResourceProvider provider, Compress zip, String path, boolean caseSensitive) {
-		if(StringUtil.isEmpty(path)) path="/";
-		this.provider=provider;
-		this.zip=zip; 
-		this.path=path;
-		
-		if("/".equals(path)) {
-			this.parent=null;
-			this.name="";
+		if (StringUtil.isEmpty(path)) path = "/";
+		this.provider = provider;
+		this.zip = zip;
+		this.path = path;
+
+		if ("/".equals(path)) {
+			this.parent = null;
+			this.name = "";
 		}
 		else {
 			String[] pn = ResourceUtil.translatePathName(path);
-			this.parent=pn[0];
-			this.name=pn[1];
+			this.parent = pn[0];
+			this.name = pn[1];
 		}
-		
-		this.caseSensitive=caseSensitive;
+
+		this.caseSensitive = caseSensitive;
 	}
 
 	/**
 	 * @return return ram resource that contain the data
-	 * @throws IOException 
+	 * @throws IOException
 	 */
 	private Resource getRamResource() {
 		try {
@@ -81,7 +82,7 @@ public final class CompressResource extends ResourceSupport {
 	public boolean exists() {
 		try {
 			provider.read(this);
-		} 
+		}
 		catch (IOException e) {
 			return false;
 		}
@@ -93,11 +94,11 @@ public final class CompressResource extends ResourceSupport {
 		ResourceUtil.checkGetInputStreamOK(this);
 		return getRamResource().getInputStream();
 	}
-	
+
 	public Resource getCompressResource() {
 		return zip.getCompressFile();
 	}
-	
+
 	public String getCompressPath() {
 		return path;
 	}
@@ -109,14 +110,14 @@ public final class CompressResource extends ResourceSupport {
 
 	@Override
 	public String getParent() {
-		if(StringUtil.isEmpty(parent))return null;
+		if (StringUtil.isEmpty(parent)) return null;
 		return provider.getScheme().concat("://").concat(zip.getCompressFile().getPath()).concat("!").concat(parent);
 	}
 
 	@Override
 	public Resource getParentResource() {
-		if(StringUtil.isEmpty(parent))return null;
-		return new CompressResource(provider,zip,parent,caseSensitive);
+		if (StringUtil.isEmpty(parent)) return null;
+		return new CompressResource(provider, zip, parent, caseSensitive);
 	}
 
 	@Override
@@ -126,9 +127,9 @@ public final class CompressResource extends ResourceSupport {
 
 	@Override
 	public Resource getRealResource(String realpath) {
-		realpath=ResourceUtil.merge(path, realpath);
-		if(realpath.startsWith("../"))return null;
-		return new CompressResource(provider,zip,realpath,caseSensitive);
+		realpath = ResourceUtil.merge(path, realpath);
+		if (realpath.startsWith("../")) return null;
+		return new CompressResource(provider, zip, realpath, caseSensitive);
 	}
 
 	@Override
@@ -174,14 +175,14 @@ public final class CompressResource extends ResourceSupport {
 	@Override
 	public Resource[] listResources() {
 		String[] names = list();
-		if(names==null) return null;
+		if (names == null) return null;
 		Resource[] children = new Resource[names.length];
-		for(int i=0;i<children.length;i++) {
-			children[i]=new CompressResource(provider,zip,path.concat("/").concat(names[i]),caseSensitive);
+		for (int i = 0; i < children.length; i++) {
+			children[i] = new CompressResource(provider, zip, path.concat("/").concat(names[i]), caseSensitive);
 		}
 		return children;
 	}
-	
+
 	@Override
 	public String[] list() {
 		return getRamResource().list();
@@ -190,18 +191,16 @@ public final class CompressResource extends ResourceSupport {
 	@Override
 	public void remove(boolean force) throws IOException {
 		Resource rr = getRamResource();
-		if(rr.getParent()==null) 
-			throw new IOException("can't remove root resource ["+getPath()+"]");
-		
-		if(!rr.exists())
-			throw new IOException("can't remove resource ["+getPath()+"],resource does not exist");
-		
+		if (rr.getParent() == null) throw new IOException("can't remove root resource [" + getPath() + "]");
+
+		if (!rr.exists()) throw new IOException("can't remove resource [" + getPath() + "],resource does not exist");
+
 		Resource[] children = listResources();
-		if(children!=null && children.length>0) {
-			if(!force) {
-				throw new IOException("can't delete directory ["+getPath()+"], directory is not empty");
+		if (children != null && children.length > 0) {
+			if (!force) {
+				throw new IOException("can't delete directory [" + getPath() + "], directory is not empty");
 			}
-			for(int i=0;i<children.length;i++) {
+			for (int i = 0; i < children.length; i++) {
 				children[i].remove(true);
 			}
 		}
@@ -214,17 +213,17 @@ public final class CompressResource extends ResourceSupport {
 		zip.synchronize(provider.async);
 		return lm;
 	}
-	
+
 	@Override
 	public void createDirectory(boolean createParentWhenNotExists) throws IOException {
-		ResourceUtil.checkCreateDirectoryOK(this,createParentWhenNotExists);
+		ResourceUtil.checkCreateDirectoryOK(this, createParentWhenNotExists);
 		getRamResource().createDirectory(createParentWhenNotExists);
 		zip.synchronize(provider.async);
 	}
 
 	@Override
 	public void createFile(boolean createParentWhenNotExists) throws IOException {
-		ResourceUtil.checkCreateFileOK(this,createParentWhenNotExists);
+		ResourceUtil.checkCreateFileOK(this, createParentWhenNotExists);
 		getRamResource().createFile(createParentWhenNotExists);
 		zip.synchronize(provider.async);
 	}
@@ -232,15 +231,15 @@ public final class CompressResource extends ResourceSupport {
 	@Override
 	public OutputStream getOutputStream() throws IOException {
 		ResourceUtil.checkGetOutputStreamOK(this);
-		//Resource res = getRamResource();
-		//Resource p = res.getParentResource();
-		//if(p!=null && !p.exists())p.mkdirs();
-		return new CompressOutputStreamSynchronizer(getRamResource().getOutputStream(),zip,provider.async);
+		// Resource res = getRamResource();
+		// Resource p = res.getParentResource();
+		// if(p!=null && !p.exists())p.mkdirs();
+		return new CompressOutputStreamSynchronizer(getRamResource().getOutputStream(), zip, provider.async);
 	}
 
 	@Override
 	public OutputStream getOutputStream(boolean append) throws IOException {
-		return new CompressOutputStreamSynchronizer(getRamResource().getOutputStream(append),zip,provider.async);
+		return new CompressOutputStreamSynchronizer(getRamResource().getOutputStream(append), zip, provider.async);
 	}
 
 	@Override
@@ -252,12 +251,12 @@ public final class CompressResource extends ResourceSupport {
 	public void setMode(int mode) throws IOException {
 		getRamResource().setMode(mode);
 		zip.synchronize(provider.async);
-		
+
 	}
 
 	@Override
 	public boolean setReadable(boolean value) {
-		if(!isFile())return false;
+		if (!isFile()) return false;
 		getRamResource().setReadable(value);
 		zip.synchronize(provider.async);
 		return true;
@@ -265,7 +264,7 @@ public final class CompressResource extends ResourceSupport {
 
 	@Override
 	public boolean setWritable(boolean value) {
-		if(!isFile())return false;
+		if (!isFile()) return false;
 		getRamResource().setWritable(value);
 		zip.synchronize(provider.async);
 		return true;

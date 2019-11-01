@@ -20,67 +20,72 @@ package lucee.runtime.config;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import lucee.commons.io.IOUtil;
 import lucee.commons.io.SystemUtil;
 import lucee.commons.io.log.Log;
+import lucee.commons.io.log.LogUtil;
 import lucee.commons.io.res.Resource;
 import lucee.commons.io.res.filter.ExtensionResourceFilter;
 import lucee.commons.io.res.filter.ResourceFilter;
 import lucee.commons.io.res.util.ResourceUtil;
+import lucee.commons.lang.ExceptionUtil;
 import lucee.commons.lang.StringUtil;
 import lucee.commons.net.http.HTTPEngine;
 import lucee.commons.net.http.HTTPResponse;
 import lucee.commons.net.http.Header;
-import lucee.commons.net.http.httpclient3.HeaderImpl;
+import lucee.commons.net.http.httpclient.HeaderImpl;
+import lucee.runtime.engine.ThreadLocalPageContext;
+import lucee.runtime.exp.ApplicationException;
 import lucee.runtime.exp.PageException;
-import lucee.runtime.extension.RHExtension;
+import lucee.runtime.extension.ExtensionDefintion;
 import lucee.runtime.extension.RHExtensionProvider;
 import lucee.runtime.functions.conversion.DeserializeJSON;
 import lucee.runtime.net.http.ReqRspUtil;
 import lucee.runtime.op.Caster;
 import lucee.runtime.type.Struct;
+import lucee.runtime.type.util.ArrayUtil;
 import lucee.runtime.type.util.KeyConstants;
 
 public class DeployHandler {
 
-	private static final ResourceFilter ALL_EXT = new ExtensionResourceFilter(new String[]{".lex",".lar"});
-	//private static final ResourceFilter ARCHIVE_EXT = new ExtensionResourceFilter(new String[]{".ra",".ras"});
+	private static final ResourceFilter ALL_EXT = new ExtensionResourceFilter(new String[] { ".lex", ".lar", ".lco" });
 
 	/**
-	 * deploys all files found 
+	 * deploys all files found
+	 * 
 	 * @param config
 	 */
-	public static void deploy(Config config){
-		if(!contextIsValid(config)) return;
+	public static void deploy(Config config) {
+		if (!contextIsValid(config)) return;
 
 		synchronized (config) {
 			Resource dir = config.getDeployDirectory();
-			if(!dir.exists()) dir.mkdirs();
-			
+			if (!dir.exists()) dir.mkdirs();
+
 			Resource[] children = dir.listResources(ALL_EXT);
 			Resource child;
 			String ext;
-			for(int i=0;i<children.length;i++){
-				child=children[i];
+			for (int i = 0; i < children.length; i++) {
+				child = children[i];
 				try {
 					// Lucee archives
-					ext=ResourceUtil.getExtension(child, null);
-					if("lar".equalsIgnoreCase(ext)) {
-						//deployArchive(config,child,true);
-						XMLConfigAdmin.updateArchive((ConfigImpl) config, child,true);
+					ext = ResourceUtil.getExtension(child, null);
+					if ("lar".equalsIgnoreCase(ext)) {
+						// deployArchive(config,child,true);
+						XMLConfigAdmin.updateArchive((ConfigImpl) config, child, true);
 					}
-					
+
 					// Lucee Extensions
-					else if("lex".equalsIgnoreCase(ext))
-						XMLConfigAdmin.updateRHExtension((ConfigImpl) config, child,true);
+					else if ("lex".equalsIgnoreCase(ext)) XMLConfigAdmin._updateRHExtension((ConfigImpl) config, child, true);
+
+					// Lucee core
+					else if (config instanceof ConfigServer && "lco".equalsIgnoreCase(ext)) XMLConfigAdmin.updateCore((ConfigServerImpl) config, child, true);
 				}
 				catch (Throwable t) {
+					ExceptionUtil.rethrowIfNecessary(t);
 					Log log = config.getLog("deploy");
 					log.error("Extension", t);
 				}
@@ -91,162 +96,271 @@ public class DeployHandler {
 	private static boolean contextIsValid(Config config) {
 		// this test is not very good but it works
 		ConfigWeb[] webs;
-		if(config instanceof ConfigWeb)
-			webs =new ConfigWeb[]{((ConfigWeb)config)};
-		else 
-			webs=((ConfigServer)config).getConfigWebs();
-		
-		for(int i=0;i<webs.length;i++){
-			try{
+		if (config instanceof ConfigWeb) webs = new ConfigWeb[] { ((ConfigWeb) config) };
+		else webs = ((ConfigServer) config).getConfigWebs();
+
+		for (int i = 0; i < webs.length; i++) {
+			try {
 				ReqRspUtil.getRootPath(webs[i].getServletContext());
 			}
-			catch(Throwable t){
+			catch (Throwable t) {
+				ExceptionUtil.rethrowIfNecessary(t);
 				return false;
 			}
 		}
 		return true;
 	}
-	
-	public static void moveToFailedFolder(Resource deployDirectory,Resource res) {
+
+	public static void moveToFailedFolder(Resource deployDirectory, Resource res) {
 		Resource dir = deployDirectory.getRealResource("failed-to-deploy");
 		Resource dst = dir.getRealResource(res.getName());
 		dir.mkdirs();
-		
+
 		try {
-			if(dst.exists()) dst.remove(true);
-			ResourceUtil.moveTo(res, dst,true);
+			if (dst.exists()) dst.remove(true);
+			ResourceUtil.moveTo(res, dst, true);
 		}
-		catch (Throwable t) {}
-		
+		catch (Throwable t) {
+			ExceptionUtil.rethrowIfNecessary(t);
+		}
+
 		// TODO Auto-generated method stub
-		
+
 	}
 
-	public static String unwrap(String value) {
-		if(value==null) return "";
-		String res = unwrap(value,'"');
-		if(res!=null) return res; // was double quote
-		
-		return unwrap(value,'\''); // try single quote unwrap, when there is no double quote.
-	}
-	
-	private static String unwrap(String value, char del) {
-		value=value.trim();
-		if(StringUtil.startsWith(value, del) && StringUtil.endsWith(value, del)) {
-			return value.substring(1, value.length()-1);
+	public static boolean deployExtensions(Config config, ExtensionDefintion[] eds, Log log) {
+		boolean allSucessfull = true;
+		if (!ArrayUtil.isEmpty(eds)) {
+			ExtensionDefintion ed;
+			boolean sucess;
+			for (int i = 0; i < eds.length; i++) {
+				ed = eds[i];
+				if (StringUtil.isEmpty(ed.getId(), true)) continue;
+				try {
+					sucess = deployExtension(config, ed, log, i + 1 == eds.length);
+				}
+				catch (PageException e) {
+					sucess = false;
+				}
+				if (!sucess) allSucessfull = false;
+			}
 		}
-		return value;
+		return allSucessfull;
 	}
 
 	/**
 	 * install a extension based on the given id and version
+	 * 
 	 * @param config
 	 * @param id the id of the extension
 	 * @param version pass null if you don't need a specific version
-	 * @throws IOException 
-	 * @throws PageException 
+	 * @return
+	 * @throws IOException
+	 * @throws PageException
 	 */
-	public static void deployExtension(Config config, String id, Log log) {
-		ConfigImpl ci=(ConfigImpl) config;
-		
+	public static boolean deployExtension(Config config, ExtensionDefintion ed, Log log, boolean reload) throws PageException {
+		ConfigImpl ci = (ConfigImpl) config;
+
 		// is the extension already installed
 		try {
-			if(XMLConfigAdmin.hasRHExtensions(ci, id)!=null) return;
-		} 
-		catch (Throwable t) {}
-		
-		
+			if (XMLConfigAdmin.hasRHExtensions(ci, ed) != null) return false;
+		}
+		catch (Exception e) {
+			if (log != null) log.error("extension", e);
+			else throw Caster.toPageException(e);
+		}
+
 		// check if a local extension is matching our id
-		Iterator<RHExtension> it = getLocalExtensions(config).iterator();
-		RHExtension ext=null,tmp;
-		while(it.hasNext()){
-			tmp=it.next();
-			if(tmp.getId().equals(id) && (ext==null || ext.getVersion().compareTo(tmp.getVersion())<0)) {
-				ext=tmp;
+		Iterator<ExtensionDefintion> it = getLocalExtensions(config).iterator();
+		ExtensionDefintion ext = null, tmp;
+
+		if (log != null) log.info("extension", "installing the extension " + ed);
+		while (it.hasNext()) {
+			tmp = it.next();
+			if (ed.equals(tmp)) {
+				ext = tmp;
+				break;
 			}
 		}
-		
-		
+
+		// if we have one and also the defined version matches, there is no need to check online
+		if (ext != null && ed.getVersion() != null) {
+			try {
+				if (log != null) log.info("extension", "installing the extension " + ed + " from local provider");
+				Resource res = SystemUtil.getTempDirectory().getRealResource(ed.getId() + "-" + ed.getVersion() + ".lex");
+				ResourceUtil.touch(res);
+				IOUtil.copy(ext.getSource(), res);
+				XMLConfigAdmin._updateRHExtension((ConfigImpl) config, res, reload);
+				return true;
+			}
+			catch (Exception e) {
+				ext = null;
+				LogUtil.log(ThreadLocalPageContext.getConfig(config), DeployHandler.class.getName(), e);
+			}
+		}
+
 		String apiKey = config.getIdentification().getApiKey();
 		RHExtensionProvider[] providers = ci.getRHExtensionProviders();
 		URL url;
-		
+
 		// if we have a local version, we look if there is a newer remote version
-		if(ext!=null) {
+		if (ext != null) {
 			String content;
-			for(int i=0;i<providers.length;i++){
-				try{
-					url=providers[i].getURL();
-					url=new URL(url,"/rest/extension/provider/info/"+id+"?withLogo=false"+(apiKey==null?"":"&ioid="+apiKey));
-					HTTPResponse rsp = HTTPEngine.get(url, null, null, -1, false, "UTF-8", "", null, new Header[]{new HeaderImpl("accept","application/json")});
-					
-					if(rsp.getStatusCode()!=200) continue;
-					
-					content=rsp.getContentAsString();
+			for (int i = 0; i < providers.length; i++) {
+				HTTPResponse rsp = null;
+				try {
+					url = providers[i].getURL();
+					StringBuilder qs = new StringBuilder();
+					qs.append("?withLogo=false");
+					if (ed.getVersion() != null) qs.append("&version=").append(ed.getVersion());
+					if (apiKey != null) qs.append("&ioid=").append(apiKey);
+
+					url = new URL(url, "/rest/extension/provider/info/" + ed.getId() + qs);
+					if (log != null) log.info("extension", "check for a newer version at " + url);
+					rsp = HTTPEngine.get(url, null, null, -1, false, "UTF-8", "", null, new Header[] { new HeaderImpl("accept", "application/json") });
+
+					if (rsp.getStatusCode() != 200) continue;
+
+					content = rsp.getContentAsString();
 					Struct sct = Caster.toStruct(DeserializeJSON.call(null, content));
-					String remoteVersion=Caster.toString(sct.get(KeyConstants._version));
-					
+					String remoteVersion = Caster.toString(sct.get(KeyConstants._version));
+
 					// the local version is as good as the remote
-					if(remoteVersion!=null && remoteVersion.compareTo(ext.getVersion())<=0) {
-						log.info("extension", "installing the extension "+id+" from local provider");
-						
+					if (remoteVersion != null && remoteVersion.compareTo(ext.getVersion()) <= 0) {
+						if (log != null) log.info("extension", "installing the extension " + ed + " from local provider");
+
 						// avoid that the exzension from provider get removed
-						Resource res = SystemUtil.getTempFile("lex", true);
-						IOUtil.copy(ext.getExtensionFile(), res);
-						XMLConfigAdmin.updateRHExtension((ConfigImpl) config, res, true);
-						return;
+						Resource res = SystemUtil.getTempDirectory().getRealResource(ed.getId() + "-" + ed.getVersion() + ".lex");
+						ResourceUtil.touch(res);
+
+						IOUtil.copy(ext.getSource(), res);
+						XMLConfigAdmin._updateRHExtension((ConfigImpl) config, res, reload);
+						return true;
 					}
 				}
-				catch(Throwable t){}
-				
+				catch (Exception e) {
+					if (log != null) log.error("extension", e);
+				}
+				finally {
+					HTTPEngine.closeEL(rsp);
+				}
 			}
 		}
-		
-		
-		
-		// if not we try to download it
 
-		log.info("extension", "installing the extension "+id+" from remote extension provider");
-		for(int i=0;i<providers.length;i++){
-			try{
-				url=providers[i].getURL();
-				url=new URL(url,"/rest/extension/provider/full/"+id+(apiKey==null?"":"?ioid="+apiKey));
-				HTTPResponse rsp = HTTPEngine.get(url, null, null, -1, false, "UTF-8", "", null, new Header[]{new HeaderImpl("accept","application/cfml")});
-				if(rsp.getStatusCode()!=200)
-					throw new IOException("failed to load extension with id "+id);
-				
-				// copy it locally
-				Resource res = SystemUtil.getTempFile("lex", true);
-				IOUtil.copy(rsp.getContentAsStream(), res, true);
-				
-				// now forward it to the regular process
-				XMLConfigAdmin.updateRHExtension((ConfigImpl) config, res,true);
-			}
-			catch(Throwable t){
-				log.error("extension", t);
-			}
-		}
-	}
-
-	public static List<RHExtension> getLocalExtensions(Config config) {
-		Resource[] locReses = config.getLocalExtensionProviderDirectory().listResources(new ExtensionResourceFilter(".lex"));
-		List<RHExtension> loc=new ArrayList<RHExtension>();
-		Map<String,String> map=new HashMap<String,String>();
-		RHExtension ext;
-		String v;
-		for(int i=0;i<locReses.length;i++) {
+		// if we have an ext at this stage this mean the remote providers was not acessible or have not this
+		// extension
+		if (ext != null) {
 			try {
-				ext=new RHExtension(config,locReses[i],false);
-				// check if we already have an extension with the same id to avoid having more than once
-				v=map.get(ext.getId());
-				if(v!=null && v.compareToIgnoreCase(ext.getId())>0) continue;
-				
-				map.put(ext.getId(), ext.getVersion());
-				loc.add(ext);
-			} 
-			catch(Exception e) {}
+				if (log != null) log.info("extension", "installing the extension " + ed + " from local provider");
+				Resource res = SystemUtil.getTempDirectory().getRealResource(ext.getSource().getName());
+				ResourceUtil.touch(res);
+
+				IOUtil.copy(ext.getSource(), res);
+				XMLConfigAdmin._updateRHExtension((ConfigImpl) config, res, reload);
+				return true;
+			}
+			catch (Exception e) {
+				if (log != null) log.error("extension", e);
+			}
 		}
-		return loc;
+
+		// if not we try to download it
+		if (log != null) log.info("extension", "installing the extension " + ed + " from remote extension provider");
+		Resource res = downloadExtension(ci, ed, log);
+		if (res != null) {
+			try {
+				XMLConfigAdmin._updateRHExtension((ConfigImpl) config, res, reload);
+				return true;
+			}
+			catch (Exception e) {
+				if (log != null) log.error("extension", e);
+				else throw Caster.toPageException(e);
+			}
+		}
+		throw new ApplicationException("was not able to install extension " + ed.getId());
 	}
-	
+
+	public static Resource downloadExtension(Config config, ExtensionDefintion ed, Log log) {
+
+		String apiKey = config.getIdentification().getApiKey();
+		URL url;
+		RHExtensionProvider[] providers = ((ConfigImpl) config).getRHExtensionProviders();
+
+		for (int i = 0; i < providers.length; i++) {
+			HTTPResponse rsp = null;
+			try {
+				url = providers[i].getURL();
+				StringBuilder qs = new StringBuilder();
+				addQueryParam(qs, "ioid", apiKey);
+				addQueryParam(qs, "version", ed.getVersion());
+
+				url = new URL(url, "/rest/extension/provider/full/" + ed.getId() + qs);
+				if (log != null) log.info("main", "check for extension at : " + url);
+
+				rsp = HTTPEngine.get(url, null, null, -1, true, "UTF-8", "", null, new Header[] { new HeaderImpl("accept", "application/cfml") });
+
+				// If status code indicates success
+				if (rsp.getStatusCode() >= 200 && rsp.getStatusCode() < 300) {
+
+					// copy it locally
+					Resource res = SystemUtil.getTempDirectory().getRealResource(ed.getId() + "-" + ed.getVersion() + ".lex");
+					ResourceUtil.touch(res);
+					IOUtil.copy(rsp.getContentAsStream(), res, true);
+					if (log != null) log.info("main", "downloaded extension [" + ed + "] to [" + res + "]");
+					return res;
+
+				}
+				else {
+					if (log != null) log.warn("main", "failed (" + rsp.getStatusCode() + ") to load extension: " + ed + " from " + url);
+				}
+			}
+			catch (Exception e) {
+				if (log != null) log.error("extension", e);
+			}
+			finally {
+				HTTPEngine.closeEL(rsp);
+			}
+		}
+		return null;
+	}
+
+	private static void addQueryParam(StringBuilder qs, String name, String value) {
+		if (StringUtil.isEmpty(value)) return;
+		qs.append(qs.length() == 0 ? "?" : "&").append(name).append("=").append(value);
+	}
+
+	public static Resource getExtension(Config config, ExtensionDefintion ed, Log log) {
+		// local
+		ExtensionDefintion ext = getLocalExtension(config, ed, null);
+		if (ext != null) {
+			try {
+				Resource src = ext.getSource();
+				if (src.exists()) {
+					Resource res = SystemUtil.getTempDirectory().getRealResource(ed.getId() + "-" + ed.getVersion() + ".lex");
+					ResourceUtil.touch(res);
+					IOUtil.copy(ext.getSource(), res);
+					return res;
+				}
+			}
+			catch (Exception e) {}
+		}
+		// remote
+		return downloadExtension(config, ed, log);
+	}
+
+	public static ExtensionDefintion getLocalExtension(Config config, ExtensionDefintion ed, ExtensionDefintion defaultValue) {
+		Iterator<ExtensionDefintion> it = getLocalExtensions(config).iterator();
+		ExtensionDefintion ext;
+		while (it.hasNext()) {
+			ext = it.next();
+			if (ed.equals(ext)) {
+				return ext;
+			}
+		}
+		return defaultValue;
+	}
+
+	public static List<ExtensionDefintion> getLocalExtensions(Config config) {
+		return ((ConfigImpl) config).loadLocalExtensions();
+	}
 }

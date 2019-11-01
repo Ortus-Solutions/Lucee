@@ -32,17 +32,17 @@ public class StateFactory implements Factory {
 
 	@Override
 	public StatementProxy createStatementProxy(ConnectionProxy conn, Statement stat) {
-		return new StateStatement(conn,stat);
+		return new StateStatement(conn, stat);
 	}
 
 	@Override
 	public PreparedStatementProxy createPreparedStatementProxy(ConnectionProxy conn, PreparedStatement stat, String sql) {
-		return new StatePreparedStatement(conn, stat,sql);
+		return new StatePreparedStatement(conn, stat, sql);
 	}
 
 	@Override
 	public CallableStatementProxy createCallableStatementProxy(ConnectionProxy conn, CallableStatement stat, String sql) {
-		return new StateCallableStatement(conn, stat,sql);
+		return new StateCallableStatement(conn, stat, sql);
 	}
 
 }

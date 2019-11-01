@@ -49,26 +49,27 @@ public interface DatasourceConnection extends Connection {
 
 	public boolean supportsGetGeneratedKeys();
 
-	public PreparedStatement getPreparedStatement(SQL sql,
-			boolean createGeneratedKeys, boolean allowCaching)
-			throws SQLException;
+	public PreparedStatement getPreparedStatement(SQL sql, boolean createGeneratedKeys, boolean allowCaching) throws SQLException;
 
-	public PreparedStatement getPreparedStatement(SQL sql, int resultSetType,
-			int resultSetConcurrency) throws SQLException;
+	public PreparedStatement getPreparedStatement(SQL sql, int resultSetType, int resultSetConcurrency) throws SQLException;
 
 	@Override
 	public void close() throws SQLException;
-
 
 	/**
 	 * @return is timeout or not
 	 */
 	public abstract boolean isTimeout();
-	
+
 	/**
 	 * is life cycle timeout
+	 * 
 	 * @return
 	 */
 	public abstract boolean isLifecycleTimeout();
+
+	// FUTURE public boolean isAutoCommit() throws SQLException;
+
+	// FUTURE public void setAutoCommit(boolean setting) throws SQLException;
 
 }

@@ -18,16 +18,18 @@
  **/
 package lucee.runtime.net.smtp;
 
+import javax.mail.Address;
+import javax.mail.SendFailedException;
 import javax.mail.Transport;
 
 import lucee.commons.io.SystemUtil;
+import lucee.commons.lang.ExceptionUtil;
 import lucee.runtime.net.smtp.SMTPClient.MimeMessageAndSession;
-
 
 public final class SMTPSender extends Thread {
 
 	private boolean isSent = false;
-	private Throwable throwable;
+	private Exception throwable;
 	private Object lock;
 	private String host;
 	private int port;
@@ -35,42 +37,49 @@ public final class SMTPSender extends Thread {
 	private String pass;
 	private MimeMessageAndSession mmas;
 	private boolean recyleConnection;
-	
-	public SMTPSender(Object lock, MimeMessageAndSession mmas, String host, int port, String user, String pass, boolean reuseConnection) {
-		this.lock=lock;
-		this.mmas=mmas;
 
-		this.host=host;
-		this.port=port;
-		this.user=user;
-		this.pass=pass;
-		this.recyleConnection=reuseConnection;
+	public SMTPSender(Object lock, MimeMessageAndSession mmas, String host, int port, String user, String pass, boolean reuseConnection) {
+		this.lock = lock;
+		this.mmas = mmas;
+
+		this.host = host;
+		this.port = port;
+		this.user = user;
+		this.pass = pass;
+		this.recyleConnection = reuseConnection;
 	}
-	
+
 	@Override
 	public void run() {
 		Transport transport = null;
-        try {
-        	transport = mmas.session.transport;//SMTPConnectionPool.getTransport(session,host,port,user,pass);
-        	if(user==null)pass=null;
-        	// connect
-    		if(!transport.isConnected())
-    			transport.connect(host,port,user,pass);
-        	
-			mmas.message.saveChanges();  
+		try {
+			transport = mmas.session.transport;// SMTPConnectionPool.getTransport(session,host,port,user,pass);
+			if (user == null) pass = null;
+			// connect
+			if (!transport.isConnected()) transport.connect(host, port, user, pass);
+
+			mmas.message.saveChanges();
 			transport.sendMessage(mmas.message, mmas.message.getAllRecipients());
 			isSent = true;
-		} 
-		catch (Throwable t) {
-			this.throwable=t;
+		}
+		catch (SendFailedException sfe) {
+			Address[] valid = sfe.getValidSentAddresses();
+			// a soon the mail was send to one reciever we do no longer block it
+			if (valid != null && valid.length > 0) isSent = true;
+			this.throwable = sfe;
+		}
+		catch (Exception e) {
+			this.throwable = e;
 		}
 		finally {
 			try {
-				if(recyleConnection)SMTPConnectionPool.releaseSessionAndTransport(mmas.session);
+				if (recyleConnection) SMTPConnectionPool.releaseSessionAndTransport(mmas.session);
 				else SMTPConnectionPool.disconnect(mmas.session.transport);
-			
+
 			}
-			catch (Throwable t) {}
+			catch (Throwable t) {
+				ExceptionUtil.rethrowIfNecessary(t);
+			}
 			SystemUtil.notify(lock);
 		}
 	}

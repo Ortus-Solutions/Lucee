@@ -19,6 +19,7 @@
 package lucee.runtime.type.scope.client;
 
 import lucee.commons.io.log.Log;
+import lucee.commons.lang.SerializableObject;
 import lucee.runtime.PageContext;
 import lucee.runtime.exp.PageException;
 import lucee.runtime.type.Collection;
@@ -26,51 +27,64 @@ import lucee.runtime.type.Struct;
 import lucee.runtime.type.StructImpl;
 import lucee.runtime.type.scope.Client;
 import lucee.runtime.type.scope.storage.StorageScopeCache;
+import lucee.runtime.type.scope.storage.StorageValue;
 
 public final class ClientCache extends StorageScopeCache implements Client {
-	
+
 	private static final long serialVersionUID = -875719423763891692L;
-	
-	private ClientCache(PageContext pc,String cacheName, String appName,Struct sct) { 
-		super(pc,cacheName,appName,"client",SCOPE_CLIENT,sct);
+	private static SerializableObject token = new SerializableObject();
+
+	private ClientCache(PageContext pc, String cacheName, String appName, Struct sct, long lastStored) {
+		super(pc, cacheName, appName, "client", SCOPE_CLIENT, sct, lastStored);
 	}
 
 	/**
 	 * Constructor of the class, clone existing
+	 * 
 	 * @param other
 	 */
-	private ClientCache(StorageScopeCache other,boolean deepCopy) {
-		super(other,deepCopy);
+	private ClientCache(StorageScopeCache other, boolean deepCopy) {
+		super(other, deepCopy);
 	}
-	
 
-	
 	@Override
 	public Collection duplicate(boolean deepCopy) {
-    	return new ClientCache(this,deepCopy);
+		return new ClientCache(this, deepCopy);
 	}
-	
+
 	/**
 	 * load an new instance of the client datasource scope
-	 * @param cacheName 
+	 * 
+	 * @param cacheName
 	 * @param appName
 	 * @param pc
-	 * @param log 
+	 * @param log
 	 * @return client datasource scope
 	 * @throws PageException
 	 */
-	public static Client getInstance(String cacheName, String appName, PageContext pc, Log log) throws PageException {
-			Struct _sct = _loadData(pc, cacheName, appName,"client",log);
-			//structOk=true;
-			if(_sct==null) _sct=new StructImpl();
-			
-		return new ClientCache(pc,cacheName,appName,_sct);
-	}
-	
+	public static Client getInstance(String cacheName, String appName, PageContext pc, Client existing, Log log) throws PageException {
+		if (appName != null && appName.startsWith("no-in-memory-cache-")) existing = null;
+		synchronized (token) {
+			StorageValue sv = _loadData(pc, cacheName, appName, "client", log);
+			if (sv != null) {
+				long time = sv.lastModified();
 
-	public static Client getInstance(String cacheName, String appName, PageContext pc, Log log,Client defaultValue) {
+				if (existing instanceof StorageScopeCache) {
+					if (((StorageScopeCache) existing).lastModified() >= time) return existing;
+				}
+				return new ClientCache(pc, cacheName, appName, sv.getValue(), time);
+			}
+			else if (existing != null) return existing;
+
+			ClientCache cc = new ClientCache(pc, cacheName, appName, new StructImpl(), 0);
+			cc.store(pc);
+			return cc;
+		}
+	}
+
+	public static Client getInstance(String cacheName, String appName, PageContext pc, Client existing, Log log, Client defaultValue) {
 		try {
-			return getInstance(cacheName, appName, pc,log);
+			return getInstance(cacheName, appName, pc, existing, log);
 		}
 		catch (PageException e) {}
 		return defaultValue;

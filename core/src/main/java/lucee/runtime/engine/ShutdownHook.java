@@ -21,19 +21,15 @@ package lucee.runtime.engine;
 import lucee.runtime.config.ConfigServer;
 
 public class ShutdownHook extends Thread {
-	
+
 	private ConfigServer cs;
 
 	public ShutdownHook(ConfigServer cs) {
-		this.cs=cs;
+		this.cs = cs;
 	}
-	
+
 	@Override
 	public void run() {
-		
-		// TODO Server . cfc->onServerEnd
-		
-		
-		
+		cs.getEngine().reset();
 	}
 }

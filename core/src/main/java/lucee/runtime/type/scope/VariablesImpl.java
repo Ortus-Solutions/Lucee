@@ -26,7 +26,7 @@ public final class VariablesImpl extends ScopeSupport implements Variables {
 	private boolean bind;
 
 	public VariablesImpl() {
-		super("variables",SCOPE_VARIABLES,StructImpl.TYPE_UNDEFINED);
+		super("variables", SCOPE_VARIABLES, StructImpl.TYPE_UNDEFINED);
 	}
 
 	public void registerUDF(Key key, UDF udf) {
@@ -39,7 +39,7 @@ public final class VariablesImpl extends ScopeSupport implements Variables {
 
 	@Override
 	public void setBind(boolean bind) {
-		this.bind=bind;
+		this.bind = bind;
 	}
 
 	@Override

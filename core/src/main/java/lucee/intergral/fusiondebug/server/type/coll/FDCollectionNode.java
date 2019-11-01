@@ -18,14 +18,14 @@
  **/
 package lucee.intergral.fusiondebug.server.type.coll;
 
+import com.intergral.fusiondebug.server.FDMutabilityException;
+import com.intergral.fusiondebug.server.IFDStackFrame;
+
 import lucee.intergral.fusiondebug.server.type.FDNodeValueSupport;
 import lucee.intergral.fusiondebug.server.util.FDCaster;
 import lucee.runtime.type.Array;
 import lucee.runtime.type.Collection;
 import lucee.runtime.type.Collection.Key;
-
-import com.intergral.fusiondebug.server.FDMutabilityException;
-import com.intergral.fusiondebug.server.IFDStackFrame;
 
 public class FDCollectionNode extends FDNodeValueSupport {
 
@@ -34,31 +34,32 @@ public class FDCollectionNode extends FDNodeValueSupport {
 
 	/**
 	 * Constructor of the class
+	 * 
 	 * @param coll
 	 * @param key
 	 */
-	public FDCollectionNode(IFDStackFrame frame,Collection coll, Key key) {
+	public FDCollectionNode(IFDStackFrame frame, Collection coll, Key key) {
 		super(frame);
-		this.coll=coll;
-		this.key=key;
+		this.coll = coll;
+		this.key = key;
 	}
 
 	@Override
 	public String getName() {
-		if(coll instanceof Array) return "["+key.getString()+"]";
+		if (coll instanceof Array) return "[" + key.getString() + "]";
 		return key.getString();
 	}
 
 	@Override
 	protected Object getRawValue() {
-		return coll.get(key,null);
+		return coll.get(key, null);
 	}
 
 	@Override
 	public boolean isMutable() {
 		return true;
 	}
-	
+
 	@Override
 	public void set(String value) throws FDMutabilityException {
 		coll.setEL(key, FDCaster.unserialize(value));

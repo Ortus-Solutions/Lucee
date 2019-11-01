@@ -22,6 +22,7 @@
 package lucee.runtime.functions.struct;
 
 import lucee.runtime.PageContext;
+import lucee.runtime.exp.FunctionException;
 import lucee.runtime.exp.PageException;
 import lucee.runtime.ext.function.BIF;
 import lucee.runtime.op.Caster;
@@ -31,12 +32,13 @@ public final class StructIsEmpty extends BIF {
 
 	private static final long serialVersionUID = 6804878535578055394L;
 
-	public static boolean call(PageContext pc , Struct struct) {
-		return struct.size()==0;
+	public static boolean call(PageContext pc, Struct struct) {
+		return struct.size() == 0;
 	}
-	
+
 	@Override
 	public Object invoke(PageContext pc, Object[] args) throws PageException {
-		return call(pc,Caster.toStruct(args[0]));
+		if (args.length == 1) return call(pc, Caster.toStruct(args[0]));
+		throw new FunctionException(pc, "StructIsEmpty", 1, 1, args.length);
 	}
 }

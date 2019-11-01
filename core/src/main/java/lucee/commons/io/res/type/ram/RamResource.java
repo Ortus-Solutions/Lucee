@@ -32,64 +32,62 @@ import lucee.commons.io.res.util.ResourceSupport;
 import lucee.commons.io.res.util.ResourceUtil;
 import lucee.commons.lang.StringUtil;
 
-
 /**
  * a ram resource
  */
 public final class RamResource extends ResourceSupport {
-	
+
 	private final RamResourceProviderOld provider;
-	
+
 	private final String parent;
 	private final String name;
 	private RamResourceCore _core;
 
 	RamResource(RamResourceProviderOld provider, String path) {
-		this.provider=provider;
-		if(path.equals("/") || StringUtil.isEmpty(path)) {
-		//if(path.equals("/")) {
-			this.parent=null;
-			this.name="";
+		this.provider = provider;
+		if (path.equals("/") || StringUtil.isEmpty(path)) {
+			// if(path.equals("/")) {
+			this.parent = null;
+			this.name = "";
 		}
 		else {
 			String[] pn = ResourceUtil.translatePathName(path);
-			this.parent=pn[0];
-			this.name=pn[1];
+			this.parent = pn[0];
+			this.name = pn[1];
 		}
-		
+
 	}
-	
-	private RamResource(RamResourceProviderOld provider, String parent,String name) {
-		this.provider=provider;
-		this.parent=parent ;
-		this.name=name;
+
+	private RamResource(RamResourceProviderOld provider, String parent, String name) {
+		this.provider = provider;
+		this.parent = parent;
+		this.name = name;
 	}
-	
+
 	RamResourceCore getCore() {
-		if(_core==null || _core.getType()==0) {
-			_core=provider.getCore(getInnerPath());
+		if (_core == null || _core.getType() == 0) {
+			_core = provider.getCore(getInnerPath());
 		}
 		return _core;
 	}
-	
 
 	void removeCore() {
-		if(_core==null)return;
+		if (_core == null) return;
 		_core.remove();
-		_core=null;
+		_core = null;
 	}
-	
+
 	private RamResourceCore createCore(int type) throws IOException {
-		return _core=provider.createCore(getInnerPath(),type);
+		return _core = provider.createCore(getInnerPath(), type);
 	}
-	
 
 	@Override
 	public String getPath() {
 		return provider.getScheme().concat("://").concat(getInnerPath());
 	}
+
 	private String getInnerPath() {
-		if(parent==null) return "/";
+		if (parent == null) return "/";
 		return parent.concat(name);
 	}
 
@@ -100,7 +98,7 @@ public final class RamResource extends ResourceSupport {
 
 	@Override
 	public String getParent() {
-		if(isRoot()) return null;
+		if (isRoot()) return null;
 		return provider.getScheme().concat("://").concat(ResourceUtil.translatePath(parent, true, false));
 	}
 
@@ -116,20 +114,18 @@ public final class RamResource extends ResourceSupport {
 
 	@Override
 	public void remove(boolean force) throws IOException {
-		if(isRoot()) 
-			throw new IOException("can't remove root resource ["+getPath()+"]");
+		if (isRoot()) throw new IOException("can't remove root resource [" + getPath() + "]");
 
 		provider.read(this);
 		RamResourceCore core = getCore();
-		if(core==null)
-			throw new IOException("can't remove resource ["+getPath()+"],resource does not exist");
-		
+		if (core == null) throw new IOException("can't remove resource [" + getPath() + "],resource does not exist");
+
 		Resource[] children = listResources();
-		if(children!=null && children.length>0) {
-			if(!force) {
-				throw new IOException("can't delete directory ["+getPath()+"], directory is not empty");
+		if (children != null && children.length > 0) {
+			if (!force) {
+				throw new IOException("can't delete directory [" + getPath() + "], directory is not empty");
 			}
-			for(int i=0;i<children.length;i++) {
+			for (int i = 0; i < children.length; i++) {
 				children[i].remove(true);
 			}
 		}
@@ -140,10 +136,11 @@ public final class RamResource extends ResourceSupport {
 	public boolean exists() {
 		try {
 			provider.read(this);
-		} catch (IOException e) {
+		}
+		catch (IOException e) {
 			return true;
 		}
-		return getCore()!=null;
+		return getCore() != null;
 	}
 
 	@Override
@@ -151,18 +148,17 @@ public final class RamResource extends ResourceSupport {
 		return getParentRamResource();
 	}
 
-
 	private RamResource getParentRamResource() {
-		if(isRoot()) return null;
-		return new RamResource(provider,parent);
+		if (isRoot()) return null;
+		return new RamResource(provider, parent);
 	}
 
 	@Override
 	public Resource getRealResource(String realpath) {
-		realpath=ResourceUtil.merge(getInnerPath(), realpath);
-		if(realpath.startsWith("../"))return null;
+		realpath = ResourceUtil.merge(getInnerPath(), realpath);
+		if (realpath.startsWith("../")) return null;
 
-		return new RamResource(provider,realpath);
+		return new RamResource(provider, realpath);
 	}
 
 	@Override
@@ -172,67 +168,61 @@ public final class RamResource extends ResourceSupport {
 
 	@Override
 	public boolean isDirectory() {
-		return exists() && getCore().getType()==RamResourceCore.TYPE_DIRECTORY;
+		return exists() && getCore().getType() == RamResourceCore.TYPE_DIRECTORY;
 	}
 
 	@Override
 	public boolean isFile() {
-		return exists() && getCore().getType()==RamResourceCore.TYPE_FILE;
+		return exists() && getCore().getType() == RamResourceCore.TYPE_FILE;
 	}
 
 	@Override
 	public long lastModified() {
-		if(!exists()) return 0;
+		if (!exists()) return 0;
 		return getCore().getLastModified();
 	}
 
 	@Override
 	public long length() {
-		if(!exists()) return 0;
-		byte[] data= getCore().getData();
-		if(data==null) return 0;
+		if (!exists()) return 0;
+		byte[] data = getCore().getData();
+		if (data == null) return 0;
 		return data.length;
 	}
 
 	@Override
 	public String[] list() {
-		if(!exists()) return null;
+		if (!exists()) return null;
 		RamResourceCore core = getCore();
-		if(core.getType()!=RamResourceCore.TYPE_DIRECTORY)
-			return null;
-		
+		if (core.getType() != RamResourceCore.TYPE_DIRECTORY) return null;
+
 		return core.getChildNames();
-		/*List list = core.getChildren();
-		if(list==null && list.size()==0) return new String[0];
-		
-		Iterator it = list.iterator();
-		String[] children=new String[list.size()];
-		RamResourceCore cc;
-		int count=0;
-		while(it.hasNext()) {
-			cc=(RamResourceCore) it.next();
-			children[count++]=cc.getName();
-		}
-		return children;*/
+		/*
+		 * List list = core.getChildren(); if(list==null && list.size()==0) return new String[0];
+		 * 
+		 * Iterator it = list.iterator(); String[] children=new String[list.size()]; RamResourceCore cc; int
+		 * count=0; while(it.hasNext()) { cc=(RamResourceCore) it.next(); children[count++]=cc.getName(); }
+		 * return children;
+		 */
 	}
 
 	@Override
 	public Resource[] listResources() {
 		String[] list = list();
-		if(list==null)return null;
-		
-		Resource[] children=new Resource[list.length];
-		String p=getInnerPath();
-		if(!isRoot())p=p.concat("/");
-		for(int i=0;i<children.length;i++) {
-			children[i]=new RamResource(provider,p,list[i]);
+		if (list == null) return null;
+
+		Resource[] children = new Resource[list.length];
+		String p = getInnerPath();
+		if (!isRoot()) p = p.concat("/");
+		for (int i = 0; i < children.length; i++) {
+			children[i] = new RamResource(provider, p, list[i]);
 		}
 		return children;
 	}
 
 	@Override
 	public boolean setLastModified(long time) {
-		if(!exists()) return false;
+		if (!exists()) return false;
 		getCore().setLastModified(time);
 		return true;
 	}
@@ -244,7 +234,7 @@ public final class RamResource extends ResourceSupport {
 
 	@Override
 	public void createFile(boolean createParentWhenNotExists) throws IOException {
-		ResourceUtil.checkCreateFileOK(this,createParentWhenNotExists);
+		ResourceUtil.checkCreateFileOK(this, createParentWhenNotExists);
 		provider.lock(this);
 		try {
 			createCore(RamResourceCore.TYPE_FILE);
@@ -254,10 +244,9 @@ public final class RamResource extends ResourceSupport {
 		}
 	}
 
-
 	@Override
 	public void createDirectory(boolean createParentWhenNotExists) throws IOException {
-		ResourceUtil.checkCreateDirectoryOK(this,createParentWhenNotExists);
+		ResourceUtil.checkCreateDirectoryOK(this, createParentWhenNotExists);
 		provider.lock(this);
 		try {
 			createCore(RamResourceCore.TYPE_DIRECTORY);
@@ -265,7 +254,7 @@ public final class RamResource extends ResourceSupport {
 		finally {
 			provider.unlock(this);
 		}
-		
+
 	}
 
 	@Override
@@ -274,9 +263,9 @@ public final class RamResource extends ResourceSupport {
 
 		provider.lock(this);
 		RamResourceCore core = getCore();
-		
+
 		byte[] data = core.getData();
-		if(data==null)data=new byte[0];
+		if (data == null) data = new byte[0];
 		provider.unlock(this);
 		return new ByteArrayInputStream(data);
 	}
@@ -285,7 +274,7 @@ public final class RamResource extends ResourceSupport {
 	public OutputStream getOutputStream(boolean append) throws IOException {
 		ResourceUtil.checkGetOutputStreamOK(this);
 		provider.lock(this);
-		return new RamOutputStream(this,append);
+		return new RamOutputStream(this, append);
 	}
 
 	public ContentType getContentType() {
@@ -296,14 +285,14 @@ public final class RamResource extends ResourceSupport {
 	public ResourceProvider getResourceProvider() {
 		return provider;
 	}
+
 	@Override
 	public String toString() {
 		return getPath();
 	}
-	
 
 	/**
-	 * This is useed by the MemoryResource too write back data to, that are written to outputstream
+	 * This is used by the MemoryResource too write back data to, that are written to outputstream
 	 */
 	class RamOutputStream extends ByteArrayOutputStream {
 
@@ -312,11 +301,12 @@ public final class RamResource extends ResourceSupport {
 
 		/**
 		 * Constructor of the class
+		 * 
 		 * @param res
 		 */
 		public RamOutputStream(RamResource res, boolean append) {
-			this.append=append;
-			this.res=res;
+			this.append = append;
+			this.res = res;
 		}
 
 		@Override
@@ -324,9 +314,9 @@ public final class RamResource extends ResourceSupport {
 			try {
 				super.close();
 				RamResourceCore core = res.getCore();
-				if(core==null)core=res.createCore(RamResourceCore.TYPE_FILE);
-				
-				core.setData(this.toByteArray(),append);
+				if (core == null) core = res.createCore(RamResourceCore.TYPE_FILE);
+
+				core.setData(this.toByteArray(), append);
 			}
 			finally {
 				res.getResourceProvider().unlock(res);
@@ -336,58 +326,62 @@ public final class RamResource extends ResourceSupport {
 
 	@Override
 	public boolean setReadable(boolean value) {
-		if(!exists())return false;
+		if (!exists()) return false;
 		try {
 			setMode(ModeUtil.setReadable(getMode(), value));
 			return true;
-		} catch (IOException e) {
+		}
+		catch (IOException e) {
 			return false;
 		}
-		
+
 	}
-	
+
 	@Override
 	public boolean setWritable(boolean value) {
-		if(!exists())return false;
+		if (!exists()) return false;
 		try {
 			setMode(ModeUtil.setWritable(getMode(), value));
 			return true;
-		} catch (IOException e) {
+		}
+		catch (IOException e) {
 			return false;
 		}
 	}
 
 	private boolean isRoot() {
-		return parent==null;
+		return parent == null;
 	}
-	
+
 	@Override
 	public int getMode() {
-		if(!exists())return 0;
+		if (!exists()) return 0;
 		return getCore().getMode();
 	}
-	
+
 	@Override
 	public void setMode(int mode) throws IOException {
-		if(!exists())throw new IOException("can't set mode on resource ["+this+"], resource does not exist");
+		if (!exists()) throw new IOException("can't set mode on resource [" + this + "], resource does not exist");
 		getCore().setMode(mode);
 	}
+
 	@Override
 	public boolean getAttribute(short attribute) {
-		if(!exists())return false;
-		return (getCore().getAttributes()&attribute)>0;
+		if (!exists()) return false;
+		return (getCore().getAttributes() & attribute) > 0;
 	}
+
 	@Override
 	public void setAttribute(short attribute, boolean value) throws IOException {
-		if(!exists())throw new IOException("can't get attributes on resource ["+this+"], resource does not exist");
+		if (!exists()) throw new IOException("can't get attributes on resource [" + this + "], resource does not exist");
 		int attr = getCore().getAttributes();
-		if(value) {
-			if((attr&attribute)==0) attr+=attribute;
+		if (value) {
+			if ((attr & attribute) == 0) attr += attribute;
 		}
 		else {
-			if((attr&attribute)>0) attr-=attribute;
+			if ((attr & attribute) > 0) attr -= attribute;
 		}
 		getCore().setAttributes(attr);
 	}
-	
+
 }

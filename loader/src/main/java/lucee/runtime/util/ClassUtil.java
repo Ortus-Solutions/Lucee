@@ -23,6 +23,11 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.BundleException;
+import org.osgi.framework.Version;
+
 import lucee.commons.lang.types.RefInteger;
 import lucee.runtime.PageContext;
 import lucee.runtime.config.Identification;
@@ -30,16 +35,10 @@ import lucee.runtime.exp.PageException;
 import lucee.runtime.ext.function.BIF;
 import lucee.runtime.type.Collection;
 
-import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.BundleException;
-import org.osgi.framework.Version;
-
 public interface ClassUtil {
 
 	/**
-	 * loads Class that match given classname, this Class can be from the Lucee
-	 * core as well
+	 * loads Class that match given classname, this Class can be from the Lucee core as well
 	 * 
 	 * @param className name of the Class to load
 	 * @throws IOException
@@ -47,8 +46,8 @@ public interface ClassUtil {
 	public Class<?> loadClass(String className) throws IOException;
 
 	/**
-	 * loads Class that match given classname and the given bundle name and
-	 * version, this Class can be from the Lucee core as well
+	 * loads Class that match given classname and the given bundle name and version, this Class can be
+	 * from the Lucee core as well
 	 * 
 	 * @param className name of the Class to load
 	 * @param bundleName name of the bundle to load from
@@ -56,12 +55,9 @@ public interface ClassUtil {
 	 * @throws BundleException
 	 * @throws IOException
 	 */
-	public Class<?> loadClass(PageContext pc, String className,
-			String bundleName, String bundleVersion) throws BundleException,
-			IOException;
+	public Class<?> loadClass(PageContext pc, String className, String bundleName, String bundleVersion) throws BundleException, IOException;
 
-	public BIF loadBIF(PageContext pc, String name)
-			throws InstantiationException, IllegalAccessException;
+	public BIF loadBIF(PageContext pc, String name) throws InstantiationException, IllegalAccessException;
 
 	/**
 	 * check if Class is instanceof a a other Class
@@ -108,8 +104,7 @@ public interface ClassUtil {
 	public Class<?>[] getClasses(Object[] objs);
 
 	/**
-	 * convert a primitive Class Type to a Reference Type (Example: int to
-	 * java.lang.Integer)
+	 * convert a primitive Class Type to a Reference Type (Example: int to java.lang.Integer)
 	 * 
 	 * @param c Class to convert
 	 * @return converted Class (if primitive)
@@ -134,8 +129,7 @@ public interface ClassUtil {
 	 * @return converted Object
 	 * @throws PageException
 	 */
-	public Object convert(Object src, Class<?> trgClass, RefInteger rating)
-			throws PageException;
+	public Object convert(Object src, Class<?> trgClass, RefInteger rating) throws PageException;
 
 	/**
 	 * same like method getField from Class but ignore case from field name
@@ -145,11 +139,9 @@ public interface ClassUtil {
 	 * @return Matching Field
 	 * @throws NoSuchFieldException
 	 */
-	public Field[] getFieldsIgnoreCase(Class<?> clazz, String name)
-			throws NoSuchFieldException;
+	public Field[] getFieldsIgnoreCase(Class<?> clazz, String name) throws NoSuchFieldException;
 
-	public Field[] getFieldsIgnoreCase(Class<?> clazz, String name,
-			Field[] defaultValue);
+	public Field[] getFieldsIgnoreCase(Class<?> clazz, String name, Field[] defaultValue);
 
 	public String[] getPropertyKeys(Class<?> clazz);
 
@@ -165,14 +157,12 @@ public interface ClassUtil {
 	 * @return invoked Instance
 	 * @throws PageException
 	 */
-	public Object callConstructor(Class<?> clazz, Object[] args)
-			throws PageException;
+	public Object callConstructor(Class<?> clazz, Object[] args) throws PageException;
 
-	public Object callConstructor(Class<?> clazz, Object[] args,
-			Object defaultValue);
+	public Object callConstructor(Class<?> clazz, Object[] args, Object defaultValue);
 
 	/**
-	 * calls a Method of a Objct
+	 * calls a Method of a Object
 	 * 
 	 * @param obj Object to call Method on it
 	 * @param methodName Name of the Method to get
@@ -180,11 +170,9 @@ public interface ClassUtil {
 	 * @return return return value of the called Method
 	 * @throws PageException
 	 */
-	public Object callMethod(Object obj, Collection.Key methodName,
-			Object[] args) throws PageException;
+	public Object callMethod(Object obj, Collection.Key methodName, Object[] args) throws PageException;
 
-	public Object callMethod(Object obj, Collection.Key methodName,
-			Object[] args, Object defaultValue);
+	public Object callMethod(Object obj, Collection.Key methodName, Object[] args, Object defaultValue);
 
 	/**
 	 * calls a Static Method on the given CLass
@@ -195,8 +183,7 @@ public interface ClassUtil {
 	 * @return return return value of the called Method
 	 * @throws PageException
 	 */
-	public Object callStaticMethod(Class<?> clazz, String methodName,
-			Object[] args) throws PageException;
+	public Object callStaticMethod(Class<?> clazz, String methodName, Object[] args) throws PageException;
 
 	/**
 	 * to get a visible Field of a object
@@ -218,11 +205,10 @@ public interface ClassUtil {
 	 * @param value Value to assign
 	 * @throws PageException
 	 */
-	public boolean setField(Object obj, String prop, Object value)
-			throws PageException;
+	public boolean setField(Object obj, String prop, Object value) throws PageException;
 
 	/**
-	 * to get a visible Propety (Field or Getter) of a object
+	 * to get a visible Property (Field or Getter) of a object
 	 * 
 	 * @param obj Object to invoke
 	 * @param prop property to call
@@ -232,7 +218,7 @@ public interface ClassUtil {
 	public Object getProperty(Object obj, String prop) throws PageException;
 
 	/**
-	 * to get a visible Propety (Field or Getter) of a object
+	 * to get a visible Property (Field or Getter) of a object
 	 * 
 	 * @param obj Object to invoke
 	 * @param prop property to call
@@ -248,8 +234,7 @@ public interface ClassUtil {
 	 * @param value Value to assign
 	 * @throws PageException
 	 */
-	public void setProperty(Object obj, String prop, Object value)
-			throws PageException;
+	public void setProperty(Object obj, String prop, Object value) throws PageException;
 
 	/**
 	 * assign a value to a visible Property (Field or Setter) of a object
@@ -269,8 +254,7 @@ public interface ClassUtil {
 	public Method[] getDeclaredMethods(Class<?> clazz);
 
 	/**
-	 * check if given Class "from" can be converted to Class "to" without
-	 * explicit casting
+	 * check if given Class "from" can be converted to Class "to" without explicit casting
 	 * 
 	 * @param from source class
 	 * @param to target class
@@ -278,13 +262,9 @@ public interface ClassUtil {
 	 */
 	public boolean canConvert(Class<?> from, Class<?> to);
 
-	public Class<?> loadClassByBundle(String className, String name,
-			String strVersion, Identification id) throws IOException,
-			BundleException;
+	public Class<?> loadClassByBundle(String className, String name, String strVersion, Identification id) throws IOException, BundleException;
 
-	public Class<?> loadClassByBundle(String className, String name,
-			Version version, Identification id) throws BundleException,
-			IOException;
+	public Class<?> loadClassByBundle(String className, String name, Version version, Identification id) throws BundleException, IOException;
 
 	/**
 	 * loads a Class from a String classname
@@ -302,8 +282,7 @@ public interface ClassUtil {
 	 * @param cl
 	 * @return matching Class
 	 */
-	public Class<?> loadClass(ClassLoader cl, String className,
-			Class<?> defaultValue);
+	public Class<?> loadClass(ClassLoader cl, String className, Class<?> defaultValue);
 
 	/**
 	 * loads a Class from a specified Classloader with given classname
@@ -313,8 +292,7 @@ public interface ClassUtil {
 	 * @return matching Class
 	 * @throws IOException
 	 */
-	public Class<?> loadClass(ClassLoader cl, String className)
-			throws IOException;
+	public Class<?> loadClass(ClassLoader cl, String className) throws IOException;
 
 	/**
 	 * loads a Class from a String classname
@@ -327,8 +305,7 @@ public interface ClassUtil {
 
 	public Object loadInstance(String className) throws IOException;
 
-	public Object loadInstance(ClassLoader cl, String className)
-			throws IOException;
+	public Object loadInstance(ClassLoader cl, String className) throws IOException;
 
 	/**
 	 * loads a Class from a String classname
@@ -340,8 +317,7 @@ public interface ClassUtil {
 
 	public Object loadInstance(String className, Object defaultValue);
 
-	public Object loadInstance(ClassLoader cl, String className,
-			Object defaultValue);
+	public Object loadInstance(ClassLoader cl, String className, Object defaultValue);
 
 	/**
 	 * loads a Class from a String classname
@@ -352,14 +328,11 @@ public interface ClassUtil {
 	 * @throws IOException
 	 * @throws InvocationTargetException
 	 */
-	public Object loadInstance(Class<?> clazz, Object[] args)
-			throws IOException, InvocationTargetException;
+	public Object loadInstance(Class<?> clazz, Object[] args) throws IOException, InvocationTargetException;
 
-	public Object loadInstance(String className, Object[] args)
-			throws IOException, InvocationTargetException;
+	public Object loadInstance(String className, Object[] args) throws IOException, InvocationTargetException;
 
-	public Object loadInstance(ClassLoader cl, String className, Object[] args)
-			throws IOException, InvocationTargetException;
+	public Object loadInstance(ClassLoader cl, String className, Object[] args) throws IOException, InvocationTargetException;
 
 	/**
 	 * loads a Class from a String classname
@@ -368,14 +341,11 @@ public interface ClassUtil {
 	 * @param args
 	 * @return matching Class
 	 */
-	public Object loadInstance(Class<?> clazz, Object[] args,
-			Object defaultValue);
+	public Object loadInstance(Class<?> clazz, Object[] args, Object defaultValue);
 
-	public Object loadInstance(String className, Object[] args,
-			Object defaultValue);
+	public Object loadInstance(String className, Object[] args, Object defaultValue);
 
-	public Object loadInstance(ClassLoader cl, String className, Object[] args,
-			Object defaultValue);
+	public Object loadInstance(ClassLoader cl, String className, Object[] args, Object defaultValue);
 
 	/**
 	 * check if given stream is a bytecode stream, if yes remove bytecode mark
@@ -390,11 +360,9 @@ public interface ClassUtil {
 
 	public String getName(Class<?> clazz);
 
-	public Method getMethodIgnoreCase(Class<?> clazz, String methodName,
-			Class<?>[] args) throws IOException;
+	public Method getMethodIgnoreCase(Class<?> clazz, String methodName, Class<?>[] args) throws IOException;
 
-	public Method getMethodIgnoreCase(Class<?> clazz, String methodName,
-			Class<?>[] args, Method defaultValue);
+	public Method getMethodIgnoreCase(Class<?> clazz, String methodName, Class<?>[] args, Method defaultValue);
 
 	/**
 	 * return all field names as String array
@@ -407,8 +375,7 @@ public interface ClassUtil {
 	public byte[] toBytes(Class<?> clazz) throws IOException;
 
 	/**
-	 * return a array Class based on the given Class (opposite from
-	 * Class.getComponentType())
+	 * return a array Class based on the given Class (opposite from Class.getComponentType())
 	 * 
 	 * @param clazz
 	 * @return
@@ -418,13 +385,10 @@ public interface ClassUtil {
 	public Class<?> toComponentType(Class<?> clazz);
 
 	/**
-	 * returns the path to the directory or jar file that the Class was loaded
-	 * from
+	 * returns the path to the directory or jar file that the Class was loaded from
 	 * 
-	 * @param clazz - the Class object to check, for a live object pass
-	 *            obj.getClass();
-	 * @param defaultValue - a value to return in case the source could not be
-	 *            determined
+	 * @param clazz - the Class object to check, for a live object pass obj.getClass();
+	 * @param defaultValue - a value to return in case the source could not be determined
 	 * @return
 	 */
 	public String getSourcePathForClass(Class<?> clazz, String defaultValue);
@@ -433,8 +397,7 @@ public interface ClassUtil {
 	 * tries to load the Class and returns the path that it was loaded from
 	 * 
 	 * @param className - the name of the Class to check
-	 * @param defaultValue - a value to return in case the source could not be
-	 *            determined
+	 * @param defaultValue - a value to return in case the source could not be determined
 	 * @return
 	 */
 	public String getSourcePathForClass(String className, String defaultValue);
@@ -457,8 +420,6 @@ public interface ClassUtil {
 
 	public void start(Bundle bundle) throws BundleException;
 
-	public Bundle addBundle(BundleContext context, InputStream is,
-			boolean closeStream, boolean checkExistence)
-			throws BundleException, IOException;
+	public Bundle addBundle(BundleContext context, InputStream is, boolean closeStream, boolean checkExistence) throws BundleException, IOException;
 
 }

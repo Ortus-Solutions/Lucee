@@ -27,7 +27,7 @@ public class StringsImpl implements Strings {
 	private static Strings singelton;
 
 	public static Strings getInstance() {
-		if(singelton==null)singelton=new StringsImpl();
+		if (singelton == null) singelton = new StringsImpl();
 		return singelton;
 	}
 
@@ -37,25 +37,25 @@ public class StringsImpl implements Strings {
 	}
 
 	@Override
-	public String toVariableName(String str, boolean addIdentityNumber,boolean allowDot) {
-		return StringUtil.toVariableName(str, addIdentityNumber,allowDot);
+	public String toVariableName(String str, boolean addIdentityNumber, boolean allowDot) {
+		return StringUtil.toVariableName(str, addIdentityNumber, allowDot);
 	}
 
 	@Override
 	public String first(String list, String delimiter, boolean ignoreEmpty) {
-		return ListUtil.first(list, delimiter,ignoreEmpty);
+		return ListUtil.first(list, delimiter, ignoreEmpty);
 	}
-	
+
 	@Override
 	public String last(String list, String delimiter, boolean ignoreEmpty) {
-		return ListUtil.last(list, delimiter,ignoreEmpty);
+		return ListUtil.last(list, delimiter, ignoreEmpty);
 	}
 
 	@Override
 	public String removeQuotes(String str, boolean trim) {
 		return StringUtil.removeQuotes(str, trim);
 	}
-	
+
 	@Override
 	public long create64BitHash(CharSequence cs) {
 		return HashUtil.create64BitHash(cs);

@@ -21,34 +21,36 @@ package lucee.runtime.monitor;
 import java.io.IOException;
 
 import lucee.commons.io.SystemUtil;
+import lucee.commons.lang.ExceptionUtil;
 import lucee.runtime.config.ConfigServer;
 import lucee.runtime.config.XMLConfigWebFactory;
 import lucee.runtime.config.XMLConfigWebFactory.MonitorTemp;
 
 public class ActionMonitorFatory {
 	public static ActionMonitorCollector getActionMonitorCollector() {
-		if(SystemUtil.getLoaderVersion()>4) return new ActionMonitorCollectorImpl();
+		if (SystemUtil.getLoaderVersion() > 4) return new ActionMonitorCollectorImpl();
 		return new ActionMonitorCollectorRefImpl();
 	}
 
 	public static ActionMonitorCollector getActionMonitorCollector(ConfigServer cs, XMLConfigWebFactory.MonitorTemp[] temps) throws IOException {
 		// try to load with interface
-		try{
+		try {
 			ActionMonitorCollector collector = new ActionMonitorCollectorImpl();
-			addMonitors(collector,cs,temps);
+			addMonitors(collector, cs, temps);
 			return collector;
 		}
-		catch(Throwable t){t.printStackTrace();
+		catch (Throwable t) {
+			ExceptionUtil.rethrowIfNecessary(t);
 			ActionMonitorCollector collector = new ActionMonitorCollectorRefImpl();
-			addMonitors(collector,cs,temps);
+			addMonitors(collector, cs, temps);
 			return collector;
 		}
 	}
 
 	private static void addMonitors(ActionMonitorCollector collector, ConfigServer cs, MonitorTemp[] temps) throws IOException {
 		MonitorTemp temp;
-		for(int i=0;i<temps.length;i++){
-			temp=temps[i];
+		for (int i = 0; i < temps.length; i++) {
+			temp = temps[i];
 			collector.addMonitor(cs, temp.am, temp.name, temp.log);
 		}
 	}

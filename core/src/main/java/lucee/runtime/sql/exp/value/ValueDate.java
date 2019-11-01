@@ -23,32 +23,31 @@ import lucee.runtime.op.Caster;
 import lucee.runtime.sql.exp.Literal;
 import lucee.runtime.type.dt.DateTime;
 
-
 public class ValueDate extends ValueSupport implements Literal {
 
 	private DateTime value;
 
 	public ValueDate(DateTime value) {
 		super(value.toString());
-		this.value=value;
+		this.value = value;
 	}
-	
+
 	public ValueDate(String strValue) throws PageException {
 		super(strValue);
-		this.value=Caster.toDate(strValue,false,null);
+		this.value = Caster.toDate(strValue, false, null);
 	}
 
 	@Override
 	public String toString(boolean noAlias) {
-		if(noAlias || getIndex()==0)return getString();
-		return getString()+" as "+getAlias();
+		if (noAlias || getIndex() == 0) return getString();
+		return getString() + " as " + getAlias();
 	}
-	
+
 	@Override
 	public Object getValue() {
 		return value;
 	}
-	
+
 	public DateTime getValueAsDateTime() {
 		return value;
 	}

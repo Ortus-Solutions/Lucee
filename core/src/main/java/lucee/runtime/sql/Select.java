@@ -27,15 +27,15 @@ import lucee.runtime.sql.exp.op.Operation;
 import lucee.runtime.sql.exp.value.ValueNumber;
 
 public class Select {
-	private List selects=new ArrayList();
-	private List froms=new ArrayList();
+	private List selects = new ArrayList();
+	private List froms = new ArrayList();
 	private Operation where;
-	private List groupbys=new ArrayList();
+	private List groupbys = new ArrayList();
 	private Operation having;
 	private ValueNumber top;
 	private boolean distinct;
 	private boolean unionDistinct;
-	
+
 	public void addSelectExpression(Expression select) {
 		selects.add(select);
 		select.setIndex(selects.size());
@@ -47,17 +47,16 @@ public class Select {
 	}
 
 	public void setWhereExpression(Operation where) {
-		this.where=where;
+		this.where = where;
 	}
-	
+
 	public void addGroupByExpression(Column col) {
 		this.groupbys.add(col);
 	}
 
 	public void setTop(ValueNumber top) {
-		this.top=top;
+		this.top = top;
 	}
-
 
 	/**
 	 * @return the froms
@@ -65,12 +64,12 @@ public class Select {
 	public Column[] getFroms() {
 		return (Column[]) froms.toArray(new Column[froms.size()]);
 	}
-	
+
 	/**
 	 * @return the groupbys
 	 */
 	public Column[] getGroupbys() {
-		if(groupbys==null) return new Column[0];
+		if (groupbys == null) return new Column[0];
 		return (Column[]) groupbys.toArray(new Column[groupbys.size()]);
 	}
 
@@ -96,20 +95,20 @@ public class Select {
 	}
 
 	public boolean isUnionDistinct() {
-		return unionDistinct; 
+		return unionDistinct;
 	}
-	
+
 	public boolean isDistinct() {
 		return distinct;
 	}
 
 	public void setDistinct(boolean b) {
-		this.distinct=b;
+		this.distinct = b;
 	}
 
 	public void setUnionDistinct(boolean b) {
-		//print.out("-"+b);
-		this.unionDistinct=b;
+		// print.out("-"+b);
+		this.unionDistinct = b;
 	}
 
 	/**
@@ -125,6 +124,5 @@ public class Select {
 	public ValueNumber getTop() {
 		return top;
 	}
-
 
 }

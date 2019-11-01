@@ -29,10 +29,10 @@ public class ResourceInputStream extends InputStream {
 	private final InputStream is;
 
 	public ResourceInputStream(Resource res, InputStream is) {
-		this.res=res;
-		this.is=is; 
+		this.res = res;
+		this.is = is;
 	}
-	
+
 	@Override
 	public int read() throws IOException {
 		return is.read();
@@ -74,7 +74,7 @@ public class ResourceInputStream extends InputStream {
 	}
 
 	@Override
-	public synchronized void reset() throws IOException {
+	public void reset() throws IOException {
 		is.reset();
 	}
 

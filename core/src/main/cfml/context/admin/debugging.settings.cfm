@@ -4,26 +4,20 @@
 <cfparam name="form.mainAction" default="none">
 <cfparam name="form.subAction" default="none">
 
-<cfset stText.debug.settings.desc="Enable certain logging options for Lucee">
-
-
-
-
-
-<cfadmin 
+<cfadmin
 	action="getDebugEntry"
 	type="#request.adminType#"
 	password="#session["password"&request.adminType]#"
 	returnVariable="debug">
-    
 
-<cfadmin 
+
+<cfadmin
 	action="getDebug"
 	type="#request.adminType#"
 	password="#session["password"&request.adminType]#"
 	returnVariable="_debug">
-    
-<cfadmin 
+
+<cfadmin
 	action="securityManager"
 	type="#request.adminType#"
 	password="#session["password"&request.adminType]#"
@@ -48,8 +42,8 @@
 					timer="#isDefined('form.timer') && form.timer#"
 					implicitAccess="#isDefined('form.implicitAccess') && form.implicitAccess#"
 					queryUsage="#isDefined('form.queryUsage') && form.queryUsage#"
-						
-							
+
+
 					debugTemplate=""
 					remoteClients="#request.getRemoteClients()#">
 		</cfcase>
@@ -66,8 +60,8 @@
 					timer=""
 					implicitAccess=""
 					queryUsage=""
-						
-							
+
+
 					debugTemplate=""
 					remoteClients="#request.getRemoteClients()#">
 		</cfcase>
@@ -76,9 +70,10 @@
 	<cfcatch>
 		<cfset error.message=cfcatch.message>
 		<cfset error.detail=cfcatch.Detail>
+		<cfset error.cfcatch=cfcatch>
 	</cfcatch>
 </cftry>
-<!--- 
+<!---
 Redirtect to entry --->
 <cfif cgi.request_method EQ "POST" and error.message EQ "" and form.mainAction neq stText.Buttons.verify>
 	<cflocation url="#request.self#?action=#url.action#" addtoken="no">
@@ -93,8 +88,8 @@ Redirtect to entry --->
 <cfset stText.debug.settings.generalNo="Lucee does not log any debug information at all.">
 
 
-
-<script type="text/javascript">
+<cfhtmlbody>
+	<script type="text/javascript">
 		function sp_clicked()
 		{
 			var iscustom = $('#sp_radio_debug')[0].checked;
@@ -110,15 +105,17 @@ Redirtect to entry --->
 			sp_clicked();
 		});
 	</script>
-<cfoutput>	
-	
-	
+</cfhtmlbody>
+
+<cfoutput>
+
+
 	<!--- Error Output--->
 	<cfset printError(error)>
 
 	#stText.Debug.EnableDescription#
 
-	<cfform onerror="customError" action="#request.self#?action=#url.action#" method="post" name="debug_settings">
+	<cfformClassic onerror="customError" action="#request.self#?action=#url.action#" method="post" name="debug_settings">
 		<table class="maintbl autowidth">
 			<tbody>
 				<tr>
@@ -131,16 +128,16 @@ Redirtect to entry --->
 							<ul class="radiolist" id="sp_options">
 								<li>
 									<label>
-										<input type="radio" class="radio" name="debug" value="false" #!_debug.debug ? 'checked="checked"' : ''#> 
+										<input type="radio" class="radio" name="debug" value="false" #!_debug.debug ? 'checked="checked"' : ''#>
 										#stText.general.no#
 									</label>
-									
+
 									<div class="comment">#stText.debug.settings.generalNo#</div>
-											
+
 								</li>
 								<li>
 									<label>
-										<input type="radio" class="radio" name="debug" id="sp_radio_debug" value="true" #_debug.debug ? 'checked="checked"' : ''#> 
+										<input type="radio" class="radio" name="debug" id="sp_radio_debug" value="true" #_debug.debug ? 'checked="checked"' : ''#>
 										#stText.general.yes#
 									</label>
 									<div class="comment">#stText.debug.settings.generalYes#</div>
@@ -159,7 +156,7 @@ Redirtect to entry --->
 													<input type="hidden" name="#item#" value="#_debug[item]#">
 												</cfif>
 												<div class="comment">#stText.debug.settings[item&"Desc"]#</div>
-												
+
 												<cfif item EQ "database">
 												<table class="maintbl autowidth" id="debugoptionqutbl">
 												<tbody>
@@ -179,9 +176,9 @@ Redirtect to entry --->
 													</tr>
 												</table>
 												</cfif>
-												
-												
-												
+
+
+
 											</td>
 										</tr>
 										</cfloop>
@@ -195,14 +192,14 @@ Redirtect to entry --->
 							<cfloop list="database,exception,tracing,dump,timer,implicitAccess" item="item">
 								<cfif _debug[item]>- #stText.debug.settings[item]#<br></cfif>
 							</cfloop>
-							
-							
+
+
 						</cfif>
 					</td>
 				</tr>
-			
-			
-			
+
+
+
 				<cfif hasAccess>
 					<cfmodule template="remoteclients.cfm" colspan="2">
 				</cfif>
@@ -214,12 +211,12 @@ Redirtect to entry --->
 							<input type="submit" class="bl button submit" name="mainAction" value="#stText.Buttons.Update#">
 							<input type="reset" class="<cfif request.adminType EQ "web">bm<cfelse>br</cfif> button reset" name="cancel" value="#stText.Buttons.Cancel#">
 							<cfif request.adminType EQ "web"><input class="br button submit" type="submit" name="mainAction" value="#stText.Buttons.resetServerAdmin#"></cfif>
-					
+
 						</td>
 					</tr>
 				</tfoot>
 			</cfif>
 		</table>
-	</cfform>
+	</cfformClassic>
 
 </cfoutput>

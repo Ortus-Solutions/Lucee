@@ -49,6 +49,14 @@
 			<description>alias for default datasource</description>
 		</attribute>
 		<attribute>
+			<type>array</type>
+			<name>mails</name>
+			<alias>mail</alias>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>mail servers.</description>
+		</attribute>
+		<attribute>
 			<type>object</type>
 			<name>defaultdatasource</name>
 			<required>false</required>
@@ -60,7 +68,23 @@
 			<name>datasources</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
-			<description>A structure that contains datasources defintions.</description>
+			<description>A structure that contains datasources definitions.</description>
+		</attribute>
+		<attribute>
+			<type>struct</type>
+			<name>logs</name>
+			<alias>log</alias>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>A structure that contains log definitions.</description>
+		</attribute>
+		<attribute>
+			<type>struct</type>
+			<name>caches</name>
+			<alias>cache</alias>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>A structure that contains cache definitions.</description>
 		</attribute>
 		<attribute>
 			<type>string</type>
@@ -214,6 +238,21 @@ Specifies how Lucee stores session variables:
 			<description>Specifies whether to protect variables from cross-site scripting attacks</description>
 		</attribute>
 		<attribute>
+			<type>any</type>
+			<name>functionpaths</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>Array or String list of paths where you have your functions.</description>
+		</attribute>
+		<attribute>
+			<type>struct</type>
+			<name>proxy</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>general proxy that should be used for all connections with the following format:
+			{server:"localhost", port:12345, username:"susi", password: "sorglos"}</description>
+		</attribute>
+		<attribute>
 			<type>struct</type>
 			<name>mappings</name>
 			<required>false</required>
@@ -258,7 +297,7 @@ Specifies how Lucee stores session variables:
 			<required>false</required>
 			<default-value>true</default-value>
 			<rtexprvalue>true</rtexprvalue>
-			<description>If disabled, Lucee ignores type defintions with function arguments and return values</description>
+			<description>If disabled, Lucee ignores type definitions with function arguments and return values</description>
 		</attribute>
 		<attribute>
 			<type>boolean</type>
@@ -343,6 +382,20 @@ A struct that defines default S3 settings, this settings can be overwritten as p
 - host(default:"s3.amazonaws.com"): hostname of the service
 </description>
 		</attribute>
+	
+		<attribute>
+			<type>struct</type>
+			<name>ftp</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+A struct that defines default ftp settings, this settings can be overwritten as part of the ftp file path, the following keys are supported:
+- username: username to access the ftp server
+- password: password to access the ftp server
+- port: port of the FTP server
+- host: hostname of the FTP server (lucee.org)
+</description>
+		</attribute>
 		
 		<attribute>
 			<type>boolean</type>
@@ -352,7 +405,7 @@ A struct that defines default S3 settings, this settings can be overwritten as p
 			<description>???If there is no accessible data member (property, element of the this scope) inside a component, 
 			Lucee searches for available matching &amp;quot;getters&amp;quot; or &amp;quot;setters&amp;quot; for the requested property. 
 			The following example should clarify this behaviour. 
-			&amp;quot;somevar = myComponent.properyName&amp;quot;. 
+			&amp;quot;somevar = myComponent.propertyName&amp;quot;. 
 			If &amp;quot;myComponent&amp;quot; has no accessible data member named &amp;quot;propertyName&amp;quot;, 
 			Lucee searches for a function member (method) named &amp;quot;getPropertyName&amp;quot;.</description>
 		</attribute>
@@ -450,7 +503,7 @@ A struct that defines default S3 settings, this settings can be overwritten as p
 			<name>timeZone</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
-			<description>change the timezone defintion for the current application context.</description>
+			<description>change the timezone definition for the current application context.</description>
 		</attribute>
 		<attribute>
 			<type>String</type>
@@ -478,7 +531,48 @@ Depending on this setting Lucee scans certain scopes to find a variable called f
 - standard: scans the scopes variables,cgi,url,form,cookie
 			</description>
 		</attribute>
-		
+		<attribute>
+			<type>boolean</type>
+			<name>searchImplicitScopes</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>alias to the attribute "scopecascading", takes a boolean value where true is equal to "standard" and false is equal to "struct" scope cascading mode.
+			For details see the description for the attribute "scopecascading".</description>
+		</attribute>
+		<attribute>
+			<type>struct</type>
+			<name>authcookie</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>cfauthorization cookie behaviour</description>
+		</attribute>
+		<attribute>
+			<type>struct</type>
+			<name>sessioncookie</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>session cookie behaviour</description>
+		</attribute>
+		<attribute>
+			<type>timespan</type>
+			<name>cachedAfter</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>set the timespan for the attribute "cachedAfter" from tag "query".</description>
+		</attribute>
+		<attribute>
+			<name>javaSettings</name>
+			<type>struct</type>
+			<required>false</required>
+			<description>
+	a struct to define dynamically java libraries
+	the following keys are supported
+	- loadPaths - an array or a comma separated string list of jars or class directories
+	- reloadOnChange - reload updated jars without a restart necessary
+	- watchInterval - interval it checks for changes with the jar files
+	- watchExtensions - extension of the files read
+			</description>
+		</attribute>
 	</tag>	
 	
 	<!-- Argument -->
@@ -510,6 +604,7 @@ Depending on this setting Lucee scans certain scopes to find a variable called f
 			<name>required</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
+			<undefined-value>boolean:true</undefined-value>
 			<description>is argument required or not</description>
 		</attribute>
 		<attribute>
@@ -872,6 +967,24 @@ To use cached data, the function must be called with the exact same arguments.</
 		<body-rtexprvalue>true</body-rtexprvalue>
 		<description>inside the body of this tags, expressions surrounded by "#" are parsed.</description>
 		<attribute-type>fixed</attribute-type>
+		<attribute>
+			<type>string</type>
+			<name>encodefor</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>encode for what, valid values are:
+- css: for output inside Cascading Style Sheets (CSS)
+- dn: for output in LDAP Distinguished Names
+- html: for output inside HTML
+- html_attr: for output inside HTML Attributes
+- javascript: for output inside Javascript
+- ldap: for output in LDAP queries
+- url: for output in URL
+- vbscript: for output inside vbscript
+- xml: for output inside XML
+- xml_attr: for output inside XML Attributes
+- xpath: for output in XPath</description>
+		</attribute>
 	</tag>
 	
 	<!-- ScriptX -->

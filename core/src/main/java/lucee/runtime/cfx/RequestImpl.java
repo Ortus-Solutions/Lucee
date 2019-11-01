@@ -18,6 +18,9 @@
  **/
 package lucee.runtime.cfx;
 
+import com.allaire.cfx.Query;
+import com.allaire.cfx.Request;
+
 import lucee.runtime.PageContext;
 import lucee.runtime.exp.ApplicationException;
 import lucee.runtime.exp.PageException;
@@ -28,16 +31,11 @@ import lucee.runtime.type.Struct;
 import lucee.runtime.type.util.CollectionUtil;
 import lucee.runtime.type.util.KeyConstants;
 
-import com.allaire.cfx.Query;
-import com.allaire.cfx.Request;
-
-
-
 /**
  * Implementation of the CFX Request Interface
  */
 public final class RequestImpl implements Request {
-	
+
 	private static final Collection.Key QUERY = KeyConstants._query;
 	private static final Collection.Key DEBUG = KeyConstants._debug;
 	private Struct attributes;
@@ -46,22 +44,23 @@ public final class RequestImpl implements Request {
 
 	/**
 	 * constructor of the class
+	 * 
 	 * @param pc
 	 * @param attributes
 	 * @throws PageException
 	 */
-	public RequestImpl(PageContext pc,Struct attributes) throws PageException {
-		this.attributes=attributes;
-		Object o=attributes.get(QUERY,null);
-		String varName=Caster.toString(o,null);
-		
-		if(o!=null) {
-			if(varName!=null) {
-				this.query=new QueryWrap(Caster.toQuery(pc.getVariable(varName)));
+	public RequestImpl(PageContext pc, Struct attributes) throws PageException {
+		this.attributes = attributes;
+		Object o = attributes.get(QUERY, null);
+		String varName = Caster.toString(o, null);
+
+		if (o != null) {
+			if (varName != null) {
+				this.query = new QueryWrap(Caster.toQuery(pc.getVariable(varName)));
 				attributes.removeEL(QUERY);
 			}
-			else if(Decision.isQuery(o)) {
-				this.query=new QueryWrap(Caster.toQuery(o));
+			else if (Decision.isQuery(o)) {
+				this.query = new QueryWrap(Caster.toQuery(o));
 				attributes.removeEL(QUERY);
 			}
 			else {
@@ -69,29 +68,30 @@ public final class RequestImpl implements Request {
 			}
 		}
 	}
-	
+
 	/**
 	 * constructor of the class
+	 * 
 	 * @param attributes
 	 * @param query
 	 * @param settings
 	 */
-	public RequestImpl(Struct attributes,Query query, Struct settings)  {
-		this.attributes=attributes;
-		this.query=query;
-		this.settings=settings;
+	public RequestImpl(Struct attributes, Query query, Struct settings) {
+		this.attributes = attributes;
+		this.query = query;
+		this.settings = settings;
 	}
 
 	@Override
 	public boolean attributeExists(String key) {
-		return attributes.get(key,null)!=null;
+		return attributes.get(key, null) != null;
 	}
 
 	@Override
 	public boolean debug() {
-		Object o=attributes.get(DEBUG,Boolean.FALSE);
-		if(o==null) return false;
-		return Caster.toBooleanValue(o,false);
+		Object o = attributes.get(DEBUG, Boolean.FALSE);
+		if (o == null) return false;
+		return Caster.toBooleanValue(o, false);
 	}
 
 	@Override
@@ -101,7 +101,7 @@ public final class RequestImpl implements Request {
 
 	@Override
 	public String getAttribute(String key, String defaultValue) {
-		return Caster.toString(attributes.get(key,defaultValue),defaultValue);
+		return Caster.toString(attributes.get(key, defaultValue), defaultValue);
 	}
 
 	@Override
@@ -116,11 +116,12 @@ public final class RequestImpl implements Request {
 
 	@Override
 	public int getIntAttribute(String key, int defaultValue) {
-		Object o=attributes.get(key,null);
-		if(o==null) return defaultValue;
+		Object o = attributes.get(key, null);
+		if (o == null) return defaultValue;
 		try {
 			return Caster.toIntValue(o);
-		} catch (PageException e) {
+		}
+		catch (PageException e) {
 			return defaultValue;
 		}
 	}
@@ -132,7 +133,7 @@ public final class RequestImpl implements Request {
 
 	@Override
 	public String getSetting(String key) {
-		return settings==null?"":Caster.toString(settings.get(key,""),"");
+		return settings == null ? "" : Caster.toString(settings.get(key, ""), "");
 	}
 
 }

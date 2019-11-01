@@ -65,12 +65,11 @@ public interface QueryColumn extends Collection, Reference, Castable {
 	public Object get(int row) throws PageException;
 
 	/**
-	 * return the value in this row (can be null), when row number is invalid
-	 * the default value is returned
+	 * return the value in this row (can be null), when row number is invalid the default value is
+	 * returned
 	 * 
 	 * @param row row to get value
-	 * @param emptyValue value returned when row does not exists or the rows
-	 *            value is null
+	 * @param emptyValue value returned when row does not exists or the rows value is null
 	 * @return row value
 	 */
 	public Object get(int row, Object emptyValue);

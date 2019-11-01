@@ -28,7 +28,7 @@ public class SessionRotate implements Function {
 	private static final long serialVersionUID = -114280474937883051L;
 
 	public static String call(PageContext pc) throws PageException {
-		((PageContextImpl)pc).invalidateUserScopes(true, true);
+		((PageContextImpl) pc).invalidateUserScopes(true, true);
 		return null;
 	}
 

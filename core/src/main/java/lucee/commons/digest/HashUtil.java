@@ -22,7 +22,7 @@ public class HashUtil {
 	private static final long[] byteTable = createLookupTable();
 	private static final long HSTART = 0xBB40E64DA205B064L;
 	private static final long HMULT = 7664345821815920749L;
-	
+
 	public static long create64BitHash(CharSequence cs) {
 		long h = HSTART;
 		final long hmult = HMULT;
@@ -33,18 +33,18 @@ public class HashUtil {
 			h = (h * hmult) ^ ht[ch & 0xff];
 			h = (h * hmult) ^ ht[(ch >>> 8) & 0xff];
 		}
-		if(h<0)
-			return 0-h;
+		if (h < 0) return 0 - h;
 		return h;
 	}
-	
+
 	public static String create64BitHashAsString(CharSequence cs) {
 		return Long.toString(create64BitHash(cs), Character.MAX_RADIX);
 	}
+
 	public static String create64BitHashAsString(CharSequence cs, int radix) {
 		return Long.toString(create64BitHash(cs), radix);
 	}
-	
+
 	private static final long[] createLookupTable() {
 		long[] _byteTable = new long[256];
 		long h = 0x544B2FBACAAF1684L;

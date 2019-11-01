@@ -23,7 +23,7 @@ import lucee.runtime.config.ConfigImpl;
 
 public class CTCacheClear {
 	public static String call(PageContext pc) {
-		ConfigImpl config = (ConfigImpl)pc.getConfig();
+		ConfigImpl config = (ConfigImpl) pc.getConfig();
 		config.clearCTCache();
 		return null;
 	}

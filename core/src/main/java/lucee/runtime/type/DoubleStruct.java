@@ -29,13 +29,14 @@ import lucee.runtime.op.Caster;
 import lucee.runtime.op.Operator;
 import lucee.runtime.type.dt.DateTime;
 
-public final class DoubleStruct extends StructImpl  {
-	
+public final class DoubleStruct extends StructImpl {
+
 	@Override
 	public Boolean castToBoolean(Boolean defaultValue) {
 		try {
 			return Caster.toBoolean(castToBooleanValue());
-		} catch (PageException e) {
+		}
+		catch (PageException e) {
 			return defaultValue;
 		}
 	}
@@ -44,7 +45,8 @@ public final class DoubleStruct extends StructImpl  {
 	public DateTime castToDateTime(DateTime defaultValue) {
 		try {
 			return castToDateTime();
-		} catch (PageException e) {
+		}
+		catch (PageException e) {
 			return defaultValue;
 		}
 	}
@@ -53,7 +55,8 @@ public final class DoubleStruct extends StructImpl  {
 	public double castToDoubleValue(double defaultValue) {
 		try {
 			return castToDoubleValue();
-		} catch (PageException e) {
+		}
+		catch (PageException e) {
 			return defaultValue;
 		}
 	}
@@ -62,7 +65,8 @@ public final class DoubleStruct extends StructImpl  {
 	public String castToString(String defaultValue) {
 		try {
 			return castToString();
-		} catch (PageException e) {
+		}
+		catch (PageException e) {
 			return defaultValue;
 		}
 	}
@@ -70,20 +74,20 @@ public final class DoubleStruct extends StructImpl  {
 	@Override
 	public boolean castToBooleanValue() throws PageException {
 		return Caster.toBooleanValue(castToDoubleValue());
-		
+
 	}
 
 	@Override
 	public DateTime castToDateTime() throws PageException {
-		return Caster.toDate(castToDateTime(),null);
+		return Caster.toDate(castToDateTime(), null);
 	}
 
 	@Override
 	public double castToDoubleValue() throws PageException {
 		Iterator it = valueIterator();
-		double value=0;
-		while(it.hasNext()){
-			value+=Caster.toDoubleValue(it.next());
+		double value = 0;
+		while (it.hasNext()) {
+			value += Caster.toDoubleValue(it.next());
 		}
 		return value;
 	}
@@ -105,7 +109,7 @@ public final class DoubleStruct extends StructImpl  {
 
 	@Override
 	public int compareTo(double d) throws PageException {
-		return Operator.compare(castToDoubleValue(),d);
+		return Operator.compare(castToDoubleValue(), d);
 	}
 
 	@Override
@@ -115,18 +119,18 @@ public final class DoubleStruct extends StructImpl  {
 
 	@Override
 	public Collection duplicate(boolean deepCopy) {
-		Struct sct=new DoubleStruct();
-		copy(this,sct,deepCopy);
+		Struct sct = new DoubleStruct();
+		copy(this, sct, deepCopy);
 		return sct;
 	}
 
 	@Override
 	public DumpData toDumpData(PageContext pageContext, int maxlevel, DumpProperties dp) {
 		DumpTable table = (DumpTable) super.toDumpData(pageContext, maxlevel, dp);
-		try{
-			table.setTitle("Double Struct ("+castToString()+")");
+		try {
+			table.setTitle("Double Struct (" + castToString() + ")");
 		}
-		catch(PageException pe){}
+		catch (PageException pe) {}
 		return table;
 	}
 }

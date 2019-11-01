@@ -36,10 +36,11 @@ public final class ResourceDataSource implements DataSource {
 	/**
 	 * File source.
 	 */
-	private	final Resource _file;
+	private final Resource _file;
 
 	/**
 	 * Constructor of the class
+	 * 
 	 * @param res source
 	 */
 	public ResourceDataSource(Resource res) {
@@ -48,15 +49,17 @@ public final class ResourceDataSource implements DataSource {
 
 	/**
 	 * Get name.
+	 * 
 	 * @returns Name
 	 */
 	@Override
 	public String getName() {
 		return _file.getName();
-	} 
+	}
 
 	/**
 	 * Get Resource.
+	 * 
 	 * @returns Resource
 	 */
 	public Resource getResource() {
@@ -65,34 +68,28 @@ public final class ResourceDataSource implements DataSource {
 
 	/**
 	 * Get input stream.
+	 * 
 	 * @returns Input stream
 	 * @throws IOException IO exception occurred
 	 */
 	@Override
 	public InputStream getInputStream() throws IOException {
 		return IOUtil.toBufferedInputStream(_file.getInputStream());
-	} 
+	}
 
 	/**
 	 * Get content type.
+	 * 
 	 * @returns Content type
 	 */
 	@Override
 	public String getContentType() {
-		InputStream is=null;
-		try {
-			return IOUtil.getMimeType(is=_file.getInputStream(), "application/unknow");
-		} catch (IOException e) {
-			return "application/unknow";
-		}
-		finally {
-			IOUtil.closeEL(is);
-		}
-		
+		return IOUtil.getMimeType(_file, "application/unknow");
 	}
 
 	/**
 	 * Get output stream.
+	 * 
 	 * @returns Output stream
 	 * @throws IOException IO exception occurred
 	 */

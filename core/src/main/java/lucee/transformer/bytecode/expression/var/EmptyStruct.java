@@ -18,18 +18,18 @@
  **/
 package lucee.transformer.bytecode.expression.var;
 
+import org.objectweb.asm.Type;
+
 import lucee.transformer.Factory;
 import lucee.transformer.bytecode.BytecodeContext;
 import lucee.transformer.bytecode.expression.ExpressionBase;
 import lucee.transformer.bytecode.util.ASMUtil;
 import lucee.transformer.bytecode.util.Types;
 
-import org.objectweb.asm.Type;
-
 public class EmptyStruct extends ExpressionBase {
-	
+
 	public EmptyStruct(Factory factory) {
-		super(factory,null,null);
+		super(factory, null, null);
 	}
 
 	public Type _writeOut(BytecodeContext bc, int mode) {

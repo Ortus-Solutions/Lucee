@@ -25,7 +25,6 @@ import lucee.runtime.type.Query;
 import lucee.runtime.type.QueryColumn;
 import lucee.runtime.type.util.QueryUtil;
 
-
 public class ColumnExpression extends ExpressionSupport implements Column {
 
 	private String table;
@@ -33,41 +32,41 @@ public class ColumnExpression extends ExpressionSupport implements Column {
 	private boolean hasBracked;
 	private int columnIndex;
 	private QueryColumn col;
-	
+
 	@Override
-	public String toString(){
-		return "table:"+table+";column:"+column+";hasBracked:"+hasBracked+";columnIndex:"+columnIndex;
-		
+	public String toString() {
+		return "table:" + table + ";column:" + column + ";hasBracked:" + hasBracked + ";columnIndex:" + columnIndex;
+
 	}
 
 	public ColumnExpression(String value, int columnIndex) {
-		this.column=value;
-		this.columnIndex=columnIndex;
+		this.column = value;
+		this.columnIndex = columnIndex;
 	}
 
 	public void setSub(String sub) {
-		if(table==null) {
-			table=column;
-			column=sub;
+		if (table == null) {
+			table = column;
+			column = sub;
 		}
-		else column=(column+"."+sub);
+		else column = (column + "." + sub);
 	}
 
 	@Override
 	public String toString(boolean noAlias) {
-		if(hasAlias() && !noAlias) return getFullName()+" as "+getAlias();
+		if (hasAlias() && !noAlias) return getFullName() + " as " + getAlias();
 		return getFullName();
 	}
 
 	@Override
 	public String getFullName() {
-		if(table==null) return column;
-		return table+"."+column;
+		if (table == null) return column;
+		return table + "." + column;
 	}
 
 	@Override
 	public String getAlias() {
-		if(!hasAlias()) return getColumn().getString();
+		if (!hasAlias()) return getColumn().getString();
 		return super.getAlias();
 	}
 
@@ -88,13 +87,13 @@ public class ColumnExpression extends ExpressionSupport implements Column {
 
 	@Override
 	public void hasBracked(boolean b) {
-		this.hasBracked=b;
+		this.hasBracked = b;
 	}
 
-    public String getColumnName() {
+	public String getColumnName() {
 
-        return column;
-    }
+		return column;
+	}
 
 	/**
 	 * @return the columnIndex
@@ -103,20 +102,21 @@ public class ColumnExpression extends ExpressionSupport implements Column {
 	public int getColumnIndex() {
 		return columnIndex;
 	}
+
 	// MUST hanle null correctly
 	@Override
 	public Object getValue(Query qr, int row) throws PageException {
-		if(col==null)col = qr.getColumn(getColumn());
-		return QueryUtil.getValue(col,row);
+		if (col == null) col = qr.getColumn(getColumn());
+		return QueryUtil.getValue(col, row);
 	}
-	
+
 	@Override
 	public Object getValue(Query qr, int row, Object defaultValue) {
-		if(col==null){
-			col = qr.getColumn(getColumn(),null);
-			if(col==null) return defaultValue;
+		if (col == null) {
+			col = qr.getColumn(getColumn(), null);
+			if (col == null) return defaultValue;
 		}
-		return col.get(row,defaultValue);
+		return col.get(row, defaultValue);
 	}
 
 }

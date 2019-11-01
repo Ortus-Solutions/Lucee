@@ -20,8 +20,8 @@ public abstract class AbsSystemStruct extends StructSupport {
 
 	@Override
 	public final Collection duplicate(boolean deepCopy) {
-		Struct sct=new StructImpl();
-		StructImpl.copy(this,sct,deepCopy);
+		Struct sct = new StructImpl();
+		StructImpl.copy(this, sct, deepCopy);
 		return sct;
 	}
 

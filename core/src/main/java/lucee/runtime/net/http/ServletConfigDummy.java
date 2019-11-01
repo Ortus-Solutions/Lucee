@@ -23,7 +23,6 @@ import java.util.Enumeration;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 
-
 public class ServletConfigDummy implements ServletConfig {
 
 	private String servletName;
@@ -31,15 +30,16 @@ public class ServletConfigDummy implements ServletConfig {
 
 	/**
 	 * Constructor of the class
+	 * 
 	 * @param parameters
 	 * @param attrs
 	 * @param servletName
 	 */
-	public ServletConfigDummy(ServletContextDummy context,String servletName){
-		this.servletName=servletName;
-		this.context=context;
+	public ServletConfigDummy(ServletContextDummy context, String servletName) {
+		this.servletName = servletName;
+		this.context = context;
 	}
-	
+
 	@Override
 	public String getInitParameter(String key) {
 		return context.getInitParameter(key);

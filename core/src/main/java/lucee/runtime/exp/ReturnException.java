@@ -20,12 +20,13 @@
  *  @deprecated class no longer in use
  */
 package lucee.runtime.exp;
+
 public final class ReturnException extends Exception {
 
 	private Object returnValue;
 
 	public ReturnException(Object returnValue) {
-		this.returnValue=returnValue;
+		this.returnValue = returnValue;
 	}
 
 	/**

@@ -21,8 +21,8 @@
  */
 package lucee.runtime.functions.arrays;
 
-
 import lucee.runtime.PageContext;
+import lucee.runtime.exp.FunctionException;
 import lucee.runtime.exp.PageException;
 import lucee.runtime.ext.function.BIF;
 import lucee.runtime.op.Caster;
@@ -32,12 +32,13 @@ public final class ArrayIsDefined extends BIF {
 
 	private static final long serialVersionUID = 5821478169641360902L;
 
-	public static boolean call(PageContext pc , Array array, double index) {
-    	return ArrayIndexExists.call(pc, array, index);
-    }
-	
+	public static boolean call(PageContext pc, Array array, double index) {
+		return ArrayIndexExists.call(pc, array, index);
+	}
+
 	@Override
 	public Object invoke(PageContext pc, Object[] args) throws PageException {
-		return call(pc,Caster.toArray(args[0]),Caster.toDoubleValue(args[1]));
+		if (args.length == 2) return call(pc, Caster.toArray(args[0]), Caster.toDoubleValue(args[1]));
+		else throw new FunctionException(pc, "ArrayIsDefined", 2, 2, args.length);
 	}
 }

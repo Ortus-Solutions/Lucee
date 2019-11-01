@@ -32,12 +32,13 @@ public class ObjectsEntryIterator implements Iterator<Entry<Key, Object>> {
 	private Objects objs;
 
 	public ObjectsEntryIterator(Key[] keys, Objects objs) {
-		this.keys=new KeyIterator(keys);
-		this.objs=objs;
+		this.keys = new KeyIterator(keys);
+		this.objs = objs;
 	}
+
 	public ObjectsEntryIterator(Iterator<Key> keys, Objects objs) {
-		this.keys=keys;
-		this.objs=objs;
+		this.keys = keys;
+		this.objs = objs;
 	}
 
 	@Override
@@ -47,8 +48,8 @@ public class ObjectsEntryIterator implements Iterator<Entry<Key, Object>> {
 
 	@Override
 	public Entry<Key, Object> next() {
-		Key key = KeyImpl.toKey(keys.next(),null);
-		return new EntryImpl(objs,key);
+		Key key = KeyImpl.toKey(keys.next(), null);
+		return new EntryImpl(objs, key);
 	}
 
 	@Override
@@ -59,11 +60,11 @@ public class ObjectsEntryIterator implements Iterator<Entry<Key, Object>> {
 	public class EntryImpl implements Entry<Key, Object> {
 
 		protected Key key;
-		private Objects  objcts;
+		private Objects objcts;
 
-		public EntryImpl(Objects objcts,Key key) {
-			this.key=key;
-			this. objcts= objcts;
+		public EntryImpl(Objects objcts, Key key) {
+			this.key = key;
+			this.objcts = objcts;
 		}
 
 		@Override
@@ -73,12 +74,12 @@ public class ObjectsEntryIterator implements Iterator<Entry<Key, Object>> {
 
 		@Override
 		public Object getValue() {
-			return objcts.get(ThreadLocalPageContext.get(),key,null);
+			return objcts.get(ThreadLocalPageContext.get(), key, null);
 		}
 
 		@Override
 		public Object setValue(Object value) {
-			return objcts.setEL(ThreadLocalPageContext.get(),key,value);
+			return objcts.setEL(ThreadLocalPageContext.get(), key, value);
 		}
 
 	}

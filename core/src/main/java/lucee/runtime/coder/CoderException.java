@@ -20,7 +20,6 @@ package lucee.runtime.coder;
 
 import java.io.IOException;
 
-
 /**
  * 
  */

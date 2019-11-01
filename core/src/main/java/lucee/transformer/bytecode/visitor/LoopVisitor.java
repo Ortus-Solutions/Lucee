@@ -18,14 +18,14 @@
  **/
 package lucee.transformer.bytecode.visitor;
 
-import lucee.transformer.bytecode.BytecodeContext;
-
 import org.objectweb.asm.Label;
 
+import lucee.transformer.bytecode.BytecodeContext;
+
 public interface LoopVisitor {
-	
+
 	public void visitContinue(BytecodeContext bc);
-		
+
 	public void visitBreak(BytecodeContext bc);
 
 	public Label getContinueLabel();

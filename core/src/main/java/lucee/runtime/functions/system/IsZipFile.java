@@ -18,12 +18,15 @@
  **/
 package lucee.runtime.functions.system;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.zip.ZipInputStream;
 
 import lucee.commons.io.IOUtil;
 import lucee.commons.io.res.Resource;
 import lucee.commons.io.res.util.ResourceUtil;
+import lucee.commons.lang.ExceptionUtil;
 import lucee.runtime.PageContext;
 
 public class IsZipFile {
@@ -31,23 +34,47 @@ public class IsZipFile {
 	public static boolean call(PageContext pc, String path) {
 		try {
 			return invoke(ResourceUtil.toResourceExisting(pc, path));
-		} 
+		}
 		catch (Throwable t) {
+			ExceptionUtil.rethrowIfNecessary(t);
 			return false;
 		}
 	}
-	
+
 	public static boolean invoke(Resource res) {
-		InputStream is=null;
-		boolean hasEntries=false;
+		InputStream is = null;
+		boolean hasEntries = false;
 		try {
-			//ZipEntry ze;
-			ZipInputStream zis = new ZipInputStream(is=res.getInputStream());
-			while ((zis.getNextEntry()) != null ) {
-	        	zis.closeEntry();
-	        	hasEntries=true;
-	        }
-		} catch (Throwable t) {
+			// ZipEntry ze;
+			ZipInputStream zis = new ZipInputStream(is = res.getInputStream());
+			while ((zis.getNextEntry()) != null) {
+				zis.closeEntry();
+				hasEntries = true;
+			}
+		}
+		catch (Throwable t) {
+			ExceptionUtil.rethrowIfNecessary(t);
+			return false;
+		}
+		finally {
+			IOUtil.closeEL(is);
+		}
+		return hasEntries;
+	}
+
+	public static boolean invoke(File file) {
+		InputStream is = null;
+		boolean hasEntries = false;
+		try {
+			// ZipEntry ze;
+			ZipInputStream zis = new ZipInputStream(is = new FileInputStream(file));
+			while ((zis.getNextEntry()) != null) {
+				zis.closeEntry();
+				hasEntries = true;
+			}
+		}
+		catch (Throwable t) {
+			ExceptionUtil.rethrowIfNecessary(t);
 			return false;
 		}
 		finally {

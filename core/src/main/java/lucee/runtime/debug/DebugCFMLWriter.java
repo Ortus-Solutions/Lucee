@@ -34,11 +34,11 @@ import lucee.runtime.writer.CFMLWriter;
 public class DebugCFMLWriter extends CFMLWriter implements DebugOutputLog {
 
 	private CFMLWriter writer;
-	private List<DebugTextFragment> fragments=new ArrayList<DebugTextFragment>(); 
+	private List<DebugTextFragment> fragments = new ArrayList<DebugTextFragment>();
 
 	public DebugCFMLWriter(CFMLWriter writer) {
 		super(writer.getBufferSize(), writer.isAutoFlush());
-		this.writer=writer;
+		this.writer = writer;
 	}
 
 	@Override
@@ -59,7 +59,7 @@ public class DebugCFMLWriter extends CFMLWriter implements DebugOutputLog {
 
 	@Override
 	public Writer append(char c) throws IOException {
-		log(new String(new char[]{c}));
+		log(new String(new char[] { c }));
 		return writer.append(c);
 	}
 
@@ -86,7 +86,7 @@ public class DebugCFMLWriter extends CFMLWriter implements DebugOutputLog {
 
 	@Override
 	public void write(String str, int off, int len) throws IOException {
-		log(StringUtil.substring(str,off,len));
+		log(StringUtil.substring(str, off, len));
 		writer.write(str, off, len);
 	}
 
@@ -193,12 +193,12 @@ public class DebugCFMLWriter extends CFMLWriter implements DebugOutputLog {
 	@Override
 	public void print(boolean b) throws IOException {
 		writer.print(b);
-		log(b?"true":"false");
+		log(b ? "true" : "false");
 	}
 
 	@Override
 	public void print(char c) throws IOException {
-		log(new String(new char[]{c}));
+		log(new String(new char[] { c }));
 		writer.write(c);
 	}
 
@@ -305,13 +305,13 @@ public class DebugCFMLWriter extends CFMLWriter implements DebugOutputLog {
 
 	@Override
 	public void write(char[] carr, int off, int len) throws IOException {
-		log(StringUtil.substring(new String(carr),off,len));
-		writer.write(carr,off,len);
+		log(StringUtil.substring(new String(carr), off, len));
+		writer.write(carr, off, len);
 	}
 
 	private void log(String str) {
-		TemplateLine tl = SystemUtil.getCurrentContext();
-		if(tl!=null){
+		TemplateLine tl = SystemUtil.getCurrentContext(null);
+		if (tl != null) {
 			fragments.add(new DebugTextFragmentImpl(str, tl));
 		}
 	}

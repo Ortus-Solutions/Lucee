@@ -25,7 +25,7 @@ import lucee.commons.io.cache.CacheKeyFilter;
  */
 public class CacheKeyFilterAll implements CacheKeyFilter {
 
-	private static CacheKeyFilterAll instance=new CacheKeyFilterAll();
+	private static CacheKeyFilterAll instance = new CacheKeyFilterAll();
 
 	@Override
 	public boolean accept(String key) {

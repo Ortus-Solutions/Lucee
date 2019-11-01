@@ -32,9 +32,9 @@ public class CacheWriter extends ForkWriter {
 	private Resource cacheFile;
 
 	public CacheWriter(Writer out, Resource cacheFile) throws IOException {
-		super(out, IOUtil.getWriter(cacheFile, (Charset)null));
-		this.out=out;
-		this.cacheFile=cacheFile;
+		super(out, IOUtil.getWriter(cacheFile, (Charset) null));
+		this.out = out;
+		this.cacheFile = cacheFile;
 	}
 
 	/**

@@ -19,13 +19,11 @@
 package lucee.runtime.functions.file;
 
 import lucee.commons.io.res.Resource;
-import lucee.commons.io.res.type.s3.S3Constants;
 import lucee.commons.io.res.util.ResourceUtil;
 import lucee.runtime.PageContext;
 import lucee.runtime.exp.PageException;
 import lucee.runtime.tag.Directory;
 import lucee.runtime.tag.util.FileUtil;
-
 
 public class DirectoryCreate {
 
@@ -33,13 +31,13 @@ public class DirectoryCreate {
 		return call(pc, path, true);
 	}
 
-	public static String call(PageContext pc , String path, boolean createPath) throws PageException {
+	public static String call(PageContext pc, String path, boolean createPath) throws PageException {
 		return call(pc, path, createPath, false);
 	}
 
-	public static String call(PageContext pc , String path, boolean createPath, boolean ignoreExists) throws PageException {
-		Resource dir=ResourceUtil.toResourceNotExisting(pc, path);
-		Directory.actionCreate( pc, dir, null, createPath, -1, null, S3Constants.STORAGE_UNKNOW, ignoreExists ? FileUtil.NAMECONFLICT_SKIP : FileUtil.NAMECONFLICT_ERROR );
+	public static String call(PageContext pc, String path, boolean createPath, boolean ignoreExists) throws PageException {
+		Resource dir = ResourceUtil.toResourceNotExisting(pc, path);
+		Directory.actionCreate(pc, dir, null, createPath, -1, null, null, ignoreExists ? FileUtil.NAMECONFLICT_SKIP : FileUtil.NAMECONFLICT_ERROR);
 		return null;
 	}
 }

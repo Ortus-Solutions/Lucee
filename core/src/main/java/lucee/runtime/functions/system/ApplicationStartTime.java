@@ -29,6 +29,6 @@ public class ApplicationStartTime implements Function {
 	private static final long serialVersionUID = -3051854049187102667L;
 
 	public static DateTime call(PageContext pc) throws PageException {
-		return new DateTimeImpl(pc.applicationScope().getCreated(),false);
+		return new DateTimeImpl(pc.applicationScope().getCreated(), false);
 	}
 }

@@ -22,31 +22,36 @@ import lucee.runtime.exp.TemplateException;
 import lucee.runtime.type.util.ArrayUtil;
 import lucee.transformer.bytecode.expression.var.Argument;
 import lucee.transformer.bytecode.expression.var.BIF;
+import lucee.transformer.cfml.evaluator.EvaluatorException;
 import lucee.transformer.cfml.evaluator.FunctionEvaluator;
 import lucee.transformer.expression.Expression;
 import lucee.transformer.expression.literal.LitString;
 import lucee.transformer.library.function.FunctionLibFunction;
 
-public class GetTickCount implements FunctionEvaluator{
+public class GetTickCount implements FunctionEvaluator {
 
 	@Override
-	public void evaluate(BIF bif, FunctionLibFunction flf) throws TemplateException {
+	public void execute(BIF bif, FunctionLibFunction flf) throws TemplateException {
 		Argument[] args = bif.getArguments();
-		if(ArrayUtil.isEmpty(args)) return;
-		
+		if (ArrayUtil.isEmpty(args)) return;
+
 		Argument arg = args[0];
 		Expression value = arg.getValue();
-		if(value instanceof LitString) {
-			String unit=((LitString)value).getString();
-			if("nano".equalsIgnoreCase(unit))
-				arg.setValue(bif.getFactory().createLitDouble(lucee.runtime.functions.other.GetTickCount.UNIT_NANO), "number");
-			else if("milli".equalsIgnoreCase(unit))
-				arg.setValue(bif.getFactory().createLitDouble(lucee.runtime.functions.other.GetTickCount.UNIT_MILLI), "number");
-			else if("micro".equalsIgnoreCase(unit))
-				arg.setValue(bif.getFactory().createLitDouble(lucee.runtime.functions.other.GetTickCount.UNIT_MICRO), "number");
-			else if("second".equalsIgnoreCase(unit))
-				arg.setValue(bif.getFactory().createLitDouble(lucee.runtime.functions.other.GetTickCount.UNIT_SECOND), "number");
+		if (value instanceof LitString) {
+			String unit = ((LitString) value).getString();
+			if ("nano".equalsIgnoreCase(unit)) arg.setValue(bif.getFactory().createLitDouble(lucee.runtime.functions.other.GetTickCount.UNIT_NANO), "number");
+			else if ("milli".equalsIgnoreCase(unit)) arg.setValue(bif.getFactory().createLitDouble(lucee.runtime.functions.other.GetTickCount.UNIT_MILLI), "number");
+			else if ("micro".equalsIgnoreCase(unit)) arg.setValue(bif.getFactory().createLitDouble(lucee.runtime.functions.other.GetTickCount.UNIT_MICRO), "number");
+			else if ("second".equalsIgnoreCase(unit)) arg.setValue(bif.getFactory().createLitDouble(lucee.runtime.functions.other.GetTickCount.UNIT_SECOND), "number");
 		}
+	}
+
+	@Override
+	public void evaluate(BIF bif, FunctionLibFunction flf) throws EvaluatorException {}
+
+	@Override
+	public FunctionLibFunction pre(BIF bif, FunctionLibFunction flf) throws TemplateException {
+		return null;
 	}
 
 }

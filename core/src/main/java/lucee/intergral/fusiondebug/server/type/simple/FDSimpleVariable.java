@@ -24,16 +24,16 @@ import com.intergral.fusiondebug.server.IFDStackFrame;
 import com.intergral.fusiondebug.server.IFDValue;
 import com.intergral.fusiondebug.server.IFDVariable;
 
-
 public class FDSimpleVariable implements IFDVariable {
 
 	private String name;
 	private IFDValue value;
 	private IFDStackFrame frame;
-	
+
 	/**
 	 * Constructor of the class
-	 * @param frame 
+	 * 
+	 * @param frame
 	 * @param name
 	 * @param value
 	 * @param children
@@ -43,15 +43,16 @@ public class FDSimpleVariable implements IFDVariable {
 		this.name = name;
 		this.value = value;
 	}
-	
+
 	/**
 	 * Constructor of the class
+	 * 
 	 * @param name
 	 * @param value
 	 * @param children
 	 */
-	public FDSimpleVariable(IFDStackFrame frame,String name, String value,List children) {
-		this(frame,name,new FDSimpleValue(children,value));
+	public FDSimpleVariable(IFDStackFrame frame, String name, String value, List children) {
+		this(frame, name, new FDSimpleValue(children, value));
 	}
 
 	@Override

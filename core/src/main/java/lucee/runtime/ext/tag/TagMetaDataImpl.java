@@ -26,27 +26,28 @@ public class TagMetaDataImpl implements TagMetaData {
 	private int attrMin;
 	private int attrMax;
 	private int attrType;
-	private List attrs=new ArrayList();
+	private List attrs = new ArrayList();
 	private int bodyContent;
 	private String description;
 	private boolean isBodyRE;
 	private boolean handleException;
 	private boolean hasAppendix;
 	private boolean hasBody;
-	
-
 
 	/**
 	 * Constructor of the class
-	 * @param attrType TagMetaData.ATTRIBUTE_TYPE_FIX,TagMetaData.ATTRIBUTE_TYPE_DYNAMIC,TagMetaData.ATTRIBUTE_TYPE_MIXED
+	 * 
+	 * @param attrType
+	 *            TagMetaData.ATTRIBUTE_TYPE_FIX,TagMetaData.ATTRIBUTE_TYPE_DYNAMIC,TagMetaData.ATTRIBUTE_TYPE_MIXED
 	 * @param attrMin minimal count of attributes needed for tag
 	 * @param attrMax maximum count of attributes or -1 for infinity attributes
-	 * @param bodyContent TagMetaData.BODY_CONTENT_EMPTY,TagMetaData.BODY_CONTENT_FREE,TagMetaData.BODY_CONTENT_MUST
+	 * @param bodyContent
+	 *            TagMetaData.BODY_CONTENT_EMPTY,TagMetaData.BODY_CONTENT_FREE,TagMetaData.BODY_CONTENT_MUST
 	 * @param isBodyRE is the body of the tag parsed like inside a cfoutput
 	 * @param description A description of the tag.
 	 */
-	public TagMetaDataImpl(int attrType, int attrMin, int attrMax, int bodyContent, boolean isBodyRE, String description,
-			boolean handleException, boolean hasAppendix, boolean hasBody) {
+	public TagMetaDataImpl(int attrType, int attrMin, int attrMax, int bodyContent, boolean isBodyRE, String description, boolean handleException, boolean hasAppendix,
+			boolean hasBody) {
 		this.attrMax = attrMax;
 		this.attrMin = attrMin;
 		this.attrType = attrType;
@@ -56,7 +57,7 @@ public class TagMetaDataImpl implements TagMetaData {
 		this.hasAppendix = hasAppendix;
 		this.hasBody = hasBody;
 	}
-	
+
 	@Override
 	public int getAttributeMax() {
 		return attrMax;
@@ -76,9 +77,10 @@ public class TagMetaDataImpl implements TagMetaData {
 	public TagMetaDataAttr[] getAttributes() {
 		return (TagMetaDataAttr[]) attrs.toArray(new TagMetaDataAttr[attrs.size()]);
 	}
-	
+
 	/**
 	 * adds a attribute to the tag
+	 * 
 	 * @param attr
 	 */
 	public void addAttribute(TagMetaDataAttr attr) {

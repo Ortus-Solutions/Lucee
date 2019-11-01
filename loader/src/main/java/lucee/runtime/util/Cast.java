@@ -43,9 +43,6 @@ import lucee.runtime.type.Struct;
 import lucee.runtime.type.dt.DateTime;
 import lucee.runtime.type.dt.TimeSpan;
 
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-
 /**
  * This class can cast object of one type to a other by CFML rules
  */
@@ -172,8 +169,7 @@ public interface Cast {
 	public double toDoubleValue(Object o, double defaultValue);
 
 	/**
-	 * cast a Object to a double value (primitive value Type), if can't return
-	 * Double.NaN
+	 * cast a Object to a double value (primitive value Type), if can't return Double.NaN
 	 * 
 	 * @param str String to cast
 	 * @param defaultValue if can't cast return this value
@@ -233,8 +229,7 @@ public interface Cast {
 	public int toIntValue(String str) throws PageException;
 
 	/**
-	 * cast a Object to a double value (primitive value Type), if can't return
-	 * Integer.MIN_VALUE
+	 * cast a Object to a double value (primitive value Type), if can't return Integer.MIN_VALUE
 	 * 
 	 * @param str String to cast
 	 * @param defaultValue
@@ -360,7 +355,7 @@ public interface Cast {
 	public boolean toBooleanValue(Object o, boolean defaultValue);
 
 	/**
-	 * cast a Object to a boolean value (refrence type), Exception Less
+	 * cast a Object to a boolean value (reference type), Exception Less
 	 * 
 	 * @param o Object to cast
 	 * @param defaultValue default value
@@ -369,7 +364,7 @@ public interface Cast {
 	public Boolean toBoolean(Object o, Boolean defaultValue);
 
 	/**
-	 * cast a Object to a boolean value (refrence type), Exception Less
+	 * cast a Object to a boolean value (reference type), Exception Less
 	 * 
 	 * @param str String to cast
 	 * @param defaultValue default value
@@ -729,8 +724,8 @@ public interface Cast {
 	public boolean toBooleanValue(String str) throws PageException;
 
 	/**
-	 * cast a String to a boolean value (primitive value type), return 1 for
-	 * true, 0 for false and -1 if can't cast to a boolean type
+	 * cast a String to a boolean value (primitive value type), return 1 for true, 0 for false and -1 if
+	 * can't cast to a boolean type
 	 * 
 	 * @param str String to cast
 	 * @param defaultValue
@@ -748,8 +743,7 @@ public interface Cast {
 	public String toString(Object o) throws PageException;
 
 	/**
-	 * cast a Object to a String dont throw a exception, if can't cast to a
-	 * string return a empty string
+	 * cast a Object to a String dont throw a exception, if can't cast to a string return a empty string
 	 * 
 	 * @param o Object to cast
 	 * @param defaultValue
@@ -1013,8 +1007,7 @@ public interface Cast {
 	 * @param defaultValue
 	 * @return casted DateTime Object
 	 */
-	public DateTime toDate(Object o, boolean alsoNumbers, TimeZone tz,
-			DateTime defaultValue);
+	public DateTime toDate(Object o, boolean alsoNumbers, TimeZone tz, DateTime defaultValue);
 
 	/**
 	 * cast a Object to a DateTime Object
@@ -1025,8 +1018,7 @@ public interface Cast {
 	 * @param defaultValue
 	 * @return casted DateTime Object
 	 */
-	public DateTime toDate(String str, boolean alsoNumbers, TimeZone tz,
-			DateTime defaultValue);
+	public DateTime toDate(String str, boolean alsoNumbers, TimeZone tz, DateTime defaultValue);
 
 	/**
 	 * cast a Object to a DateTime Object
@@ -1068,8 +1060,7 @@ public interface Cast {
 	 * @return DateTime Object
 	 * @throws PageException
 	 */
-	public DateTime toDate(Locale locale, String str, TimeZone tz)
-			throws PageException;
+	public DateTime toDate(Locale locale, String str, TimeZone tz) throws PageException;
 
 	/**
 	 * parse a string to a Datetime Object, returns null if can't convert
@@ -1080,8 +1071,7 @@ public interface Cast {
 	 * @param defaultValue
 	 * @return datetime object
 	 */
-	public DateTime toDate(Locale locale, String str, TimeZone tz,
-			DateTime defaultValue);
+	public DateTime toDate(Locale locale, String str, TimeZone tz, DateTime defaultValue);
 
 	/**
 	 * cast a Object to a Query Object
@@ -1195,8 +1185,7 @@ public interface Cast {
 	public PageException toPageException(Throwable t);
 
 	/**
-	 * cast a Throwable Object to a PageRuntimeException Object
-	 * (RuntimeException)
+	 * cast a Throwable Object to a PageRuntimeException Object (RuntimeException)
 	 * 
 	 * @param t Throwable to cast
 	 * @return casted PageException Object
@@ -1204,8 +1193,7 @@ public interface Cast {
 	public RuntimeException toPageRuntimeException(Throwable t);
 
 	/**
-	 * return the type name of a object (string, boolean, int aso.), type is not
-	 * same like class name
+	 * return the type name of a object (string, boolean, int aso.), type is not same like class name
 	 * 
 	 * @param o Object to get type from
 	 * @return type of the object
@@ -1221,8 +1209,7 @@ public interface Cast {
 	 * @return casted Value
 	 * @throws PageException
 	 */
-	public Object castTo(PageContext pc, String type, Object o)
-			throws PageException;
+	public Object castTo(PageContext pc, String type, Object o) throws PageException;
 
 	/**
 	 * cast a value to a value defined by type argument
@@ -1230,13 +1217,11 @@ public interface Cast {
 	 * @param pc
 	 * @param type type of the returning Value
 	 * @param o Object to cast
-	 * @param alsoPattern mean supporting also none real types like email or
-	 *            creditcard ...
+	 * @param alsoPattern mean supporting also none real types like email or creditcard ...
 	 * @return casted Value
 	 * @throws PageException
 	 */
-	public Object castTo(PageContext pc, String type, Object o,
-			boolean alsoPattern) throws PageException;
+	public Object castTo(PageContext pc, String type, Object o, boolean alsoPattern) throws PageException;
 
 	/**
 	 * cast a value to a value defined by type argument
@@ -1248,8 +1233,7 @@ public interface Cast {
 	 * @return casted Value
 	 * @throws PageException
 	 */
-	public Object castTo(PageContext pc, short type, String strType, Object o)
-			throws PageException;
+	public Object castTo(PageContext pc, short type, String strType, Object o) throws PageException;
 
 	/**
 	 * cast a value to a value defined by type argument
@@ -1260,8 +1244,7 @@ public interface Cast {
 	 * @return casted Value
 	 * @throws PageException
 	 */
-	public Object castTo(PageContext pc, short type, Object o)
-			throws PageException;
+	public Object castTo(PageContext pc, short type, Object o) throws PageException;
 
 	/**
 	 * cast a value to a value defined by type a class
@@ -1272,8 +1255,7 @@ public interface Cast {
 	 * @return casted Value
 	 * @throws PageException
 	 */
-	public Object castTo(PageContext pc, Class trgClass, Object obj)
-			throws PageException;
+	public Object castTo(PageContext pc, Class trgClass, Object obj) throws PageException;
 
 	/**
 	 * cast a value to void (Empty String)
@@ -1294,8 +1276,8 @@ public interface Cast {
 	public Object toVoid(Object o, Object defaultValue);
 
 	/**
-	 * cast a Object to a reference type (Object), in that case this method to
-	 * nothing, because a Object is already a reference type
+	 * cast a Object to a reference type (Object), in that case this method to nothing, because a Object
+	 * is already a reference type
 	 * 
 	 * @param o Object to cast
 	 * @return casted Object
@@ -1303,8 +1285,8 @@ public interface Cast {
 	public Object toRef(Object o);
 
 	/**
-	 * cast a String to a reference type (Object), in that case this method to
-	 * nothing, because a String is already a reference type
+	 * cast a String to a reference type (Object), in that case this method to nothing, because a String
+	 * is already a reference type
 	 * 
 	 * @param o Object to cast
 	 * @return casted Object
@@ -1312,8 +1294,8 @@ public interface Cast {
 	public String toRef(String o);
 
 	/**
-	 * cast a Collection to a reference type (Object), in that case this method
-	 * to nothing, because a Collection is already a reference type
+	 * cast a Collection to a reference type (Object), in that case this method to nothing, because a
+	 * Collection is already a reference type
 	 * 
 	 * @param o Collection to cast
 	 * @return casted Object
@@ -1379,7 +1361,7 @@ public interface Cast {
 	/**
 	 * cast a double value to his (CFML) reference type Double
 	 * 
-	 * @param d doble to cast
+	 * @param d double to cast
 	 * @return casted Double
 	 */
 	public Double toRef(double d);
@@ -1459,7 +1441,7 @@ public interface Cast {
 	 * casts a string to a Locale
 	 * 
 	 * @param strLocale
-	 * @return Locale ferom String
+	 * @return Locale from String
 	 * @throws PageException
 	 */
 	public Locale toLocale(String strLocale) throws PageException;
@@ -1473,41 +1455,49 @@ public interface Cast {
 	 */
 	public Locale toLocale(String strLocale, Locale defaultValue);
 
-	/**
-	 * casts a Object to a Node List
+	/*
+	 * * casts a Object to a Node List
 	 * 
 	 * @param o Object to Cast
+	 * 
 	 * @return NodeList from Object
+	 * 
 	 * @throws PageException
 	 */
-	public NodeList toNodeList(Object o) throws PageException;
+	// public NodeList toNodeList(Object o) throws PageException;
 
-	/**
-	 * casts a Object to a Node List
+	/*
+	 * * casts a Object to a Node List
 	 * 
 	 * @param o Object to Cast
+	 * 
 	 * @param defaultValue
+	 * 
 	 * @return NodeList from Object
 	 */
-	public NodeList toNodeList(Object o, NodeList defaultValue);
+	// public NodeList toNodeList(Object o, NodeList defaultValue);
 
-	/**
-	 * casts a Object to a XML Node
+	/*
+	 * * casts a Object to a XML Node
 	 * 
 	 * @param o Object to Cast
+	 * 
 	 * @return Node from Object
+	 * 
 	 * @throws PageException
 	 */
-	public Node toNode(Object o) throws PageException;
+	// public Node toNode(Object o) throws PageException;
 
-	/**
-	 * casts a Object to a XML Node
+	/*
+	 * * casts a Object to a XML Node
 	 * 
 	 * @param o Object to Cast
+	 * 
 	 * @param defaultValue
+	 * 
 	 * @return Node from Object
 	 */
-	public Node toNode(Object o, Node defaultValue);
+	// public Node toNode(Object o, Node defaultValue);
 
 	/**
 	 * casts a boolean to a Integer
@@ -1577,23 +1567,27 @@ public interface Cast {
 	 */
 	public Object toNull(Object value, Object defaultValue);
 
-	/**
-	 * cast Object to a XML Node
+	/*
+	 * * cast Object to a XML Node
 	 * 
 	 * @param value
+	 * 
 	 * @return XML Node
+	 * 
 	 * @throws PageException
 	 */
-	public Node toXML(Object value) throws PageException;
+	// public Node toXML(Object value) throws PageException;
 
-	/**
-	 * cast Object to a XML Node
+	/*
+	 * * cast Object to a XML Node
 	 * 
 	 * @param value
+	 * 
 	 * @param defaultValue
+	 * 
 	 * @return XML Node
 	 */
-	public Node toXML(Object value, Node defaultValue);
+	// public Node toXML(Object value, Node defaultValue);
 
 	/**
 	 * cast to given type
@@ -1603,8 +1597,7 @@ public interface Cast {
 	 * @param alsoPattern
 	 * @throws PageException
 	 */
-	public Object to(String type, Object o, boolean alsoPattern)
-			throws PageException;
+	public Object to(String type, Object o, boolean alsoPattern) throws PageException;
 
 	/**
 	 * cast Object to a Serializable Object
@@ -1641,7 +1634,9 @@ public interface Cast {
 
 	public Calendar toCalendar(long time, TimeZone timeZone, Locale locale);
 
-	public DumpData toDumpTable(Struct sct, String title,
-			PageContext pageContext, int maxlevel, DumpProperties dp);
+	public DumpData toDumpTable(Struct sct, String title, PageContext pageContext, int maxlevel, DumpProperties dp);
+
+	// FUTURE
+	// public Credentials toCredentials(String username, String password);
 
 }

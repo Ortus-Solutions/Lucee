@@ -23,8 +23,7 @@ import lucee.runtime.exp.PageException;
 
 public interface CacheHandler {
 
-	public void init(ConfigWeb cw, String id, int cacheType)
-			throws PageException;
+	public void init(ConfigWeb cw, String id, int cacheType) throws PageException;
 
 	public String id();
 
@@ -32,13 +31,11 @@ public interface CacheHandler {
 
 	public boolean remove(PageContext pc, String id) throws PageException;
 
-	public void set(PageContext pc, String id, Object cachedwithin,
-			CacheItem value) throws PageException;
+	public void set(PageContext pc, String id, Object cachedwithin, CacheItem value) throws PageException;
 
 	public void clear(PageContext pc) throws PageException;
 
-	public void clear(PageContext pc, CacheHandlerFilter filter)
-			throws PageException;
+	public void clear(PageContext pc, CacheHandlerFilter filter) throws PageException;
 
 	public void clean(PageContext pc) throws PageException;
 

@@ -29,25 +29,23 @@ public abstract class MonitorWrap implements Monitor {
 	private short type;
 	private boolean logEnabled;
 
-
 	public MonitorWrap(Object monitor, short type) {
-		this.monitor=monitor;
-		this.type=type;
+		this.monitor = monitor;
+		this.type = type;
 	}
 
 	@Override
-	public void init(ConfigServer configServer,String name, boolean logEnabled) {
-		this.configServer=configServer;
-		this.name=name;
-		this.logEnabled=logEnabled;
+	public void init(ConfigServer configServer, String name, boolean logEnabled) {
+		this.configServer = configServer;
+		this.name = name;
+		this.logEnabled = logEnabled;
 	}
 
 	@Override
 	public short getType() {
 		return type;
 	}
-	
-	
+
 	public Object getMonitor() {
 		return monitor;
 	}
@@ -56,10 +54,12 @@ public abstract class MonitorWrap implements Monitor {
 	public String getName() {
 		return name;
 	}
+
 	@Override
 	public boolean isLogEnabled() {
 		return logEnabled;
 	}
+
 	@Override
 	public Class getClazz() {
 		return monitor.getClass();

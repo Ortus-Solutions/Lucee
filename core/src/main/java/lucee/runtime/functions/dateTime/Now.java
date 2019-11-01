@@ -31,11 +31,11 @@ public final class Now implements Function {
 	 * @param pc
 	 * @return
 	 */
-	public static DateTime call(PageContext pc ) {
+	public static DateTime call(PageContext pc) {
 		return new DateTimeImpl(pc);
 	}
-	
-	/*public static DateTime now() {
-		return new DateTimeImpl();
-	}*/
+
+	/*
+	 * public static DateTime now() { return new DateTimeImpl(); }
+	 */
 }

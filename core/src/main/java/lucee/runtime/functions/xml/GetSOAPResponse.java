@@ -22,23 +22,16 @@ import lucee.runtime.PageContext;
 import lucee.runtime.exp.FunctionException;
 import lucee.runtime.exp.PageException;
 import lucee.runtime.ext.function.Function;
-import lucee.runtime.net.rpc.AxisUtil;
 import lucee.runtime.net.rpc.client.WSClient;
-import lucee.runtime.op.Caster;
 
 public final class GetSOAPResponse implements Function {
 
 	private static final long serialVersionUID = 7155984396258463949L;
 
 	public static Object call(PageContext pc, Object webservice) throws PageException {
-		if(!(webservice instanceof WSClient))
+		if (!(webservice instanceof WSClient))
 			throw new FunctionException(pc, "getSOAPResponse", 1, "webservice", "value must be a webservice Object generated with createObject/<cfobject>");
-		try {
-			return AxisUtil.getSOAPResponse((WSClient) webservice);
-		} 
-		catch (Exception e) {
-			throw Caster.toPageException(e);
-		}
-		
+
+		return ((WSClient) webservice).getSOAPResponse();
 	}
 }

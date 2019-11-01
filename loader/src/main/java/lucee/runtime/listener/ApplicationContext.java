@@ -52,8 +52,7 @@ public interface ApplicationContext extends Serializable {
 	public static final int SCRIPT_PROTECT_URL = 2;
 	public static final int SCRIPT_PROTECT_CGI = 4;
 	public static final int SCRIPT_PROTECT_COOKIE = 8;
-	public static final int SCRIPT_PROTECT_ALL = SCRIPT_PROTECT_CGI
-			+ SCRIPT_PROTECT_COOKIE + SCRIPT_PROTECT_FORM + SCRIPT_PROTECT_URL;
+	public static final int SCRIPT_PROTECT_ALL = SCRIPT_PROTECT_CGI + SCRIPT_PROTECT_COOKIE + SCRIPT_PROTECT_FORM + SCRIPT_PROTECT_URL;
 
 	/**
 	 * @return Returns the applicationTimeout.
@@ -206,8 +205,7 @@ public interface ApplicationContext extends Serializable {
 
 	public int getSecurityIdleTimeout();
 
-	public void setSecuritySettings(String applicationtoken,
-			String cookiedomain, int idletimeout);
+	public void setSecuritySettings(String applicationtoken, String cookiedomain, int idletimeout);
 
 	public void reinitORM(PageContext pc) throws PageException;
 
@@ -220,10 +218,9 @@ public interface ApplicationContext extends Serializable {
 	/**
 	 * return the default cache name for a certain type
 	 * 
-	 * @param type can be one of the following constants
-	 *            Config.CACHE_DEFAULT_OBJECT, Config.CACHE_DEFAULT_TEMPLATE,
-	 *            Config.CACHE_DEFAULT_QUERY, Config.CACHE_DEFAULT_RESOURCE,
-	 *            Config.CACHE_DEFAULT_FUNCTION
+	 * @param type can be one of the following constants Config.CACHE_DEFAULT_OBJECT,
+	 *            Config.CACHE_DEFAULT_TEMPLATE, Config.CACHE_DEFAULT_QUERY,
+	 *            Config.CACHE_DEFAULT_RESOURCE, Config.CACHE_DEFAULT_FUNCTION
 	 * @return name of the cache defined
 	 */
 	public String getDefaultCacheName(int type);
@@ -231,11 +228,9 @@ public interface ApplicationContext extends Serializable {
 	public void setDefaultCacheName(int type, String cacheName);
 
 	/**
-	 * merge the field with same name to array if true, otherwise to a comma
-	 * separated string list
+	 * merge the field with same name to array if true, otherwise to a comma separated string list
 	 * 
-	 * @param scope scope type, one of the following: Scope.SCOPE_FORM or
-	 *            Scope.SCOPE_URL
+	 * @param scope scope type, one of the following: Scope.SCOPE_FORM or Scope.SCOPE_URL
 	 * @return
 	 */
 	public boolean getSameFieldAsArray(int scope);
@@ -250,8 +245,7 @@ public interface ApplicationContext extends Serializable {
 
 	public DataSource getDataSource(String dataSourceName) throws PageException;
 
-	public DataSource getDataSource(String dataSourceName,
-			DataSource defaultValue);
+	public DataSource getDataSource(String dataSourceName, DataSource defaultValue);
 
 	public void setDataSources(DataSource[] dataSources);
 
@@ -301,11 +295,9 @@ public interface ApplicationContext extends Serializable {
 
 	public void setTypeChecking(boolean typeChecking);
 
-	Map<Collection.Key, Map<Collection.Key, Object>> getTagAttributeDefaultValues(
-			PageContext pc);
+	Map<Collection.Key, Map<Collection.Key, Object>> getTagAttributeDefaultValues(PageContext pc);
 
-	public Map<Collection.Key, Object> getTagAttributeDefaultValues(
-			PageContext pc, String fullName);
+	public Map<Collection.Key, Object> getTagAttributeDefaultValues(PageContext pc, String fullName);
 
 	public void setTagAttributeDefaultValues(PageContext pc, Struct sct);
 

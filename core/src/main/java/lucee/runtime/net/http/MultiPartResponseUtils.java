@@ -24,6 +24,9 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 
+import org.apache.commons.fileupload.MultipartStream;
+import org.apache.commons.lang.StringUtils;
+
 import lucee.commons.io.IOUtil;
 import lucee.commons.lang.StringUtil;
 import lucee.runtime.exp.PageException;
@@ -34,24 +37,19 @@ import lucee.runtime.type.StructImpl;
 import lucee.runtime.type.util.KeyConstants;
 import lucee.runtime.type.util.ListUtil;
 
-import org.apache.commons.fileupload.MultipartStream;
-import org.apache.commons.lang.StringUtils;
-
-
 public class MultiPartResponseUtils {
 
 	public static boolean isMultipart(String mimetype) {
-		return !StringUtil.isEmpty(extractBoundary(mimetype,null)) 
-			&& StringUtil.startsWithIgnoreCase(mimetype, "multipart/");
+		return !StringUtil.isEmpty(extractBoundary(mimetype, null)) && StringUtil.startsWithIgnoreCase(mimetype, "multipart/");
 	}
 
-	public static Array getParts(byte[] barr,String contentTypeHeader) throws IOException, PageException {
-		String boundary = extractBoundary(contentTypeHeader,"");
+	public static Array getParts(byte[] barr, String contentTypeHeader) throws IOException, PageException {
+		String boundary = extractBoundary(contentTypeHeader, "");
 		ByteArrayInputStream bis = new ByteArrayInputStream(barr);
 		MultipartStream stream;
 		Array result = new ArrayImpl();
-		stream = new MultipartStream(bis,getBytes(boundary,"UTF-8"));// 
-		
+		stream = new MultipartStream(bis, getBytes(boundary, "UTF-8"));//
+
 		boolean hasNextPart = stream.skipPreamble();
 		while (hasNextPart) {
 			result.append(getPartData(stream));
@@ -64,12 +62,12 @@ public class MultiPartResponseUtils {
 		if (contentTypeHeader == null) return defaultValue;
 		String[] headerSections = ListUtil.listToStringArray(contentTypeHeader, ';');
 		for (String section: headerSections) {
-			String[] subHeaderSections = ListUtil.listToStringArray(section,'=');
+			String[] subHeaderSections = ListUtil.listToStringArray(section, '=');
 			String headerName = subHeaderSections[0].trim();
 			if (headerName.toLowerCase().equals("boundary")) {
 				return subHeaderSections[1].replaceAll("^\"|\"$", "");
 			}
-		
+
 		}
 		return defaultValue;
 	}
@@ -87,12 +85,12 @@ public class MultiPartResponseUtils {
 
 	private static Struct extractHeaders(String rawHeaders) throws PageException {
 		Struct result = new StructImpl();
-		String[] headers = ListUtil.listToStringArray(rawHeaders,'\n');
-		for(String rawHeader :headers) {
-			String[] headerArray = ListUtil.listToStringArray(rawHeader,':');
+		String[] headers = ListUtil.listToStringArray(rawHeaders, '\n');
+		for (String rawHeader: headers) {
+			String[] headerArray = ListUtil.listToStringArray(rawHeader, ':');
 			String headerName = headerArray[0];
-			if (!StringUtil.isEmpty(headerName,true)) {
-				String value = StringUtils.join(Arrays.copyOfRange(headerArray, 1, headerArray.length),":").trim();
+			if (!StringUtil.isEmpty(headerName, true)) {
+				String value = StringUtils.join(Arrays.copyOfRange(headerArray, 1, headerArray.length), ":").trim();
 				result.set(headerName, value);
 			}
 		}
@@ -103,11 +101,11 @@ public class MultiPartResponseUtils {
 		byte[] bytes;
 		try {
 			bytes = string.getBytes(charset);
-		} catch (UnsupportedEncodingException e) {
+		}
+		catch (UnsupportedEncodingException e) {
 			bytes = string.getBytes();
 		}
 		return bytes;
 	}
-
 
 }

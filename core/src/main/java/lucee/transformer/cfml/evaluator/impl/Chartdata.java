@@ -22,9 +22,7 @@ import lucee.transformer.cfml.evaluator.ChildEvaluator;
 
 public final class Chartdata extends ChildEvaluator {
 
-	@Override
-	protected String getParentName() {
-		return "chartseries";
+	public Chartdata() {
+		super("chartseries");
 	}
-
 }

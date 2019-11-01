@@ -22,12 +22,12 @@ import java.util.Iterator;
 
 import lucee.runtime.type.Collection;
 
-public class KeyAsStringIterator  implements Iterator<String> {
+public class KeyAsStringIterator implements Iterator<String> {
 
 	private Iterator<Collection.Key> it;
 
-	public KeyAsStringIterator(Iterator<Collection.Key> it){
-		this.it=it;
+	public KeyAsStringIterator(Iterator<Collection.Key> it) {
+		this.it = it;
 	}
 
 	@Override

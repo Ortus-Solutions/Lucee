@@ -1,16 +1,72 @@
 language: java
 
+jdk:
+#  - oraclejdk9
+  - openjdk8
+# build only commits to branch master or where pattern matches "n.n" (where n is a number), e.g. 5.2
+branches:
+  only:
+    - master
+    - /^\d+(\.\d+)+$/
+
 #os:
 #  - linux
 #  - osx
 
 # copy the settings.xml for maven from the "travis" branch
-before_install: 
+before_install:
 # - "git clone -b travis `git config --get remote.origin.url` target/travis"
 
-script: 
+### for more see https://docs.travis-ci.com/user/database-setup
+services:
+  - mysql # server:"127.0.0.1"; user:"root"; password:""
+  - postgresql # server:"127.0.0.1"; user:"postgres"; password:""
+  - mongodb #  server:"127.0.0.1" user/pass see below
+  - memcached # Memcached uses the default configuration and binds to localhost.
+
+before_script:
+  - mysql -e "CREATE DATABASE IF NOT EXISTS testdb;" -uroot
+  - psql -c 'CREATE DATABASE testdb;' -U postgres
+
+### enable the below only if authentication is implemented in MongoDB extension
+  # - sleep 15 # necessary for the mongodb because it does not accept connections immediately
+  # - mongo testdb --eval "printjson(db.version())"
+  # - mongo testdb --eval 'db.createUser({user:"travis", pwd:"testpw", roles:["readWrite"]});'
+  # - mongo testdb --eval 'db.auth({user:"travis", pwd:"testpw"})'
+
+script:
 # maven deploy process (builds lucee and deploys to sonatype)
- - mvn -f loader/pom.xml clean deploy --settings travis-settings.xml #target/travis/settings.xml
+- echo "${TRAVIS_PULL_REQUEST} $TRAVIS_BRANCH $TRAVIS_BUILD_NUMBER $TRAVIS_BUILD_ID "
+
+#- if [ "${TRAVIS_PULL_REQUEST}" == "false" && ${TRAVIS_BRANCH} == "5.2" ]; then  always false even both seperatly are true
+#- if [ "${TRAVIS_PULL_REQUEST}" == "false" ]; then
+
+- export DO_DEPLOY="false"
+- if [ "${TRAVIS_PULL_REQUEST}" == "false" ]; then
+    if [ "${TRAVIS_BRANCH}" == "5.2" ]; then
+      export DO_DEPLOY="true";
+    fi
+  fi
+
+
+- if [ "${TRAVIS_PULL_REQUEST}" == "false" ]; then
+    if [ "${TRAVIS_BRANCH}" == "5.3" ]; then
+      export DO_DEPLOY="true";
+    fi
+  fi
+
+- echo "DO_DEPLOY ${DO_DEPLOY}"
+
+
+
+
+- if [ "${DO_DEPLOY}" == "true" ]; then
+    echo "------- Maven Deploy -------";
+    mvn -e -f loader/pom.xml clean deploy --settings travis-settings.xml;
+  else
+    echo "------- Maven Install ---------";
+    mvn -e -f loader/pom.xml clean install --settings travis-settings.xml;
+  fi
 
 ############ increment maven version (not working) ###########
 # - mvn --batch-mode -f loader/pom.xml release:update-versions
@@ -24,14 +80,19 @@ script:
 # - git push origin master
 
 #deploy:
-#	skip_cleanup: true
+# skip_cleanup: true
 
 notifications:
   slack: luceeserver:ZTfbu4bVSLFmakRcLInrNZIT
   email:
     - michael@lucee.org
+    - igal@lucee.org
 
 after_success:
 # - version=$(mvn org.apache.maven.plugins:maven-help-plugin:2.1.1:evaluate -Dexpression=project.version | egrep -v '^\[|Downloading:' | tr -d ' \n')
 - curl "http://stable.lucee.org/rest/update/provider/buildLatest"
+- curl "https://download.lucee.org/?type=snapshots&reset=force"
+
+- chmod +x travis-docker-build.sh && ./travis-docker-build.sh
+
 #- git commit -a -m "Committed by Travis-CI build number: $TRAVIS_JOB_ID "

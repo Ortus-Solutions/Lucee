@@ -68,13 +68,11 @@ public interface ORMSession {
 	 * @param forceInsert
 	 * @throws PageException
 	 */
-	public void save(PageContext pc, Object obj, boolean forceInsert)
-			throws PageException;
+	public void save(PageContext pc, Object obj, boolean forceInsert) throws PageException;
 
 	/**
-	 * Reloads data for an entity that is already loaded. This method refetches
-	 * data from the database and repopulates the entity with the refreshed
-	 * data.
+	 * Reloads data for an entity that is already loaded. This method refetches data from the database
+	 * and repopulates the entity with the refreshed data.
 	 * 
 	 * @param obj
 	 */
@@ -86,16 +84,13 @@ public interface ORMSession {
 	 * @param entityName
 	 * @return
 	 */
-	public Component create(PageContext pc, String entityName)
-			throws PageException;
+	public Component create(PageContext pc, String entityName) throws PageException;
 
 	/**
-	 * Attaches the specified entity to the current ORM session. It copies the
-	 * state of the given object onto the persistent object with the same
-	 * identifier and returns the persistent object.
-	 * If there is no persistent instance currently associated with the session,
-	 * it is loaded. The given instance is not associated with the session. User
-	 * have to use the returned object from this session.
+	 * Attaches the specified entity to the current ORM session. It copies the state of the given object
+	 * onto the persistent object with the same identifier and returns the persistent object. If there
+	 * is no persistent instance currently associated with the session, it is loaded. The given instance
+	 * is not associated with the session. User have to use the returned object from this session.
 	 * 
 	 * @param pc
 	 * @param obj
@@ -121,28 +116,27 @@ public interface ORMSession {
 	public void clear(PageContext pc, String dataSource) throws PageException;
 
 	/**
-	 * load and return a Object that match given filter, if there is more than
-	 * one Object matching the filter, only the first Object is returned
+	 * load and return a Object that match given filter, if there is more than one Object matching the
+	 * filter, only the first Object is returned
 	 * 
 	 * @param name
 	 * @param filter
 	 * @return
 	 */
-	public Component load(PageContext pc, String name, Struct filter)
-			throws PageException;
+	public Component load(PageContext pc, String name, Struct filter) throws PageException;
 
-	public Query toQuery(PageContext pc, Object obj, String name)
-			throws PageException;
+	public Query toQuery(PageContext pc, Object obj, String name) throws PageException;
 
 	/**
-	 * load and return a Object that match given id, if there is more than one
-	 * Object matching the id, only the first Object is returned
+	 * load and return a Object that match given id, if there is more than one Object matching the id,
+	 * only the first Object is returned
 	 * 
 	 * @param name
 	 * @param id
 	 */
-	public Component load(PageContext pc, String name, String id)
-			throws PageException;
+	public Component load(PageContext pc, String name, String id) throws PageException; // FUTURE deprecate
+
+	// public Component load(PageContext pc, String name, Object id) throws PageException; // FUTURE ADD
 
 	/**
 	 * load and return a array of Objects matching given filter
@@ -151,8 +145,7 @@ public interface ORMSession {
 	 * @param filter
 	 * @return
 	 */
-	public Array loadAsArray(PageContext pc, String name, Struct filter)
-			throws PageException;
+	public Array loadAsArray(PageContext pc, String name, Struct filter) throws PageException;
 
 	/**
 	 * load and return a array of Objects matching given filter
@@ -162,8 +155,7 @@ public interface ORMSession {
 	 * @param options
 	 * @return
 	 */
-	public Array loadAsArray(PageContext pc, String name, Struct filter,
-			Struct options) throws PageException;
+	public Array loadAsArray(PageContext pc, String name, Struct filter, Struct options) throws PageException;
 
 	/**
 	 * @param pc
@@ -174,8 +166,7 @@ public interface ORMSession {
 	 * @return
 	 * @throws PageException
 	 */
-	public Array loadAsArray(PageContext pc, String name, Struct filter,
-			Struct options, String order) throws PageException;
+	public Array loadAsArray(PageContext pc, String name, Struct filter, Struct options, String order) throws PageException;
 
 	/**
 	 * load and return a array of Objects matching given id
@@ -183,8 +174,7 @@ public interface ORMSession {
 	 * @param name
 	 * @param id
 	 */
-	public Array loadAsArray(PageContext pc, String name, String id)
-			throws PageException;
+	public Array loadAsArray(PageContext pc, String name, String id) throws PageException;
 
 	/**
 	 * @param pc
@@ -194,8 +184,7 @@ public interface ORMSession {
 	 * @return
 	 * @throws PageException
 	 */
-	public Array loadAsArray(PageContext pc, String name, String id,
-			String order) throws PageException;
+	public Array loadAsArray(PageContext pc, String name, String id, String order) throws PageException;
 
 	/**
 	 * load and return a array of Objects matching given sampleEntity
@@ -203,45 +192,34 @@ public interface ORMSession {
 	 * @param pc
 	 * @param obj
 	 */
-	public Array loadByExampleAsArray(PageContext pc, Object obj)
-			throws PageException;
+	public Array loadByExampleAsArray(PageContext pc, Object obj) throws PageException;
 
 	/**
-	 * load and return a Object that match given sampleEntity, if there is more
-	 * than one Object matching the id, only the first Object is returned
+	 * load and return a Object that match given sampleEntity, if there is more than one Object matching
+	 * the id, only the first Object is returned
 	 * 
 	 * @param pc
 	 * @param obj
 	 */
-	public Component loadByExample(PageContext pc, Object obj)
-			throws PageException;
+	public Component loadByExample(PageContext pc, Object obj) throws PageException;
 
-	public void evictCollection(PageContext pc, String entity, String collection)
-			throws PageException;
+	public void evictCollection(PageContext pc, String entity, String collection) throws PageException;
 
-	public void evictCollection(PageContext pc, String entity,
-			String collection, String id) throws PageException;
+	public void evictCollection(PageContext pc, String entity, String collection, String id) throws PageException;
 
 	public void evictEntity(PageContext pc, String entity) throws PageException;
 
-	public void evictEntity(PageContext pc, String entity, String id)
-			throws PageException;
+	public void evictEntity(PageContext pc, String entity, String id) throws PageException;
 
 	public void evictQueries(PageContext pc) throws PageException;
 
-	public void evictQueries(PageContext pc, String cacheName)
-			throws PageException;
+	public void evictQueries(PageContext pc, String cacheName) throws PageException;
 
-	public void evictQueries(PageContext pc, String cacheName, String datasource)
-			throws PageException;
+	public void evictQueries(PageContext pc, String cacheName, String datasource) throws PageException;
 
-	public Object executeQuery(PageContext pc, String dataSourceName,
-			String hql, Array params, boolean unique, Struct queryOptions)
-			throws PageException;
+	public Object executeQuery(PageContext pc, String dataSourceName, String hql, Array params, boolean unique, Struct queryOptions) throws PageException;
 
-	public Object executeQuery(PageContext pc, String dataSourceName,
-			String hql, Struct params, boolean unique, Struct queryOptions)
-			throws PageException;
+	public Object executeQuery(PageContext pc, String dataSourceName, String hql, Struct params, boolean unique, Struct queryOptions) throws PageException;
 
 	/**
 	 * close all elements in all sessions
@@ -286,11 +264,9 @@ public interface ORMSession {
 
 	public Object getRawSession(String dataSourceName) throws PageException;
 
-	public Object getRawSessionFactory(String dataSourceName)
-			throws PageException;
+	public Object getRawSessionFactory(String dataSourceName) throws PageException;
 
-	public ORMTransaction getTransaction(String dataSourceName,
-			boolean autoManage) throws PageException;
+	public ORMTransaction getTransaction(String dataSourceName, boolean autoManage) throws PageException;
 
 	public String[] getEntityNames();
 

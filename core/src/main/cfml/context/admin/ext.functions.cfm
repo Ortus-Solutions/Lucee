@@ -3,23 +3,23 @@
 		<cfreturn 1>
 		<cfreturn RandRange(1,0)>
 	</cffunction>
-	
+
 	<cffunction name="updateAvailable" output="no">
 		<cfargument name="data" required="yes" type="struct">
 		<cfargument name="extensions" required="yes" type="query">
 		<cfset var result=getdataByid(data.id,extensions)>
-		
+
 		<cfif result.count()==0><cfreturn false></cfif>
 		<cfif data.version LT result.version>
 			<cfreturn true>
-		</cfif>	
-		
+		</cfif>
+
 		<cfreturn false>
 	</cffunction>
-	
-	
-	
-			
+
+
+
+
 	<cffunction name="doFilter" returntype="string" output="false">
 		<cfargument name="filter" required="yes" type="string">
 		<cfargument name="value" required="yes" type="string">
@@ -34,13 +34,13 @@
 			<cfreturn FindNoCase(filter,value)>
 		</cfif>
 	</cffunction>
-	
-	
-	
-	
-	
-	
-	
+
+
+
+
+
+
+
 <cfscript>
 
 </cfscript>
@@ -49,11 +49,11 @@
 		<cfset systemOutput("deprecated function call:<print-stack-trace>",true,true)>
 		<cfreturn createObject('component',"ExtensionProviderProxy").init(arguments.provider)>
 	</cffunction>
-	
-	
+
+
 	<cfset request.loadCFC=loadCFC>
-	
-	
+
+
 	<cffunction name="getDetail" returntype="struct" output="yes">
 		<cfargument name="hashProvider" required="yes" type="string">
 		<cfargument name="appId" required="yes" type="string">
@@ -83,7 +83,7 @@
 		</cfloop>
 		<cfreturn detail>
 	</cffunction>
-	
+
 <cfscript>
 	/**
 	* returns the row matching the given id from given extesnion query, if there is more record than once for given id (data from different extension provider), the data with the newest version is returned
@@ -101,12 +101,12 @@
 
 </cfscript>
 	<cffunction name="getInstalledById" returntype="struct" output="yes">
-		
+
 		<cfreturn tmp>
 	</cffunction>
 
-	
-	
+
+
 	<cffunction name="getDownloadDetails" returntype="struct" output="yes">
 		<cfargument name="hashProvider" required="yes" type="string">
 		<cfargument name="type" required="yes" type="string">
@@ -124,8 +124,8 @@
 		<cfreturn struct()>
 	</cffunction>
 	<cfset request.getDownloadDetails=getDownloadDetails>
-	
-	
+
+
 	<cffunction name="getDetailFromExtension" returntype="struct" output="yes">
 		<cfargument name="hashProvider" required="yes" type="string">
 		<cfargument name="appId" required="yes" type="string">
@@ -141,7 +141,7 @@
 				<cfbreak>
 			</cfif>
 		</cfloop>
-		
+
 		<!--- installed --->
 		<cfloop query="extensions">
 			<cfif  hash(extensions.provider) EQ arguments.hashProvider and extensions.id EQ arguments.appId>
@@ -151,25 +151,24 @@
 		</cfloop>
 		<cfreturn detail>
 	</cffunction>
-	
-	
+
+
 	<cffunction name="getDumpNailOld" returntype="string" output="no">
 		<cfargument name="imgUrl" required="yes" type="string">
 		<cfargument name="width" required="yes" type="number" default="80">
 		<cfargument name="height" required="yes" type="number" default="40">
-		
+
 		<cfreturn "data:image/png;base64,#imgURL#">
 		<cfreturn "thumbnail.cfm?img=#urlEncodedFormat(imgUrl)#&width=#width#&height=#height#">
-	</cffunction>    
-	
+	</cffunction>
+
 	<cffunction name="getDumpNail">
 		<cfargument name="src" required="yes" type="string">
 		<cfargument name="width" required="yes" type="number" default="80">
 		<cfargument name="height" required="yes" type="number" default="40">
-
 		<cfset local.id=hash(src&":"&width&"x"&height)>
 		<cfset mimetypes={png:'png',gif:'gif',jpg:'jpeg'}>
-	
+
 		<cfif len(src) ==0>
 			<cfset ext="gif">
 		<cfelse>
@@ -178,46 +177,97 @@
 				<cfset ext="png"><!--- base64 encoded binary --->
 			</cfif>
 		</cfif>
-		
-	
-	
+
+	<cfset cache=true>
+
 	<!--- copy and shrink to local dir --->
 	<cfset tmpfile=expandPath("{temp-directory}/admin-ext-thumbnails/__"&id&"."&ext)>
-	<cfif fileExists(tmpfile)>
-
+	
+	<cfset fileName = id&"."&ext>
+	<cfif cache && fileExists(tmpfile)>
+		<cfset request.refresh = false>
 		<cffile action="read" file="#tmpfile#" variable="b64">
 	<cfelseif len(src) ==0>
 		<cfset local.b64=("R0lGODlhMQApAIAAAGZmZgAAACH5BAEAAAAALAAAAAAxACkAAAIshI+py+0Po5y02ouz3rz7D4biSJbmiabqyrbuC8fyTNf2jef6zvf+DwwKeQUAOw==")>
-		
+
 	<cfelse>
+
 		<cfif fileExists(src)>
 			<cffile action="readbinary" file="#src#" variable="data">
 		<!--- base64 encoded binary --->
 		<cfelse>
 			<cfset data=toBinary(src)>
-		</cfif>
-		<cfimage action="read" source="#data#" name="img">
 
-		<!--- shrink images if needed --->
-		<cfif img.height GT arguments.height or img.width GT arguments.width>
-			<cfif img.height GT arguments.height >
-				<cfimage action="resize" source="#img#" height="#arguments.height#" name="img">
-			</cfif>
-			<cfif img.width GT arguments.width>
-				<cfimage action="resize" source="#img#" width="#arguments.width#" name="img">
-			</cfif>
-			<cfset data=toBinary(img)>
 		</cfif>
-		
-		<cftry>
-			<cfset local.b64=toBase64(data)>
-			<cffile action="write" file="#tmpfile#" output="#b64#" createPath="true">
-			<cfcatch><cfrethrow></cfcatch><!--- if it fails because there is no permission --->
-		</cftry>
+		<cfif isValid("URL", src)>
+			<cffile action="readbinary" file="#src#" variable="data">
+			<cfset src=toBase64(data)>
+		</cfif>
+		<cffile action="write" file="#tmpfile#" output="#src#" createPath="true">
+		<cfif extensionExists("B737ABC4-D43F-4D91-8E8E973E37C40D1B")> <!--- image extension --->
+			<cfset img=imageRead(data)>
+
+			<!--- shrink images if needed --->
+			<cfif img.height GT arguments.height or img.width GT arguments.width>
+				<cftry>
+					<cfif img.height GT arguments.height >
+						<cfset imageResize(img,"",arguments.height)>
+					</cfif>
+					<cfif img.width GT arguments.width>
+						<cfset imageResize(img,arguments.width,"")>
+					</cfif>
+					<cfset data=toBinary(img)>
+					<cfcatch><cfrethrow></cfcatch>
+				</cftry>
+				<cftry>
+					<cfset local.b64=toBase64(data)>
+					<cffile action="write" file="#tmpfile#" output="#local.b64#" createPath="true">
+					<cfcatch><cfrethrow></cfcatch><!--- if it fails because there is no permission --->
+				</cftry>
+			</cfif>
+		<cfelse>
+			<cfoutput>
+				<cfset request.refresh = true>
+				<cfset imgSrc = "data:image/png;base64,#src#" >
+				<img src="#imgSrc#" id="img_#id#" style="display:none" />
+				<canvas id="myCanvas_#id#"  style="display:none" ></canvas>
+				<script>
+					var img = document.getElementById("img_#id#");
+					var canvas = document.getElementById("myCanvas_#id#");
+					var ctx = canvas.getContext("2d");
+	
+					canvas.height =  img.height > 50 ? 50 :  img.height ;
+					ctx.drawImage(img, 0, 0, 0, canvas.height);
+					canvas.width = img.width > 90 ? 90 :  img.width ;
+					ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+					ImageURL = canvas.toDataURL();
+
+					var block = ImageURL.split(";");
+					// Get the content type of the image
+					var contentType = block[0].split(":")[1];// In this case "image/gif"
+					// get the real base64 content of the file
+					var realData = block[1].split(",")[1];
+					var oAjax = new XMLHttpRequest();
+					oAjax.onreadystatechange = function() {
+						if(this.readyState == 4 && this.status == 200) {
+						}
+					};
+
+					var data = "imgSrc="+encodeURIComponent(realData);
+					var ajaxURL = "/lucee/admin/ImgProcess.cfm?file=#fileName#";
+					oAjax.open("POST", ajaxURL, true);
+					oAjax.send(data);
+
+				</script>
+			</cfoutput>
+		</cfif>	
+	</cfif>
+	<cfif fileExists(tmpfile)>
+		<cffile action="read" file="#tmpfile#" variable="b64">
 	</cfif>
 	<cfreturn "data:image/png;base64,#b64#">
-		
-	
+
 	</cffunction>
 
 <cfscript>
@@ -226,7 +276,7 @@
 	* get information from all available ExtensionProvider defined
 	*/
 	function getAllExternalData(boolean forceReload=false, numeric timeSpan=60){
-		admin 
+		admin
 			action="getRHExtensionProviders"
 			type="#request.adminType#"
 			password="#session["password"&request.adminType]#"
@@ -239,23 +289,25 @@
 	*/
 	function getExternalData(required string[] providers, boolean forceReload=false, numeric timeSpan=60, boolean useLocalProvider=true) {
 		var datas={};
+
 		providers.each(parallel:true,closure:function(value){
 				var data=getProviderInfo(arguments.value,forceReload,timespan);
 				datas[arguments.value]=data;
 			});
+
 		var qry=queryNew("id,name,provider,lastModified");
 
 		if(useLocalProvider) {
-			admin 
+			admin
 			    action="getLocalExtensions"
 			    type="#request.adminType#"
 			    password="#session["password"&request.adminType]#"
-			    returnVariable="local.locals";
-
+			    returnVariable="local.locals" ;
 			// add column if necessary
 			loop list="#locals.columnlist()#" item="local.k" {
                 if(!qry.columnExists(k)) qry.addColumn(k,[]);
             }
+            qry.addColumn('otherVersions',[]);
 
 			loop query="#locals#" {
 				row=qry.addrow();
@@ -266,38 +318,142 @@
 			}
 		}
 
+		querySort(query:qry,names:"id");
+		local.lastId="";
+		for(var row=qry.recordcount;row>=1;row--)  {
+			if(qry.id[row]==lastId) {
+				if(toVersionSortable(qry.version[row])<toVersionSortable(qry.version[row+1])) {
+					local.older=qry.version[row];
 
+					loop array=qry.columnArray() item="local.col" {
+						qry[col][row]=qry[col][row+1];
+					}
+				}
+				else
+					local.older=qry.version[row+1];
+
+				local.ov=qry.otherVersions[row+1];
+				if (isSimpleValue(ov) || isNull(ov))
+					qry.otherVersions[row]=[older];
+				else {
+					arrayAppend(ov,older);
+					qry.otherVersions[row]=ov;
+				}
+				qry.deleteRow(row+1);
+			}
+
+
+			lastId=qry.id[row];
+		}
+
+		/* output just for testing
+		var q=duplicate(qry);
+    	loop list=q.columnlist item="local.le" {
+    		if(le=='name' || le=='id' || le=='version' || le=='otherVersions') continue;
+	    	q.deleteColumn(le);
+	    }
+	    dump(q);*/
 
 		loop struct="#datas#" index="local.provider" item="local.data" {
 			if(structKeyExists(data,"error")) continue;
+
+			// rename older to otherVersions
+
+			if(queryColumnExists(data.extensions,"older") || !queryColumnExists(data.extensions,"otherVersions")) {
+				data.extensions.addColumn("otherVersions",data.extensions.columnData('older'));
+				data.extensions.deleteColumn("older");
+				//QuerySetColumn(data.extensions,"older","otherVersions");
+			}
+
 			// add missing columns
 			loop list="#data.extensions.columnlist()#" item="local.k" {
                 if(!qry.ColumnExists(k)) qry.addColumn(k,[]);
             }
+
 			// add Extensions data
 			var row=0;
+
             loop query="#data.extensions#" label="outer"{
             	row=0;
             	// does a row with the same id already exist?
+            	local.localNewer=false;
             	loop query="#qry#" label="inner" {
             		// has already record with that id
             		if(qry.id==data.extensions.id) {
+
             			// current version is older
-            			if(qry.version>=data.extensions.version) continue outer;
             			row=qry.currentrow;
+            			if(qry.version>data.extensions.version) {
+            				// local data is newer
+							//localNewer=true;
+            				//continue outer;
+            			}
             		}
             	}
 
+            	// merge
+            	if(row>0) {
+					qry.setCell("provider",provider,row);
+					qry.setCell("lastModified",data.lastModified,row);
+					if(toVersionSortable(qry.version[row])<toVersionSortable(data.extensions.version)) {
+						local.v=qry.version[row];
+						loop list="#data.extensions.columnlist()#" item="local.k" {
+							if(k=='otherVersions') continue;
+		            		qry.setCell(k,data.extensions[k],row);
+		            	}
+		            	if(isSimpleValue(qry.otherVersions[row]) || isNull(qry.otherVersions[row])) qry.otherVersions[row]=[v];
+		            	else arrayAppend(qry.otherVersions[row],v);
+					}
+					else {
+						if(isSimpleValue(qry.otherVersions[row]) || isNull(qry.otherVersions[row])) qry.otherVersions[row]=[data.extensions.version];
+						else arrayAppend(qry.otherVersions[row],data.extensions.version);
+					}
 
-            	if(row==0)row=qry.addRow();
-				qry.setCell("provider",provider,row);
-				qry.setCell("lastModified",data.lastModified,row);
-            	loop list="#data.extensions.columnlist()#" item="local.k" {
-            		qry.setCell(k,data.extensions[k],row);
+					local.locals=qry.otherVersions[row];
+					local.externals=data.extensions.otherVersions;
+					if(isArray(locals) && locals.len() && isArray(externals) && externals.len()) {
+						loop array=locals item="local.lv" {
+							local.lvs=toVersionSortable(lv);
+							local.exists=false;
+							for(var i=externals.len();i>=1;i--) {
+								if(toVersionSortable(externals[i])==lvs) exists=true;
+							}
+
+							if(!exists) {
+								arrayAppend(externals,lv);
+							}
+						}
+						qry.otherVersions[row]=externals;
+					}
+					else if(isArray(locals) && locals.len() ) {
+						qry.otherVersions[row]=locals;
+					}
+					else {
+						qry.otherVersions[row]=externals;
+					}
+
+
             	}
+				else {
+					row=qry.addRow();
+					qry.setCell("provider",provider,row);
+					qry.setCell("lastModified",data.lastModified,row);
+	            	loop list="#data.extensions.columnlist()#" item="local.k" {
+		            	qry.setCell(k,data.extensions[k],row);
+		            }
+	        	}
             }
     	}
     	if(isQuery(qry)) querySort(query:qry,names:"name,id");
+
+    	/* output just for testing
+		var q=duplicate(qry);
+    	loop list=q.columnlist item="local.le" {
+    		if(le=='name' || le=='id' || le=='version' || le=='older' || le=='otherVersions') continue;
+	    	q.deleteColumn(le);
+	    }
+		dump(q);*/
+
     	return qry;
 	}
 
@@ -310,9 +466,16 @@
     	return datas;
 	}
 
-    
-	function getProviderInfo(required string provider, boolean forceReload=false, numeric timeSpan=60){
-    	
+
+
+	function getProviderInfoAsync(required string provider){
+		thread args=arguments {
+			getProviderInfo(args.provider, true, 60, 50);
+		}
+	}
+
+
+	function getProviderInfo(required string provider, boolean forceReload=false, numeric timeSpan=60, timeout=10){
 		if(provider=="local" || provider=="") {
 			local.provider={};
 			provider.meta.title="Local Extension Provider";
@@ -322,51 +485,57 @@
 			return provider;
 		}
 
-
     	// request (within request we only try once to load the data)
         if(!forceReload and
-			StructKeyExists(request,"rhproviders") and 
+			StructKeyExists(request,"rhproviders") and
 			StructKeyExists(request.rhproviders,provider) and
 			isStruct(request.rhproviders[provider]))
         		return request.rhproviders[provider];
-        // from session 
+        // from session
         if(!forceReload and
-        	  StructKeyExists(session,"rhproviders") and 
-			  StructKeyExists(session.rhproviders,provider) and 
+        	  StructKeyExists(session,"rhproviders") and
+			  StructKeyExists(session.rhproviders,provider) and
 			  StructKeyExists(session.rhproviders[provider],'lastModified') and
 			  DateAdd("s",arguments.timespan,session.rhproviders[provider].lastModified) GT now())
 				return session.rhproviders[provider];
-		
-		try {
-			var start=getTickCount();
 
+		try {
+			
 			// get info from remote
 			var uri=provider&"/rest/extension/provider/info";
-			//dump("get:"&uri);
-			//SystemOutput(uri&"<print-stack-trace>",true,true);
 
-			admin 
+			admin
 				action="getAPIKey"
 				type="#request.adminType#"
 				password="#session["password"&request.adminType]#"
 				returnVariable="apiKey";
 
-			
-			http url="#uri#" result="local.http" {
-				httpparam type="header" name="accept" value="application/cfml";
-				if(!isNull(apikey))httpparam type="url" name="ioid" value="#apikey#";
+			var start=getTickCount();
+
+			try{
+				http url="#uri#?type=all&coreVersion=#server.lucee.version#" cachedWithin=createTimespan(0,0,5,0) result="local.http" timeout=arguments.timeout {
+					httpparam type="header" name="accept" value="application/json";
+					if(!isNull(apikey))httpparam type="url" name="ioid" value="#apikey#";
+				}
 			}
+			catch(e) {
+				// call it in background
+				getProviderInfoAsync(arguments.provider);
+			}
+
 			if(isNull(http.status_code)){
 				session.rhcfcstries[provider]=now(); // set last try
-				local.result.error=http.fileContent;
+				local.result.error=http.fileContent?:'';
 				result.status_code=404;
 				result.lastModified=now();
 				result.provider=uri;
 				return result;
 			}
+
 			// sucessfull
 			if(http.status_code==200) { // if(isDefined("http.responseheader['Return-Format']"))
-				local.result=evaluate(http.fileContent);
+				local.result=deserializeJson(http.fileContent,false);
+				
 				result.lastModified=now();
 				result.provider=uri;
 				result.status_code=http.status_code;
@@ -398,29 +567,28 @@
 	}
 
 
-	function downloadFull(required string provider,required string id){
-		return _download("full",provider,id);
+	function downloadFull(required string provider,required string id, string version=""){
+		return _download("full",provider,id,version);
 	}
-	function downloadTrial(required string provider,required string id){
-		return _download("trial",provider,id);
+	function downloadTrial(required string provider,required string id, string version=""){
+		return _download("trial",provider,id,version);
 	}
 
-	function _download(String type,required string provider,required string id){
-    		
+	function _download(String type,required string provider,required string id, string version=""){
 
 		var start=getTickCount();
 
 		// get info from remote
-		admin 
+		admin
 			action="getAPIKey"
 			type="#request.adminType#"
 			password="#session["password"&request.adminType]#"
 			returnVariable="apiKey";
-		
+
 		var uri=provider&"/rest/extension/provider/"&type&"/"&id;
 
-		if(provider=="local") {
-			admin 
+		if(provider=="local") { // TODO use version from argument scope
+			admin
 				action="getLocalExtension"
 				type="#request.adminType#"
 				password="#session["password"&request.adminType]#"
@@ -430,18 +598,97 @@
 			return local.ext;
 		}
 		else {
-			http url="#uri#" result="local.http" {
+			http url="#uri#?type=all&coreVersion=#server.lucee.version##len(arguments.version)?'&version='&arguments.version:''#" result="local.http"  cachedWithin=createTimespan(0,0,5,0) {
 				httpparam type="header" name="accept" value="application/cfml";
 				if(!isNull(apiKey))httpparam type="url" name="ioid" value="#apikey#";
 
 			}
-			if(!isNull(http.status_code) && http.status_code==200) { 
+			
+			if(!isNull(http.status_code) && http.status_code==200) {
 				return http.fileContent;
 			}
 			throw http.fileContent;
 		}
 	}
 
+
+	function toVersionSortable(required string version) localMode=true {
+		version=unwrap(version.trim());
+		arr=listToArray(arguments.version,'.');
+
+		// OSGi compatible version
+		if(arr.len()==4 && isNumeric(arr[1]) && isNumeric(arr[2]) && isNumeric(arr[3])) {
+			try{return toOSGiVersion(version).sortable}catch(local.e){};
+		}
+
+
+		rtn="";
+		loop array=arr index="i" item="v" {
+			if(len(v)<5)
+			 rtn&="."&repeatString("0",5-len(v))&v;
+			else
+				rtn&="."&v;
+		}
+		return 	rtn;
+	}
+
+
+	struct function toOSGiVersion(required string version, boolean ignoreInvalidVersion=false){
+		local.arr=listToArray(arguments.version,'.');
+
+		if(arr.len()!=4 || !isNumeric(arr[1]) || !isNumeric(arr[2]) || !isNumeric(arr[3])) {
+			if(ignoreInvalidVersion) return {};
+			throw "version number ["&arguments.version&"] is invalid";
+		}
+		local.sct={major:arr[1]+0,minor:arr[2]+0,micro:arr[3]+0,qualifier_appendix:"",qualifier_appendix_nbr:100};
+
+		// qualifier has an appendix? (BETA,SNAPSHOT)
+		local.qArr=listToArray(arr[4],'-');
+		if(qArr.len()==1 && isNumeric(qArr[1])) local.sct.qualifier=qArr[1]+0;
+		else if(qArr.len()==2 && isNumeric(qArr[1])) {
+			sct.qualifier=qArr[1]+0;
+			sct.qualifier_appendix=qArr[2];
+			if(sct.qualifier_appendix=="SNAPSHOT")sct.qualifier_appendix_nbr=0;
+			else if(sct.qualifier_appendix=="BETA")sct.qualifier_appendix_nbr=50;
+			else sct.qualifier_appendix_nbr=75; // every other appendix is better than SNAPSHOT
+		}else if(qArr.len()==3 && isNumeric(qArr[1])) {
+			sct.qualifier=qArr[1]+0;
+			sct.qualifier_appendix1=qArr[2];
+			sct.qualifier_appendix2=qArr[3];
+			if(sct.qualifier_appendix1 =="ALPHA" || sct.qualifier_appendix2 == 'SNAPSHOT' )sct.qualifier_appendix_nbr=25;
+			else sct.qualifier_appendix_nbr=75; // every other appendix is better than SNAPSHOT
+		}
+		else throw "version number ["&arguments.version&"] is invalid";
+		sct.pure=
+					sct.major
+					&"."&sct.minor
+					&"."&sct.micro
+					&"."&sct.qualifier;
+		sct.display=
+					sct.pure
+					&(sct.qualifier_appendix==""?"":"-"&sct.qualifier_appendix);
+
+		sct.sortable=repeatString("0",2-len(sct.major))&sct.major
+					&"."&repeatString("0",3-len(sct.minor))&sct.minor
+					&"."&repeatString("0",3-len(sct.micro))&sct.micro
+					&"."&repeatString("0",4-len(sct.qualifier))&sct.qualifier
+					&"."&repeatString("0",3-len(sct.qualifier_appendix_nbr))&sct.qualifier_appendix_nbr;
+
+
+
+		return sct;
+
+
+	}
+
+	function unwrap(String str) {
+		str = str.trim();
+		if((left(str,1)==chr(8220) || left(str,1)=='"') && (right(str,1)=='"' || right(str,1)==chr(8221)))
+			str=mid(str,2,len(str)-2);
+		else if(left(str,1)=="'" && right(str,1)=="'")
+			str=mid(str,2,len(str)-2);
+		return str;
+	}
 </cfscript>
 
 

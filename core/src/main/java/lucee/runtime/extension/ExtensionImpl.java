@@ -49,13 +49,10 @@ public class ExtensionImpl implements Extension {
 	private String network;
 	private DateTime created;
 	private String type;
-	
-	
-	public ExtensionImpl(String strConfig, String id, String provider, String version, 
-			String name, String label, String description, String category, String image,
-			String author,String codename,String video,String support,String documentation,
-			String forum,String mailinglist,String network,DateTime created,String type) {
-		this.strConfig=strConfig;
+
+	public ExtensionImpl(String strConfig, String id, String provider, String version, String name, String label, String description, String category, String image, String author,
+			String codename, String video, String support, String documentation, String forum, String mailinglist, String network, DateTime created, String type) {
+		this.strConfig = strConfig;
 		this.id = id;
 		this.provider = provider;
 		this.version = version;
@@ -75,18 +72,16 @@ public class ExtensionImpl implements Extension {
 		this.network = network;
 		this.created = created;
 
-		if("server".equalsIgnoreCase(type))this.type="server";
-		else if("all".equalsIgnoreCase(type))this.type="all";
-		else this.type="web";
-		
+		if ("server".equalsIgnoreCase(type)) this.type = "server";
+		else if ("all".equalsIgnoreCase(type)) this.type = "all";
+		else this.type = "web";
+
 	}
-	
-	public ExtensionImpl(Struct config, String id, String provider, String version, 
-			String name, String label, String description, String category, String image,
-			String author,String codename,String video,String support,String documentation,
-			String forum,String mailinglist,String network,DateTime created,String type) {
-		if(config==null)	this.config=new StructImpl();
-		else 				this.config = config;
+
+	public ExtensionImpl(Struct config, String id, String provider, String version, String name, String label, String description, String category, String image, String author,
+			String codename, String video, String support, String documentation, String forum, String mailinglist, String network, DateTime created, String type) {
+		if (config == null) this.config = new StructImpl();
+		else this.config = config;
 		this.id = id;
 		this.provider = provider;
 		this.version = version;
@@ -105,75 +100,55 @@ public class ExtensionImpl implements Extension {
 		this.mailinglist = mailinglist;
 		this.network = network;
 		this.created = created;
-		if("server".equalsIgnoreCase(type))this.type="server";
-		else if("all".equalsIgnoreCase(type))this.type="all";
-		else this.type="web";
+		if ("server".equalsIgnoreCase(type)) this.type = "server";
+		else if ("all".equalsIgnoreCase(type)) this.type = "all";
+		else this.type = "web";
 	}
-	
-	
-	
+
 	@Override
 	public String getAuthor() {
 		return author;
 	}
-
-
 
 	@Override
 	public String getCodename() {
 		return codename;
 	}
 
-
-
 	@Override
 	public String getVideo() {
 		return video;
 	}
-
-
 
 	@Override
 	public String getSupport() {
 		return support;
 	}
 
-
-
 	@Override
 	public String getDocumentation() {
 		return documentation;
 	}
-
-
 
 	@Override
 	public String getForum() {
 		return forum;
 	}
 
-
-
 	@Override
 	public String getMailinglist() {
 		return mailinglist;
 	}
-
-
 
 	@Override
 	public String getNetwork() {
 		return network;
 	}
 
-
-
 	@Override
 	public DateTime getCreated() {
 		return created;
 	}
-
-
 
 	@Override
 	public String getName() {
@@ -209,31 +184,35 @@ public class ExtensionImpl implements Extension {
 	public String getProvider() {
 		return provider;
 	}
+
 	@Override
 	public String getId() {
 		return id;
 	}
+
 	@Override
 	public Struct getConfig(PageContext pc) {
-		if(config==null) {
-			if(StringUtil.isEmpty(strConfig)) config= new StructImpl();
-			else  {
+		if (config == null) {
+			if (StringUtil.isEmpty(strConfig)) config = new StructImpl();
+			else {
 				try {
-					config= (Struct)pc.evaluate(strConfig);
-				} catch (PageException e) {
+					config = (Struct) pc.evaluate(strConfig);
+				}
+				catch (PageException e) {
 					return new StructImpl();
 				}
 			}
 		}
 		return config;
 	}
-	
+
 	@Override
-	public String getStrConfig()  {
-		if(config!=null && strConfig==null) {
+	public String getStrConfig() {
+		if (config != null && strConfig == null) {
 			try {
-				strConfig=new ScriptConverter().serialize(config);
-			} catch (ConverterException e) {
+				strConfig = new ScriptConverter().serialize(config);
+			}
+			catch (ConverterException e) {
 				return "";
 			}
 		}

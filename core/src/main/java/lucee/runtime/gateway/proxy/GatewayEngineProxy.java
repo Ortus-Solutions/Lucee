@@ -25,11 +25,11 @@ import lucee.runtime.gateway.GatewayEngine;
 import lucee.runtime.gateway.GatewayEngineImpl;
 
 public class GatewayEngineProxy implements GatewayEngine {
-	
+
 	private GatewayEngineImpl engine;
 
-	public GatewayEngineProxy(GatewayEngineImpl engine){
-		this.engine=engine;
+	public GatewayEngineProxy(GatewayEngineImpl engine) {
+		this.engine = engine;
 	}
 
 	@Override

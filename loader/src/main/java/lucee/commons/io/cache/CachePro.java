@@ -31,16 +31,14 @@ public interface CachePro extends Cache {
 	public int clear() throws IOException;
 
 	/**
-	 * verifies the cache, throws a exception if something is wrong with the
-	 * cache
+	 * verifies the cache, throws a exception if something is wrong with the cache
 	 * 
 	 * @throws CacheException
 	 */
 	public void verify() throws CacheException;
 
 	/**
-	 * if the cache does not necessary decouple values, this method should make
-	 * sure of it.
+	 * if the cache does not necessary decouple values, this method should make sure of it.
 	 */
 	public CachePro decouple();
 }

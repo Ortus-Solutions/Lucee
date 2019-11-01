@@ -22,31 +22,34 @@ import java.util.ArrayList;
 import java.util.List;
 
 import lucee.commons.io.SystemUtil;
+import lucee.commons.io.log.LogUtil;
 
 public class RetireOutputStreamFactory {
-	
-	static List<RetireOutputStream> list=new ArrayList<RetireOutputStream>();
+
+	static List<RetireOutputStream> list = new ArrayList<RetireOutputStream>();
 	private static RetireThread thread;
-	private static boolean close=false;
-	
+	private static boolean closed = false;
+
 	/**
 	 * close existing threads and stops opening new onces
 	 */
-	public static void close(){
-		if(thread!=null && thread.isAlive()) {
-			thread.close=true;
+	public static void close() {
+		if (thread != null && thread.isAlive()) {
+			thread.close = true;
+			closed = true;
+			SystemUtil.notify(thread);
+			SystemUtil.patienceStop(thread, 5);
 		}
 	}
-	
-	
+
 	static void startThread(long timeout) {
-		if(timeout<1000) timeout=1000;
-		if(thread==null || !thread.isAlive()) {
-			thread=new RetireThread(timeout);
+		if (timeout < 1000) timeout = 1000;
+		if (thread == null || !thread.isAlive()) {
+			thread = new RetireThread(timeout);
 			thread.start();
 		}
-		else if(thread.sleepTime>timeout) {
-			thread.sleepTime=timeout;
+		else if (thread.sleepTime > timeout) {
+			thread.sleepTime = timeout;
 			SystemUtil.notify(thread);
 		}
 	}
@@ -54,33 +57,35 @@ public class RetireOutputStreamFactory {
 	static class RetireThread extends Thread {
 
 		public long sleepTime;
-		public boolean close=false;
-		
-		public RetireThread(long sleepTime){
-			this.sleepTime=sleepTime;
+		public boolean close = false;
+
+		public RetireThread(long sleepTime) {
+			this.sleepTime = sleepTime;
 		}
-		
-		
+
 		@Override
-		public void run(){
-			//print.e("start thread");
-			while(true){
-				boolean _close=close;
-				try{
-					if(list.size()==0) break;
-					SystemUtil.wait(this,sleepTime);
-					//SystemUtil.sleep(sleepTime);
+		public void run() {
+			while (true) {
+				try {
+					if (list.size() == 0) break;
+					SystemUtil.wait(this, sleepTime);
 					RetireOutputStream[] arr = list.toArray(new RetireOutputStream[list.size()]); // not using iterator to avoid ConcurrentModificationException
-					for(int i=0;i<arr.length;i++){
-						if(_close) arr[i].retireNow();
+					for (int i = 0; i < arr.length; i++) {
+						if (arr[i] == null) continue;
+						if (close) arr[i].retireNow();
 						else arr[i].retire();
 					}
-					if(_close) break;
+					if (close) break;
 				}
-				catch(Throwable t){t.printStackTrace();}
+				catch (Exception e) {
+					LogUtil.log(null, "file", e);
+				}
 			}
-			//print.e("stop thread");
-			thread=null;
+			thread = null;
 		}
+	}
+
+	public static boolean isClosed() {
+		return closed;
 	}
 }

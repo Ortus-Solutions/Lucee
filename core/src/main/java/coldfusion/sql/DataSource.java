@@ -23,14 +23,14 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 public interface DataSource extends javax.sql.DataSource {
-	
+
 	public void remove() throws SQLException;
-	
+
 	@Override
 	public Connection getConnection() throws SQLException;
 
 	@Override
-	public Connection getConnection(String user,String pass) throws SQLException;
+	public Connection getConnection(String user, String pass) throws SQLException;
 
 	public void setDataSourceDef(DataSourceDef dsDef);
 

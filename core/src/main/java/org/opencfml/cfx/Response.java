@@ -25,6 +25,7 @@ public interface Response {
 
 	/**
 	 * adds a query to response
+	 * 
 	 * @param name name of the new Query
 	 * @param column columns of the new Query
 	 * @return created query
@@ -33,6 +34,7 @@ public interface Response {
 
 	/**
 	 * sets a variable to response
+	 * 
 	 * @param key key of the variable
 	 * @param value value of the variable
 	 */
@@ -40,12 +42,14 @@ public interface Response {
 
 	/**
 	 * write out a String to response
+	 * 
 	 * @param str String to write
 	 */
 	public void write(String str);
 
 	/**
 	 * write out if debug is enabled
+	 * 
 	 * @param str String to write
 	 */
 	public void writeDebug(String str);

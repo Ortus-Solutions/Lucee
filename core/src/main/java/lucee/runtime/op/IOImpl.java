@@ -27,6 +27,7 @@ import java.io.Writer;
 import java.nio.charset.Charset;
 
 import lucee.commons.io.IOUtil;
+import lucee.commons.io.TemporaryStream;
 import lucee.commons.io.res.Resource;
 import lucee.runtime.util.IO;
 
@@ -35,23 +36,23 @@ public class IOImpl implements IO {
 	private static IO singelton;
 
 	public static IO getInstance() {
-		if(singelton==null)singelton=new IOImpl();
+		if (singelton == null) singelton = new IOImpl();
 		return singelton;
 	}
-	
+
 	@Override
 	public void closeSilent(InputStream is) {
 		IOUtil.closeEL(is);
 	}
-	
+
 	@Override
 	public void closeSilent(OutputStream os) {
 		IOUtil.closeEL(os);
 	}
-	
+
 	@Override
-	public void closeSilent(InputStream is,OutputStream os) {
-		IOUtil.closeEL(is,os);
+	public void closeSilent(InputStream is, OutputStream os) {
+		IOUtil.closeEL(is, os);
 	}
 
 	@Override
@@ -96,12 +97,12 @@ public class IOImpl implements IO {
 
 	@Override
 	public void copy(Reader r, Writer w, boolean closeR, boolean closeW) throws IOException {
-		IOUtil.copy(r,w,closeR,closeW);
+		IOUtil.copy(r, w, closeR, closeW);
 	}
 
 	@Override
 	public void copy(Resource src, Resource trg) throws IOException {
-		IOUtil.copy(src,trg);
+		IOUtil.copy(src, trg);
 	}
 
 	@Override
@@ -115,7 +116,7 @@ public class IOImpl implements IO {
 	}
 
 	@Override
-	public void write(Resource res, String content, boolean append,Charset charset) throws IOException {
+	public void write(Resource res, String content, boolean append, Charset charset) throws IOException {
 		IOUtil.write(res, content, charset, append);
 	}
 
@@ -142,5 +143,10 @@ public class IOImpl implements IO {
 	@Override
 	public void copy(InputStream is, Resource out, boolean closeIS) throws IOException {
 		IOUtil.copy(is, out, closeIS);
+	}
+
+	@Override
+	public OutputStream createTemporaryStream() {
+		return new TemporaryStream();
 	}
 }

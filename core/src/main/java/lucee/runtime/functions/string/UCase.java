@@ -28,18 +28,16 @@ import lucee.runtime.ext.function.BIF;
 import lucee.runtime.op.Caster;
 
 public final class UCase extends BIF {
-	
+
 	private static final long serialVersionUID = 880978482491486668L;
 
-	public static String call(PageContext pc , String string) {
+	public static String call(PageContext pc, String string) {
 		return string.toUpperCase();
 	}
 
-
-    @Override
+	@Override
 	public Object invoke(PageContext pc, Object[] args) throws PageException {
-		if(args.length==1)
-			return call(pc, Caster.toString(args[0]));
+		if (args.length == 1) return call(pc, Caster.toString(args[0]));
 
 		throw new FunctionException(pc, "UCase", 1, 1, args.length);
 	}

@@ -18,6 +18,8 @@
  */
 package lucee.runtime.util;
 
+import java.io.IOException;
+
 import lucee.runtime.PageContext;
 import lucee.runtime.PageSource;
 import lucee.runtime.db.SQL;
@@ -116,8 +118,7 @@ public interface Excepton {
 	 * @param detail
 	 * @return ApplicationException
 	 */
-	public PageException createApplicationException(String message,
-			String detail);
+	public PageException createApplicationException(String message, String detail);
 
 	/**
 	 * create exception "CasterException"
@@ -143,12 +144,9 @@ public interface Excepton {
 	 *             <code>createCustomTypeException(String message, String detail, String errorcode, String customType, String extendedInfo);</code>
 	 */
 	@Deprecated
-	public PageException createCustomTypeException(String message,
-			String detail, String errorcode, String customType);
+	public PageException createCustomTypeException(String message, String detail, String errorcode, String customType);
 
-	public PageException createCustomTypeException(String message,
-			String detail, String errorcode, String customType,
-			String extendedInfo);
+	public PageException createCustomTypeException(String message, String detail, String errorcode, String customType, String extendedInfo);
 
 	/**
 	 * create exception "DatabaseException"
@@ -206,9 +204,7 @@ public interface Excepton {
 	 *             <code>createFunctionException(PageContext pc,String functionName, int badArgumentPosition, String badArgumentName, String message, String detail))</code>
 	 */
 	@Deprecated
-	public PageException createFunctionException(PageContext pc,
-			String functionName, String badArgumentPosition,
-			String badArgumentName, String message);
+	public PageException createFunctionException(PageContext pc, String functionName, String badArgumentPosition, String badArgumentName, String message);
 
 	/**
 	 * create exception "FunctionException"
@@ -220,9 +216,7 @@ public interface Excepton {
 	 * @param message
 	 * @return FunctionException
 	 */
-	public PageException createFunctionException(PageContext pc,
-			String functionName, int badArgumentPosition,
-			String badArgumentName, String message, String detail);
+	public PageException createFunctionException(PageContext pc, String functionName, int badArgumentPosition, String badArgumentName, String message, String detail);
 
 	/**
 	 * create exception "LockException"
@@ -232,8 +226,7 @@ public interface Excepton {
 	 * @param message
 	 * @return LockException
 	 */
-	public PageException createLockException(String operation, String name,
-			String message);
+	public PageException createLockException(String operation, String name, String message);
 
 	/**
 	 * create exception "LockException"
@@ -311,12 +304,12 @@ public interface Excepton {
 	 */
 	public boolean isOfType(int type, Throwable t);
 
-	public String similarKeyMessage(Collection.Key[] keys, String keySearched,
-			String keyLabel, String keyLabels, String in, boolean listAll);
+	public String similarKeyMessage(Collection.Key[] keys, String keySearched, String keyLabel, String keyLabels, String in, boolean listAll);
 
 	public RuntimeException createPageRuntimeException(PageException pe);
 
-	public PageException createFunctionException(PageContext pc,
-			String functionName, int min, int max, int actual);
+	public PageException createFunctionException(PageContext pc, String functionName, int min, int max, int actual);
+
+	public IOException toIOException(Throwable t);
 
 }

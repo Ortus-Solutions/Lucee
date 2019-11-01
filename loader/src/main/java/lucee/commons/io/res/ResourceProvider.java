@@ -23,9 +23,8 @@ import java.io.Serializable;
 import java.util.Map;
 
 /**
- * Interface for resource provider, loaded by "Resources",
- * classes that implement a provider that produce resources, that match given
- * path.
+ * Interface for resource provider, loaded by "Resources", classes that implement a provider that
+ * produce resources, that match given path.
  * 
  */
 public interface ResourceProvider extends Serializable {
@@ -41,7 +40,7 @@ public interface ResourceProvider extends Serializable {
 	/**
 	 * return a resource that match given path
 	 * 
-	 * @param path
+	 * @param path path to the resource
 	 * @return matching resource to path
 	 */
 	public Resource getResource(String path);

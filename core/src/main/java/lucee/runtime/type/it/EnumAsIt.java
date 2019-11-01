@@ -24,8 +24,8 @@ import java.util.Iterator;
 public class EnumAsIt implements Iterator {
 	private Enumeration e;
 
-	public EnumAsIt(Enumeration e){
-		this.e=e;
+	public EnumAsIt(Enumeration e) {
+		this.e = e;
 	}
 
 	@Override

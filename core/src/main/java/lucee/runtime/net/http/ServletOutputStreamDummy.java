@@ -30,21 +30,21 @@ public final class ServletOutputStreamDummy extends ServletOutputStream {
 
 	private OutputStream os;
 
-	//private HttpServletResponseDummy rsp;
-	//private ByteArrayOutputStream baos;
+	// private HttpServletResponseDummy rsp;
+	// private ByteArrayOutputStream baos;
 
 	public ServletOutputStreamDummy(OutputStream os) {
-		this.os=os;
+		this.os = os;
 	}
-	
+
 	@Override
 	public void print(boolean b) throws IOException {
-		write(b?"true".getBytes():"false".getBytes());
+		write(b ? "true".getBytes() : "false".getBytes());
 	}
 
 	@Override
 	public void print(char c) throws IOException {
-		print(new String(new char[]{c}));
+		print(new String(new char[] { c }));
 	}
 
 	@Override
@@ -121,7 +121,7 @@ public final class ServletOutputStreamDummy extends ServletOutputStream {
 
 	@Override
 	public void write(byte[] b) throws IOException {
-		write(b,0,b.length);
+		write(b, 0, b.length);
 	}
 
 	@Override

@@ -29,12 +29,13 @@ public class CollectionIterator implements Iterator<Object> {
 	private Collection coll;
 
 	public CollectionIterator(Key[] keys, Collection coll) {
-		this.keys=new KeyIterator(keys);
-		this.coll=coll;
+		this.keys = new KeyIterator(keys);
+		this.coll = coll;
 	}
+
 	public CollectionIterator(Iterator<Collection.Key> keys, Collection coll) {
-		this.keys=keys;
-		this.coll=coll;
+		this.keys = keys;
+		this.coll = coll;
 	}
 
 	@Override
@@ -44,7 +45,7 @@ public class CollectionIterator implements Iterator<Object> {
 
 	@Override
 	public Object next() {
-		return coll.get(keys.next(),null);
+		return coll.get(keys.next(), null);
 	}
 
 	@Override

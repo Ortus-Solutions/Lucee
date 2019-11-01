@@ -37,38 +37,39 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.Executor;
 
+import lucee.commons.lang.ExceptionUtil;
 import lucee.runtime.PageContext;
 import lucee.runtime.db.DataSource;
 import lucee.runtime.db.DatasourceConnection;
 import lucee.runtime.db.DatasourceConnectionImpl;
+import lucee.runtime.db.DatasourceConnectionPro;
 import lucee.runtime.db.SQL;
 import lucee.runtime.exp.PageException;
 import lucee.runtime.exp.PageRuntimeException;
 import lucee.runtime.op.Caster;
 
-public class ORMDatasourceConnection implements DatasourceConnection {
+public class ORMDatasourceConnection implements DatasourceConnectionPro {
 
 	private DataSource datasource;
 	private Connection connection;
 	private Boolean supportsGetGeneratedKeys;
 
-	public ORMDatasourceConnection(PageContext pc, ORMSession session, DataSource ds) throws PageException {
-		datasource=ds;
+	public ORMDatasourceConnection(PageContext pc, ORMSession session, DataSource ds, int transactionIsolation) throws PageException {
+		datasource = ds;
 		// this should never happen
-		if(datasource==null) {
+		if (datasource == null) {
 			try {
-				datasource=ORMUtil.getDefaultDataSource(pc);
+				datasource = ORMUtil.getDefaultDataSource(pc);
 			}
 			catch (PageException pe) {
 				throw new PageRuntimeException(pe);
 			}
 		}
-		connection=new ORMConnection(pc,session,datasource);
+		connection = new ORMConnection(pc, session, datasource, transactionIsolation);
 	}
 
 	@Override
 	public Connection getConnection() {
-		// TODO Auto-generated method stub
 		return connection;
 	}
 
@@ -96,22 +97,22 @@ public class ORMDatasourceConnection implements DatasourceConnection {
 	public boolean isLifecycleTimeout() {
 		return false;
 	}
-	
-
 
 	@Override
 	public boolean equals(Object obj) {
-		if(this==obj) return true;
-		if(!(obj instanceof ORMDatasourceConnection)) return false;
+		if (this == obj) return true;
+		// if(!(obj instanceof ORMDatasourceConnection)) return false;
 		return DatasourceConnectionImpl.equals(this, (DatasourceConnection) obj);
 	}
 
 	@Override
 	public boolean supportsGetGeneratedKeys() {
-		if(supportsGetGeneratedKeys==null){
+		if (supportsGetGeneratedKeys == null) {
 			try {
-				supportsGetGeneratedKeys=Caster.toBoolean(getConnection().getMetaData().supportsGetGeneratedKeys());
-			} catch (Throwable t) {
+				supportsGetGeneratedKeys = Caster.toBoolean(getConnection().getMetaData().supportsGetGeneratedKeys());
+			}
+			catch (Throwable t) {
+				ExceptionUtil.rethrowIfNecessary(t);
 				return false;
 			}
 		}
@@ -120,13 +121,13 @@ public class ORMDatasourceConnection implements DatasourceConnection {
 
 	@Override
 	public PreparedStatement getPreparedStatement(SQL sql, boolean createGeneratedKeys, boolean allowCaching) throws SQLException {
-		if(createGeneratedKeys)	return getConnection().prepareStatement(sql.getSQLString(),Statement.RETURN_GENERATED_KEYS);
+		if (createGeneratedKeys) return getConnection().prepareStatement(sql.getSQLString(), Statement.RETURN_GENERATED_KEYS);
 		return getConnection().prepareStatement(sql.getSQLString());
 	}
 
 	@Override
 	public PreparedStatement getPreparedStatement(SQL sql, int resultSetType, int resultSetConcurrency) throws SQLException {
-		return getConnection().prepareStatement(sql.getSQLString(),resultSetType,resultSetConcurrency);
+		return getConnection().prepareStatement(sql.getSQLString(), resultSetType, resultSetConcurrency);
 	}
 
 	@Override
@@ -155,7 +156,7 @@ public class ORMDatasourceConnection implements DatasourceConnection {
 	}
 
 	@Override
-	public CallableStatement prepareCall(String sql, int resultSetType,int resultSetConcurrency, int resultSetHoldability) throws SQLException {
+	public CallableStatement prepareCall(String sql, int resultSetType, int resultSetConcurrency, int resultSetHoldability) throws SQLException {
 		return connection.prepareCall(sql, resultSetType, resultSetConcurrency, resultSetHoldability);
 	}
 
@@ -188,9 +189,7 @@ public class ORMDatasourceConnection implements DatasourceConnection {
 	public PreparedStatement prepareStatement(String sql, int resultSetType, int resultSetConcurrency, int resultSetHoldability) throws SQLException {
 		return connection.prepareStatement(sql, resultSetType, resultSetConcurrency, resultSetHoldability);
 	}
-	
-	
-	
+
 	@Override
 	public boolean isWrapperFor(Class<?> iface) throws SQLException {
 		return connection.isWrapperFor(iface);
@@ -399,5 +398,10 @@ public class ORMDatasourceConnection implements DatasourceConnection {
 	@Override
 	public int getNetworkTimeout() throws SQLException {
 		return connection.getNetworkTimeout();
+	}
+
+	@Override
+	public boolean isAutoCommit() throws SQLException {
+		return connection.getAutoCommit();
 	}
 }

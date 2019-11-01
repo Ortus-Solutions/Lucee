@@ -26,5 +26,5 @@ public final class Soundex implements Function {
 	public static String call(PageContext pc, String str) {
 		return StringUtil.soundex(str);
 	}
-	
+
 }

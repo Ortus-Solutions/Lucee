@@ -20,6 +20,7 @@ package lucee.runtime.interpreter.ref.op;
 
 import lucee.runtime.PageContext;
 import lucee.runtime.exp.PageException;
+import lucee.runtime.interpreter.InterpreterException;
 import lucee.runtime.interpreter.ref.Ref;
 import lucee.runtime.interpreter.ref.RefSupport;
 import lucee.runtime.op.Operator;
@@ -29,26 +30,30 @@ import lucee.runtime.op.Operator;
  */
 public final class Imp extends RefSupport implements Ref {
 
-    private Ref right;
-    private Ref left;
+	private Ref right;
+	private Ref left;
+	private boolean limited;
 
-    /**
-     * constructor of the class
-     * @param left
-     * @param right
-     */
-    public Imp(Ref left, Ref right) {
-        this.left=left;
-        this.right=right;
-    }
+	/**
+	 * constructor of the class
+	 * 
+	 * @param left
+	 * @param right
+	 */
+	public Imp(Ref left, Ref right, boolean limited) {
+		this.left = left;
+		this.right = right;
+		this.limited = limited;
+	}
 
-    @Override
+	@Override
 	public Object getValue(PageContext pc) throws PageException {
-        return Operator.imp(left.getValue(pc),right.getValue(pc))?Boolean.TRUE:Boolean.FALSE;
-    }
+		if (limited) throw new InterpreterException("invalid syntax, this operation is not supported in a json string.");
+		return Operator.imp(left.getValue(pc), right.getValue(pc)) ? Boolean.TRUE : Boolean.FALSE;
+	}
 
-    @Override
-    public String getTypeName() {
-        return "operation";
-    }
+	@Override
+	public String getTypeName() {
+		return "operation";
+	}
 }

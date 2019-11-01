@@ -34,32 +34,32 @@ public class ComponentCacheEventListener implements CacheEventListener {
 	private Component component;
 
 	public ComponentCacheEventListener(Component component) {
-		this.component=component;
+		this.component = component;
 	}
-	
+
 	@Override
 	public void onRemove(CacheEntry entry) {
-		call(ON_REMOVE,entry);
+		call(ON_REMOVE, entry);
 	}
 
 	@Override
 	public void onPut(CacheEntry entry) {
-		call(ON_PUT,entry);
+		call(ON_PUT, entry);
 	}
 
 	@Override
 	public void onExpires(CacheEntry entry) {
-		call(ON_EXPIRES,entry);
+		call(ON_EXPIRES, entry);
 	}
 
 	private void call(Key methodName, CacheEntry entry) {
-		//Struct data = entry.getCustomInfo();
-		//cfc.callWithNamedValues(pc, methodName, data);
+		// Struct data = entry.getCustomInfo();
+		// cfc.callWithNamedValues(pc, methodName, data);
 	}
 
 	@Override
 	public CacheEventListener duplicate() {
-		return new ComponentCacheEventListener((Component)component.duplicate(false));
+		return new ComponentCacheEventListener((Component) component.duplicate(false));
 	}
 
 }

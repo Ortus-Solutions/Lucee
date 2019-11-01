@@ -25,11 +25,9 @@ import lucee.runtime.exp.PageException;
 import lucee.runtime.op.Castable;
 
 /**
- * interface collection, used for all collection types of Lucee (array, struct,
- * query)
+ * interface collection, used for all collection types of Lucee (array, struct, query)
  */
-public interface Collection extends Dumpable, Iteratorable, Cloneable,
-		Serializable, Castable, ForEachIteratorable {
+public interface Collection extends Dumpable, Iteratorable, Cloneable, Serializable, Castable, ForEachIteratorable {
 
 	/**
 	 * @return the size of the collection
@@ -44,18 +42,16 @@ public interface Collection extends Dumpable, Iteratorable, Cloneable,
 	public Collection.Key[] keys();
 
 	/**
-	 * removes value from collection and return it when it exists, otherwise
-	 * throws a exception
+	 * removes value from collection and return it when it exists, otherwise throws a exception
 	 * 
 	 * @param key key of the collection
 	 * @return removed Object
-	 * @throws PageException
+	 * @throws PageException thrown when cannot remove value
 	 */
 	public Object remove(Collection.Key key) throws PageException;
 
 	/**
-	 * removes value from collection and return it when it exists, otherwise
-	 * returns null
+	 * removes value from collection and return it when it exists, otherwise returns null
 	 * 
 	 * @param key key of the collection
 	 * @return removed Object
@@ -63,8 +59,8 @@ public interface Collection extends Dumpable, Iteratorable, Cloneable,
 	public Object removeEL(Collection.Key key);
 
 	/**
-	 * removes value from collection and return it when it exists, otherwise
-	 * returns the given default value
+	 * removes value from collection and return it when it exists, otherwise returns the given default
+	 * value
 	 * 
 	 * @param key key of the collection
 	 * @param defaultValue value to return if the entry does not exist
@@ -82,9 +78,8 @@ public interface Collection extends Dumpable, Iteratorable, Cloneable,
 	 * 
 	 * @param key key of the value to get
 	 * @return value on key position
-	 * @throws PageException
-	 * @deprecated use instead
-	 *             <code>{@link #get(lucee.runtime.type.Collection.Key)}</code>
+	 * @throws PageException thrown when no value exist for given key
+	 * @deprecated use instead <code>{@link #get(lucee.runtime.type.Collection.Key)}</code>
 	 */
 	@Deprecated
 	public Object get(String key) throws PageException;
@@ -94,27 +89,26 @@ public interface Collection extends Dumpable, Iteratorable, Cloneable,
 	 * 
 	 * @param key key of the value to get must be lower case
 	 * @return value on key position
-	 * @throws PageException
+	 * @throws PageException thrown when no value exist for given key
 	 */
 	public Object get(Collection.Key key) throws PageException;
 
 	/**
-	 * return a value from the collection, if key doesn't exist, dont throw a
-	 * exception, reeturns null
+	 * return a value from the collection, if key doesn't exist, dont throw a exception, returns null
 	 * 
 	 * @param key key of the value to get
+	 * @param defaultValue value returned when no value exists for given key
 	 * @return value on key position or null
-	 * @deprecated use instead
-	 *             <code>{@link #get(lucee.runtime.type.Collection.Key, Object)}</code>
+	 * @deprecated use instead <code>{@link #get(lucee.runtime.type.Collection.Key, Object)}</code>
 	 */
 	@Deprecated
 	public Object get(String key, Object defaultValue);
 
 	/**
-	 * return a value from the collection, if key doesn't exist, dont throw a
-	 * exception, reeturns null
+	 * return a value from the collection, if key doesn't exist, dont throw a exception, returns null
 	 * 
 	 * @param key key of the value to get
+	 * @param defaultValue value returned when no value exists for given key
 	 * @return value on key position or null
 	 */
 	public Object get(Collection.Key key, Object defaultValue);
@@ -125,9 +119,8 @@ public interface Collection extends Dumpable, Iteratorable, Cloneable,
 	 * @param key key of the new value
 	 * @param value value to set
 	 * @return value setted
-	 * @throws PageException
-	 * @deprecated use instead
-	 *             <code>{@link #set(lucee.runtime.type.Collection.Key, Object)}</code>
+	 * @throws PageException exception thrown when fails to set the value
+	 * @deprecated use instead <code>{@link #set(lucee.runtime.type.Collection.Key, Object)}</code>
 	 */
 	@Deprecated
 	public Object set(String key, Object value) throws PageException;
@@ -138,26 +131,23 @@ public interface Collection extends Dumpable, Iteratorable, Cloneable,
 	 * @param key key of the new value
 	 * @param value value to set
 	 * @return value setted
-	 * @throws PageException
+	 * @throws PageException exception thrown when fails to set the value
 	 */
 	public Object set(Collection.Key key, Object value) throws PageException;
 
 	/**
-	 * sets a value to the collection, if key doesn't exist, dont throw a
-	 * exception, returns null
+	 * sets a value to the collection, if key doesn't exist, dont throw a exception, returns null
 	 * 
 	 * @param key key of the value to get
 	 * @param value value to set
 	 * @return value on key position or null
-	 * @deprecated use instead
-	 *             <code>{@link #setEL(lucee.runtime.type.Collection.Key, Object)}</code>
+	 * @deprecated use instead <code>{@link #setEL(lucee.runtime.type.Collection.Key, Object)}</code>
 	 */
 	@Deprecated
 	public Object setEL(String key, Object value);
 
 	/**
-	 * sets a value to the collection, if key doesn't exist, dont throw a
-	 * exception, returns null
+	 * sets a value to the collection, if key doesn't exist, dont throw a exception, returns null
 	 * 
 	 * @param key key of the value to get
 	 * @param value value to set
@@ -175,10 +165,9 @@ public interface Collection extends Dumpable, Iteratorable, Cloneable,
 	/**
 	 * contains this key
 	 * 
-	 * @param key
+	 * @param key key to check for
 	 * @return returns if collection has a key with given name
-	 * @deprecated use instead
-	 *             <code>{@link #containsKey(lucee.runtime.type.Collection.Key)}</code>
+	 * @deprecated use instead <code>{@link #containsKey(lucee.runtime.type.Collection.Key)}</code>
 	 */
 	@Deprecated
 	public boolean containsKey(String key);
@@ -186,7 +175,7 @@ public interface Collection extends Dumpable, Iteratorable, Cloneable,
 	/**
 	 * contains this key
 	 * 
-	 * @param key
+	 * @param key key to check for
 	 * @return returns if collection has a key with given name
 	 */
 	public boolean containsKey(Collection.Key key);

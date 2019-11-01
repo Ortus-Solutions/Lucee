@@ -28,12 +28,12 @@ import lucee.runtime.op.Duplicator;
 import lucee.runtime.type.dt.DateTime;
 import lucee.runtime.type.util.StructSupport;
 
-public final class CollectionStruct extends StructSupport implements ObjectWrap,Struct {
+public final class CollectionStruct extends StructSupport implements ObjectWrap, Struct {
 
 	private final Collection coll;
 
 	public CollectionStruct(Collection coll) {
-		this.coll=coll;
+		this.coll = coll;
 	}
 
 	@Override
@@ -42,23 +42,37 @@ public final class CollectionStruct extends StructSupport implements ObjectWrap,
 	}
 
 	@Override
-	public boolean containsKey(Key key) {
+	public final boolean containsKey(Key key) {
+		return coll.containsKey(key);
+	}
+
+	@Override
+	public final boolean containsKey(PageContext pc, Key key) {
 		return coll.containsKey(key);
 	}
 
 	@Override
 	public Collection duplicate(boolean deepCopy) {
-		return (Collection) Duplicator.duplicate(coll,deepCopy);
+		return (Collection) Duplicator.duplicate(coll, deepCopy);
 	}
-	
 
 	@Override
-	public Object get(Key key) throws PageException {
+	public final Object get(Key key) throws PageException {
 		return coll.get(key);
 	}
 
 	@Override
-	public Object get(Key key, Object defaultValue) {
+	public final Object get(PageContext pc, Key key) throws PageException {
+		return coll.get(key);
+	}
+
+	@Override
+	public final Object get(Key key, Object defaultValue) {
+		return coll.get(key, defaultValue);
+	}
+
+	@Override
+	public final Object get(PageContext pc, Key key, Object defaultValue) {
 		return coll.get(key, defaultValue);
 	}
 
@@ -96,49 +110,46 @@ public final class CollectionStruct extends StructSupport implements ObjectWrap,
 	public Iterator<Collection.Key> keyIterator() {
 		return coll.keyIterator();
 	}
-    
+
 	@Override
 	public Iterator<String> keysAsStringIterator() {
-    	return coll.keysAsStringIterator();
-    }
-	
+		return coll.keysAsStringIterator();
+	}
+
 	@Override
 	public Iterator<Entry<Key, Object>> entryIterator() {
 		return coll.entryIterator();
 	}
-	
+
 	@Override
 	public Iterator<Object> valueIterator() {
 		return coll.valueIterator();
 	}
-	
 
 	@Override
-	public DumpData toDumpData(PageContext pageContext, int maxlevel,DumpProperties properties) {
+	public DumpData toDumpData(PageContext pageContext, int maxlevel, DumpProperties properties) {
 		return coll.toDumpData(pageContext, maxlevel, properties);
 	}
 
 	@Override
-    public boolean castToBooleanValue() throws PageException {
-    	return coll.castToBooleanValue();
-    }
+	public boolean castToBooleanValue() throws PageException {
+		return coll.castToBooleanValue();
+	}
 
-    @Override
-    public double castToDoubleValue() throws PageException {
-    	return coll.castToDoubleValue();
-    }
+	@Override
+	public double castToDoubleValue() throws PageException {
+		return coll.castToDoubleValue();
+	}
 
+	@Override
+	public DateTime castToDateTime() throws PageException {
+		return coll.castToDateTime();
+	}
 
-    @Override
-    public DateTime castToDateTime() throws PageException {
-    	return coll.castToDateTime();
-    }
-
-    @Override
-    public String castToString() throws PageException {
+	@Override
+	public String castToString() throws PageException {
 		return coll.castToString();
-    }
-
+	}
 
 	@Override
 	public int compareTo(boolean b) throws PageException {
@@ -175,5 +186,11 @@ public final class CollectionStruct extends StructSupport implements ObjectWrap,
 	 */
 	public Collection getCollection() {
 		return coll;
+	}
+
+	@Override
+	public int getType() {
+		if (coll instanceof StructSupport) return ((StructSupport) coll).getType();
+		return Struct.TYPE_REGULAR;
 	}
 }

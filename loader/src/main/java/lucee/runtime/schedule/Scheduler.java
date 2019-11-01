@@ -32,8 +32,7 @@ public interface Scheduler {
 	 * @return matching task
 	 * @throws ScheduleException
 	 */
-	public abstract ScheduleTask getScheduleTask(String name)
-			throws ScheduleException;
+	public abstract ScheduleTask getScheduleTask(String name) throws ScheduleException;
 
 	/**
 	 * returns all schedule tasks valid or not
@@ -49,8 +48,7 @@ public interface Scheduler {
 	 * @param defaultValue
 	 * @return matching task
 	 */
-	public abstract ScheduleTask getScheduleTask(String name,
-			ScheduleTask defaultValue);
+	public abstract ScheduleTask getScheduleTask(String name, ScheduleTask defaultValue);
 
 	/**
 	 * Adds a Task to the scheduler
@@ -60,8 +58,7 @@ public interface Scheduler {
 	 * @throws ScheduleException
 	 * @throws IOException
 	 */
-	public abstract void addScheduleTask(ScheduleTask task,
-			boolean allowOverwrite) throws ScheduleException, IOException;
+	public abstract void addScheduleTask(ScheduleTask task, boolean allowOverwrite) throws ScheduleException, IOException;
 
 	/**
 	 * pause the scheduler task
@@ -72,20 +69,17 @@ public interface Scheduler {
 	 * @throws ScheduleException
 	 * @throws IOException
 	 */
-	public void pauseScheduleTask(String name, boolean pause,
-			boolean throwWhenNotExist) throws ScheduleException, IOException;
+	public void pauseScheduleTask(String name, boolean pause, boolean throwWhenNotExist) throws ScheduleException, IOException;
 
 	/**
 	 * removes a task from scheduler
 	 * 
 	 * @param name name of the task to remove
-	 * @param throwWhenNotExist define if method throws a exception if task
-	 *            doesn't exist
+	 * @param throwWhenNotExist define if method throws a exception if task doesn't exist
 	 * @throws IOException
 	 * @throws ScheduleException
 	 */
-	public abstract void removeScheduleTask(String name,
-			boolean throwWhenNotExist) throws IOException, ScheduleException;
+	public abstract void removeScheduleTask(String name, boolean throwWhenNotExist) throws IOException, ScheduleException;
 
 	/**
 	 * runs a scheduler task
@@ -95,6 +89,5 @@ public interface Scheduler {
 	 * @throws IOException
 	 * @throws ScheduleException
 	 */
-	public abstract void runScheduleTask(String name, boolean throwWhenNotExist)
-			throws IOException, ScheduleException;
+	public abstract void runScheduleTask(String name, boolean throwWhenNotExist) throws IOException, ScheduleException;
 }

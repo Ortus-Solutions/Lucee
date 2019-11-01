@@ -74,6 +74,7 @@
 	<cfcatch>
 		<cfset error.message=cfcatch.message>
 		<cfset error.detail=cfcatch.Detail>
+		<cfset error.cfcatch=cfcatch>
 	</cfcatch>
 </cftry>
 <!--- 
@@ -100,7 +101,7 @@ Error Output --->
 
 <cfoutput>	
 	<h2>#stText.Settings.DatasourceSettings#</h2>
-	<cfform onerror="customError" action="#request.self#?action=#url.action#" method="post">
+	<cfformClassic onerror="customError" action="#request.self#?action=#url.action#" method="post">
 		<table class="maintbl">
 			<tbody>
 				<tr>
@@ -132,7 +133,7 @@ Error Output --->
 				</tfoot>
 			</cfif>
 		</table>
-	</cfform>
+	</cfformClassic>
 </cfoutput>
 
 <cfadmin 
@@ -155,9 +156,8 @@ list all mappings and display necessary edit fields --->
 	</cfif>
 </cfloop> --->
 <cfset querySort(datasources,"name")>
-<cfset srcLocal=queryNew("name,classname,dsn,username,password,readonly,storage")>
-<cfset srcGlobal=queryNew("name,classname,dsn,username,password,readonly,storage")>
-		
+<cfset srcLocal=queryNew("name,classname,dsn,username,password,readonly,storage,openConnections,host,port")>
+<cfset srcGlobal=queryNew("name,classname,dsn,username,password,readonly,storage,openConnections,host,port")>
 <cfloop query="datasources">
 	<cfif not datasources.readOnly>
 		<cfset QueryAddRow(srcLocal)>
@@ -166,8 +166,11 @@ list all mappings and display necessary edit fields --->
 		<cfset QuerySetCell(srcLocal,"dsn",datasources.dsn)>
 		<cfset QuerySetCell(srcLocal,"username",datasources.username)>
 		<cfset QuerySetCell(srcLocal,"password",datasources.password)>
+		<cfset QuerySetCell(srcLocal,"openConnections",datasources.openConnections)>
 		<cfset QuerySetCell(srcLocal,"readonly",datasources.readonly)>
 		<cfset QuerySetCell(srcLocal,"storage",datasources.storage)>
+		<cfset QuerySetCell(srcLocal,"host",datasources.host?:'')>
+		<cfset QuerySetCell(srcLocal,"port",datasources.port?:'')>
 	<cfelse>
 		<cfset QueryAddRow(srcGlobal)>
 		<cfset QuerySetCell(srcGlobal,"name",datasources.name)>
@@ -175,8 +178,11 @@ list all mappings and display necessary edit fields --->
 		<cfset QuerySetCell(srcGlobal,"dsn",datasources.dsn)>
 		<cfset QuerySetCell(srcGlobal,"username",datasources.username)>
 		<cfset QuerySetCell(srcGlobal,"password",datasources.password)>
+		<cfset QuerySetCell(srcGlobal,"openConnections",datasources.openConnections)>
 		<cfset QuerySetCell(srcGlobal,"readonly",datasources.readonly)>
 		<cfset QuerySetCell(srcGlobal,"storage",datasources.storage)>
+		<cfset QuerySetCell(srcGlobal,"storage",datasources.storage)>
+		<cfset QuerySetCell(srcGlobal,"port",datasources.port?:'')>
 	</cfif>
 </cfloop>
 
@@ -185,13 +191,15 @@ list all mappings and display necessary edit fields --->
 	<cfoutput>
 		<h2>#stText.Settings.ReadOnlyDatasources#</h2>
 		<div class="itemintro">#stText.Settings.ReadOnlyDatasourcesDescription#</div>
-		<cfform onerror="customError" action="#request.self#?action=#url.action#" method="post">
+		<cfformClassic onerror="customError" action="#request.self#?action=#url.action#" method="post">
 			<table class="maintbl checkboxtbl">
 				<thead>
 					<tr>
 						<th width="3%"><input type="checkbox" class="checkbox" name="rowreadonly" onclick="selectAll(this)" /></th>
-						<th width="28%">#stText.Settings.Name#</th>
-						<th width="55%">#stText.Settings.Type#</th>
+						<th>#stText.Settings.Name#</th>
+						<th>#stText.Settings.Type#</th>
+						<th>#stText.Settings.dbHost#:#stText.Settings.dbPort#</th>
+						<th width="8%">#stText.Settings.openConn#</th>
 						<th width="8%">#stText.Settings.dbStorage#</th>
 						<th width="6%">#stText.Settings.DBCheck#</th>
 					</tr>
@@ -210,6 +218,8 @@ list all mappings and display necessary edit fields --->
 								#srcGlobal.name#
 							</td>
 							<td>#getDbDriverTypeName(srcGlobal.ClassName,srcGlobal.dsn)#</td>
+							<td>#listCompact("#srcLocal.host?:''#:#srcLocal.port?:''#",":")#</td>							
+							<td>#srcGlobal.openConnections#</td>
 							<td>#yesNoFormat(srcGlobal.storage)#</td>
 							<td>
 								<cfif StructKeyExists(stVeritfyMessages, srcGlobal.name)>
@@ -238,22 +248,23 @@ list all mappings and display necessary edit fields --->
 					</tr>
 				</tfoot>
 			</table>
-		</cfform>
+		</cfformClassic>
 	</cfoutput>
 </cfif>
-
 
 <cfif srcLocal.recordcount>
 	<cfoutput>
 		<h2>#stText.Settings.ListDatasources#</h2>
 		<div class="itemintro">#stText.Settings['ListDatasourcesDesc'& request.adminType ]#</div>
-		<cfform onerror="customError" action="#request.self#?action=#url.action#" method="post">
+		<cfformClassic onerror="customError" action="#request.self#?action=#url.action#" method="post">
 			<table class="maintbl checkboxtbl">
 				<thead>
 					<tr>
 						<th width="3%"><input type="checkbox" class="checkbox" name="rowread" onclick="selectAll(this)" /></th>
-						<th width="25%">#stText.Settings.Name#</th>
-						<th width="55%">#stText.Settings.Type#</th>
+						<th>#stText.Settings.Name#</th>
+						<th>#stText.Settings.Type#</th>
+						<th>#stText.Settings.dbHost#:#stText.Settings.dbPort#</th>
+						<th width="8%">#stText.Settings.openConn#</th>
 						<th width="8%">#stText.Settings.dbStorage#</th>
 						<th width="6%">#stText.Settings.DBCheck#</th>
 						<th width="3%">&nbsp;</th>
@@ -261,23 +272,37 @@ list all mappings and display necessary edit fields --->
 				</thead>
 				<tbody>
 					<cfloop query="srcLocal">
+						<cfset hasDriver=false>
+						<cftry>
+
+							<cfset label=getDbDriverTypeName(srcLocal.ClassName,srcLocal.dsn)>
+							<cfset hasDriver=true>
+							<!--- <cfset hasDriver=!isNull(installed[srcLocal.className]) && installed[srcLocal.className]> --->
+							<cfcatch>
+								<cfset label=srcLocal.ClassName>
+							</cfcatch>
+						</cftry>
+						<cfset css=hasDriver?"":"Red">
 						<!--- and now display --->
 						<tr>
-							<td>
+							<td class="tblContent#css# longwords">
 								 <input type="checkbox" class="checkbox" name="row_#srcLocal.currentrow#" value="#srcLocal.currentrow#">
 								<input type="hidden" name="username_#srcLocal.currentrow#" value="#srcLocal.Username#">
 								<input type="hidden" name="password_#srcLocal.currentrow#" value="#srcLocal.Password#">
 							</td>
-							<td><input type="hidden" name="name_#srcLocal.currentrow#" value="#srcLocal.name#">#srcLocal.name#</td>
-							<td>#getDbDriverTypeName(srcLocal.ClassName,srcLocal.dsn)#
+							<td class="tblContent#css# longwords"><input type="hidden" name="name_#srcLocal.currentrow#" value="#srcLocal.name#">#srcLocal.name#</td>
+							<td class="tblContent#css# longwords">#label#
+								<cfif !hasDriver><div class="commentError">#stText.Settings.noDriver#</div></cfif>
 								<cfif isDefined( "stVeritfyMessages[srcLocal.name].dbInfo" ) && stVeritfyMessages[srcLocal.name].dbInfo.recordCount>
 									<cfset qDbInfo = stVeritfyMessages[srcLocal.name].dbInfo>
 									<div class="comment">#stText.settings.datasource.databaseName#: #qDbInfo.DATABASE_PRODUCTNAME# #qDbInfo.DATABASE_VERSION#</div>
 									<div class="comment">#stText.settings.datasource.driverName#: #qDbInfo.DRIVER_NAME# #qDbInfo.DRIVER_VERSION# (JDBC #qDbInfo.JDBC_MAJOR_VERSION#.#qDbInfo.JDBC_MINOR_VERSION#)</div>
 								</cfif>
 							</td>
-							<td>#yesNoFormat(srcLocal.storage)#</td>
-							<td>
+							<td class="tblContent#css# longwords">#listCompact("#srcLocal.host?:''#:#srcLocal.port?:''#",":")#</td>
+							<td class="tblContent#css# longwords">#srcLocal.openConnections#</td>							
+							<td class="tblContent#css# longwords">#yesNoFormat(srcLocal.storage)#</td>
+							<td class="tblContent#css# longwords">
 								<cfif StructKeyExists(stVeritfyMessages, srcLocal.name)>
 									<cfif stVeritfyMessages[srcLocal.name].label eq "OK">
 										<span class="CheckOk">#stVeritfyMessages[srcLocal.name].label#</span>
@@ -292,7 +317,7 @@ list all mappings and display necessary edit fields --->
 									&nbsp;				
 								</cfif>
 							</td>
-							<td>#renderEditButton("#request.self#?action=#url.action#&action2=create&name=#srcLocal.name#")#
+							<td class="tblContent#css# longwords"><cfif hasDriver>#renderEditButton("#request.self#?action=#url.action#&action2=create&name=#srcLocal.name#")#</cfif>
 					
 
 						</tr>						
@@ -310,7 +335,7 @@ list all mappings and display necessary edit fields --->
 					</tr>
 				</tfoot>
 			</table>
-		</cfform>
+		</cfformClassic>
 	</cfoutput>
 </cfif>
 
@@ -318,16 +343,17 @@ list all mappings and display necessary edit fields --->
 	<cfoutput>
 		<!--- Create Datasource --->
 		<h2>#stText.Settings.DatasourceModify#</h2>
-		<cfform onerror="customError" action="#request.self#?action=#url.action#&action2=create" method="post">
+		<cfformClassic onerror="customError" action="#request.self#?action=#url.action#&action2=create" method="post">
 			<table class="maintbl autowidth">
 				<tbody>
 					<tr>
 						<th scope="row">#stText.Settings.Name#</th>
-						<td><cfinput type="text" name="name" value="" class="large" required="yes" 
+						<td><cfinputClassic type="text" name="name" value="" class="large" required="yes" 
 							message="#stText.Settings.NameMissing#">
 						</td>
 					</tr>
 					<cfset keys=StructKeyArray(drivers)>
+					
 					<cfset ArraySort(keys,"textNoCase")>
 					<tr>
 						<th scope="row">#stText.Settings.Type#</th>
@@ -340,7 +366,14 @@ list all mappings and display necessary edit fields --->
 										<option value="#key#">#driver.getName()#</option>
 									</cfif>
 								</cfloop>
-							</select>
+							</select><br>
+							<span class="comment">#replace(
+								replace(
+									replace(request.adminType=="web"?stText.Settings.DatasourceExtensionWeb:stText.Settings.DatasourceExtensionServer,'{linkServer}','<a href="server.cfm?action=ext.applications">','all')
+								,'{link}','<a href="#request.self#?action=ext.applications">','all')
+								,'{/link}','</a>','all')#</span>
+
+							<br>
 						</td>
 					</tr>
 				</tbody>
@@ -354,6 +387,6 @@ list all mappings and display necessary edit fields --->
 					</tr>
 				</tfoot>
 			</table>   
-		</cfform>
+		</cfformClassic>
 	</cfoutput>
 </cfif>

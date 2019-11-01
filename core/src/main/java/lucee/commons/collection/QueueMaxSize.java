@@ -24,20 +24,21 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 public class QueueMaxSize<E> implements Queue<E> {
-	
+
 	private int maxSize;
-	private LinkedList<E> list=new LinkedList<E>();
+	private LinkedList<E> list = new LinkedList<E>();
 
-	public QueueMaxSize(int maxSize){
-		this.maxSize=maxSize;
+	public QueueMaxSize(int maxSize) {
+		this.maxSize = maxSize;
 	}
-
 
 	@Override
 	public boolean add(E e) {
-		if(!list.add(e)) return false;
-        while (size() > maxSize) { list.remove(); }
-        return true;
+		if (!list.add(e)) return false;
+		while (size() > maxSize) {
+			list.remove();
+		}
+		return true;
 	}
 
 	@Override
@@ -69,7 +70,7 @@ public class QueueMaxSize<E> implements Queue<E> {
 	public void clear() {
 		list.clear();
 	}
-	
+
 	@Override
 	public E remove() {
 		return list.remove();
@@ -90,42 +91,35 @@ public class QueueMaxSize<E> implements Queue<E> {
 		throw new UnsupportedOperationException();
 	}
 
-
 	@Override
 	public boolean isEmpty() {
 		throw new UnsupportedOperationException();
 	}
-
 
 	@Override
 	public Object[] toArray() {
 		throw new UnsupportedOperationException();
 	}
 
-
 	@Override
 	public boolean containsAll(Collection<?> c) {
 		throw new UnsupportedOperationException();
 	}
-
 
 	@Override
 	public boolean addAll(Collection<? extends E> c) {
 		throw new UnsupportedOperationException();
 	}
 
-
 	@Override
 	public boolean removeAll(Collection<?> c) {
 		throw new UnsupportedOperationException();
 	}
 
-
 	@Override
 	public boolean retainAll(Collection<?> c) {
 		throw new UnsupportedOperationException();
 	}
-
 
 	@Override
 	public boolean offer(E e) {

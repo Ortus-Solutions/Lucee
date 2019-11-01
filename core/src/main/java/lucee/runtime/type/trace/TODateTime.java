@@ -30,25 +30,21 @@ import lucee.runtime.type.dt.DateTime;
 public class TODateTime extends DateTime implements TraceObject {
 
 	private DateTime dt;
-	//private Debugger debugger;
-	private Query qry=new QueryImpl(
-            new String[]{"label","action","params","template","line","time"},
-            0,"traceObjects");
+	// private Debugger debugger;
+	private Query qry = new QueryImpl(new String[] { "label", "action", "params", "template", "line", "time" }, 0, "traceObjects");
 	private int type;
 	private String category;
 	private String text;
 	private Debugger debugger;
 
-	
-
-	public TODateTime(Debugger debugger,DateTime dt, int type, String category, String text){
-		this.dt=dt;
-		this.debugger=debugger;
-		this.type=type;
-		this.category=category;
-		this.text=text;
+	public TODateTime(Debugger debugger, DateTime dt, int type, String category, String text) {
+		this.dt = dt;
+		this.debugger = debugger;
+		this.type = type;
+		this.category = category;
+		this.text = text;
 	}
-	
+
 	@Override
 	public DumpData toDumpData(PageContext pageContext, int maxlevel, DumpProperties properties) {
 		log();
@@ -132,10 +128,9 @@ public class TODateTime extends DateTime implements TraceObject {
 		log();
 		return this.dt.toDoubleValue();
 	}
-	
 
 	protected void log() {
-		TraceObjectSupport.log(debugger,type,category,text,null,null);
+		TraceObjectSupport.log(debugger, type, category, text, null, null);
 	}
 
 	public Query getDebugData() {

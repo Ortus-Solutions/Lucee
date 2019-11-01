@@ -34,11 +34,9 @@ public interface PageSource extends Serializable {
 	 * 
 	 * @param pc
 	 * @param forceReload
-	 * @throws PageException throws a exception when compilation fails or page
-	 *             does not exist
+	 * @throws PageException throws a exception when compilation fails or page does not exist
 	 */
-	public Page loadPage(PageContext pc, boolean forceReload)
-			throws PageException;
+	public Page loadPage(PageContext pc, boolean forceReload) throws PageException;
 
 	/**
 	 * loads a page
@@ -48,8 +46,7 @@ public interface PageSource extends Serializable {
 	 * @param defaultValue
 	 * @throws PageException throws a exception when compilation fails
 	 */
-	public Page loadPageThrowTemplateException(PageContext pc,
-			boolean forceReload, Page defaultValue) throws PageException;
+	public Page loadPageThrowTemplateException(PageContext pc, boolean forceReload, Page defaultValue) throws PageException;
 
 	/**
 	 * loads a page
@@ -61,7 +58,7 @@ public interface PageSource extends Serializable {
 	public Page loadPage(PageContext pc, boolean forceReload, Page defaultValue);
 
 	/**
-	 * returns the ralpath without the mapping
+	 * returns the realpath without the mapping
 	 * 
 	 * @return Returns the realpath.
 	 */
@@ -80,29 +77,28 @@ public interface PageSource extends Serializable {
 	public abstract String getFileName();
 
 	/**
-	 * if the pageSource is based on a archive, Lucee returns the ra:// path
-	 * if the mapping physical path and archive is invalid or not defined, it is
-	 * possible this method returns null
+	 * if the pageSource is based on a archive, Lucee returns the ra:// path if the mapping physical
+	 * path and archive is invalid or not defined, it is possible this method returns null
 	 * 
 	 * @return return the Resource matching this PageSource
 	 */
 	public abstract Resource getResource();
 
 	/**
-	 * if the pageSource is based on a archive, translate the source to a zip://
-	 * Resource
+	 * if the pageSource is based on a archive, translate the source to a zip:// Resource
 	 * 
 	 * @return return the Resource matching this PageSource
 	 * @param pc the Page Context Object
 	 */
-	public abstract Resource getResourceTranslated(PageContext pc)
-			throws PageException;
+	public abstract Resource getResourceTranslated(PageContext pc) throws PageException;
 
 	/**
-	 * @return returns the full classname (package and name) matching to
-	 *         filename (Example: my.package.test_cfm)
+	 * @return returns the full classname (package and name) matching to filename (Example:
+	 *         my.package.test_cfm)
 	 */
 	public String getClassName();
+
+	public String getJavaName();
 
 	/**
 	 * @return returns the a package matching to file (Example: lucee.web)
@@ -125,13 +121,13 @@ public interface PageSource extends Serializable {
 	public abstract boolean physcalExists();
 
 	/**
-	 * @return return the sozrce of the file as String array
+	 * @return return the source of the file as String array
 	 * @throws IOException
 	 */
 	public abstract String[] getSource() throws IOException;
 
 	/**
-	 * get an new Pagesoure from ralpath
+	 * get an new Pagesource from realpath
 	 * 
 	 * @param realPath
 	 * @return new Pagesource
@@ -176,8 +172,7 @@ public interface PageSource extends Serializable {
 	public int getDialect();
 
 	/**
-	 * returns true if the page source can be executed, means the source exists
-	 * or is trusted and loaded
+	 * returns true if the page source can be executed, means the source exists or is trusted and loaded
 	 */
 	public boolean executable();
 

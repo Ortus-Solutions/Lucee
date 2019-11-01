@@ -30,15 +30,15 @@ public class Transaction implements AttributeEvaluator {
 	@Override
 	public TagLibTag evaluate(TagLibTag tagLibTag, Tag tag) throws AttributeEvaluatorException {
 		Attribute action = tag.getAttribute("action");
-		
-		if(action!=null){
+
+		if (action != null) {
 			Tag parent = ASMUtil.getAncestorTag(tag, tag.getFullname());
-			if(parent!=null) {
-				tagLibTag=tagLibTag.duplicate(false);
+			if (parent != null) {
+				tagLibTag = tagLibTag.duplicate(false);
 				tagLibTag.setBodyContent("empty");
 			}
 		}
-		
+
 		return tagLibTag;
 	}
 

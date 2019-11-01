@@ -35,6 +35,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.JspException;
 
+import org.osgi.framework.BundleContext;
+
 import lucee.Info;
 import lucee.loader.osgi.BundleCollection;
 import lucee.runtime.CFMLFactory;
@@ -61,11 +63,8 @@ import lucee.runtime.util.ResourceUtil;
 import lucee.runtime.util.Strings;
 import lucee.runtime.util.SystemUtil;
 import lucee.runtime.util.TemplateUtil;
-import lucee.runtime.util.XMLUtil;
 import lucee.runtime.util.ZipUtil;
 import lucee.runtime.video.VideoUtil;
-
-import org.osgi.framework.BundleContext;
 
 /**
  * wrapper for a CFMlEngine
@@ -84,43 +83,32 @@ public class CFMLEngineWrapper implements CFMLEngine {
 	}
 
 	@Override
-	public void addServletConfig(final ServletConfig config)
-			throws ServletException {
+	public void addServletConfig(final ServletConfig config) throws ServletException {
 		engine.addServletConfig(config);
 	}
 
 	@Override
-	public void service(final HttpServlet servlet,
-			final HttpServletRequest req, final HttpServletResponse rsp)
-			throws ServletException, IOException {
+	public void service(final HttpServlet servlet, final HttpServletRequest req, final HttpServletResponse rsp) throws ServletException, IOException {
 		engine.service(servlet, req, rsp);
 	}
 
 	@Override
-	public void serviceCFML(final HttpServlet servlet,
-			final HttpServletRequest req, final HttpServletResponse rsp)
-			throws ServletException, IOException {
+	public void serviceCFML(final HttpServlet servlet, final HttpServletRequest req, final HttpServletResponse rsp) throws ServletException, IOException {
 		engine.serviceCFML(servlet, req, rsp);
 	}
 
 	@Override
-	public void serviceAMF(final HttpServlet servlet,
-			final HttpServletRequest req, final HttpServletResponse rsp)
-			throws ServletException, IOException {
+	public void serviceAMF(final HttpServlet servlet, final HttpServletRequest req, final HttpServletResponse rsp) throws ServletException, IOException {
 		engine.serviceAMF(servlet, req, rsp);
 	}
 
 	@Override
-	public void serviceFile(final HttpServlet servlet,
-			final HttpServletRequest req, final HttpServletResponse rsp)
-			throws ServletException, IOException {
+	public void serviceFile(final HttpServlet servlet, final HttpServletRequest req, final HttpServletResponse rsp) throws ServletException, IOException {
 		engine.serviceFile(servlet, req, rsp);
 	}
 
 	@Override
-	public void serviceRest(final HttpServlet servlet,
-			final HttpServletRequest req, final HttpServletResponse rsp)
-			throws ServletException, IOException {
+	public void serviceRest(final HttpServlet servlet, final HttpServletRequest req, final HttpServletResponse rsp) throws ServletException, IOException {
 		engine.serviceRest(servlet, req, rsp);
 	}
 
@@ -168,6 +156,10 @@ public class CFMLEngineWrapper implements CFMLEngine {
 		this.engine = engine;
 	}
 
+	public CFMLEngine getEngine() {
+		return this.engine;
+	}
+
 	public boolean isIdentical(final CFMLEngine engine) {
 		return this.engine == engine;
 	}
@@ -198,13 +190,17 @@ public class CFMLEngineWrapper implements CFMLEngine {
 	}
 
 	@Override
+	public Object getJavaProxyUtil() {// FUTURE return JavaProxyUtil
+		return engine.getJavaProxyUtil();
+	}
+
+	@Override
 	public IO getIOUtil() {
 		return engine.getIOUtil();
 	}
 
 	@Override
-	public CFMLFactory getCFMLFactory(final ServletConfig srvConfig,
-			final HttpServletRequest req) throws ServletException {
+	public CFMLFactory getCFMLFactory(final ServletConfig srvConfig, final HttpServletRequest req) throws ServletException {
 		return engine.getCFMLFactory(srvConfig, req);
 	}
 
@@ -248,31 +244,27 @@ public class CFMLEngineWrapper implements CFMLEngine {
 		return engine.getStringUtil();
 	}
 
-	/*public String getState() {
-		return engine.getInfo().getStateAsString();
-	}*/
+	/*
+	 * public String getState() { return engine.getInfo().getStateAsString(); }
+	 */
 
 	/**
-	 * this interface is new to this class and not offically part of Lucee 3.x,
-	 * do not use outside the loader
+	 * this interface is new to this class and not officially part of Lucee 3.x, do not use outside the
+	 * loader
 	 * 
 	 * @param other
 	 * @param checkReferenceEqualityOnly
 	 * @return is equal to given engine
 	 */
-	public boolean equalTo(CFMLEngine other,
-			final boolean checkReferenceEqualityOnly) {
+	public boolean equalTo(CFMLEngine other, final boolean checkReferenceEqualityOnly) {
 		while (other instanceof CFMLEngineWrapper)
 			other = ((CFMLEngineWrapper) other).engine;
-		if (checkReferenceEqualityOnly)
-			return engine == other;
+		if (checkReferenceEqualityOnly) return engine == other;
 		return engine.equals(other);
 	}
 
 	@Override
-	public void cli(final Map<String, String> config,
-			final ServletConfig servletConfig) throws IOException,
-			JspException, ServletException {
+	public void cli(final Map<String, String> config, final ServletConfig servletConfig) throws IOException, JspException, ServletException {
 		engine.cli(config, servletConfig);
 	}
 
@@ -282,14 +274,12 @@ public class CFMLEngineWrapper implements CFMLEngine {
 	}
 
 	@Override
-	public ConfigServer getConfigServer(final Password password)
-			throws PageException {
+	public ConfigServer getConfigServer(final Password password) throws PageException {
 		return engine.getConfigServer(password);
 	}
 
 	@Override
-	public ConfigServer getConfigServer(final String key, final long timeNonce)
-			throws PageException {
+	public ConfigServer getConfigServer(final String key, final long timeNonce) throws PageException {
 		return engine.getConfigServer(key, timeNonce);
 	}
 
@@ -313,10 +303,9 @@ public class CFMLEngineWrapper implements CFMLEngine {
 		return engine.getClassUtil();
 	}
 
-	@Override
-	public XMLUtil getXMLUtil() {
-		return engine.getXMLUtil();
-	}
+	/*
+	 * @Override public XMLUtil getXMLUtil() { return engine.getXMLUtil(); }
+	 */
 
 	@Override
 	public ScriptEngineFactory getScriptEngineFactory(final int dialect) {
@@ -354,27 +343,19 @@ public class CFMLEngineWrapper implements CFMLEngine {
 	}
 
 	@Override
-	public PageContext createPageContext(final File contextRoot,
-			final String host, final String scriptName,
-			final String queryString, final Cookie[] cookies,
-			final Map<String, Object> headers,
-			final Map<String, String> parameters,
-			final Map<String, Object> attributes, final OutputStream os,
-			final long timeout, final boolean register) throws ServletException {
-		return engine.createPageContext(contextRoot, host, scriptName,
-				queryString, cookies, headers, parameters, attributes, os,
-				timeout, register);
+	public PageContext createPageContext(final File contextRoot, final String host, final String scriptName, final String queryString, final Cookie[] cookies,
+			final Map<String, Object> headers, final Map<String, String> parameters, final Map<String, Object> attributes, final OutputStream os, final long timeout,
+			final boolean register) throws ServletException {
+		return engine.createPageContext(contextRoot, host, scriptName, queryString, cookies, headers, parameters, attributes, os, timeout, register);
 	}
 
 	@Override
-	public void releasePageContext(final PageContext pc,
-			final boolean unregister) {
+	public void releasePageContext(final PageContext pc, final boolean unregister) {
 		engine.releasePageContext(pc, unregister);
 	}
 
 	@Override
-	public ConfigWeb createConfig(final File contextRoot, final String host,
-			final String scriptName) throws ServletException {
+	public ConfigWeb createConfig(final File contextRoot, final String host, final String scriptName) throws ServletException {
 		return engine.createConfig(contextRoot, host, scriptName);
 	}
 

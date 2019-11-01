@@ -25,8 +25,7 @@ import javax.servlet.jsp.tagext.TagSupport;
 
 public final class CurrentTimeTag extends TagSupport {
 
-	public CurrentTimeTag() {
-	}
+	public CurrentTimeTag() {}
 
 	@Override
 	public final int doEndTag() throws JspException {
@@ -34,7 +33,7 @@ public final class CurrentTimeTag extends TagSupport {
 		try {
 			super.pageContext.getOut().write("" + date.getTime());
 		}
-		catch(Exception e) {
+		catch (Exception e) {
 			throw new JspException("IO Error: " + e.getMessage());
 		}
 		return 6;

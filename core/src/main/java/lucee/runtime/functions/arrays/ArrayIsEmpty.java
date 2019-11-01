@@ -22,6 +22,7 @@
 package lucee.runtime.functions.arrays;
 
 import lucee.runtime.PageContext;
+import lucee.runtime.exp.FunctionException;
 import lucee.runtime.exp.PageException;
 import lucee.runtime.ext.function.BIF;
 import lucee.runtime.op.Caster;
@@ -31,12 +32,13 @@ public final class ArrayIsEmpty extends BIF {
 
 	private static final long serialVersionUID = 6459041981875254607L;
 
-	public static boolean call(PageContext pc , Array array) {
-		return array.size()==0;
+	public static boolean call(PageContext pc, Array array) {
+		return array.size() == 0;
 	}
-	
+
 	@Override
 	public Object invoke(PageContext pc, Object[] args) throws PageException {
-		return call(pc,Caster.toArray(args[0]));
+		if (args.length == 1) return call(pc, Caster.toArray(args[0]));
+		else throw new FunctionException(pc, "ArrayIsEmpty", 1, 1, args.length);
 	}
 }

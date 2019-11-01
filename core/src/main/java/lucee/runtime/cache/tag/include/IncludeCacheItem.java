@@ -30,15 +30,16 @@ import lucee.runtime.dump.DumpTable;
 import lucee.runtime.dump.DumpUtil;
 import lucee.runtime.dump.Dumpable;
 import lucee.runtime.dump.SimpleDumpData;
+import lucee.runtime.type.Duplicable;
 
-public class IncludeCacheItem implements CacheItem, Serializable, Dumpable {
+public class IncludeCacheItem implements CacheItem, Serializable, Dumpable, Duplicable {
 
 	private static final long serialVersionUID = -3616023500492159529L;
 
 	public final String output;
-	private long executionTimeNS;
-	private String path;
-	private String name;
+	private final long executionTimeNS;
+	private final String path;
+	private final String name;
 	private final int payload;
 
 	public IncludeCacheItem(String output, PageSource ps, long executionTimeNS) {
@@ -49,13 +50,20 @@ public class IncludeCacheItem implements CacheItem, Serializable, Dumpable {
 		this.payload = output == null ? 0 : output.length();
 	}
 
+	public IncludeCacheItem(String output, String path, String name, long executionTimeNS) {
+		this.output = output;
+		this.path = path;
+		this.name = name;
+		this.executionTimeNS = executionTimeNS;
+		this.payload = output == null ? 0 : output.length();
+	}
+
 	@Override
 	public DumpData toDumpData(PageContext pageContext, int maxlevel, DumpProperties properties) {
 		DumpTable table = new DumpTable("#669999", "#ccffff", "#000000");
 		table.setTitle("IncludeCacheEntry");
 		table.appendRow(1, new SimpleDumpData("Output"), DumpUtil.toDumpData(new SimpleDumpData(output), pageContext, maxlevel, properties));
-		if (path != null)
-			table.appendRow(1, new SimpleDumpData("Path"), DumpUtil.toDumpData(new SimpleDumpData(path), pageContext, maxlevel, properties));
+		if (path != null) table.appendRow(1, new SimpleDumpData("Path"), DumpUtil.toDumpData(new SimpleDumpData(path), pageContext, maxlevel, properties));
 		return table;
 	}
 
@@ -93,4 +101,8 @@ public class IncludeCacheItem implements CacheItem, Serializable, Dumpable {
 		return executionTimeNS;
 	}
 
+	@Override
+	public Object duplicate(boolean deepCopy) {
+		return new IncludeCacheItem(output, path, name, executionTimeNS);
+	}
 }

@@ -23,20 +23,29 @@ package lucee.runtime.functions.string;
 
 import lucee.runtime.PageContext;
 import lucee.runtime.exp.ExpressionException;
-import lucee.runtime.ext.function.Function;
+import lucee.runtime.exp.FunctionException;
+import lucee.runtime.exp.PageException;
+import lucee.runtime.ext.function.BIF;
+import lucee.runtime.op.Caster;
 
-public final class Chr implements Function {
+public final class Chr extends BIF {
 
 	private static final long serialVersionUID = -4941617303146860984L;
 
-	public static String call(PageContext pc , double number) throws ExpressionException {
-		int value=(int) number;
-		if(value<1){
-			if(value==0)return "";
-			//else {
-				throw new ExpressionException("Parameter 1 of function chr which is now ["+value+"] must be a non-negative integer");
-			//}
+	public static String call(PageContext pc, double number) throws ExpressionException {
+		int value = (int) number;
+		if (value < 1) {
+			if (value == 0) return "";
+			// else {
+			throw new ExpressionException("Parameter 1 of function chr which is now [" + value + "] must be a non-negative integer");
+			// }
 		}
-		return ""+(char)value;		
+		return "" + (char) value;
+	}
+
+	@Override
+	public Object invoke(PageContext pc, Object[] args) throws PageException {
+		if (args.length == 1) return call(pc, Caster.toDoubleValue(args[0]));
+		throw new FunctionException(pc, "chr", 1, 1, args.length);
 	}
 }

@@ -36,14 +36,12 @@ public interface Interface extends Dumpable, CIObject {
 	@Deprecated
 	public Struct getMetaData(PageContext pc) throws PageException;
 
-	public Struct getMetaData(PageContext pc, boolean ignoreCache)
-			throws PageException;
+	public Struct getMetaData(PageContext pc, boolean ignoreCache) throws PageException;
 
 	public Interface[] getExtends();
 
 	public void registerUDF(Collection.Key key, UDF udf) throws PageException;
 
-	public void registerUDF(Collection.Key key, UDFProperties props)
-			throws PageException;
+	public void registerUDF(Collection.Key key, UDFProperties props) throws PageException;
 
 }

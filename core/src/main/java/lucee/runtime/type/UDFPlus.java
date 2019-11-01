@@ -22,6 +22,7 @@ import lucee.runtime.Component;
 
 public interface UDFPlus extends UDF {
 	// !!!!!! do not move to public interface, make for example a interface calle UDFMod
-	 public void setOwnerComponent(Component component);
-	 public void setAccess(int access);
+	public void setOwnerComponent(Component component);
+
+	public void setAccess(int access);
 }

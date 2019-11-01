@@ -35,84 +35,82 @@ public abstract class StatementBase implements Statement {
 	private Position start;
 	private Position end;
 	private Statement parent;
-	private int hasReturnChild=-1;
+	private int hasReturnChild = -1;
 	private Factory factory;
-	
+
 	/**
-     * constructor of the class
-     * @param line
-     */
-    public StatementBase(Factory factory,Position start, Position end) {
-       this.factory=factory;
-    	this.start=start;
-        this.end=end;
-    }
+	 * constructor of the class
+	 * 
+	 * @param line
+	 */
+	public StatementBase(Factory factory, Position start, Position end) {
+		this.factory = factory;
+		this.start = start;
+		this.end = end;
+	}
 
 	@Override
-    public Statement getParent() {
+	public Statement getParent() {
 		return parent;
 	}
 
 	@Override
-    public Factory getFactory() {
+	public Factory getFactory() {
 		return factory;
 	}
-
 
 	/**
 	 * @see lucee.transformer.bytecode.Statement#setParent(lucee.transformer.bytecode.Statement)
 	 */
 	@Override
 	public void setParent(Statement parent) {
-		this.parent=parent;
-		if(hasReturnChild!=-1 && parent!=null)
-			parent.setHasFlowController(hasReturnChild==1);
+		this.parent = parent;
+		if (hasReturnChild != -1 && parent != null) parent.setHasFlowController(hasReturnChild == 1);
 	}
 
+	/**
+	 * write out the statement to adapter
+	 * 
+	 * @param adapter
+	 * @throws TemplateException
+	 */
+	@Override
+	public final void writeOut(Context c) throws TransformerException {
+		BytecodeContext bc = (BytecodeContext) c;
+		ExpressionUtil.visitLine(bc, start);
+		_writeOut(bc);
+		ExpressionUtil.visitLine(bc, end);
+
+	}
 
 	/**
-     * write out the stament to adapter
-     * @param adapter
-     * @throws TemplateException
-     */
-    @Override
-	public final void writeOut(Context c) throws TransformerException {
-    	BytecodeContext bc=(BytecodeContext) c;
-    	ExpressionUtil.visitLine(bc, start);
-        _writeOut(bc);
-    	ExpressionUtil.visitLine(bc, end);
-    	
-    }
-    
+	 * write out the statement to the adapter
+	 * 
+	 * @param adapter
+	 * @throws TransformerException
+	 */
+	public abstract void _writeOut(BytecodeContext bc) throws TransformerException;
 
-    /**
-     * write out the stament to the adater
-     * @param adapter
-     * @throws TransformerException 
-     */
-    public abstract void _writeOut(BytecodeContext bc) throws TransformerException;
-
-
-
-    /**
-     * sets the line value.
-     * @param line The line to set.
-     */
-    @Override
+	/**
+	 * sets the line value.
+	 * 
+	 * @param line The line to set.
+	 */
+	@Override
 	public void setStart(Position start) {
-        this.start = start;
-    }
+		this.start = start;
+	}
 
-    @Override
+	@Override
 	public void setEnd(Position end) {
-        this.end = end;
-    }
-    
-    @Override
+		this.end = end;
+	}
+
+	@Override
 	public Position getStart() {
 		return start;
 	}
-	
+
 	@Override
 	public Position getEnd() {
 		return end;
@@ -120,12 +118,12 @@ public abstract class StatementBase implements Statement {
 
 	@Override
 	public boolean hasFlowController() {
-		return hasReturnChild==1;
+		return hasReturnChild == 1;
 	}
 
 	@Override
 	public void setHasFlowController(boolean hasReturnChild) {
-		if(parent!=null)parent.setHasFlowController(hasReturnChild);
-		this.hasReturnChild = hasReturnChild?1:0;
+		if (parent != null) parent.setHasFlowController(hasReturnChild);
+		this.hasReturnChild = hasReturnChild ? 1 : 0;
 	}
 }

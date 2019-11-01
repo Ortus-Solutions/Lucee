@@ -26,7 +26,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import lucee.runtime.op.Caster;
 
 public class ConstantsDouble {
-	
+
 	public static Double __10 = new Double(-10.0d);
 	public static Double __9_9 = new Double(-9.9d);
 	public static Double __9_8 = new Double(-9.8d);
@@ -1129,21 +1129,19 @@ public class ConstantsDouble {
 	public static Double _99_9 = new Double(99.9d);
 	public static Double _100 = new Double(100.0d);
 
-	
 	private static Set<String> _____keys;
-	
+
 	public static String getFieldName(double d) {
-		if(_____keys==null) {
+		if (_____keys == null) {
 			Field[] fields = ConstantsDouble.class.getFields();
-			_____keys=Collections.newSetFromMap(new ConcurrentHashMap<String,Boolean>());
-			for(int i=0;i<fields.length;i++){
-				if(fields[i].getType()!=Double.class) continue;
+			_____keys = Collections.newSetFromMap(new ConcurrentHashMap<String, Boolean>());
+			for (int i = 0; i < fields.length; i++) {
+				if (fields[i].getType() != Double.class) continue;
 				_____keys.add(fields[i].getName());
 			}
 		}
-		String str="_"+Caster.toString(d).replace('-', '_').replace('.', '_');
-		return _____keys.contains(str)?str:null;
+		String str = "_" + Caster.toString(d).replace('-', '_').replace('.', '_');
+		return _____keys.contains(str) ? str : null;
 	}
-	
-	
+
 }

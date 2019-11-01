@@ -24,7 +24,7 @@ import lucee.transformer.Position;
 public abstract class StatementBaseNoFinal extends StatementBase {
 
 	public StatementBaseNoFinal(Factory f, Position start, Position end) {
-		super(f,start, end);
+		super(f, start, end);
 	}
 
 	@Override

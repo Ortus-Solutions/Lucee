@@ -30,23 +30,18 @@ public class FDControllerFactory {
 	// make sure FD see this class
 	static {
 		try {
-			CFMLEngineFactory
-					.getInstance()
-					.getClassUtil()
-					.loadClass(
-							"com.intergral.fusiondebug.server.FDSignalException");
-		} catch (final Throwable t) {
+			CFMLEngineFactory.getInstance().getClassUtil().loadClass("com.intergral.fusiondebug.server.FDSignalException");
+		}
+		catch (final Throwable t) {
 			t.printStackTrace();
 		}
 	}
 
 	/**
-	 * Constructor of the class
-	 * should never be invoked but still public to be shure that we do not run
+	 * Constructor of the class should never be invoked but still public to be sure that we do not run
 	 * into problems
 	 */
-	public FDControllerFactory() {
-	}
+	public FDControllerFactory() {}
 
 	public static void notifyPageComplete() {
 		complete++;

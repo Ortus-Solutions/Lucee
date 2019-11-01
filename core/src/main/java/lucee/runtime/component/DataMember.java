@@ -20,13 +20,12 @@ package lucee.runtime.component;
 
 import lucee.runtime.op.Duplicator;
 
-
 public final class DataMember extends MemberSupport {
 	private Object value;
 
-	public DataMember(int access, int modifier, Object value) { 
-		super(access,modifier);
-		this.value=value;
+	public DataMember(int access, int modifier, Object value) {
+		super(access, modifier);
+		this.value = value;
 	}
 
 	@Override
@@ -36,6 +35,6 @@ public final class DataMember extends MemberSupport {
 
 	@Override
 	public Object duplicate(boolean deepCopy) {
-		return new DataMember(getAccess(),getModifier(),Duplicator.duplicate(value, deepCopy));
+		return new DataMember(getAccess(), getModifier(), Duplicator.duplicate(value, deepCopy));
 	}
 }

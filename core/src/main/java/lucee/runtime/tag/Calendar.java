@@ -28,30 +28,30 @@ import lucee.runtime.type.util.ListUtil;
 
 public final class Calendar extends TagImpl {
 
-	private static final String[] DAY_NAMES_DEFAULT = new String[]{"S", "M", "T", "W", "Th", "F", "S"};
+	private static final String[] DAY_NAMES_DEFAULT = new String[] { "S", "M", "T", "W", "Th", "F", "S" };
 
-	private static final String[] MONTH_NAMES_DEFAULT = new String[]{"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
-	
+	private static final String[] MONTH_NAMES_DEFAULT = new String[] { "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November",
+			"December" };
+
 	private String name;
-	private int height=-1;
-	private int width=-1;
+	private int height = -1;
+	private int width = -1;
 	private DateTime selectedDate;
 	private DateTime startRange;
 	private DateTime endRange;
 	private boolean disabled;
-	private String mask="MM/DD/YYYY";
-	private int firstDayOfWeek=0;
-	private String[] dayNames=DAY_NAMES_DEFAULT;
-	private String[] monthNames=MONTH_NAMES_DEFAULT;
+	private String mask = "MM/DD/YYYY";
+	private int firstDayOfWeek = 0;
+	private String[] dayNames = DAY_NAMES_DEFAULT;
+	private String[] monthNames = MONTH_NAMES_DEFAULT;
 	private String style;
-	private boolean enabled=true;
-	private boolean visible=true;
+	private boolean enabled = true;
+	private boolean visible = true;
 	private String tooltip;
 	private String onChange;
 	private String onBlur;
 	private String onFocus;
-	
-	
+
 	public Calendar() throws ApplicationException {
 		// TODO impl. tag Calendar
 		throw new TagNotSupported("Calendar");
@@ -60,26 +60,26 @@ public final class Calendar extends TagImpl {
 	@Override
 	public void release() {
 		super.release();
-		name=null;
-		height=-1;
-		width=-1;
-		selectedDate=null;
-		startRange=null;
-		endRange=null;
-		disabled=false;
-		mask="MM/DD/YYYY";
-		firstDayOfWeek=0;
-		dayNames=DAY_NAMES_DEFAULT;
-		monthNames=MONTH_NAMES_DEFAULT;
-		style=null;
-		enabled=true;
-		visible=true;
-		tooltip=null;
-		onChange=null;
-		onBlur=null;
-		onFocus=null;
+		name = null;
+		height = -1;
+		width = -1;
+		selectedDate = null;
+		startRange = null;
+		endRange = null;
+		disabled = false;
+		mask = "MM/DD/YYYY";
+		firstDayOfWeek = 0;
+		dayNames = DAY_NAMES_DEFAULT;
+		monthNames = MONTH_NAMES_DEFAULT;
+		style = null;
+		enabled = true;
+		visible = true;
+		tooltip = null;
+		onChange = null;
+		onBlur = null;
+		onFocus = null;
 	}
-	
+
 	@Override
 	public int doStartTag() throws JspException {
 		return super.doStartTag();
@@ -89,7 +89,7 @@ public final class Calendar extends TagImpl {
 	 * @param dayNames the dayNames to set
 	 */
 	public void setDaynames(String listDayNames) {
-		this.dayNames = ListUtil.listToStringArray(listDayNames,',');
+		this.dayNames = ListUtil.listToStringArray(listDayNames, ',');
 	}
 
 	/**
@@ -117,14 +117,14 @@ public final class Calendar extends TagImpl {
 	 * @param firstDayOfWeek the firstDayOfWeek to set
 	 */
 	public void setFirstdayofweek(double firstDayOfWeek) {
-		this.firstDayOfWeek = (int)firstDayOfWeek;
+		this.firstDayOfWeek = (int) firstDayOfWeek;
 	}
 
 	/**
 	 * @param height the height to set
 	 */
 	public void setHeight(double height) {
-		this.height = (int)height;
+		this.height = (int) height;
 	}
 
 	/**
@@ -208,7 +208,7 @@ public final class Calendar extends TagImpl {
 	 * @param width the width to set
 	 */
 	public void setWidth(double width) {
-		this.width = (int)width;
+		this.width = (int) width;
 	}
 
 }

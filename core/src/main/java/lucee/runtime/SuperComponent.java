@@ -50,77 +50,78 @@ import lucee.runtime.type.util.StructUtil;
  * 
  */
 public class SuperComponent extends MemberSupport implements Component, Member {
-	
+
 	private ComponentImpl comp;
 
 	private SuperComponent(ComponentImpl comp) {
 		super(Component.ACCESS_PRIVATE);
-		this.comp=comp;
+		this.comp = comp;
 	}
-	
 
 	public static Member superMember(ComponentImpl comp) {
-		if(comp==null) return new DataMember(Component.ACCESS_PRIVATE,Member.MODIFIER_NONE,new StructImpl());
-        return new SuperComponent(comp);
+		if (comp == null) return new DataMember(Component.ACCESS_PRIVATE, Member.MODIFIER_NONE, new StructImpl());
+		return new SuperComponent(comp);
 	}
+
 	public static Collection superInstance(ComponentImpl comp) {
-		if(comp==null) return new StructImpl();
-        return new SuperComponent(comp);
+		if (comp == null) return new StructImpl();
+		return new SuperComponent(comp);
 	}
 
 	@Override
 	public Object getValue() {
 		return this;
 	}
+
 	@Override
 	public Object call(PageContext pc, String name, Object[] args) throws PageException {
-		return comp._call(pc, getAccess(), KeyImpl.init(name), null, args,true);
+		return comp._call(pc, getAccess(), KeyImpl.init(name), null, args, true);
 	}
 
 	@Override
 	public Object call(PageContext pc, Key name, Object[] args) throws PageException {
-		return comp._call(pc, getAccess(), name, null, args,true);
+		return comp._call(pc, getAccess(), name, null, args, true);
 	}
 
 	@Override
 	public Object callWithNamedValues(PageContext pc, String name, Struct args) throws PageException {
-		return comp._call(pc, getAccess(), KeyImpl.init(name), args,null,true);
+		return comp._call(pc, getAccess(), KeyImpl.init(name), args, null, true);
 	}
 
 	@Override
 	public Object callWithNamedValues(PageContext pc, Key methodName, Struct args) throws PageException {
-		return comp._call(pc, getAccess(), methodName, args,null,true);
+		return comp._call(pc, getAccess(), methodName, args, null, true);
 	}
-	
+
 	@Override
 	public boolean castToBooleanValue() throws PageException {
 		return comp.castToBooleanValue(true);
 	}
-    
-    @Override
-    public Boolean castToBoolean(Boolean defaultValue) {
-        return comp.castToBoolean(true,defaultValue);
-    }
+
+	@Override
+	public Boolean castToBoolean(Boolean defaultValue) {
+		return comp.castToBoolean(true, defaultValue);
+	}
 
 	@Override
 	public DateTime castToDateTime() throws PageException {
 		return comp.castToDateTime(true);
 	}
-    
-    @Override
-    public DateTime castToDateTime(DateTime defaultValue) {
-        return comp.castToDateTime(true,defaultValue);
-    }
+
+	@Override
+	public DateTime castToDateTime(DateTime defaultValue) {
+		return comp.castToDateTime(true, defaultValue);
+	}
 
 	@Override
 	public double castToDoubleValue() throws PageException {
 		return comp.castToDoubleValue(true);
 	}
-    
-    @Override
-    public double castToDoubleValue(double defaultValue) {
-        return comp.castToDoubleValue(true,defaultValue);
-    }
+
+	@Override
+	public double castToDoubleValue(double defaultValue) {
+		return comp.castToDoubleValue(true, defaultValue);
+	}
 
 	@Override
 	public String castToString() throws PageException {
@@ -129,7 +130,7 @@ public class SuperComponent extends MemberSupport implements Component, Member {
 
 	@Override
 	public String castToString(String defaultValue) {
-		return comp.castToString(true,defaultValue);
+		return comp.castToString(true, defaultValue);
 	}
 
 	@Override
@@ -164,17 +165,17 @@ public class SuperComponent extends MemberSupport implements Component, Member {
 
 	@Override
 	public boolean containsKey(String name) {
-		return comp.contains(getAccess(),(name));
+		return comp.contains(getAccess(), (name));
 	}
 
 	@Override
 	public boolean containsKey(Key key) {
-		return comp.contains(getAccess(),key.getLowerString());
+		return comp.contains(getAccess(), key.getLowerString());
 	}
 
 	@Override
-	public synchronized Collection duplicate(boolean deepCopy) {
-		return new SuperComponent((ComponentImpl) Duplicator.duplicate(comp,deepCopy));
+	public Collection duplicate(boolean deepCopy) {
+		return new SuperComponent((ComponentImpl) Duplicator.duplicate(comp, deepCopy));
 	}
 
 	@Override
@@ -199,15 +200,15 @@ public class SuperComponent extends MemberSupport implements Component, Member {
 
 	@Override
 	public Object get(Key key) throws PageException {
-		Member member=comp.getMember(getAccess(),key,true,true);
-        if(member!=null) return member.getValue();
-        return comp.get(getAccess(), key);
+		Member member = comp.getMember(getAccess(), key, true, true);
+		if (member != null) return member.getValue();
+		return comp.get(getAccess(), key);
 	}
 
 	@Override
 	public Object get(Key key, Object defaultValue) {
-		Member member=comp.getMember(getAccess(),key,true,true);
-        if(member!=null) return member.getValue();
+		Member member = comp.getMember(getAccess(), key, true, true);
+		if (member != null) return member.getValue();
 		return comp.get(getAccess(), key, defaultValue);
 	}
 
@@ -215,18 +216,18 @@ public class SuperComponent extends MemberSupport implements Component, Member {
 	public String getAbsName() {
 		return comp.getAbsName();
 	}
-    
-    @Override
-    public String getBaseAbsName() {
-        return comp.getBaseAbsName();
-    }
-    
-    @Override
+
+	@Override
+	public String getBaseAbsName() {
+		return comp.getBaseAbsName();
+	}
+
+	@Override
 	public boolean isBasePeristent() {
 		return comp.isPersistent();
 	}
-    
-    @Override
+
+	@Override
 	public int getModifier() {
 		return comp.getModifier();
 	}
@@ -257,7 +258,7 @@ public class SuperComponent extends MemberSupport implements Component, Member {
 	}
 
 	@Override
-	public synchronized Struct getMetaData(PageContext pc) throws PageException {
+	public Struct getMetaData(PageContext pc) throws PageException {
 		return comp.getMetaData(pc);
 	}
 
@@ -294,7 +295,7 @@ public class SuperComponent extends MemberSupport implements Component, Member {
 	public Iterator<String> keysAsStringIterator() {
 		return comp.keysAsStringIterator(getAccess());
 	}
-	
+
 	@Override
 	public Iterator<Entry<Key, Object>> entryIterator() {
 		return comp.entryIterator(getAccess());
@@ -314,10 +315,10 @@ public class SuperComponent extends MemberSupport implements Component, Member {
 	public Object removeEL(Key key) {
 		return comp.removeEL(key);
 	}
-	
+
 	@Override
 	public Object remove(Key key, Object defaultValue) {
-		return comp.remove(key,defaultValue);
+		return comp.remove(key, defaultValue);
 	}
 
 	@Override
@@ -357,47 +358,42 @@ public class SuperComponent extends MemberSupport implements Component, Member {
 
 	@Override
 	public DumpData toDumpData(PageContext pageContext, int maxlevel, DumpProperties dp) {
-		return comp.top.toDumpData(pageContext, maxlevel,dp);
+		return comp.top.toDumpData(pageContext, maxlevel, dp);
 	}
-	
+
 	@Override
 	public PageSource getPageSource() {
 		return comp.getPageSource();
 	}
 
-
 	@Override
 	public boolean containsKey(Object key) {
-		return containsKey(KeyImpl.toKey(key,null));
+		return containsKey(KeyImpl.toKey(key, null));
 	}
-
 
 	@Override
 	public Set entrySet() {
 		return StructUtil.entrySet(this);
 	}
 
-
 	@Override
 	public Object get(Object key) {
-		return get(KeyImpl.toKey(key,null), null);
+		return get(KeyImpl.toKey(key, null), null);
 	}
-
 
 	@Override
 	public boolean isEmpty() {
-		return size()==0;
+		return size() == 0;
 	}
 
 	@Override
 	public Set keySet() {
-		return StructUtil.keySet(this,false);
+		return StructUtil.keySet(this);
 	}
-
 
 	@Override
 	public Object put(Object key, Object value) {
-		return setEL(KeyImpl.toKey(key,null), value);
+		return setEL(KeyImpl.toKey(key, null), value);
 	}
 
 	@Override
@@ -407,7 +403,7 @@ public class SuperComponent extends MemberSupport implements Component, Member {
 
 	@Override
 	public Object remove(Object key) {
-		return removeEL(KeyImpl.toKey(key,null));
+		return removeEL(KeyImpl.toKey(key, null));
 	}
 
 	@Override
@@ -419,7 +415,6 @@ public class SuperComponent extends MemberSupport implements Component, Member {
 	public boolean containsValue(Object value) {
 		return values().contains(value);
 	}
-
 
 	@Override
 	public Iterator<Object> valueIterator() {
@@ -433,9 +428,8 @@ public class SuperComponent extends MemberSupport implements Component, Member {
 
 	@Override
 	public Property[] getProperties(boolean onlyPeristent, boolean includeBaseProperties, boolean overrideProperties, boolean inheritedMappedSuperClassOnly) {
-		return comp.getProperties(onlyPeristent,includeBaseProperties, overrideProperties, inheritedMappedSuperClassOnly);
+		return comp.getProperties(onlyPeristent, includeBaseProperties, overrideProperties, inheritedMappedSuperClassOnly);
 	}
-
 
 	@Override
 	public ComponentScope getComponentScope() {
@@ -444,12 +438,13 @@ public class SuperComponent extends MemberSupport implements Component, Member {
 
 	@Override
 	public boolean contains(PageContext pc, Key key) {
-		return comp.contains(getAccess(),key);
+		return comp.contains(getAccess(), key);
 	}
 
-	/*private Member getMember(int access, Key key, boolean dataMember,boolean superAccess) {
-		return comp.getMember(access, key, dataMember, superAccess);
-	}*/
+	/*
+	 * private Member getMember(int access, Key key, boolean dataMember,boolean superAccess) { return
+	 * comp.getMember(access, key, dataMember, superAccess); }
+	 */
 
 	@Override
 	public void setProperty(Property property) throws PageException {
@@ -465,21 +460,21 @@ public class SuperComponent extends MemberSupport implements Component, Member {
 	public String getWSDLFile() {
 		return comp.getWSDLFile();
 	}
-	
+
 	@Override
-    public void registerUDF(Collection.Key key, UDF udf) throws ApplicationException{
+	public void registerUDF(Collection.Key key, UDF udf) throws ApplicationException {
 		comp.registerUDF(key, udf);
-    }
-    
+	}
+
 	@Override
-    public void registerUDF(Collection.Key key, UDFProperties props) throws ApplicationException{
+	public void registerUDF(Collection.Key key, UDFProperties props) throws ApplicationException {
 		comp.registerUDF(key, props);
-    }
-	
+	}
+
 	@Override
 	public java.util.Iterator<String> getIterator() {
-    	return keysAsStringIterator();
-    }
+		return keysAsStringIterator();
+	}
 
 	@Override
 	public Class getJavaAccessClass(PageContext pc, RefBoolean isNew, boolean writeLog, boolean takeTop, boolean create, boolean supressWSbeforeArg) throws PageException {
@@ -487,10 +482,11 @@ public class SuperComponent extends MemberSupport implements Component, Member {
 	}
 
 	@Override
-	public Class getJavaAccessClass(PageContext pc, RefBoolean isNew, boolean writeLog, boolean takeTop, boolean create, boolean supressWSbeforeArg,boolean output,boolean returnValue) throws PageException {
-		return comp.getJavaAccessClass(pc, isNew, writeLog, takeTop, create, supressWSbeforeArg,output,returnValue);
+	public Class getJavaAccessClass(PageContext pc, RefBoolean isNew, boolean writeLog, boolean takeTop, boolean create, boolean supressWSbeforeArg, boolean output,
+			boolean returnValue) throws PageException {
+		return comp.getJavaAccessClass(pc, isNew, writeLog, takeTop, create, supressWSbeforeArg, output, returnValue);
 	}
-	
+
 	@Override
 	public boolean isPersistent() {
 		return comp.isPersistent();
@@ -516,7 +512,6 @@ public class SuperComponent extends MemberSupport implements Component, Member {
 		return comp.getBaseComponent();
 	}
 
-
 	@Override
 	public Set<Key> keySet(int access) {
 		return comp.keySet(access);
@@ -527,12 +522,10 @@ public class SuperComponent extends MemberSupport implements Component, Member {
 		return comp.getMetaStructItem(name);
 	}
 
-
 	@Override
 	public Object call(PageContext pc, int access, Key name, Object[] args) throws PageException {
 		return comp.call(pc, access, name, args);
 	}
-
 
 	@Override
 	public Object callWithNamedValues(PageContext pc, int access, Key name, Struct args) throws PageException {
@@ -548,7 +541,6 @@ public class SuperComponent extends MemberSupport implements Component, Member {
 	public Key[] keys(int access) {
 		return comp.keys(access);
 	}
-
 
 	@Override
 	public Iterator<Key> keyIterator(int access) {
@@ -595,19 +587,18 @@ public class SuperComponent extends MemberSupport implements Component, Member {
 		return comp.getMember(access, key, dataMember, superAccess);
 	}
 
-
 	@Override
 	public Scope staticScope() {
 		return comp.staticScope();
 	}
-	
+
 	@Override
-	public Variables beforeStaticConstructor(PageContext pc){
+	public Variables beforeStaticConstructor(PageContext pc) {
 		return comp.beforeStaticConstructor(pc);
 	}
 
 	@Override
-	public void afterStaticConstructor(PageContext pc, Variables var){
+	public void afterStaticConstructor(PageContext pc, Variables var) {
 		comp.afterStaticConstructor(pc, var);
 	}
 

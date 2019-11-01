@@ -1,7 +1,3 @@
-<cfset stText.remote.settings.title="Task Settings">
-<cfset stText.remote.title="Tasks">
-<cfset stText.remote.settings.maxThreads="Maximum concurrent threads">
-<cfset stText.remote.settings.maxThreadsDesc="Maximum number of parallel threads used to execute tasks at the same time, fewer threads will take longer to execute all open threads, more threads will add more load to the system.">
 <cfset hasAccess=true>
 <cfif not isDefined('session.filter')>
 	<cfset session.filter.type="">
@@ -212,7 +208,7 @@
 			<cfif url.id EQ tasks.id>
 				<cfset css=iif(not tasks.closed,de('Green'),de('Red'))>
 				#replace(replace(stText.remote.ot.detailDesc[css],'<tries>',tasks.tries),'<triesleft>',tasks.triesMax-tasks.tries)#
-				<cfform onerror="customError" action="#request.self#?action=#url.action#" method="post">
+				<cfformClassic onerror="customError" action="#request.self#?action=#url.action#" method="post">
 					<table class="maintbl">
 						<tbody>
 							<!--- MUST wieso geht hier der direkte aufruf nicht! --->
@@ -319,7 +315,7 @@
 							</cfloop>
 						</tbody>
 					</table>
-				</cfform>
+				</cfformClassic>
 			</cfif>
 		</cfloop>
 	<!--- List ---->
@@ -327,14 +323,14 @@
 	
 		
 	<h2>#stText.remote.Settings.title#</h2>
-	<cfform onerror="customError" action="#request.self#?action=#url.action#" method="post">
+	<cfformClassic onerror="customError" action="#request.self#?action=#url.action#" method="post">
 		<table class="maintbl">
 			<tbody>
 				<tr>
 					<th scope="row">#stText.remote.settings.maxThreads#</th>
 					<td>
 						<cfif hasAccess>
-							<cfinput type="text" name="maxThreads" 
+							<cfinputClassic type="text" name="maxThreads" 
 									value="#settings.maxThreads#" validate="integer" class="number" required="no">
 						<cfelse>
 							<b>#settings.maxThreads#</b><br>
@@ -360,7 +356,7 @@
 				</tfoot>
 			</cfif>
 		</table>
-	</cfform>
+	</cfformClassic>
 
 	
 	
@@ -414,7 +410,7 @@
 			#browse#
 		</cfif>
 		
-		<cfform onerror="customError" action="#request.self#?action=#url.action#" method="post">
+		<cfformClassic onerror="customError" action="#request.self#?action=#url.action#" method="post">
 			<table class="maintbl checkboxtbl">
 				<thead>
 					<tr>
@@ -477,7 +473,7 @@
 								<td class="tblContent#css#"><input type="hidden" name="id_#tasks.currentrow#" value="#tasks.id#">
 									#tasks.type#
 								</td>
-								<td class="tblContent#css#">#tasks.name#</td>
+								<td class="tblContent#css#">#wrap(tasks.name,80)#</td>
 								<!---
 								<td class="tblContent#css#">
 									<cfif isDate(tasks.lastExecution) and year(tasks.lastExecution) NEQ 1970>
@@ -519,7 +515,7 @@
 					</tfoot>
 				</cfif>
 			</table>
-		</cfform>
+		</cfformClassic>
 		<cfif result.open+result.closed gt 0>
 			#browse#
 		</cfif>

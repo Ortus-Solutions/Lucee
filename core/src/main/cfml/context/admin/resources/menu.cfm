@@ -3,6 +3,12 @@
 	<cfargument name="adminType" type="string" required="yes">
 	<cfset var MenuStruct = 
 	array(
+		struct(
+			action:"overview",label:stMenu.overview.label,
+			children:array(
+				struct(action:"",label:stMenu.overview.overview)
+			)
+		),
 		{
 			action:"info",label:stMenu.info.label,
 			children:[
@@ -14,6 +20,7 @@
 			children:array(
 				struct(action:"cache",label:stMenu.server.cache),
 				struct(action:"compiler",label:stMenu.server.compiler),
+				struct(action:"security",label:stMenu.server.security),
 				struct(action:"regional",label:stMenu.server.regional),
 				struct(action:"charset",label:stMenu.server.charset),
 				struct(action:"scope",label:stMenu.server.scope),

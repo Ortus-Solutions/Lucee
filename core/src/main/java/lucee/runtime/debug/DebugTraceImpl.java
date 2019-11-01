@@ -34,16 +34,16 @@ public final class DebugTraceImpl implements DebugTrace {
 	private String varName;
 	private String action;
 
-	public DebugTraceImpl(int type, String category, String text, String template, int line, String action,String varName, String varValue, long time) {
-		this.type=type;
-		this.category=category;
-		this.text=text;
-		this.template=template;
-		this.line=line;
-		this.varName=varName;
-		this.varValue=varValue;
-		this.time=(time<0)?0:time;
-		this.action=StringUtil.emptyIfNull(action);
+	public DebugTraceImpl(int type, String category, String text, String template, int line, String action, String varName, String varValue, long time) {
+		this.type = type;
+		this.category = category;
+		this.text = text;
+		this.template = template;
+		this.line = line;
+		this.varName = varName;
+		this.varValue = varValue;
+		this.time = (time < 0) ? 0 : time;
+		this.action = StringUtil.emptyIfNull(action);
 	}
 
 	/**
@@ -101,38 +101,47 @@ public final class DebugTraceImpl implements DebugTrace {
 	public String getVarValue() {
 		return varValue;
 	}
+
 	@Override
 	public String getVarName() {
 		return varName;
 	}
+
 	@Override
 	public String getAction() {
 		return action;
 	}
-	
+
 	public static int toType(String type, int defaultValue) {
-        if(type==null) return defaultValue;
-        type=type.toLowerCase().trim();
-        if(type.startsWith("info")) return TYPE_INFO;
-        if(type.startsWith("debug")) return TYPE_DEBUG;
-        if(type.startsWith("warn")) return TYPE_WARN;
-        if(type.startsWith("error")) return TYPE_ERROR;
-        if(type.startsWith("fatal")) return TYPE_FATAL;
-        if(type.startsWith("trace")) return TYPE_TRACE;
-        
-        return defaultValue;
-    } 
-	
+		if (type == null) return defaultValue;
+		type = type.toLowerCase().trim();
+		if (type.startsWith("info")) return TYPE_INFO;
+		if (type.startsWith("debug")) return TYPE_DEBUG;
+		if (type.startsWith("warn")) return TYPE_WARN;
+		if (type.startsWith("error")) return TYPE_ERROR;
+		if (type.startsWith("fatal")) return TYPE_FATAL;
+		if (type.startsWith("trace")) return TYPE_TRACE;
+
+		return defaultValue;
+	}
+
 	public static String toType(int type, String defaultValue) {
-        switch(type) {
-        case TYPE_INFO:    return "INFO"; 
-        case TYPE_DEBUG:   return "DEBUG"; 
-        case TYPE_WARN:    return "WARN"; 
-        case TYPE_ERROR:   return "ERROR"; 
-        case TYPE_FATAL:   return "FATAL"; 
-        case TYPE_TRACE:   return "TRACE"; 
-        default:                return defaultValue;
-        }
-    }
-	
+		switch (type) {
+		case TYPE_INFO:
+			return "INFO";
+		case TYPE_DEBUG:
+			return "DEBUG";
+		case TYPE_WARN:
+			return "WARN";
+		case TYPE_ERROR:
+			return "ERROR";
+		case TYPE_FATAL:
+			return "FATAL";
+		case TYPE_TRACE:
+			return "TRACE";
+		default:
+			return defaultValue;
+		}
+	}
+
 }

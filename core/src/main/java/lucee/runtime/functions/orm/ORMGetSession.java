@@ -39,7 +39,7 @@ public class ORMGetSession extends BIF {
 
 	@Override
 	public Object invoke(PageContext pc, Object[] args) throws PageException {
-		if(args.length==0) return call(pc);
-		return call(pc,Caster.toString(args[0]));
+		if (args.length == 0) return call(pc);
+		return call(pc, Caster.toString(args[0]));
 	}
 }

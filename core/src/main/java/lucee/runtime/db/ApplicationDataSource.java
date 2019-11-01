@@ -21,28 +21,33 @@ package lucee.runtime.db;
 import java.util.TimeZone;
 
 import lucee.commons.io.log.Log;
+import lucee.runtime.config.Config;
 import lucee.runtime.config.ConfigWebUtil;
+import lucee.runtime.engine.ThreadLocalPageContext;
 import lucee.runtime.exp.ApplicationException;
 import lucee.runtime.exp.PageRuntimeException;
+import lucee.runtime.tag.listener.TagListener;
 import lucee.runtime.type.Struct;
 
 public class ApplicationDataSource extends DataSourceSupport {
 
 	private String connStr;
 
-	private ApplicationDataSource(String name, ClassDefinition cd, String connStr, String username, String password,
-			boolean blob, boolean clob, int connectionLimit, int connectionTimeout, long metaCacheTimeout, TimeZone timezone, int allow, boolean storage, boolean readOnly,Log log) {
-		super(null,name, cd,username,ConfigWebUtil.decrypt(password),
-				blob,clob,connectionLimit, connectionTimeout, metaCacheTimeout, timezone, allow<0?ALLOW_ALL:allow, storage, readOnly,log);
-		
+	private ApplicationDataSource(Config config, String name, ClassDefinition cd, String connStr, String username, String password, TagListener listener, boolean blob,
+			boolean clob, int connectionLimit, int connectionTimeout, long metaCacheTimeout, TimeZone timezone, int allow, boolean storage, boolean readOnly, boolean validate,
+			boolean requestExclusive, Log log) {
+		super(config, name, cd, username, ConfigWebUtil.decrypt(password), listener, blob, clob, connectionLimit, connectionTimeout, metaCacheTimeout, timezone,
+				allow < 0 ? ALLOW_ALL : allow, storage, readOnly, validate, requestExclusive, log);
+
 		this.connStr = connStr;
 	}
-	
 
-	public static DataSource getInstance(String name, ClassDefinition cd, String connStr, String username, String password,
-			boolean blob, boolean clob, int connectionLimit, int connectionTimeout, long metaCacheTimeout, TimeZone timezone, int allow, boolean storage, boolean readOnly,Log log) {
-		
-		return new ApplicationDataSource(name, cd, connStr, username, password, blob, clob, connectionLimit, connectionTimeout, metaCacheTimeout, timezone, allow, storage, readOnly,log);
+	public static DataSource getInstance(Config config, String name, ClassDefinition cd, String connStr, String username, String password, TagListener listener, boolean blob,
+			boolean clob, int connectionLimit, int connectionTimeout, long metaCacheTimeout, TimeZone timezone, int allow, boolean storage, boolean readOnly, boolean validate,
+			boolean requestExclusive, Log log) {
+
+		return new ApplicationDataSource(config, name, cd, connStr, username, password, listener, blob, clob, connectionLimit, connectionTimeout, metaCacheTimeout, timezone, allow,
+				storage, readOnly, validate, requestExclusive, log);
 	}
 
 	@Override
@@ -83,9 +88,11 @@ public class ApplicationDataSource extends DataSourceSupport {
 	@Override
 	public DataSource cloneReadOnly() {
 		try {
-			return new ApplicationDataSource(getName(), getClassDefinition(), connStr, getUsername(), getPassword(),
-					isBlob(), isClob(), getConnectionLimit(), getConnectionTimeout(), getMetaCacheTimeout(), getTimeZone(), allow, isStorage(), isReadOnly(),getLog());
-		} catch (Exception e) {
+			return new ApplicationDataSource(ThreadLocalPageContext.getConfig(), getName(), getClassDefinition(), connStr, getUsername(), getPassword(), getListener(), isBlob(),
+					isClob(), getConnectionLimit(), getConnectionTimeout(), getMetaCacheTimeout(), getTimeZone(), allow, isStorage(), isReadOnly(), validate(),
+					isRequestExclusive(), getLog());
+		}
+		catch (Exception e) {
 			throw new RuntimeException(e);// this should never happens, because the class was already loaded in this object
 		}
 	}
@@ -105,14 +112,8 @@ public class ApplicationDataSource extends DataSourceSupport {
 		throw exp();
 	}
 
-	@Override
-	public boolean validate() {
-		throw exp();
-	}
-
-
 	private PageRuntimeException exp() {
-		//return new MethodNotSupportedException();
+		// return new MethodNotSupportedException();
 		throw new PageRuntimeException(new ApplicationException("method not supported"));
 	}
 }

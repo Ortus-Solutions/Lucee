@@ -23,11 +23,12 @@ public class Range {
 	public final int to;
 
 	public Range(int from, int to) {
-		this.from=from;
-		this.to=to;
+		this.from = from;
+		this.to = to;
 	}
+
 	@Override
-	public String toString(){
-		return "from:"+from+";to:"+to+";";
+	public String toString() {
+		return "from:" + from + ";to:" + to + ";";
 	}
 }

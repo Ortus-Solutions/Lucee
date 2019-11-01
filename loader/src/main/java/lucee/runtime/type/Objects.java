@@ -56,8 +56,7 @@ public interface Objects extends Dumpable, Castable {
 	 * @return value set to property
 	 * @throws PageException
 	 */
-	public Object set(PageContext pc, Collection.Key propertyName, Object value)
-			throws PageException;
+	public Object set(PageContext pc, Collection.Key propertyName, Object value) throws PageException;
 
 	/**
 	 * sets a property (Data Member) value of the object
@@ -67,8 +66,7 @@ public interface Objects extends Dumpable, Castable {
 	 * @param value value to insert
 	 * @return value set to property
 	 */
-	public Object setEL(PageContext pc, Collection.Key propertyName,
-			Object value);
+	public Object setEL(PageContext pc, Collection.Key propertyName, Object value);
 
 	/**
 	 * calls a method of the object
@@ -79,8 +77,7 @@ public interface Objects extends Dumpable, Castable {
 	 * @return return value of the method
 	 * @throws PageException
 	 */
-	public Object call(PageContext pc, Collection.Key methodName,
-			Object[] arguments) throws PageException;
+	public Object call(PageContext pc, Collection.Key methodName, Object[] arguments) throws PageException;
 
 	/**
 	 * call a method of the Object with named arguments
@@ -91,6 +88,5 @@ public interface Objects extends Dumpable, Castable {
 	 * @return return result of the method
 	 * @throws PageException
 	 */
-	public abstract Object callWithNamedValues(PageContext pc,
-			Collection.Key methodName, Struct args) throws PageException;
+	public abstract Object callWithNamedValues(PageContext pc, Collection.Key methodName, Struct args) throws PageException;
 }

@@ -25,16 +25,13 @@ public interface Strings {
 	 * @param input - the string input to work on
 	 * @param find - the substring to find
 	 * @param repl - the substring to replace the matches with
-	 * @param firstOnly - if true then only the first occurrence of {@code find}
-	 *            will be replaced
+	 * @param firstOnly - if true then only the first occurrence of {@code find} will be replaced
 	 * @param ignoreCase - if true then matches will not be case sensitive
 	 * @return
 	 */
-	public String replace(String input, String find, String repl,
-			boolean firstOnly, boolean ignoreCase);
+	public String replace(String input, String find, String repl, boolean firstOnly, boolean ignoreCase);
 
-	public String toVariableName(String str, boolean addIdentityNumber,
-			boolean allowDot);
+	public String toVariableName(String str, boolean addIdentityNumber, boolean allowDot);
 
 	/**
 	 * return first element of the list

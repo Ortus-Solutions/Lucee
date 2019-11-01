@@ -31,14 +31,15 @@ public class DatasourceResourceOutputStream extends OutputStream {
 
 	/**
 	 * Constructor of the class
+	 * 
 	 * @param res
 	 * @param os
 	 */
 	public DatasourceResourceOutputStream(DataWriter dw, OutputStream os) {
-		this.dw=dw;
-		this.os=os;
+		this.dw = dw;
+		this.os = os;
 	}
-	
+
 	@Override
 	public void write(int b) throws IOException {
 		os.write(b);
@@ -49,13 +50,13 @@ public class DatasourceResourceOutputStream extends OutputStream {
 		os.close();
 		try {
 			dw.join();
-		} catch (InterruptedException e) {
+		}
+		catch (InterruptedException e) {
 			throw new AlwaysThrow(e.getMessage());
 		}
 
-   	 
-		SQLException ioe=dw.getException();
-		if(ioe!=null) {
+		SQLException ioe = dw.getException();
+		if (ioe != null) {
 			throw new AlwaysThrow(ioe.getMessage());
 		}
 	}

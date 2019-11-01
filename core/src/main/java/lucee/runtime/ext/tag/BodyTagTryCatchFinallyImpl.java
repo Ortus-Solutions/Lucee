@@ -20,23 +20,24 @@ package lucee.runtime.ext.tag;
 
 import javax.servlet.jsp.tagext.TryCatchFinally;
 
+import lucee.commons.lang.ExceptionUtil;
 import lucee.runtime.exp.AbortException;
 import lucee.runtime.exp.PageServletException;
-
 
 /**
  * extends Body Support Tag eith TryCatchFinally Functionality
  */
-public abstract class BodyTagTryCatchFinallyImpl extends BodyTagImpl implements TryCatchFinally{
+public abstract class BodyTagTryCatchFinallyImpl extends BodyTagImpl implements TryCatchFinally {
 
 	@Override
 	public void doCatch(Throwable t) throws Throwable {
-		if(t instanceof PageServletException) {
-		    PageServletException pse=(PageServletException)t;
-		    t=pse.getPageException();
+		ExceptionUtil.rethrowIfNecessary(t);
+		if (t instanceof PageServletException) {
+			PageServletException pse = (PageServletException) t;
+			t = pse.getPageException();
 		}
-	    if(bodyContent!=null) {
-			if(t instanceof AbortException){
+		if (bodyContent != null) {
+			if (t instanceof AbortException) {
 				bodyContent.writeOut(bodyContent.getEnclosingWriter());
 			}
 			bodyContent.clearBuffer();
@@ -46,7 +47,7 @@ public abstract class BodyTagTryCatchFinallyImpl extends BodyTagImpl implements 
 
 	@Override
 	public void doFinally() {
-		
+
 	}
-	
+
 }

@@ -19,7 +19,6 @@
 package lucee.runtime.util;
 
 import java.io.File;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Serializable;
 import java.util.Map;
@@ -34,6 +33,7 @@ import lucee.commons.lang.types.RefBoolean;
 import lucee.commons.lang.types.RefDouble;
 import lucee.commons.lang.types.RefInteger;
 import lucee.commons.lang.types.RefLong;
+import lucee.commons.lang.types.RefString;
 import lucee.commons.lock.KeyLock;
 import lucee.runtime.Component;
 import lucee.runtime.Mapping;
@@ -58,8 +58,6 @@ import lucee.runtime.type.dt.Time;
 import lucee.runtime.type.dt.TimeSpan;
 import lucee.runtime.type.scope.ClusterEntry;
 
-import org.w3c.dom.Document;
-
 /**
  * Creation of different Objects
  */
@@ -77,8 +75,7 @@ public interface Creation {
 	 * 
 	 * @return array
 	 */
-	public abstract Array createArray(String list, String delimiter,
-			boolean removeEmptyItem, boolean trim);
+	public abstract Array createArray(String list, String delimiter, boolean removeEmptyItem, boolean trim);
 
 	/**
 	 * creates and returns a DateTime instance
@@ -100,8 +97,7 @@ public interface Creation {
 	 * @param millis
 	 * @return DateTime
 	 */
-	public abstract DateTime createDateTime(int year, int month, int day,
-			int hour, int minute, int seond, int millis) throws PageException;
+	public abstract DateTime createDateTime(int year, int month, int day, int hour, int minute, int seond, int millis) throws PageException;
 
 	/**
 	 * creates and returns a Date instance
@@ -119,8 +115,7 @@ public interface Creation {
 	 * @param day
 	 * @return DateTime
 	 */
-	public abstract Date createDate(int year, int month, int day)
-			throws PageException;
+	public abstract Date createDate(int year, int month, int day) throws PageException;
 
 	/**
 	 * creates and returns a Time instance
@@ -150,8 +145,7 @@ public interface Creation {
 	 * @param second
 	 * @return TimeSpan
 	 */
-	public abstract TimeSpan createTimeSpan(int day, int hour, int minute,
-			int second);
+	public abstract TimeSpan createTimeSpan(int day, int hour, int minute, int second);
 
 	/**
 	 * creates and returns a array instance
@@ -185,8 +179,7 @@ public interface Creation {
 	 * @param rows
 	 * @param name
 	 * @return created query Object
-	 * @deprecated usse instead
-	 *             <code>createQuery(Collection.Key[] columns, int rows, String name)</code>
+	 * @deprecated use instead <code>createQuery(Collection.Key[] columns, int rows, String name)</code>
 	 */
 	@Deprecated
 	public abstract Query createQuery(String[] columns, int rows, String name);
@@ -199,8 +192,7 @@ public interface Creation {
 	 * @param name
 	 * @return created query Object
 	 */
-	public abstract Query createQuery(Collection.Key[] columns, int rows,
-			String name) throws PageException;
+	public abstract Query createQuery(Collection.Key[] columns, int rows, String name) throws PageException;
 
 	/**
 	 * creates a query object with given data
@@ -209,12 +201,11 @@ public interface Creation {
 	 * @param rows
 	 * @param name
 	 * @return created query Object
-	 * @deprecated usse instead
+	 * @deprecated use instead
 	 *             <code>createQuery(Collection.Key[] columns, String[] types, int rows, String name)</code>
 	 */
 	@Deprecated
-	public abstract Query createQuery(String[] columns, String[] types,
-			int rows, String name) throws PageException;
+	public abstract Query createQuery(String[] columns, String[] types, int rows, String name) throws PageException;
 
 	/**
 	 * creates a query object with given data
@@ -224,8 +215,7 @@ public interface Creation {
 	 * @param name
 	 * @return created query Object
 	 */
-	public abstract Query createQuery(Collection.Key[] columns, String[] types,
-			int rows, String name) throws PageException;
+	public abstract Query createQuery(Collection.Key[] columns, String[] types, int rows, String name) throws PageException;
 
 	/**
 	 * @param dc Connection to a database
@@ -237,105 +227,52 @@ public interface Creation {
 	 * @return created Query
 	 * @throws PageException
 	 */
-	public abstract Query createQuery(DatasourceConnection dc, SQL sql,
-			int maxrow, int fetchsize, int timeout, String name)
-			throws PageException;
+	public abstract Query createQuery(DatasourceConnection dc, SQL sql, int maxrow, int fetchsize, int timeout, String name) throws PageException;
 
 	/**
-	 * creates and returns a xml Document instance
-	 * 
-	 * @return struct
-	 * @throws PageException
-	 */
-	public abstract Document createDocument() throws PageException;
-
-	/**
-	 * creates and returns a xml Document instance
-	 * 
-	 * @param file
-	 * @param isHtml
-	 * @return struct
-	 * @throws PageException
-	 */
-	public abstract Document createDocument(Resource file, boolean isHtml)
-			throws PageException;
-
-	/**
-	 * creates and returns a xml Document instance
-	 * 
-	 * @param xml
-	 * @param isHtml
-	 * @return struct
-	 * @throws PageException
-	 */
-	public abstract Document createDocument(String xml, boolean isHtml)
-			throws PageException;
-
-	/**
-	 * creates and returns a xml Document instance
-	 * 
-	 * @param is
-	 * @param isHtml
-	 * @return struct
-	 * @throws PageException
-	 */
-	public abstract Document createDocument(InputStream is, boolean isHtml)
-			throws PageException;
-
-	/**
-	 * creates a collecton Key out of a String
+	 * creates a collection Key out of a String
 	 * 
 	 * @param key
 	 */
 	public abstract Collection.Key createKey(String key);
 
-	public SpoolerTask createRemoteClientTask(ExecutionPlan[] plans,
-			RemoteClient remoteClient, Struct attrColl, String callerId,
-			String type);
+	public SpoolerTask createRemoteClientTask(ExecutionPlan[] plans, RemoteClient remoteClient, Struct attrColl, String callerId, String type);
 
-	public ClusterEntry createClusterEntry(Key key, Serializable value,
-			int offset);
+	public ClusterEntry createClusterEntry(Key key, Serializable value, int offset);
 
-	public Resource createResource(String path, boolean existing)
-			throws PageException;
+	public Resource createResource(String path, boolean existing) throws PageException;
 
-	public abstract HttpServletRequest createHttpServletRequest(
-			File contextRoot, String serverName, String scriptName,
-			String queryString, Cookie[] cookies, Map<String, Object> headers,
-			Map<String, String> parameters, Map<String, Object> attributes,
-			HttpSession session);
+	public abstract HttpServletRequest createHttpServletRequest(File contextRoot, String serverName, String scriptName, String queryString, Cookie[] cookies,
+			Map<String, Object> headers, Map<String, String> parameters, Map<String, Object> attributes, HttpSession session);
 
-	public abstract HttpServletResponse createHttpServletResponse(
-			OutputStream io);
+	public abstract HttpServletResponse createHttpServletResponse(OutputStream io);
 
-	public abstract PageContext createPageContext(HttpServletRequest req,
-			HttpServletResponse rsp, OutputStream out);
+	public abstract PageContext createPageContext(HttpServletRequest req, HttpServletResponse rsp, OutputStream out);
+
+	// FUTURE public ServletConfig createServletConfig(File root, Map<String, Object> attributes,
+	// Map<String, String> params)
 
 	/**
-	 * creates a component object from (Full)Name, for example
-	 * lucee.extensions.net.HTTPUtil
+	 * creates a component object from (Full)Name, for example lucee.extensions.net.HTTPUtil
 	 * 
 	 * @param pc Pagecontext for loading the CFC
 	 * @param fullName full name of the cfc example:lucee.extensions.net.HTTPUtil
 	 * @return loaded cfc
 	 * @throws PageException
 	 */
-	public abstract Component createComponentFromName(PageContext pc,
-			String fullName) throws PageException;
+	public abstract Component createComponentFromName(PageContext pc, String fullName) throws PageException;
 
 	/**
 	 * creates a component object from a absolute local path, for example
 	 * /Users/susi/Projects/Sorglos/wwwrooot/lucee/extensions/net/HTTPUtil.cfc
 	 * 
 	 * @param pc Pagecontext for loading the CFC
-	 * @param path path of the cfc
-	 *            example:/Users/susi/Projects/Sorglos/wwwrooot/
+	 * @param path path of the cfc example:/Users/susi/Projects/Sorglos/wwwrooot/
 	 *            lucee/extensions/net/HTTPUtil.cfc
 	 * @return loaded cfc
 	 * @throws PageException
 	 */
-	public abstract Component createComponentFromPath(PageContext pc,
-			String path) throws PageException;
+	public abstract Component createComponentFromPath(PageContext pc, String path) throws PageException;
 
 	public abstract RefBoolean createRefBoolean(boolean b);
 
@@ -351,14 +288,13 @@ public interface Creation {
 
 	public abstract Property createProperty(String name, String type);
 
-	public abstract Mapping createMapping(Config config, String virtual,
-			String strPhysical, String strArchive, short inspect,
-			boolean physicalFirst, boolean hidden, boolean readonly,
-			boolean topLevel, boolean appMapping, boolean ignoreVirtual,
-			ApplicationListener appListener, int listenerMode, int listenerType);
+	public abstract Mapping createMapping(Config config, String virtual, String strPhysical, String strArchive, short inspect, boolean physicalFirst, boolean hidden,
+			boolean readonly, boolean topLevel, boolean appMapping, boolean ignoreVirtual, ApplicationListener appListener, int listenerMode, int listenerType);
 
 	public abstract DateTime now();
 
 	public abstract <K> KeyLock<K> createKeyLock();
+
+	public abstract RefString createRefString(String value);
 
 }

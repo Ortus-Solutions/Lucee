@@ -47,8 +47,7 @@ public interface QueryCache {
 	 * @param cacheAfter
 	 * @return Query
 	 */
-	public abstract Query getQuery(PageContext pc, SQL sql, String datasource,
-			String username, String password, Date cacheAfter);
+	public abstract Query getQuery(PageContext pc, SQL sql, String datasource, String username, String password, Date cacheAfter);
 
 	/**
 	 * sets a Query to Cache
@@ -60,8 +59,7 @@ public interface QueryCache {
 	 * @param value
 	 * @param cacheBefore
 	 */
-	public abstract void set(PageContext pc, SQL sql, String datasource,
-			String username, String password, Object value, Date cacheBefore);
+	public abstract void set(PageContext pc, SQL sql, String datasource, String username, String password, Object value, Date cacheBefore);
 
 	/**
 	 * clear the cache
@@ -86,11 +84,9 @@ public interface QueryCache {
 	 * @param username
 	 * @param password
 	 */
-	public abstract void remove(PageContext pc, SQL sql, String datasource,
-			String username, String password);
+	public abstract void remove(PageContext pc, SQL sql, String datasource, String username, String password);
 
-	public abstract Object get(PageContext pc, SQL sql, String datasource,
-			String username, String password, Date cachedafter);
+	public abstract Object get(PageContext pc, SQL sql, String datasource, String username, String password, Date cachedafter);
 
 	public abstract int size(PageContext pc);
 }

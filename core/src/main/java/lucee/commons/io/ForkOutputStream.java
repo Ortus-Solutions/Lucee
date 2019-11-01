@@ -26,11 +26,11 @@ public final class ForkOutputStream extends OutputStream {
 	private final OutputStream os1;
 	private final OutputStream os2;
 
-	public ForkOutputStream(OutputStream os1,OutputStream os2) {
-		this.os1=os1;
-		this.os2=os2;
+	public ForkOutputStream(OutputStream os1, OutputStream os2) {
+		this.os1 = os1;
+		this.os2 = os2;
 	}
-	
+
 	@Override
 	public void close() throws IOException {
 		try {

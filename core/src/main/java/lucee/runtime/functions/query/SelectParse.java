@@ -31,17 +31,15 @@ import lucee.runtime.type.Struct;
 import lucee.runtime.type.StructImpl;
 
 public final class SelectParse implements Function {
-	public static Struct call(PageContext pc , String sql) throws PageException {
-		
+	public static Struct call(PageContext pc, String sql) throws PageException {
+
 		try {
-			//Selects selects = 
+			// Selects selects =
 			new SelectParser().parse(sql);
-			Struct sct=new StructImpl();
-			
-			
-			
+			Struct sct = new StructImpl();
+
 			return sct;
-		} 
+		}
 		catch (SQLParserException e) {
 			throw Caster.toPageException(e);
 		}

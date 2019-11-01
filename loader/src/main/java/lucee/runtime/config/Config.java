@@ -26,10 +26,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.TimeZone;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.jsp.JspWriter;
-
 import lucee.commons.io.log.Log;
 import lucee.commons.io.res.Resource;
 import lucee.commons.io.res.ResourceProvider;
@@ -125,12 +121,11 @@ public interface Config {
 	// Hibernate Extension has hardcoded this 4, do not change!!!!
 	public static final short INSPECT_UNDEFINED = 4;
 
-	/*public static final int CUSTOM_TAG_MODE_NONE = 0;
-	public static final int CUSTOM_TAG_MODE_CLASSIC = 1;
-	public static final int CUSTOM_TAG_MODE_MODERN = 2;
-	public static final int CUSTOM_TAG_MODE_CLASSIC_MODERN = 4;
-	public static final int CUSTOM_TAG_MODE_MODERN_CLASSIC = 8;
-	*/
+	/*
+	 * public static final int CUSTOM_TAG_MODE_NONE = 0; public static final int CUSTOM_TAG_MODE_CLASSIC
+	 * = 1; public static final int CUSTOM_TAG_MODE_MODERN = 2; public static final int
+	 * CUSTOM_TAG_MODE_CLASSIC_MODERN = 4; public static final int CUSTOM_TAG_MODE_MODERN_CLASSIC = 8;
+	 */
 
 	public static final int CACHE_TYPE_NONE = 0;
 	public static final int CACHE_TYPE_OBJECT = 1;
@@ -162,15 +157,15 @@ public interface Config {
 	 */
 	public abstract short getScopeCascadingType();
 
-	//public abstract String[] getCFMLExtensions();
+	// public abstract String[] getCFMLExtensions();
 
-	//public abstract String getCFCExtension();
+	// public abstract String getCFCExtension();
 
-	//public abstract String getComponentExtension();
+	// public abstract String getComponentExtension();
 
-	//public abstract String[] getTemplateExtensions();
+	// public abstract String[] getTemplateExtensions();
 
-	//public abstract String[] getAllExtensions();
+	// public abstract String[] getAllExtensions();
 
 	/**
 	 * return the mapping to custom tag directory
@@ -180,16 +175,15 @@ public interface Config {
 	public abstract Mapping[] getCustomTagMappings();
 
 	/**
-	 * return if it is allowed to implizid query call, call a query member witot
-	 * define name of the query.
+	 * return if it is allowed to implizid query call, call a query member witot define name of the
+	 * query.
 	 * 
 	 * @return is allowed
 	 */
 	public abstract boolean allowImplicidQueryCall();
 
 	/**
-	 * e merged
-	 * return if url and form scope will b
+	 * e merged return if url and form scope will b
 	 * 
 	 * @return merge or not
 	 */
@@ -393,8 +387,7 @@ public interface Config {
 	public abstract URL getUpdateLocation();
 
 	/**
-	 * return directory, where lucee deploy translated cfml classes (java and
-	 * class files)
+	 * return directory, where lucee deploy translated cfml classes (java and class files)
 	 * 
 	 * @return deploy directory
 	 */
@@ -425,8 +418,7 @@ public interface Config {
 	@Deprecated
 	public ConfigServer getConfigServer(String password) throws PageException;
 
-	public ConfigServer getConfigServer(String key, long timeNonce)
-			throws PageException;
+	public ConfigServer getConfigServer(String key, long timeNonce) throws PageException;
 
 	/**
 	 * reload the time offset to a time server
@@ -508,8 +500,7 @@ public interface Config {
 
 	public abstract long getClientScopeDirSize();
 
-	public abstract ClassLoader getRPCClassLoader(boolean reload)
-			throws IOException;
+	public abstract ClassLoader getRPCClassLoader(boolean reload) throws IOException;
 
 	public Resource getCacheDir();
 
@@ -520,9 +511,8 @@ public interface Config {
 	/**
 	 * get default cache connection for a specific type
 	 * 
-	 * @param type default type, one of the following (CACHE_DEFAULT_NONE,
-	 *            CACHE_DEFAULT_OBJECT, CACHE_DEFAULT_TEMPLATE,
-	 *            CACHE_DEFAULT_QUERY, CACHE_DEFAULT_RESOURCE)
+	 * @param type default type, one of the following (CACHE_DEFAULT_NONE, CACHE_DEFAULT_OBJECT,
+	 *            CACHE_DEFAULT_TEMPLATE, CACHE_DEFAULT_QUERY, CACHE_DEFAULT_RESOURCE)
 	 * @return matching Cache Connection
 	 */
 	public CacheConnection getCacheDefaultConnection(int type);
@@ -530,9 +520,8 @@ public interface Config {
 	/**
 	 * get name of a default cache connection for a specific type
 	 * 
-	 * @param type default type, one of the following (CACHE_DEFAULT_NONE,
-	 *            CACHE_DEFAULT_OBJECT, CACHE_DEFAULT_TEMPLATE,
-	 *            CACHE_DEFAULT_QUERY, CACHE_DEFAULT_RESOURCE)
+	 * @param type default type, one of the following (CACHE_DEFAULT_NONE, CACHE_DEFAULT_OBJECT,
+	 *            CACHE_DEFAULT_TEMPLATE, CACHE_DEFAULT_QUERY, CACHE_DEFAULT_RESOURCE)
 	 * @return name of matching Cache Connection
 	 */
 	public String getCacheDefaultConnectionName(int type);
@@ -553,40 +542,45 @@ public interface Config {
 	 * @return matching DumpWriter
 	 * @throws PageException if there is no DumpWriter for this key
 	 */
-	public abstract DumpWriter getDumpWriter(String key, int defaultType)
-			throws PageException;
+	public abstract DumpWriter getDumpWriter(String key, int defaultType) throws PageException;
 
 	/**
 	 * returns the DumpWriter matching key
 	 * 
 	 * @param key key for DumpWriter
 	 * @return matching DumpWriter
-	 * @deprecated use instead
-	 *             <code>getDumpWriter(String key,int defaultType)</code>
+	 * @deprecated use instead <code>getDumpWriter(String key,int defaultType)</code>
 	 * @throws PageException if there is no DumpWriter for this key
 	 */
 	@Deprecated
 	public abstract DumpWriter getDumpWriter(String key) throws PageException;
 
 	/**
-	 * define if components has a "shadow" in the component variables scope or
-	 * not.
+	 * define if components has a "shadow" in the component variables scope or not.
 	 * 
 	 * @return
 	 */
 	public abstract boolean useComponentShadow();
 
-	/* *
-	 * return a database connection hold inside by a datasource definition
+	/*
+	 * * return a database connection hold inside by a datasource definition
+	 * 
 	 * @param datasource definiti0on of the datasource
+	 * 
 	 * @param user username to connect
+	 * 
 	 * @param pass password to connect
+	 * 
 	 * @return datasource connnection
+	 * 
 	 * @throws PageException
 	 */
-	//public DatasourceConnection getConnection(String datasource, String user, String pass) throws PageException;
+	// public DatasourceConnection getConnection(String datasource, String user, String pass) throws
+	// PageException;
 
-	/* *
+	/*
+	 * *
+	 * 
 	 * @return returns the ConnectionPool
 	 */
 
@@ -630,7 +624,9 @@ public interface Config {
 	/**
 	 * @return classloader of ths context
 	 */
-	public ClassLoader getClassLoader();
+	public ClassLoader getClassLoader(); // FUTURE deprecated, use instead getClassLoaderCore
+	// public ClassLoader getClassLoaderCore();
+	// public ClassLoader getClassLoaderLoader();
 
 	public Resource getExtensionDirectory();
 
@@ -672,25 +668,21 @@ public interface Config {
 	 * @deprecated use instead getPageSources or getPageSourceExisting
 	 */
 	@Deprecated
-	public PageSource getPageSource(Mapping[] mappings, String realPath,
-			boolean onlyTopLevel);
+	public PageSource getPageSource(Mapping[] mappings, String realPath, boolean onlyTopLevel);
 
 	/**
-	 * return existing PageSource that match the given criteria, if there is no
-	 * PageSource null is returned.
+	 * return existing PageSource that match the given criteria, if there is no PageSource null is
+	 * returned.
 	 * 
 	 * @param pc current PageContext
 	 * @param mappings per application mappings
 	 * @param realPath path to get PageSource for
 	 * @param onlyTopLevel checks only toplevel mappings
-	 * @param useSpecialMappings invoke special mappings like "mapping-tag" or
-	 *            "mapping-customtag"
-	 * @param useDefaultMapping also invoke the always existing default mapping
-	 *            "/"
+	 * @param useSpecialMappings invoke special mappings like "mapping-tag" or "mapping-customtag"
+	 * @param useDefaultMapping also invoke the always existing default mapping "/"
 	 */
-	public PageSource getPageSourceExisting(PageContext pc, Mapping[] mappings,
-			String realPath, boolean onlyTopLevel, boolean useSpecialMappings,
-			boolean useDefaultMapping, boolean onlyPhysicalExisting);
+	public PageSource getPageSourceExisting(PageContext pc, Mapping[] mappings, String realPath, boolean onlyTopLevel, boolean useSpecialMappings, boolean useDefaultMapping,
+			boolean onlyPhysicalExisting);
 
 	/**
 	 * get all PageSources that match the given criteria
@@ -699,16 +691,13 @@ public interface Config {
 	 * @param mappings per application mappings
 	 * @param realPath path to get PageSource for
 	 * @param onlyTopLevel checks only toplevel mappings
-	 * @param useSpecialMappings invoke special mappings like "mapping-tag" or
-	 *            "mapping-customtag"
+	 * @param useSpecialMappings invoke special mappings like "mapping-tag" or "mapping-customtag"
 	 * @param useDefaultMapping also invoke the always existing default mapping "/"
-	 * @deprecated use instead 
+	 * @deprecated use instead
 	 * @see #getPageSources(PageContext, Mapping[],String, boolean, boolean,boolean, boolean)
 	 */
-	public PageSource[] getPageSources(PageContext pc, Mapping[] mappings,
-			String realPath, boolean onlyTopLevel, boolean useSpecialMappings,
-			boolean useDefaultMapping);
-
+	@Deprecated
+	public PageSource[] getPageSources(PageContext pc, Mapping[] mappings, String realPath, boolean onlyTopLevel, boolean useSpecialMappings, boolean useDefaultMapping);
 
 	/**
 	 * get all PageSources that match the given criteria
@@ -721,23 +710,19 @@ public interface Config {
 	 * @param useDefaultMapping also invoke the always existing default mapping "/"
 	 * @param useComponentMappings also invoke component mappings
 	 */
-	public PageSource[] getPageSources(PageContext pc, Mapping[] mappings,
-			String realPath, boolean onlyTopLevel, boolean useSpecialMappings,
-			boolean useDefaultMapping, boolean useComponentMappings);
+	public PageSource[] getPageSources(PageContext pc, Mapping[] mappings, String realPath, boolean onlyTopLevel, boolean useSpecialMappings, boolean useDefaultMapping,
+			boolean useComponentMappings);
 
-	
 	/**
 	 * get Resource of the first Mapping that match the given criteria
 	 * 
 	 * @param mappings per application mappings
 	 * @param relPath path to get PageSource for
 	 * @param alsoDefaultMapping
-	 * @deprecated use instead getPhysicalResources or
-	 *             getPhysicalResourceExisting
+	 * @deprecated use instead getPhysicalResources or getPhysicalResourceExisting
 	 */
 	@Deprecated
-	public Resource getPhysical(Mapping[] mappings, String relPath,
-			boolean alsoDefaultMapping);
+	public Resource getPhysical(Mapping[] mappings, String relPath, boolean alsoDefaultMapping);
 
 	/**
 	 * get all Resources that match the given criteria
@@ -746,31 +731,22 @@ public interface Config {
 	 * @param mappings per application mappings
 	 * @param realPath path to get PageSource for
 	 * @param onlyTopLevel checks only toplevel mappings
-	 * @param useSpecialMappings invoke special mappings like "mapping-tag" or
-	 *            "mapping-customtag"
-	 * @param useDefaultMapping also invoke the always existing default mapping
-	 *            "/"
+	 * @param useSpecialMappings invoke special mappings like "mapping-tag" or "mapping-customtag"
+	 * @param useDefaultMapping also invoke the always existing default mapping "/"
 	 */
-	public Resource[] getPhysicalResources(PageContext pc, Mapping[] mappings,
-			String realPath, boolean onlyTopLevel, boolean useSpecialMappings,
-			boolean useDefaultMapping);
+	public Resource[] getPhysicalResources(PageContext pc, Mapping[] mappings, String realPath, boolean onlyTopLevel, boolean useSpecialMappings, boolean useDefaultMapping);
 
 	/**
-	 * return existing Resource that match the given criteria, if there is no
-	 * Resource null is returned.
+	 * return existing Resource that match the given criteria, if there is no Resource null is returned.
 	 * 
 	 * @param pc current PageContext
 	 * @param mappings per application mappings
 	 * @param realPath path to get Resource for
 	 * @param onlyTopLevel checks only toplevel mappings
-	 * @param useSpecialMappings invoke special mappings like "mapping-tag" or
-	 *            "mapping-customtag"
-	 * @param useDefaultMapping also invoke the always existing default mapping
-	 *            "/"
+	 * @param useSpecialMappings invoke special mappings like "mapping-tag" or "mapping-customtag"
+	 * @param useDefaultMapping also invoke the always existing default mapping "/"
 	 */
-	public Resource getPhysicalResourceExisting(PageContext pc,
-			Mapping[] mappings, String realPath, boolean onlyTopLevel,
-			boolean useSpecialMappings, boolean useDefaultMapping);
+	public Resource getPhysicalResourceExisting(PageContext pc, Mapping[] mappings, String realPath, boolean onlyTopLevel, boolean useSpecialMappings, boolean useDefaultMapping);
 
 	public Resource getRemoteClientDirectory();
 
@@ -784,13 +760,13 @@ public interface Config {
 
 	public Resource getVideoDirectory();
 
-	//public String getVideoProviderLocation();
+	// public String getVideoProviderLocation();
 
 	public boolean isShowVersion();
 
 	public boolean isSuppressWhitespace();
 
-	//public boolean isVideoAgreementAccepted();
+	// public boolean isVideoAgreementAccepted();
 
 	public Struct getRemoteClientUsage();
 
@@ -814,14 +790,12 @@ public interface Config {
 
 	public IntervallMonitor[] getIntervallMonitors();
 
-	public IntervallMonitor getIntervallMonitor(String name)
-			throws PageException;
+	public IntervallMonitor getIntervallMonitor(String name) throws PageException;
 
 	public ActionMonitor getActionMonitor(String name) throws PageException;
 
 	/**
-	 * if free permspace gen is lower than 10000000 bytes, lucee shrinks all
-	 * classloaders
+	 * if free permspace gen is lower than 10000000 bytes, lucee shrinks all classloaders
 	 * 
 	 * @param check
 	 */

@@ -29,13 +29,14 @@ public final class FTPResourceInputStream extends ResourceInputStream {
 
 	/**
 	 * Constructor of the class
+	 * 
 	 * @param res
 	 * @param is
 	 */
-	public FTPResourceInputStream(FTPResourceClient client,FTPResource res, InputStream is) {
+	public FTPResourceInputStream(FTPResourceClient client, FTPResource res, InputStream is) {
 		super(res, is);
-		//print.ln("is:"+is);
-		this.client=client;
+		// print.ln("is:"+is);
+		this.client = client;
 	}
 
 	@Override
@@ -45,7 +46,7 @@ public final class FTPResourceInputStream extends ResourceInputStream {
 		}
 		finally {
 			client.completePendingCommand();
-			((FTPResourceProvider)getResource().getResourceProvider()).returnClient(client);
+			((FTPResourceProvider) getResource().getResourceProvider()).returnClient(client);
 		}
 	}
 

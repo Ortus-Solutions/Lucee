@@ -25,23 +25,30 @@ import lucee.runtime.PageContext;
 import lucee.runtime.PageSource;
 import lucee.runtime.exp.PageException;
 import lucee.runtime.op.Caster;
+import lucee.runtime.type.scope.Application;
+import lucee.runtime.type.scope.Session;
 
-public final class NoneAppListener  extends AppListenerSupport {
+public final class NoneAppListener extends AppListenerSupport {
 
 	private int mode;
 
-	
 	@Override
-	public void onRequest(PageContext pc,PageSource requestedPage, RequestListener rl) throws PageException {
-		if(rl!=null) {
-			requestedPage=rl.execute(pc, requestedPage);
-			if(requestedPage==null) return;
+	public void onRequest(PageContext pc, PageSource requestedPage, RequestListener rl) throws PageException {
+		if (rl != null) {
+			requestedPage = rl.execute(pc, requestedPage);
+			if (requestedPage == null) return;
 		}
-		pc.doInclude(new PageSource[]{requestedPage},false);
+		pc.doInclude(new PageSource[] { requestedPage }, false);
 	}
 
 	@Override
 	public boolean onApplicationStart(PageContext pc) throws PageException {
+		// do nothing
+		return true;
+	}
+
+	@Override
+	public boolean onApplicationStart(PageContext pc, Application application) throws PageException {
 		// do nothing
 		return true;
 	}
@@ -52,8 +59,13 @@ public final class NoneAppListener  extends AppListenerSupport {
 	}
 
 	@Override
+	public void onSessionStart(PageContext pc, Session session) throws PageException {
+		// do nothing
+	}
+
+	@Override
 	public void onApplicationEnd(CFMLFactory factory, String applicationName) throws PageException {
-		// do nothing	
+		// do nothing
 	}
 
 	@Override
@@ -64,28 +76,27 @@ public final class NoneAppListener  extends AppListenerSupport {
 	@Override
 	public void onDebug(PageContext pc) throws PageException {
 		try {
-			if(pc.getConfig().debug())pc.getDebugger().writeOut(pc);
-		} 
+			if (pc.getConfig().debug()) pc.getDebugger().writeOut(pc);
+		}
 		catch (IOException e) {
 			throw Caster.toPageException(e);
 		}
 	}
 
 	@Override
-	public void onError(PageContext pc,PageException pe) {
+	public void onError(PageContext pc, PageException pe) {
 		pc.handlePageException(pe);
 	}
 
 	@Override
 	public void setMode(int mode) {
-		this.mode=mode;
+		this.mode = mode;
 	}
 
 	@Override
 	public int getMode() {
 		return mode;
 	}
-	
 
 	@Override
 	public String getType() {

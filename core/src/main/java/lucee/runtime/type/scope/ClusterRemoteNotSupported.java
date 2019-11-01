@@ -27,7 +27,7 @@ public final class ClusterRemoteNotSupported implements ClusterRemote {
 
 	@Override
 	public void broadcastEntries() {
-		//print.out("ClusterRemote#broadcastEntries()");
+		// print.out("ClusterRemote#broadcastEntries()");
 	}
 
 	@Override

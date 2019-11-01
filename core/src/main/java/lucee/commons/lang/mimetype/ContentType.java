@@ -24,11 +24,12 @@ public class ContentType {
 	private String mimeType;
 	private String charset;
 
-	public ContentType(String mimeType){
-		this.mimeType=mimeType;
+	public ContentType(String mimeType) {
+		this.mimeType = mimeType;
 	}
-	public ContentType(String mimeType, String charset){
-		this.mimeType=mimeType;
+
+	public ContentType(String mimeType, String charset) {
+		this.mimeType = mimeType;
 		setCharset(charset);
 	}
 
@@ -39,16 +40,17 @@ public class ContentType {
 	public String getCharset() {
 		return charset;
 	}
+
 	public void setCharset(String charset) {
-		if(!StringUtil.isEmpty(charset,true)){
-			this.charset=charset.trim();
+		if (!StringUtil.isEmpty(charset, true)) {
+			this.charset = charset.trim();
 		}
-		else this.charset=null;
+		else this.charset = null;
 	}
-	
+
 	@Override
-	public String toString(){
-		if(charset==null) return mimeType.toString();
-		return mimeType+"; charset="+charset;
+	public String toString() {
+		if (charset == null) return mimeType.toString();
+		return mimeType + "; charset=" + charset;
 	}
 }

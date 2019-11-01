@@ -45,12 +45,12 @@ public interface Info {
 	/**
 	 * @return returns the state
 	 */
-	//public int getStateAsInt();
+	// public int getStateAsInt();
 
 	/**
 	 * @return returns the state
 	 */
-	//public String getStateAsString();
+	// public String getStateAsString();
 
 	public long getFullVersionInfo();
 

@@ -21,7 +21,7 @@ package lucee.transformer.util;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-
+import lucee.commons.io.log.LogUtil;
 
 /**
  * Class Hash produces a MessageDigest hash for a given string.
@@ -30,9 +30,9 @@ public final class Hash {
 	private String plainText;
 	private String algorithm;
 
-
 	/**
 	 * Method Hash.
+	 * 
 	 * @param plainText
 	 * @param algorithm The algorithm to use like MD2, MD5, SHA-1, etc.
 	 */
@@ -53,7 +53,7 @@ public final class Hash {
 			hashText = Hash.getHashText(this.plainText, this.algorithm);
 		}
 		catch (NoSuchAlgorithmException nsae) {
-			System.err.println(nsae.getLocalizedMessage());
+			LogUtil.log(null, Hash.class.getName(), nsae);
 		}
 
 		return hashText;
@@ -61,13 +61,13 @@ public final class Hash {
 
 	/**
 	 * Method getHashText.
+	 * 
 	 * @param plainText
 	 * @param algorithm The algorithm to use like MD2, MD5, SHA-1, etc.
 	 * @return String
 	 * @throws NoSuchAlgorithmException
 	 */
-	public static String getHashText(String plainText, String algorithm)
-		throws NoSuchAlgorithmException {
+	public static String getHashText(String plainText, String algorithm) throws NoSuchAlgorithmException {
 		MessageDigest mdAlgorithm = MessageDigest.getInstance(algorithm);
 
 		mdAlgorithm.update(plainText.getBytes());
@@ -90,6 +90,7 @@ public final class Hash {
 
 	/**
 	 * Returns the algorithm.
+	 * 
 	 * @return String
 	 */
 	public String getAlgorithm() {
@@ -98,6 +99,7 @@ public final class Hash {
 
 	/**
 	 * Returns the plainText.
+	 * 
 	 * @return String
 	 */
 	public String getPlainText() {
@@ -106,6 +108,7 @@ public final class Hash {
 
 	/**
 	 * Sets the algorithm.
+	 * 
 	 * @param algorithm The algorithm to set
 	 */
 	public void setAlgorithm(String algorithm) {
@@ -114,6 +117,7 @@ public final class Hash {
 
 	/**
 	 * Sets the plainText.
+	 * 
 	 * @param plainText The plainText to set
 	 */
 	public void setPlainText(String plainText) {

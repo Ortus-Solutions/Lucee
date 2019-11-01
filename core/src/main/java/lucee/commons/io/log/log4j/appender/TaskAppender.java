@@ -18,33 +18,32 @@
  **/
 package lucee.commons.io.log.log4j.appender;
 
-import lucee.commons.io.log.log4j.appender.task.Task;
-import lucee.runtime.config.Config;
-import lucee.runtime.spooler.SpoolerEngine;
-
 import org.apache.log4j.Appender;
 import org.apache.log4j.Layout;
 import org.apache.log4j.spi.ErrorHandler;
 import org.apache.log4j.spi.Filter;
 import org.apache.log4j.spi.LoggingEvent;
 
-public class TaskAppender implements Appender,AppenderState {
-	
+import lucee.commons.io.log.log4j.appender.task.Task;
+import lucee.runtime.config.Config;
+import lucee.runtime.spooler.SpoolerEngine;
+
+public class TaskAppender implements Appender, AppenderState {
+
 	private Appender appender;
 	private SpoolerEngine spoolerEngine;
 	private boolean closed;
 
-	public TaskAppender(Config config,Appender appender){
-		if(appender instanceof AppenderState)
-			closed=((AppenderState)appender).isClosed();
-		this.appender=appender;
+	public TaskAppender(Config config, Appender appender) {
+		if (appender instanceof AppenderState) closed = ((AppenderState) appender).isClosed();
+		this.appender = appender;
 		spoolerEngine = config.getSpoolerEngine();
-		
+
 	}
 
 	@Override
 	public void doAppend(LoggingEvent le) {
-		spoolerEngine.add(new Task(appender,le));
+		spoolerEngine.add(new Task(appender, le));
 	}
 
 	@Override
@@ -59,7 +58,7 @@ public class TaskAppender implements Appender,AppenderState {
 
 	@Override
 	public void close() {
-		closed=true;
+		closed = true;
 		appender.close();
 	}
 

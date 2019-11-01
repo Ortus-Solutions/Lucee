@@ -30,6 +30,7 @@ import lucee.commons.io.res.filter.AndResourceFilter;
 import lucee.commons.io.res.filter.ExtensionResourceFilter;
 import lucee.commons.io.res.filter.OrResourceFilter;
 import lucee.commons.io.res.filter.ResourceFilter;
+import lucee.commons.lang.ExceptionUtil;
 import lucee.commons.lang.mimetype.MimeType;
 import lucee.runtime.Component;
 import lucee.runtime.PageContext;
@@ -48,32 +49,25 @@ import lucee.runtime.type.util.KeyConstants;
 
 public class Mapping {
 
-	private static final ResourceFilter _FILTER_CFML = new AndResourceFilter(new ResourceFilter[]{
-			new ExtensionResourceFilter(Constants.getCFMLComponentExtension()),
-			new ResourceFilter() {
+	private static final ResourceFilter _FILTER_CFML = new AndResourceFilter(
+			new ResourceFilter[] { new ExtensionResourceFilter(Constants.getCFMLComponentExtension()), new ResourceFilter() {
 				@Override
 				public boolean accept(Resource res) {
 					return !Constants.CFML_APPLICATION_EVENT_HANDLER.equalsIgnoreCase(res.getName());
 				}
-			}
-	});
-	
-	private static final ResourceFilter _FILTER_LUCEE = new AndResourceFilter(new ResourceFilter[]{
-		new ExtensionResourceFilter(Constants.getLuceeComponentExtension()),
-		new ResourceFilter() {
-			
-			@Override
-			public boolean accept(Resource res) {
-				return !Constants.LUCEE_APPLICATION_EVENT_HANDLER.equalsIgnoreCase(res.getName());
-			}
-		}
-	});
-	
+			} });
 
-	private static final ResourceFilter FILTER = new OrResourceFilter(new ResourceFilter[]{_FILTER_CFML,_FILTER_LUCEE});
+	private static final ResourceFilter _FILTER_LUCEE = new AndResourceFilter(
+			new ResourceFilter[] { new ExtensionResourceFilter(Constants.getLuceeComponentExtension()), new ResourceFilter() {
 
+				@Override
+				public boolean accept(Resource res) {
+					return !Constants.LUCEE_APPLICATION_EVENT_HANDLER.equalsIgnoreCase(res.getName());
+				}
+			} });
 
-	
+	private static final ResourceFilter FILTER = new OrResourceFilter(new ResourceFilter[] { _FILTER_CFML, _FILTER_LUCEE });
+
 	private String virtual;
 	private Resource physical;
 	private String strPhysical;
@@ -81,96 +75,92 @@ public class Mapping {
 	private boolean readonly;
 	private boolean _default;
 
-
 	private List<Source> baseSources;
-	private Map<Resource,List<Source>> customSources=new HashMap<Resource, List<Source>>();
+	private Map<Resource, List<Source>> customSources = new HashMap<Resource, List<Source>>();
 
 	public Mapping(Config config, String virtual, String physical, boolean hidden, boolean readonly, boolean _default) {
-		if(!virtual.startsWith("/"))this.virtual="/"+virtual;
-		if(virtual.endsWith("/"))this.virtual=virtual.substring(0,virtual.length()-1);
-        else this.virtual=virtual;
-        
-		this.strPhysical=physical;
-		this.hidden=hidden;
-		this.readonly=readonly;
-		this._default=_default;
-		
+		if (!virtual.startsWith("/")) this.virtual = "/" + virtual;
+		if (virtual.endsWith("/")) this.virtual = virtual.substring(0, virtual.length() - 1);
+		else this.virtual = virtual;
 
-        if(!(config instanceof ConfigWebImpl)) return;
-        ConfigWebImpl cw=(ConfigWebImpl) config;
-		
-		this.physical=ConfigWebUtil.getExistingResource(cw.getServletContext(),physical,null,cw.getConfigDir(),FileUtil.TYPE_DIR,cw);
-		
+		this.strPhysical = physical;
+		this.hidden = hidden;
+		this.readonly = readonly;
+		this._default = _default;
+
+		if (!(config instanceof ConfigWebImpl)) return;
+		ConfigWebImpl cw = (ConfigWebImpl) config;
+
+		this.physical = ConfigWebUtil.getExistingResource(cw.getServletContext(), physical, null, cw.getConfigDir(), FileUtil.TYPE_DIR, cw);
+
 	}
 
-
 	private List<Source> init(PageContext pc, boolean reset) throws PageException {
-		if(reset)release();
-		
+		if (reset) release();
+
 		Resource[] locations = pc.getApplicationContext().getRestCFCLocations();
-		
+
 		// base source
-		if(ArrayUtil.isEmpty(locations)) {
-			if(baseSources==null && this.physical!=null && this.physical.isDirectory()) {
-				baseSources=_init(pc,this, this.physical);
+		if (ArrayUtil.isEmpty(locations)) {
+			if (baseSources == null && this.physical != null && this.physical.isDirectory()) {
+				baseSources = _init(pc, this, this.physical);
 			}
 			return baseSources;
 		}
-		
+
 		// custom sources
-		List<Source> rtn = new ArrayList<Source>(); 
+		List<Source> rtn = new ArrayList<Source>();
 		List<Source> list;
-		for(int i=0;i<locations.length;i++){
+		for (int i = 0; i < locations.length; i++) {
 			list = customSources.get(locations[i]);
-			if(list==null && locations[i].isDirectory()) {
-				list=_init(pc,this, locations[i]);
+			if (list == null && locations[i].isDirectory()) {
+				list = _init(pc, this, locations[i]);
 				customSources.put(locations[i], list);
 			}
-			copy(list,rtn);
+			copy(list, rtn);
 		}
 		return rtn;
 	}
-	
-	private void copy(List<Source> src, List<Source> trg) { 
-		if(src==null) return;
+
+	private void copy(List<Source> src, List<Source> trg) {
+		if (src == null) return;
 		Iterator<Source> it = src.iterator();
-		while(it.hasNext()){
+		while (it.hasNext()) {
 			trg.add(it.next());
 		}
 	}
 
-
-	private static ArrayList<Source> _init(PageContext pc, Mapping mapping, Resource dir) throws PageException{
+	private static ArrayList<Source> _init(PageContext pc, Mapping mapping, Resource dir) throws PageException {
 		Resource[] children = dir.listResources(FILTER);
 		RestSettings settings = pc.getApplicationContext().getRestSettings();
-		ArrayList<Source> sources = new ArrayList<Source>(); 
-	
+		ArrayList<Source> sources = new ArrayList<Source>();
+
 		PageSource ps;
 		Component cfc;
 		Struct meta;
 		String path;
-		for(int i=0;i<children.length;i++){
-			try{
-				ps = pc.toPageSource(children[i],null);
-				cfc = ComponentLoader.loadComponent(pc, ps, children[i].getName(), true,true);
+		for (int i = 0; i < children.length; i++) {
+			try {
+				ps = pc.toPageSource(children[i], null);
+				cfc = ComponentLoader.loadComponent(pc, ps, children[i].getName(), true, true);
 				meta = cfc.getMetaData(pc);
-				if(Caster.toBooleanValue(meta.get(KeyConstants._rest,null),false)){
-					path = Caster.toString(meta.get(KeyConstants._restPath,null),null);
+				if (Caster.toBooleanValue(meta.get(KeyConstants._rest, null), false)) {
+					path = Caster.toString(meta.get(KeyConstants._restPath, null), null);
 					sources.add(new Source(mapping, cfc.getPageSource(), path));
 				}
 			}
-			catch(Throwable t){
-				if(!settings.getSkipCFCWithError()) throw Caster.toPageException(t);
+			catch (Throwable t) {
+				ExceptionUtil.rethrowIfNecessary(t);
+				if (!settings.getSkipCFCWithError()) throw Caster.toPageException(t);
 			}
 		}
 		return sources;
 	}
 
-
-	public lucee.runtime.rest.Mapping duplicate(Config config,Boolean readOnly) {
-		return new Mapping(config, virtual, strPhysical, hidden, readOnly==null?this.readonly:readOnly.booleanValue(),_default); 
+	public lucee.runtime.rest.Mapping duplicate(Config config, Boolean readOnly) {
+		return new Mapping(config, virtual, strPhysical, hidden, readOnly == null ? this.readonly : readOnly.booleanValue(), _default);
 	}
-	
+
 	/**
 	 * @return the physical
 	 */
@@ -178,17 +168,16 @@ public class Mapping {
 		return physical;
 	}
 
-
 	/**
 	 * @return the virtual
 	 */
 	public String getVirtual() {
 		return virtual;
 	}
-	public String getVirtualWithSlash() {
-		return virtual+"/";
-	}
 
+	public String getVirtualWithSlash() {
+		return virtual + "/";
+	}
 
 	/**
 	 * @return the strPhysical
@@ -197,14 +186,12 @@ public class Mapping {
 		return strPhysical;
 	}
 
-
 	/**
 	 * @return the hidden
 	 */
 	public boolean isHidden() {
 		return hidden;
 	}
-
 
 	/**
 	 * @return the readonly
@@ -217,43 +204,40 @@ public class Mapping {
 		return _default;
 	}
 
-
-	public Result getResult(PageContext pc,String path,Struct matrix,int format,boolean hasFormatExtension, List<MimeType> accept, MimeType contentType,Result defaultValue) throws PageException {
-		List<Source> sources = init(pc,false);
+	public Result getResult(PageContext pc, String path, Struct matrix, int format, boolean hasFormatExtension, List<MimeType> accept, MimeType contentType, Result defaultValue)
+			throws PageException {
+		List<Source> sources = init(pc, false);
 		Iterator<Source> it = sources.iterator();
 		Source src;
-		String[] arrPath,subPath;
+		String[] arrPath, subPath;
 		int index;
-		while(it.hasNext()) {
+		while (it.hasNext()) {
 			src = it.next();
-			Struct variables=new StructImpl();
+			Struct variables = new StructImpl();
 			arrPath = RestUtil.splitPath(path);
-			index=RestUtil.matchPath(variables,src.getPath(),arrPath);
-			if(index!=-1){
-				subPath=new String[(arrPath.length-1)-index];
-            	System.arraycopy(arrPath, index+1, subPath, 0, subPath.length);
-				return new Result(src,variables,subPath,matrix,format,hasFormatExtension,accept,contentType);
-			}	
+			index = RestUtil.matchPath(variables, src.getPath(), arrPath);
+			if (index != -1) {
+				subPath = new String[(arrPath.length - 1) - index];
+				System.arraycopy(arrPath, index + 1, subPath, 0, subPath.length);
+				return new Result(src, variables, subPath, matrix, format, hasFormatExtension, accept, contentType);
+			}
 		}
-		
+
 		return defaultValue;
 	}
 
-
 	public void setDefault(boolean _default) {
-		this._default=_default;
+		this._default = _default;
 	}
-
 
 	public void reset(PageContext pc) throws PageException {
 		init(pc, true);
 	}
 
-
 	public synchronized void release() {
-		if(baseSources!=null) {
+		if (baseSources != null) {
 			baseSources.clear();
-			baseSources = null; 
+			baseSources = null;
 		}
 		customSources.clear();
 	}

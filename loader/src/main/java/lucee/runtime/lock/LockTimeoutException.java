@@ -30,11 +30,9 @@ public final class LockTimeoutException extends Exception {
 	 * @param name name of the Lock
 	 * @param timeout
 	 */
-	public LockTimeoutException(final int type, final String name,
-			final int timeout) {
-		//A timeout occurred while attempting to lock lockname
-		super("a timeout occurred on a " + toString(type) + " lock with name ["
-				+ name + "] after " + getTime(timeout));
+	public LockTimeoutException(final int type, final String name, final int timeout) {
+		// A timeout occurred while attempting to lock lockname
+		super("a timeout occurred on a " + toString(type) + " lock with name [" + name + "] after " + getTime(timeout));
 	}
 
 	private static String getTime(final int timeout) {
@@ -46,8 +44,7 @@ public final class LockTimeoutException extends Exception {
 	}
 
 	private static String toString(final int type) {
-		if (LockManager.TYPE_EXCLUSIVE == type)
-			return "exclusive";
+		if (LockManager.TYPE_EXCLUSIVE == type) return "exclusive";
 		return "read-only";
 	}
 

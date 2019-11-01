@@ -36,14 +36,12 @@ public interface TagMetaData {
 	public int BODY_CONTENT_MUST = 2;
 
 	/**
-	 * tag has a fix defined group of attributes, only this attributes are
-	 * allowed
+	 * tag has a fix defined group of attributes, only this attributes are allowed
 	 */
 	public int ATTRIBUTE_TYPE_FIX = 4;
 
 	/**
-	 * there is no restriction or rules for attributes, tag can have as many as
-	 * whished
+	 * there is no restriction or rules for attributes, tag can have as many as whished
 	 */
 	public int ATTRIBUTE_TYPE_DYNAMIC = 8;
 
@@ -55,9 +53,7 @@ public interface TagMetaData {
 	/**
 	 * type of the body content
 	 * 
-	 * @return
-	 *         TagMetaData.BODY_CONTENT_EMPTY,TagMetaData.BODY_CONTENT_FREE,
-	 *         TagMetaData
+	 * @return TagMetaData.BODY_CONTENT_EMPTY,TagMetaData.BODY_CONTENT_FREE, TagMetaData
 	 *         .BODY_CONTENT_MUST
 	 */
 	public int getBodyContent();
@@ -65,9 +61,7 @@ public interface TagMetaData {
 	/**
 	 * attribute type
 	 * 
-	 * @return
-	 *         TagMetaData.ATTRIBUTE_TYPE_FIX,TagMetaData.ATTRIBUTE_TYPE_DYNAMIC
-	 *         ,
+	 * @return TagMetaData.ATTRIBUTE_TYPE_FIX,TagMetaData.ATTRIBUTE_TYPE_DYNAMIC ,
 	 *         TagMetaData.ATTRIBUTE_TYPE_MIXED
 	 */
 	public int getAttributeType();
@@ -113,7 +107,7 @@ public interface TagMetaData {
 	public boolean hasBody();
 
 	/**
-	 * can the tag handle exceptons
+	 * can the tag handle exceptions
 	 * 
 	 * @return can handle exceptions
 	 */

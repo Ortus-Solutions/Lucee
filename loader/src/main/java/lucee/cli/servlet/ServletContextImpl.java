@@ -41,6 +41,8 @@ import javax.servlet.SessionCookieConfig;
 import javax.servlet.SessionTrackingMode;
 import javax.servlet.descriptor.JspConfigDescriptor;
 
+import org.apache.felix.framework.Logger;
+
 import lucee.cli.util.EnumerationWrapper;
 
 public class ServletContextImpl implements ServletContext {
@@ -49,11 +51,9 @@ public class ServletContextImpl implements ServletContext {
 	private final int majorVersion;
 	private final int minorVersion;
 	private final File root;
+	private Logger logger;
 
-	public ServletContextImpl(final File root,
-			final Map<String, Object> attributes,
-			final Map<String, String> parameters, final int majorVersion,
-			final int minorVersion) {
+	public ServletContextImpl(final File root, final Map<String, Object> attributes, final Map<String, String> parameters, final int majorVersion, final int minorVersion) {
 		this.root = root;
 		this.attributes = attributes;
 		this.parameters = parameters;
@@ -141,7 +141,8 @@ public class ServletContextImpl implements ServletContext {
 	public InputStream getResourceAsStream(final String realpath) {
 		try {
 			return new FileInputStream(getRealFile(realpath));
-		} catch (final IOException e) {
+		}
+		catch (final IOException e) {
 			return null;
 		}
 	}
@@ -176,23 +177,18 @@ public class ServletContextImpl implements ServletContext {
 	}
 
 	/**
-	 * @see javax.servlet.ServletContext#log(java.lang.String,
-	 *      java.lang.Throwable)
+	 * @see javax.servlet.ServletContext#log(java.lang.String, java.lang.Throwable)
 	 */
 	@Override
 	public void log(final String msg, final Throwable t) {// TODO better
-		if (t == null)
-			System.out.println(msg);
-		else
-			System.out.println(msg + ":\n" + t.getMessage());
+		if (logger == null) return;
 
-		//if(t==null)log.log(Log.LEVEL_INFO, "ServletContext", msg);
-		//else log.log(Log.LEVEL_ERROR, "ServletContext", msg+":\n"+ExceptionUtil.getStacktrace(t,false));
+		if (t == null) logger.log(Logger.LOG_INFO, msg);
+		else logger.log(Logger.LOG_ERROR, msg, t);
 	}
 
 	/**
-	 * @see javax.servlet.ServletContext#log(java.lang.Exception,
-	 *      java.lang.String)
+	 * @see javax.servlet.ServletContext#log(java.lang.Exception, java.lang.String)
 	 */
 	@Override
 	public void log(final Exception e, final String msg) {
@@ -216,8 +212,7 @@ public class ServletContextImpl implements ServletContext {
 	}
 
 	/**
-	 * @see javax.servlet.ServletContext#setAttribute(java.lang.String,
-	 *      java.lang.Object)
+	 * @see javax.servlet.ServletContext#setAttribute(java.lang.String, java.lang.Object)
 	 */
 	@Override
 	public void setAttribute(final String key, final Object value) {
@@ -255,8 +250,7 @@ public class ServletContextImpl implements ServletContext {
 	}
 
 	private RuntimeException notSupported(final String method) {
-		throw new RuntimeException(new ServletException("method " + method
-				+ " not supported"));
+		throw new RuntimeException(new ServletException("method " + method + " not supported"));
 	}
 
 	@Override
@@ -270,8 +264,7 @@ public class ServletContextImpl implements ServletContext {
 	}
 
 	@Override
-	public Dynamic addFilter(final String arg0,
-			final Class<? extends Filter> arg1) {
+	public Dynamic addFilter(final String arg0, final Class<? extends Filter> arg1) {
 		throw notSupported("");
 	}
 
@@ -291,38 +284,32 @@ public class ServletContextImpl implements ServletContext {
 	}
 
 	@Override
-	public javax.servlet.ServletRegistration.Dynamic addServlet(
-			final String arg0, final String arg1) {
+	public javax.servlet.ServletRegistration.Dynamic addServlet(final String arg0, final String arg1) {
 		throw notSupported("");
 	}
 
 	@Override
-	public javax.servlet.ServletRegistration.Dynamic addServlet(
-			final String arg0, final Servlet arg1) {
+	public javax.servlet.ServletRegistration.Dynamic addServlet(final String arg0, final Servlet arg1) {
 		throw notSupported("");
 	}
 
 	@Override
-	public javax.servlet.ServletRegistration.Dynamic addServlet(
-			final String arg0, final Class<? extends Servlet> arg1) {
+	public javax.servlet.ServletRegistration.Dynamic addServlet(final String arg0, final Class<? extends Servlet> arg1) {
 		throw notSupported("addServlet");
 	}
 
 	@Override
-	public <T extends Filter> T createFilter(final Class<T> arg0)
-			throws ServletException {
+	public <T extends Filter> T createFilter(final Class<T> arg0) throws ServletException {
 		throw notSupported("createFilter");
 	}
 
 	@Override
-	public <T extends EventListener> T createListener(final Class<T> arg0)
-			throws ServletException {
+	public <T extends EventListener> T createListener(final Class<T> arg0) throws ServletException {
 		throw notSupported("createListener");
 	}
 
 	@Override
-	public <T extends Servlet> T createServlet(final Class<T> arg0)
-			throws ServletException {
+	public <T extends Servlet> T createServlet(final Class<T> arg0) throws ServletException {
 		throw notSupported("createServlet");
 	}
 
@@ -409,6 +396,39 @@ public class ServletContextImpl implements ServletContext {
 	@Override
 	public void setSessionTrackingModes(final Set<SessionTrackingMode> arg0) {
 		throw notSupported("setSessionTrackingModes(Set<SessionTrackingMode>) ");
+
+	}
+
+	public void setLogger(Logger logger) {
+		this.logger = logger;
+	}
+
+	/* noop impl for abstract methods added in Servlet 4.0 */
+	public ServletRegistration.Dynamic addJspFile(String s, String s1) {
+		return null;
+	}
+
+	public int getSessionTimeout() {
+		return 0;
+	}
+
+	public void setSessionTimeout(int i) {
+
+	}
+
+	public String getRequestCharacterEncoding() {
+		return null;
+	}
+
+	public void setRequestCharacterEncoding(String s) {
+
+	}
+
+	public String getResponseCharacterEncoding() {
+		return null;
+	}
+
+	public void setResponseCharacterEncoding(String s) {
 
 	}
 

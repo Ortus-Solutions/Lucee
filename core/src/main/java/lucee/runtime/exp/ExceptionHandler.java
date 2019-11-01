@@ -21,11 +21,9 @@ package lucee.runtime.exp;
 import java.io.PrintWriter;
 
 import lucee.commons.io.log.Log;
-import lucee.commons.io.log.LogUtil;
 import lucee.commons.lang.ExceptionUtil;
 import lucee.runtime.PageContext;
 import lucee.runtime.config.Config;
-import lucee.runtime.config.ConfigImpl;
 import lucee.runtime.engine.ThreadLocalPageContext;
 import lucee.runtime.op.Caster;
 
@@ -35,18 +33,17 @@ import lucee.runtime.op.Caster;
 public final class ExceptionHandler {
 
 	public static void log(Config config, Throwable t) {
-		
-		PageException pe=Caster.toPageException(t);
-		pe.printStackTrace(config.getErrWriter()); 
-		
+
+		PageException pe = Caster.toPageException(t);
+		pe.printStackTrace(config.getErrWriter());
+
 		// apllication Log
-		LogUtil.log(((ConfigImpl)config).getLog("application"),Log.LEVEL_ERROR, "",pe);
-		
+		config.getLog("application").log(Log.LEVEL_ERROR, "", pe);
+
 		// exception.log
-		String st = ExceptionUtil.getStacktrace(pe,true);
-		LogUtil.log(((ConfigImpl)config).getLog("exception"),Log.LEVEL_ERROR, "",pe);
-		
-		
+		String st = ExceptionUtil.getStacktrace(pe, true);
+		config.getLog("exception").log(Log.LEVEL_ERROR, "", pe);
+
 	}
 
 	public static void printStackTrace(PageContext pc, Throwable t) {
@@ -57,7 +54,7 @@ public final class ExceptionHandler {
 
 	public static void printStackTrace(Throwable t) {
 		PageContext pc = ThreadLocalPageContext.get();
-		if(pc!=null)printStackTrace(pc,t);
+		if (pc != null) printStackTrace(pc, t);
 		else t.printStackTrace();
 	}
 }

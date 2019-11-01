@@ -30,7 +30,7 @@ import lucee.runtime.type.Collection;
 public interface Argument extends Scope, Array, BindScope {
 
 	/**
-	 * sets if scope is binded to a other variable for using outside of a udf
+	 * sets if scope is bound to a other variable for using outside of a udf
 	 * 
 	 * @param bind
 	 */
@@ -38,8 +38,7 @@ public interface Argument extends Scope, Array, BindScope {
 	public abstract void setBind(boolean bind);
 
 	/**
-	 * @return returns if scope is binded to a other variable for using outside
-	 *         of a udf
+	 * @return returns if scope is bound to a other variable for using outside of a udf
 	 */
 	@Override
 	public abstract boolean isBind();
@@ -53,8 +52,7 @@ public interface Argument extends Scope, Array, BindScope {
 	 * @return boolean
 	 * @throws PageException
 	 */
-	public abstract boolean insert(int index, String key, Object value)
-			throws PageException;
+	public abstract boolean insert(int index, String key, Object value) throws PageException;
 
 	public Object setArgument(Object obj) throws PageException;
 
@@ -64,8 +62,7 @@ public interface Argument extends Scope, Array, BindScope {
 
 	public Object getFunctionArgument(Collection.Key key, Object defaultValue);
 
-	public void setFunctionArgumentNames(
-			Set<Collection.Key> functionArgumentNames);
+	public void setFunctionArgumentNames(Set<Collection.Key> functionArgumentNames);
 
 	public boolean containsFunctionArgumentKey(Key key);
 

@@ -29,10 +29,10 @@ import lucee.runtime.op.Constants;
 public class BitCast implements Cast {
 
 	@Override
-	public Object toCFType(TimeZone tz,int type, ResultSet rst, int columnIndex) throws SQLException, IOException {
-		Object o=rst.getObject(columnIndex);
-		if(o==null)return null;
-		return Caster.toDouble(o,Constants.DOUBLE_ZERO);
+	public Object toCFType(TimeZone tz, ResultSet rst, int columnIndex) throws SQLException, IOException {
+		Object o = rst.getObject(columnIndex);
+		if (o == null) return null;
+		return Caster.toDouble(o, Constants.DOUBLE_ZERO);
 	}
 
 }

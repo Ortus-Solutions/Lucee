@@ -27,20 +27,21 @@ import lucee.commons.lang.ExceptionUtil;
 public final class CFMLResourceOutputStream extends OutputStream {
 	private ByteArrayOutputStream baos;
 	private CFMLResource res;
-	
+
 	public CFMLResourceOutputStream(CFMLResource res) {
-		this.res=res;
+		this.res = res;
 		baos = new ByteArrayOutputStream();
 	}
-	
+
 	@Override
 	public void close() throws IOException {
 		baos.close();
-		
+
 		try {
 			res.setBinary(baos.toByteArray());
-		} 
+		}
 		catch (Throwable t) {
+			ExceptionUtil.rethrowIfNecessary(t);
 			throw ExceptionUtil.toIOException(t);
 		}
 		finally {

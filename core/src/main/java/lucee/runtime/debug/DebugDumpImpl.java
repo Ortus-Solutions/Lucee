@@ -24,10 +24,10 @@ public class DebugDumpImpl implements DebugDump {
 	private final int line;
 	private final String output;
 
-	public DebugDumpImpl(String template, int line, String output) { 
-		this.template=template;
-		this.line=line;
-		this.output=output;
+	public DebugDumpImpl(String template, int line, String output) {
+		this.template = template;
+		this.line = line;
+		this.output = output;
 	}
 
 	@Override

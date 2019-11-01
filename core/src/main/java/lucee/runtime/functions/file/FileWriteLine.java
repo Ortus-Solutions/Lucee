@@ -29,26 +29,26 @@ import lucee.runtime.op.Caster;
 public class FileWriteLine {
 
 	public static String call(PageContext pc, Object obj, String text) throws PageException {
-		FileStreamWrapper fsw=null;
-		boolean close=false;
+		FileStreamWrapper fsw = null;
+		boolean close = false;
 		try {
 			try {
-				if(obj instanceof FileStreamWrapper) {
-					fsw=(FileStreamWrapper)obj;
+				if (obj instanceof FileStreamWrapper) {
+					fsw = (FileStreamWrapper) obj;
 				}
 				else {
-					close=true;
-					Resource res = Caster.toResource(pc,obj,false);
+					close = true;
+					Resource res = Caster.toResource(pc, obj, false);
 					pc.getConfig().getSecurityManager().checkFileLocation(res);
-					fsw=new FileStreamWrapperWrite(res,((PageContextImpl)pc).getResourceCharset().name(),false,false);
+					fsw = new FileStreamWrapperWrite(res, ((PageContextImpl) pc).getResourceCharset().name(), false, false);
 				}
-				fsw.write(text+"\n");
+				fsw.write(text + "\n");
 			}
 			finally {
-				if(close && fsw!=null)fsw.close();
+				if (close && fsw != null) fsw.close();
 			}
-			
-		} 
+
+		}
 		catch (IOException e) {
 			throw Caster.toPageException(e);
 		}

@@ -18,17 +18,50 @@
 package lucee.transformer.bytecode.expression.var;
 
 import lucee.transformer.expression.ExprString;
+import lucee.transformer.expression.Expression;
 import lucee.transformer.expression.var.DataMember;
+import lucee.transformer.expression.var.Variable;
 
 public final class DataMemberImpl implements DataMember {
 	private ExprString name;
+	private Variable parent;
+	private boolean safeNavigated;
+	private Expression safeNavigatedValue;
 
 	public DataMemberImpl(ExprString name) {
-		this.name=name;
+		this.name = name;
+	}
+
+	public void setParent(Variable parent) {
+		this.parent = parent;
+	}
+
+	public Variable getParent() {
+		return parent;
 	}
 
 	@Override
 	public ExprString getName() {
 		return name;
+	}
+
+	@Override
+	public void setSafeNavigated(boolean safeNavigated) {
+		this.safeNavigated = safeNavigated;
+	}
+
+	@Override
+	public boolean getSafeNavigated() {
+		return this.safeNavigated;
+	}
+
+	@Override
+	public void setSafeNavigatedValue(Expression safeNavigatedValue) {
+		this.safeNavigatedValue = safeNavigatedValue;
+	}
+
+	@Override
+	public Expression getSafeNavigatedValue() {
+		return safeNavigatedValue;
 	}
 }

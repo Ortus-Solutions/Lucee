@@ -23,8 +23,7 @@ import java.util.Set;
 public class DumpProperties {
 	public static final int DEFAULT_MAX_LEVEL = 9999;
 
-	public final static DumpProperties DEFAULT = new DumpProperties(
-			DumpProperties.DEFAULT_MAX_LEVEL, null, null, 9999, true, true);
+	public final static DumpProperties DEFAULT = new DumpProperties(DumpProperties.DEFAULT_MAX_LEVEL, null, null, 9999, true, true);
 	private final Set<String> show;
 	private final Set<String> hide;
 	private final int maxlevel;
@@ -32,9 +31,7 @@ public class DumpProperties {
 	private final boolean metainfo;
 	private final boolean showUDFs;
 
-	public DumpProperties(final int maxlevel, final Set<String> show,
-			final Set<String> hide, final int keys, final boolean metainfo,
-			final boolean showUDFs) {
+	public DumpProperties(final int maxlevel, final Set<String> show, final Set<String> hide, final int keys, final boolean metainfo, final boolean showUDFs) {
 		this.show = show;
 		this.hide = hide;
 		this.maxlevel = maxlevel;

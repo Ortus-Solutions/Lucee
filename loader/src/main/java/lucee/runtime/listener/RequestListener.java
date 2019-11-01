@@ -23,9 +23,8 @@ import lucee.runtime.PageSource;
 import lucee.runtime.exp.PageException;
 
 /**
- * this lstener is executed after the application.cfc/application.cfm was
- * invoked, but before onApplicationStart, this class can change the PageSource
- * executed
+ * this listener is executed after the application.cfc/application.cfm was invoked, but before
+ * onApplicationStart, this class can change the PageSource executed
  */
 public interface RequestListener {
 
@@ -37,7 +36,6 @@ public interface RequestListener {
 	 * @return pagesource that should be use by the ApplicationListener
 	 * @throws PageException
 	 */
-	public PageSource execute(PageContext pc, PageSource requestedPage)
-			throws PageException;
+	public PageSource execute(PageContext pc, PageSource requestedPage) throws PageException;
 
 }

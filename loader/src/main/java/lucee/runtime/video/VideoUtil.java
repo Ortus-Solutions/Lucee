@@ -36,7 +36,5 @@ public interface VideoUtil {
 
 	public long toMillis(String time) throws PageException;
 
-	public int[] calculateDimension(PageContext pc, VideoInput[] sources,
-			int width, String strWidth, int height, String strHeight)
-			throws PageException;
+	public int[] calculateDimension(PageContext pc, VideoInput[] sources, int width, String strWidth, int height, String strHeight) throws PageException;
 }

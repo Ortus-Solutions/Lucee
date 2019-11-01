@@ -5,9 +5,9 @@ import java.io.IOException;
 import lucee.runtime.PageContext;
 
 public class ThreadQueueNone implements ThreadQueue {
-	
-	public static final ThreadQueue instance=new ThreadQueueNone();
-	
+
+	public static final ThreadQueue instance = new ThreadQueueNone();
+
 	@Override
 	public void enter(PageContext pc) throws IOException {}
 

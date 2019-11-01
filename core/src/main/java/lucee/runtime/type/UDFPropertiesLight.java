@@ -9,27 +9,22 @@ import java.util.Set;
 import lucee.commons.lang.CFTypes;
 import lucee.runtime.Component;
 import lucee.runtime.Page;
-import lucee.runtime.PageContext;
 import lucee.runtime.PageSource;
-import lucee.runtime.exp.PageException;
 import lucee.runtime.op.Constants;
 import lucee.runtime.type.Collection.Key;
 
-public class UDFPropertiesLight extends UDFPropertiesBase  {
+public class UDFPropertiesLight extends UDFPropertiesBase {
 
-	private final Page page;
-	private final PageSource pageSource;
 	private final FunctionArgument[] arguments;
 	private final String functionName;
 	private final short returnType;
 	private HashSet<Key> argumentsSet;
 
 	public UDFPropertiesLight(Page page, PageSource pageSource, FunctionArgument[] arguments, String functionName, short returnType) {
-		this.page=page;
-		this.pageSource=pageSource;
-		this.arguments=arguments;
-		this.functionName=functionName;
-		this.returnType=returnType;
+		super(page, pageSource, 0, 0);
+		this.arguments = arguments;
+		this.functionName = functionName;
+		this.returnType = returnType;
 	}
 
 	@Override
@@ -39,8 +34,7 @@ public class UDFPropertiesLight extends UDFPropertiesBase  {
 	}
 
 	@Override
-	public void readExternal(ObjectInput in) throws IOException,
-			ClassNotFoundException {
+	public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
 		// TODO Auto-generated method stub
 
 	}
@@ -77,7 +71,7 @@ public class UDFPropertiesLight extends UDFPropertiesBase  {
 
 	@Override
 	public String getReturnTypeAsString() {
-		return CFTypes.toString(returnType,"any");
+		return CFTypes.toString(returnType, "any");
 	}
 
 	@Override
@@ -98,11 +92,6 @@ public class UDFPropertiesLight extends UDFPropertiesBase  {
 	@Override
 	public int getIndex() {
 		return -1;
-	}
-
-	@Override
-	public PageSource getPageSource() {
-		return pageSource;
 	}
 
 	@Override
@@ -146,16 +135,10 @@ public class UDFPropertiesLight extends UDFPropertiesBase  {
 	}
 
 	@Override
-	public Page getPage() {
-		return page;
-	}
-
-
-	@Override
 	public Set<Key> getArgumentsSet() {
-		if(arguments!=null && arguments.length>0){
-			this.argumentsSet=new HashSet<Collection.Key>();
-			for(int i=0;i<arguments.length;i++){
+		if (arguments != null && arguments.length > 0) {
+			this.argumentsSet = new HashSet<Collection.Key>();
+			for (int i = 0; i < arguments.length; i++) {
 				argumentsSet.add(arguments[i].getName());
 			}
 		}

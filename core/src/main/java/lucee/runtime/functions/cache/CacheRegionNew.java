@@ -18,73 +18,73 @@
 package lucee.runtime.functions.cache;
 
 import lucee.runtime.PageContext;
-import lucee.runtime.cache.eh.EHCache;
+import lucee.runtime.cache.CacheUtil;
+//import lucee.runtime.cache.eh.EHCache;
 import lucee.runtime.config.Config;
 import lucee.runtime.config.ConfigWebImpl;
 import lucee.runtime.config.Password;
 import lucee.runtime.config.XMLConfigAdmin;
 import lucee.runtime.exp.FunctionException;
 import lucee.runtime.exp.PageException;
-import lucee.runtime.ext.function.Function;
+import lucee.runtime.ext.function.BIF;
 import lucee.runtime.op.Caster;
 import lucee.runtime.type.Struct;
 import lucee.runtime.type.StructImpl;
 import lucee.transformer.library.ClassDefinitionImpl;
 
 /**
- * implements BIF CacheRegionNew.  This function only exists for compatibility with other CFML Engines and should be avoided where possible.
- * The preferred method to manipulate Cache connections is via the Administrator interface or in Application.
+ * implements BIF CacheRegionNew. This function only exists for compatibility with other CFML
+ * Engines and should be avoided where possible. The preferred method to manipulate Cache
+ * connections is via the Administrator interface or in Application.
  */
-public class CacheRegionNew implements Function {
+public class CacheRegionNew extends BIF {
 
-    private final static String cacheClassName = EHCache.class.getName();
+	public static String call(PageContext pc, String cacheName, Object arg2, Object arg3, String arg4) throws PageException { // used Object for args 2 & 3 to match fld
+		return _call(pc, cacheName, (Struct) arg2, (Boolean) arg3, arg4);
+	}
 
+	public static String call(PageContext pc, String cacheName, Object properties, Object arg3) throws PageException {
+		if (arg3 instanceof Boolean) // name, properties, throwOnError
+			return _call(pc, cacheName, (Struct) properties, (Boolean) arg3, null);
+		if (arg3 instanceof String) // name, properties, password
+			return _call(pc, cacheName, (Struct) properties, true, (String) arg3);
+		throw new FunctionException(pc, "CacheRegionNew", 3, "throwOnError",
+				"when calling this function with 3 arguments the 3rd argument must be either throwOnError (Boolean), or webAdminPassword (String)");
+	}
 
-    public static String call( PageContext pc, String cacheName, Object arg2, Object arg3, String arg4 ) throws PageException {     // used Object for args 2 & 3 to match fld
+	public static String call(PageContext pc, String cacheName, Object arg2) throws PageException {
+		if (arg2 instanceof Struct) // name, properties
+			return _call(pc, cacheName, (Struct) arg2, true, null);
+		if (arg2 instanceof String) // name, password
+			return _call(pc, cacheName, new StructImpl(), true, (String) arg2);
+		throw new FunctionException(pc, "CacheRegionNew", 2, "properties",
+				"when calling this function with 2 arguments the 2nd argument must be either properties (Struct), or webAdminPassword (String)");
+	}
 
-        return _call( pc, cacheName, (Struct)arg2, (Boolean)arg3, arg4 );
-    }
+	public static String call(PageContext pc, String cacheName) throws PageException {
+		return _call(pc, cacheName, new StructImpl(), true, null); // name
+	}
 
+	@Override
+	public Object invoke(PageContext pc, Object[] args) throws PageException {
+		if (args.length == 1) return call(pc, Caster.toString(args[0]));
+		if (args.length == 2) return call(pc, Caster.toString(args[0]), args[1]);
+		if (args.length == 3) return call(pc, Caster.toString(args[0]), args[1], args[2]);
+		if (args.length == 4) return call(pc, Caster.toString(args[0]), args[1], args[2], Caster.toString(args[3]));
+		throw new FunctionException(pc, "CacheRegionNew", 1, 4, args.length);
+	}
 
-    public static String call( PageContext pc, String cacheName, Object properties, Object arg3 ) throws PageException {
-
-        if ( arg3 instanceof Boolean )      // name, properties, throwOnError
-            return _call( pc, cacheName, (Struct)properties, (Boolean)arg3, null );
-
-        if ( arg3 instanceof String )       // name, properties, password
-            return _call( pc, cacheName, (Struct)properties, true, (String)arg3 );
-
-        throw new FunctionException( pc, "CacheRegionNew", 3, "throwOnError", "when calling this function with 3 arguments the 3rd argument must be either throwOnError (Boolean), or webAdminPassword (String)" );
-    }
-
-
-    public static String call( PageContext pc, String cacheName, Object arg2 ) throws PageException {
-
-        if ( arg2 instanceof Struct )       // name, properties
-            return _call( pc, cacheName, (Struct)arg2, true, null );
-
-        if ( arg2 instanceof String )       // name, password
-            return _call( pc, cacheName, new StructImpl(), true, (String)arg2 );
-
-        throw new FunctionException( pc, "CacheRegionNew", 2, "properties", "when calling this function with 2 arguments the 2nd argument must be either properties (Struct), or webAdminPassword (String)" );
-    }
-
-
-    public static String call( PageContext pc, String cacheName ) throws PageException {
-        return _call(pc, cacheName, new StructImpl(), true, null);      // name
-    }
-
-
-    static String _call( PageContext pc, String cacheName, Struct properties, Boolean throwOnError, String strWebAdminPassword ) throws PageException {
-        Password webAdminPassword = Util.getPassword( pc, strWebAdminPassword,false );
-        try {
-            XMLConfigAdmin adminConfig = XMLConfigAdmin.newInstance( (ConfigWebImpl)pc.getConfig(), webAdminPassword );
-            adminConfig.updateCacheConnection( cacheName, new ClassDefinitionImpl(cacheClassName, null, null, pc.getConfig().getIdentification()), Config.CACHE_TYPE_NONE, properties, false, false );
-            adminConfig.storeAndReload();
-        } catch ( Exception e ) {
-            if ( throwOnError )
-                throw Caster.toPageException( e );
-        }
-        return null;
-    }
+	static String _call(PageContext pc, String cacheName, Struct properties, Boolean throwOnError, String strWebAdminPassword) throws PageException {
+		Password webAdminPassword = CacheUtil.getPassword(pc, strWebAdminPassword, false);
+		try {
+			XMLConfigAdmin adminConfig = XMLConfigAdmin.newInstance((ConfigWebImpl) pc.getConfig(), webAdminPassword);// TODO why we have here EHCache?
+			adminConfig.updateCacheConnection(cacheName, new ClassDefinitionImpl("org.lucee.extension.cache.eh.EHCache", null, null, pc.getConfig().getIdentification()),
+					Config.CACHE_TYPE_NONE, properties, false, false);
+			adminConfig.storeAndReload();
+		}
+		catch (Exception e) {
+			if (throwOnError) throw Caster.toPageException(e);
+		}
+		return null;
+	}
 }

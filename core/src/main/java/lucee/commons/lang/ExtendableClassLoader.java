@@ -21,7 +21,11 @@ package lucee.commons.lang;
 import java.lang.instrument.UnmodifiableClassException;
 
 public abstract class ExtendableClassLoader extends ClassLoader {
-	
+
+	static {
+		boolean res = registerAsParallelCapable();
+	}
+
 	public ExtendableClassLoader() {
 		super();
 	}
@@ -32,10 +36,11 @@ public abstract class ExtendableClassLoader extends ClassLoader {
 
 	/**
 	 * allow to define a new Class with help of the bytecode passed to the method
+	 * 
 	 * @param name
 	 * @param barr
 	 * @return
-	 * @throws UnmodifiableClassException 
+	 * @throws UnmodifiableClassException
 	 */
 	public abstract Class<?> loadClass(String name, byte[] barr) throws UnmodifiableClassException;
 }

@@ -32,32 +32,32 @@ import lucee.runtime.exp.PageException;
 import lucee.runtime.op.Operator;
 import lucee.runtime.type.SimpleValue;
 
-
 /**
  * Printable and Castable Date Object (no visible time)
  */
-public final class DateImpl extends  Date implements SimpleValue {
-	
-	private static SimpleDateFormat luceeFormatter=	new SimpleDateFormat("yyyy-MM-dd",Locale.US);
-	
-	//private TimeZone timezone;
-	
+public final class DateImpl extends Date implements SimpleValue {
+
+	private static SimpleDateFormat luceeFormatter = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+
+	// private TimeZone timezone;
 
 	public DateImpl() {
-		this(null,System.currentTimeMillis());
+		this(null, System.currentTimeMillis());
 	}
+
 	public DateImpl(long utcTime) {
-		this(null,utcTime);
+		this(null, utcTime);
 	}
 
 	public DateImpl(PageContext pc) {
-		this(pc,System.currentTimeMillis());
+		this(pc, System.currentTimeMillis());
 	}
+
 	public DateImpl(PageContext pc, long utcTime) {
 		super(DateTimeImpl.addOffset(ThreadLocalPageContext.getConfig(pc), utcTime));
-		//this.timezone=ThreadLocalPageContext.getTimeZone(pc);
+		// this.timezone=ThreadLocalPageContext.getTimeZone(pc);
 	}
-	
+
 	public DateImpl(java.util.Date date) {
 		super(date.getTime());
 	}
@@ -65,74 +65,72 @@ public final class DateImpl extends  Date implements SimpleValue {
 	@Override
 	public String castToString() {
 		synchronized (luceeFormatter) {
-        	luceeFormatter.setTimeZone(ThreadLocalPageContext.getTimeZone());
-            return "{d '"+luceeFormatter.format(this)+"'}";
-        }
+			luceeFormatter.setTimeZone(ThreadLocalPageContext.getTimeZone());
+			return "{d '" + luceeFormatter.format(this) + "'}";
+		}
 	}
-	
+
 	@Override
 	public String toString() {
 		return castToString();
 	}
 
-    @Override
-    public String castToString(String defaultValue) {
-        return castToString();
-    }
+	@Override
+	public String castToString(String defaultValue) {
+		return castToString();
+	}
 
-    @Override
-    public double toDoubleValue() {
-        return DateTimeUtil.getInstance().toDoubleValue(this);
-    }
-    
-    @Override
-    public double castToDoubleValue(double defaultValue) {
-        return DateTimeUtil.getInstance().toDoubleValue(this);
-    }
+	@Override
+	public double toDoubleValue() {
+		return DateTimeUtil.getInstance().toDoubleValue(this);
+	}
 
-    @Override
+	@Override
+	public double castToDoubleValue(double defaultValue) {
+		return DateTimeUtil.getInstance().toDoubleValue(this);
+	}
+
+	@Override
 	public DumpData toDumpData(PageContext pageContext, int maxlevel, DumpProperties dp) {
-		String str=castToString("");
-        DumpTable table=new DumpTable("date","#ff9900","#ffcc00","#000000");
-        table.appendRow(1, new SimpleDumpData("Date"), new SimpleDumpData(str));
-        return table;
-    }
+		String str = castToString("");
+		DumpTable table = new DumpTable("date", "#ff9900", "#ffcc00", "#000000");
+		table.appendRow(1, new SimpleDumpData("Date"), new SimpleDumpData(str));
+		return table;
+	}
 
-    @Override
-    public boolean castToBooleanValue() throws PageException {
-        return DateTimeUtil.getInstance().toBooleanValue(this);
-    }
-    
-    @Override
-    public Boolean castToBoolean(Boolean defaultValue) {
-        return defaultValue;
-    }
+	@Override
+	public boolean castToBooleanValue() throws PageException {
+		return DateTimeUtil.getInstance().toBooleanValue(this);
+	}
 
-    @Override
-    public double castToDoubleValue() {
-        return DateTimeUtil.getInstance().toDoubleValue(this);
-    }
-    
-    @Override
-    public DateTime castToDateTime() {
-        return this;
-    }
-    
-    
-    @Override
-    public DateTime castToDateTime(DateTime defaultValue) {
-        return this;
-    }
+	@Override
+	public Boolean castToBoolean(Boolean defaultValue) {
+		return defaultValue;
+	}
 
+	@Override
+	public double castToDoubleValue() {
+		return DateTimeUtil.getInstance().toDoubleValue(this);
+	}
+
+	@Override
+	public DateTime castToDateTime() {
+		return this;
+	}
+
+	@Override
+	public DateTime castToDateTime(DateTime defaultValue) {
+		return this;
+	}
 
 	@Override
 	public int compareTo(boolean b) {
-		return Operator.compare(castToDoubleValue(), b?1D:0D);
+		return Operator.compare(castToDoubleValue(), b ? 1D : 0D);
 	}
 
 	@Override
 	public int compareTo(DateTime dt) throws PageException {
-		return Operator.compare((java.util.Date)this, (java.util.Date)dt);
+		return Operator.compare((java.util.Date) this, (java.util.Date) dt);
 	}
 
 	@Override

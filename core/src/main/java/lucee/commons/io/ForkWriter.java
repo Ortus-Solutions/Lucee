@@ -27,8 +27,8 @@ public class ForkWriter extends Writer {
 	private final Writer w2;
 
 	public ForkWriter(Writer w1, Writer w2) {
-		this.w1=w1;
-		this.w2=w2;
+		this.w1 = w1;
+		this.w2 = w2;
 	}
 
 	@Override

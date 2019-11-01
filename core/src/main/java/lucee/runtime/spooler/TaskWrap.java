@@ -22,11 +22,11 @@ import lucee.runtime.config.Config;
 import lucee.runtime.exp.PageException;
 
 public class TaskWrap implements Task {
-	
+
 	private SpoolerTask st;
 
-	public TaskWrap(SpoolerTask st){
-		this.st=st;
+	public TaskWrap(SpoolerTask st) {
+		this.st = st;
 	}
 
 	@Override

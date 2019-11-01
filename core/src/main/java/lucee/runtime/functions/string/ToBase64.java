@@ -34,9 +34,10 @@ public final class ToBase64 implements Function {
 	 * @return base64 value as string
 	 * @throws PageException
 	 */
-	public static String call(PageContext pc , Object object) throws PageException {
-		return call(pc,object,ReqRspUtil.getCharacterEncoding(pc,pc.getHttpServletResponse()).name());
+	public static String call(PageContext pc, Object object) throws PageException {
+		return call(pc, object, ReqRspUtil.getCharacterEncoding(pc, pc.getHttpServletResponse()).name());
 	}
+
 	/**
 	 * @param pc
 	 * @param object
@@ -44,7 +45,7 @@ public final class ToBase64 implements Function {
 	 * @return base 64 value as string
 	 * @throws PageException
 	 */
-	public static String call(PageContext pc , Object object, String encoding) throws PageException {
-		return Caster.toBase64(object,encoding);
+	public static String call(PageContext pc, Object object, String encoding) throws PageException {
+		return Caster.toBase64(object, encoding);
 	}
 }

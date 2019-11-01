@@ -29,14 +29,13 @@ public interface DataSourceManager {
 	 * @param datasource datasource whished
 	 * @param user username to datasource
 	 * @param pass password to datasource
-	 * @return return a Db Connectio9n Object
+	 * @return return a Db Connection9n Object
 	 * @throws PageException
 	 * @deprecated use instead
 	 *             <code>getConnection(PageContext pc,DataSource ds, String user, String pass)</code>
 	 */
 	@Deprecated
-	public DatasourceConnection getConnection(PageContext pc,
-			String datasource, String user, String pass) throws PageException;
+	public DatasourceConnection getConnection(PageContext pc, String datasource, String user, String pass) throws PageException;
 
 	/**
 	 * return a database connection matching to datsource name
@@ -44,14 +43,12 @@ public interface DataSourceManager {
 	 * @param ds datasource whished
 	 * @param user username to datasource
 	 * @param pass password to datasource
-	 * @return return a Db Connectio9n Object
+	 * @return return a Db Connection Object
 	 * @throws PageException
 	 */
-	public DatasourceConnection getConnection(PageContext pc, DataSource ds,
-			String user, String pass) throws PageException;
+	public DatasourceConnection getConnection(PageContext pc, DataSource ds, String user, String pass) throws PageException;
 
-	public abstract void releaseConnection(PageContext pc,
-			DatasourceConnection dc) throws PageException;
+	public abstract void releaseConnection(PageContext pc, DatasourceConnection dc) throws PageException;
 
 	/**
 	 * set state of transaction to begin

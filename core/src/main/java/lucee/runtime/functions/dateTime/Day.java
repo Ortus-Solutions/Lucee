@@ -34,20 +34,21 @@ public final class Day extends BIF {
 
 	private static final long serialVersionUID = -7476348690381151695L;
 
-	public static double call(PageContext pc , DateTime date) {
-		return _call(pc, date,pc.getTimeZone());
+	public static double call(PageContext pc, DateTime date) {
+		return _call(pc, date, pc.getTimeZone());
 	}
-	public static double call(PageContext pc , DateTime date, TimeZone tz) {
-		return _call(pc, date,tz==null?pc.getTimeZone():tz);
+
+	public static double call(PageContext pc, DateTime date, TimeZone tz) {
+		return _call(pc, date, tz == null ? pc.getTimeZone() : tz);
 	}
-	
-	private static double _call(PageContext pc , DateTime date,TimeZone tz) {
+
+	private static double _call(PageContext pc, DateTime date, TimeZone tz) {
 		return DateTimeUtil.getInstance().getDay(tz, date);
 	}
-	
+
 	@Override
 	public Object invoke(PageContext pc, Object[] args) throws PageException {
-		if(args.length==1)return call(pc,Caster.toDatetime(args[0],pc.getTimeZone()));
-		return call(pc,Caster.toDatetime(args[0],pc.getTimeZone()),Caster.toTimeZone(args[1]));
+		if (args.length == 1) return call(pc, Caster.toDatetime(args[0], pc.getTimeZone()));
+		return call(pc, Caster.toDatetime(args[0], pc.getTimeZone()), Caster.toTimeZone(args[1]));
 	}
 }

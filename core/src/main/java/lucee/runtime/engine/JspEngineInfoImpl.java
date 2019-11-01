@@ -20,11 +20,8 @@ package lucee.runtime.engine;
 
 import javax.servlet.jsp.JspEngineInfo;
 
-
-
 /**
- * implementation of the javax.servlet.jsp.JspEngineInfo interface, 
- * return information to JSP Engine
+ * implementation of the javax.servlet.jsp.JspEngineInfo interface, return information to JSP Engine
  */
 public final class JspEngineInfoImpl extends JspEngineInfo {
 
@@ -32,10 +29,11 @@ public final class JspEngineInfoImpl extends JspEngineInfo {
 
 	/**
 	 * constructor of the JSPEngineInfo
+	 * 
 	 * @param version lucee version Information
 	 */
 	public JspEngineInfoImpl(String version) {
-		this.version=version;
+		this.version = version;
 	}
 
 	@Override

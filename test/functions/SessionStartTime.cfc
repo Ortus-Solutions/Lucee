@@ -21,19 +21,15 @@ component extends="org.lucee.cfml.test.LuceeTestCase"	{
 	//public function setUp(){}
 
 	public void function test(){
-		// make sure session is enabled
-		appSett=getApplicationSettings();
-		if(!appSett.sessionManagement) {application action="update" sessionmanagement=true;}
-
-		startTime=sessionStartTime()&"";
-		session.x=1;
-		sleep(20);// make sure there is some time passed
-		//if(sessionStartTime()>=now()) echo( "session start time must be in the past");
-
-
-		assertTrue(MilliSecond(now())/10>MilliSecond(sessionStartTime())/10);
+		local.result=_InternalRequest(
+			template:createURI("SessionStartTime/index.cfm"));
+		assertEquals("",trim(result.filecontent));
 		
 	}
-	
+
+	private string function createURI(string calledName){
+		var baseURI="/test/#listLast(getDirectoryFromPath(getCurrenttemplatepath()),"\/")#/";
+		return baseURI&""&calledName;
+	}
 } 
 </cfscript>

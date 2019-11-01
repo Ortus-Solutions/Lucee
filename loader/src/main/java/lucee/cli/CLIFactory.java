@@ -43,19 +43,17 @@ public class CLIFactory extends Thread {
 	private final Map<String, String> config;
 	private long idleTime;
 
-	public CLIFactory(final File root, final String servletName,
-			final Map<String, String> config) {
+	public CLIFactory(final File root, final String servletName, final Map<String, String> config) {
 		this.root = root;
 		this.servletName = servletName;
 		this.config = config;
 
 		this.idleTime = 60000;
 		final String strIdle = config.get("idle");
-		if (strIdle != null)
-			try {
-				idleTime = Long.parseLong(strIdle);
-			} catch (final Throwable t) {
-			}
+		if (strIdle != null) try {
+			idleTime = Long.parseLong(strIdle);
+		}
+		catch (final Throwable t) {}
 	}
 
 	@Override
@@ -65,7 +63,8 @@ public class CLIFactory extends Thread {
 		InetAddress current = null;
 		try {
 			current = InetAddress.getLocalHost();
-		} catch (final UnknownHostException e1) {
+		}
+		catch (final UnknownHostException e1) {
 			e1.printStackTrace();
 			return;
 		}
@@ -74,29 +73,27 @@ public class CLIFactory extends Thread {
 				// first try to call existing service
 				invoke(current, name);
 
-			} catch (final ConnectException e) {
+			}
+			catch (final ConnectException e) {
 				startInvoker(name);
 				invoke(current, name);
 			}
-		} catch (final Throwable t) {
+		}
+		catch (final Throwable t) {
 			t.printStackTrace();
 		}
 	}
 
-	private void invoke(final InetAddress current, final String name)
-			throws RemoteException, NotBoundException {
-		final Registry registry = LocateRegistry.getRegistry(
-				current.getHostAddress(), PORT);
+	private void invoke(final InetAddress current, final String name) throws RemoteException, NotBoundException {
+		final Registry registry = LocateRegistry.getRegistry(current.getHostAddress(), PORT);
 		final CLIInvoker invoker = (CLIInvoker) registry.lookup(name);
 		invoker.invoke(config);
 	}
 
-	private void startInvoker(final String name) throws ServletException,
-			RemoteException {
+	private void startInvoker(final String name) throws ServletException, RemoteException {
 		final Registry myReg = getRegistry(PORT);
 		final CLIInvokerImpl invoker = new CLIInvokerImpl(root, servletName);
-		final CLIInvoker stub = (CLIInvoker) UnicastRemoteObject.exportObject(
-				invoker, 0);
+		final CLIInvoker stub = (CLIInvoker) UnicastRemoteObject.exportObject(invoker, 0);
 		myReg.rebind(name, stub);
 		if (idleTime > 0) {
 			final Closer closer = new Closer(myReg, invoker, name, idleTime);
@@ -110,15 +107,14 @@ public class CLIFactory extends Thread {
 		try {
 
 			registry = LocateRegistry.createRegistry(port);
-		} catch (final RemoteException e) {
 		}
+		catch (final RemoteException e) {}
 
 		try {
 
-			if (registry == null)
-				registry = LocateRegistry.getRegistry(port);
-		} catch (final RemoteException e) {
+			if (registry == null) registry = LocateRegistry.getRegistry(port);
 		}
+		catch (final RemoteException e) {}
 
 		RemoteServer.setLog(System.out);
 

@@ -36,97 +36,96 @@ import lucee.runtime.type.util.ListUtil;
  */
 public final class RamResourceProviderOld implements ResourceProviderPro {
 
-	private String scheme="ram";
+	private String scheme = "ram";
 	private RamResourceCore root;
-	
-	boolean caseSensitive=true;
-	//private Resources resources;
-	private long lockTimeout=1000;
-	private ResourceLockImpl lock=new ResourceLockImpl(lockTimeout,caseSensitive);
+
+	boolean caseSensitive = true;
+	// private Resources resources;
+	private long lockTimeout = 1000;
+	private ResourceLockImpl lock = new ResourceLockImpl(lockTimeout, caseSensitive);
 	private Map arguments;
 
-	
 	/**
-	 * initalize ram resource
+	 * initialize ram resource
+	 * 
 	 * @param scheme
 	 * @param arguments
 	 * @return RamResource
 	 */
 	@Override
-	public ResourceProvider init(String scheme,Map arguments) {
-		if(!StringUtil.isEmpty(scheme))this.scheme=scheme;
-		
-		if(arguments!=null) {
-			this.arguments=arguments;
-			Object oCaseSensitive= arguments.get("case-sensitive");
-			if(oCaseSensitive!=null) {
-				caseSensitive=Caster.toBooleanValue(oCaseSensitive,true);
+	public ResourceProvider init(String scheme, Map arguments) {
+		if (!StringUtil.isEmpty(scheme)) this.scheme = scheme;
+
+		if (arguments != null) {
+			this.arguments = arguments;
+			Object oCaseSensitive = arguments.get("case-sensitive");
+			if (oCaseSensitive != null) {
+				caseSensitive = Caster.toBooleanValue(oCaseSensitive, true);
 			}
-			
+
 			// lock-timeout
 			Object oTimeout = arguments.get("lock-timeout");
-			if(oTimeout!=null) {
-				lockTimeout=Caster.toLongValue(oTimeout,lockTimeout);
+			if (oTimeout != null) {
+				lockTimeout = Caster.toLongValue(oTimeout, lockTimeout);
 			}
 		}
 		lock.setLockTimeout(lockTimeout);
 		lock.setCaseSensitive(caseSensitive);
-		
-		root=new RamResourceCore(null,RamResourceCore.TYPE_DIRECTORY,"");
+
+		root = new RamResourceCore(null, RamResourceCore.TYPE_DIRECTORY, "");
 		return this;
 	}
-	
-	
-	
+
 	@Override
 	public Resource getResource(String path) {
-		path=ResourceUtil.removeScheme(scheme,path);
-		return new RamResource(this,path);
+		path = ResourceUtil.removeScheme(scheme, path);
+		return new RamResource(this, path);
 	}
-	
+
 	/**
 	 * returns core for this path if exists, otherwise return null
+	 * 
 	 * @param path
 	 * @return core or null
 	 */
 	RamResourceCore getCore(String path) {
-		String[] names = ListUtil.listToStringArray(path,'/');
-		
-		
-		RamResourceCore rrc=root;
-		for(int i=0;i<names.length;i++) {
-			rrc=rrc.getChild(names[i],caseSensitive);
-			if(rrc==null) return null;
+		String[] names = ListUtil.listToStringArray(path, '/');
+
+		RamResourceCore rrc = root;
+		for (int i = 0; i < names.length; i++) {
+			rrc = rrc.getChild(names[i], caseSensitive);
+			if (rrc == null) return null;
 		}
 		return rrc;
 	}
 
 	/**
-	 * create a new core 
+	 * create a new core
+	 * 
 	 * @param path
 	 * @param type
 	 * @return created core
 	 * @throws IOException
 	 */
 	RamResourceCore createCore(String path, int type) throws IOException {
-		String[] names = ListUtil.listToStringArray(path,'/');
-		RamResourceCore rrc=root;
-		for(int i=0;i<names.length-1;i++) {
-			rrc=rrc.getChild(names[i],caseSensitive);
-			if(rrc==null) throw new IOException("can't create resource "+path+", missing parent resource");
+		String[] names = ListUtil.listToStringArray(path, '/');
+		RamResourceCore rrc = root;
+		for (int i = 0; i < names.length - 1; i++) {
+			rrc = rrc.getChild(names[i], caseSensitive);
+			if (rrc == null) throw new IOException("can't create resource " + path + ", missing parent resource");
 		}
-		rrc = new RamResourceCore(rrc,type,names[names.length-1]);
+		rrc = new RamResourceCore(rrc, type, names[names.length - 1]);
 		return rrc;
 	}
-
 
 	@Override
 	public String getScheme() {
 		return scheme;
 	}
+
 	@Override
 	public void setResources(Resources resources) {
-		//this.resources=resources;
+		// this.resources=resources;
 	}
 
 	@Override
@@ -163,7 +162,7 @@ public final class RamResourceProviderOld implements ResourceProviderPro {
 	public Map getArguments() {
 		return arguments;
 	}
-	
+
 	@Override
 	public char getSeparator() {
 		return '/';

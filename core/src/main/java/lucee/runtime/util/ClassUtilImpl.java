@@ -23,6 +23,11 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.BundleException;
+import org.osgi.framework.Version;
+
 import lucee.commons.lang.ClassException;
 import lucee.commons.lang.types.RefInteger;
 import lucee.runtime.PageContext;
@@ -39,11 +44,6 @@ import lucee.runtime.type.Collection.Key;
 import lucee.transformer.library.function.FunctionLib;
 import lucee.transformer.library.function.FunctionLibFunction;
 
-import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.BundleException;
-import org.osgi.framework.Version;
-
 public class ClassUtilImpl implements ClassUtil {
 
 	@Override
@@ -52,35 +52,47 @@ public class ClassUtilImpl implements ClassUtil {
 	}
 
 	@Override
-	public Class<?> loadClass(PageContext pc,String className, String bundleName,String bundleVersion) throws ClassException, BundleException {
+	public Class<?> loadClass(PageContext pc, String className, String bundleName, String bundleVersion) throws ClassException, BundleException {
 		Config config = ThreadLocalPageContext.getConfig(pc);
-		return lucee.commons.lang.ClassUtil.loadClassByBundle(className, bundleName, bundleVersion,config.getIdentification());
+		return lucee.commons.lang.ClassUtil.loadClassByBundle(className, bundleName, bundleVersion, config.getIdentification());
 	}
 
 	@Override
 	public BIF loadBIF(PageContext pc, String name) throws InstantiationException, IllegalAccessException {
 		// first of all we chek if itis a class
-		Class<?> res = lucee.commons.lang.ClassUtil.loadClass(name,null);
-		if(res!=null) {
-			if(Reflector.isInstaneOf(res, BIF.class)) {
+		Class<?> res = lucee.commons.lang.ClassUtil.loadClass(name, null);
+		if (res != null) {
+			if (Reflector.isInstaneOf(res, BIF.class, false)) {
 				return (BIF) res.newInstance();
 			}
 			return new BIFProxy(res);
 		}
-		
-		FunctionLib[] flds = ((ConfigWebImpl)pc.getConfig()).getFLDs(pc.getCurrentTemplateDialect());
+
+		FunctionLib[] flds = ((ConfigWebImpl) pc.getConfig()).getFLDs(pc.getCurrentTemplateDialect());
 		FunctionLibFunction flf;
-		for(int i=0;i<flds.length;i++) {
-			 flf= flds[i].getFunction(name);
-			 if(flf!=null) return flf.getBIF();
+		for (int i = 0; i < flds.length; i++) {
+			flf = flds[i].getFunction(name);
+			if (flf != null) return flf.getBIF();
 		}
-		
-		
+		return null;
+	}
+
+	// FUTURE add to loader
+	public BIF loadBIF(PageContext pc, String name, String bundleName, Version bundleVersion)
+			throws InstantiationException, IllegalAccessException, ClassException, BundleException {
+		// first of all we chek if itis a class
+		Class<?> res = lucee.commons.lang.ClassUtil.loadClassByBundle(name, bundleName, bundleVersion, pc.getConfig().getIdentification());
+		if (res != null) {
+			if (Reflector.isInstaneOf(res, BIF.class, false)) {
+				return (BIF) res.newInstance();
+			}
+			return new BIFProxy(res);
+		}
 		return null;
 	}
 
 	@Override
-	public boolean isInstaneOf(String srcClassName, Class<?>trg) {
+	public boolean isInstaneOf(String srcClassName, Class<?> trg) {
 		return Reflector.isInstaneOf(srcClassName, trg);
 	}
 
@@ -90,18 +102,22 @@ public class ClassUtilImpl implements ClassUtil {
 	}
 
 	@Override
-	public boolean isInstaneOf(Class<?>src, String trgClassName) {
+	public boolean isInstaneOf(Class<?> src, String trgClassName) {
 		return Reflector.isInstaneOf(src, trgClassName);
 	}
 
 	@Override
-	public boolean isInstaneOfIgnoreCase(Class<?>src, String trg) {
+	public boolean isInstaneOfIgnoreCase(Class<?> src, String trg) {
 		return Reflector.isInstaneOfIgnoreCase(src, trg);
 	}
 
 	@Override
-	public boolean isInstaneOf(Class<?>src, Class<?>trg) {
-		return Reflector.isInstaneOf(src, trg);
+	public boolean isInstaneOf(Class<?> src, Class<?> trg) {
+		return Reflector.isInstaneOf(src, trg, true);
+	}
+
+	public boolean isInstaneOf(Class<?> src, Class<?> trg, boolean exatctMatch) { // FUTURE
+		return Reflector.isInstaneOf(src, trg, exatctMatch);
 	}
 
 	@Override
@@ -110,53 +126,52 @@ public class ClassUtilImpl implements ClassUtil {
 	}
 
 	@Override
-	public Class<?>toReferenceClass(Class<?>c) {
+	public Class<?> toReferenceClass(Class<?> c) {
 		return Reflector.toReferenceClass(c);
 	}
 
 	@Override
-	public boolean like(Class<?>src, Class<?>trg) {
+	public boolean like(Class<?> src, Class<?> trg) {
 		return Reflector.like(src, trg);
 	}
 
 	@Override
-	public Object convert(Object src, Class<?>trgClass, RefInteger rating) throws PageException {
+	public Object convert(Object src, Class<?> trgClass, RefInteger rating) throws PageException {
 		return Reflector.convert(src, trgClass, rating);
 	}
 
 	@Override
-	public Field[] getFieldsIgnoreCase(
-			Class<?>clazz, String name) throws NoSuchFieldException {
+	public Field[] getFieldsIgnoreCase(Class<?> clazz, String name) throws NoSuchFieldException {
 		return Reflector.getFieldsIgnoreCase(clazz, name);
 	}
 
 	@Override
-	public Field[] getFieldsIgnoreCase(Class<?>clazz, String name, Field[] defaultValue) {
+	public Field[] getFieldsIgnoreCase(Class<?> clazz, String name, Field[] defaultValue) {
 		return Reflector.getFieldsIgnoreCase(clazz, name, defaultValue);
 	}
 
 	@Override
-	public String[] getPropertyKeys(Class<?>clazz) {
+	public String[] getPropertyKeys(Class<?> clazz) {
 		return Reflector.getPropertyKeys(clazz);
 	}
 
 	@Override
-	public boolean hasPropertyIgnoreCase(Class<?>clazz, String name) {
+	public boolean hasPropertyIgnoreCase(Class<?> clazz, String name) {
 		return Reflector.hasPropertyIgnoreCase(clazz, name);
 	}
 
 	@Override
-	public boolean hasFieldIgnoreCase(Class<?>clazz, String name) {
+	public boolean hasFieldIgnoreCase(Class<?> clazz, String name) {
 		return Reflector.hasFieldIgnoreCase(clazz, name);
 	}
 
 	@Override
-	public Object callConstructor(Class<?>clazz, Object[] args) throws PageException {
+	public Object callConstructor(Class<?> clazz, Object[] args) throws PageException {
 		return Reflector.callConstructor(clazz, args);
 	}
 
 	@Override
-	public Object callConstructor(Class<?>clazz, Object[] args,Object defaultValue) {
+	public Object callConstructor(Class<?> clazz, Object[] args, Object defaultValue) {
 		return Reflector.callConstructor(clazz, args, defaultValue);
 	}
 
@@ -171,7 +186,7 @@ public class ClassUtilImpl implements ClassUtil {
 	}
 
 	@Override
-	public Object callStaticMethod(Class<?>clazz, String methodName, Object[] args)throws PageException {
+	public Object callStaticMethod(Class<?> clazz, String methodName, Object[] args) throws PageException {
 		return Reflector.callStaticMethod(clazz, methodName, args);
 	}
 
@@ -201,7 +216,7 @@ public class ClassUtilImpl implements ClassUtil {
 	}
 
 	@Override
-	public void setProperty(Object obj, String prop, Object value)throws PageException {
+	public void setProperty(Object obj, String prop, Object value) throws PageException {
 		Reflector.setProperty(obj, prop, value);
 	}
 
@@ -211,44 +226,42 @@ public class ClassUtilImpl implements ClassUtil {
 	}
 
 	@Override
-	public Method[] getDeclaredMethods(Class<?>clazz) {
+	public Method[] getDeclaredMethods(Class<?> clazz) {
 		return Reflector.getDeclaredMethods(clazz);
 	}
 
 	@Override
-	public boolean canConvert(Class<?>from, Class<?>to) {
+	public boolean canConvert(Class<?> from, Class<?> to) {
 		return Reflector.canConvert(from, to);
 	}
 
 	@Override
-	public Class<?> loadClassByBundle(String className, String name,
-			String strVersion, Identification id) throws IOException,
-			BundleException {
+	public Class<?> loadClassByBundle(String className, String name, String strVersion, Identification id) throws IOException, BundleException {
 		return lucee.commons.lang.ClassUtil.loadClassByBundle(className, name, strVersion, id);
 	}
 
 	@Override
-	public Class<?> loadClassByBundle(String className, String name, Version version, Identification id) throws BundleException,IOException {
+	public Class<?> loadClassByBundle(String className, String name, Version version, Identification id) throws BundleException, IOException {
 		return lucee.commons.lang.ClassUtil.loadClassByBundle(className, name, version, id);
 	}
 
 	@Override
-	public Class<?>loadClass(String className, Class<?>defaultValue) {
+	public Class<?> loadClass(String className, Class<?> defaultValue) {
 		return lucee.commons.lang.ClassUtil.loadClass(className, defaultValue);
 	}
 
 	@Override
-	public Class<?>loadClass(ClassLoader cl, String className, Class<?>defaultValue) {
+	public Class<?> loadClass(ClassLoader cl, String className, Class<?> defaultValue) {
 		return lucee.commons.lang.ClassUtil.loadClass(cl, className, defaultValue);
 	}
 
 	@Override
-	public Class<?>loadClass(ClassLoader cl, String className) throws IOException {
+	public Class<?> loadClass(ClassLoader cl, String className) throws IOException {
 		return lucee.commons.lang.ClassUtil.loadClass(cl, className);
 	}
 
 	@Override
-	public Object loadInstance(Class<?>clazz) throws ClassException {
+	public Object loadInstance(Class<?> clazz) throws ClassException {
 		return lucee.commons.lang.ClassUtil.loadInstance(clazz);
 	}
 
@@ -258,53 +271,53 @@ public class ClassUtilImpl implements ClassUtil {
 	}
 
 	@Override
-	public Object loadInstance(ClassLoader cl, String className)throws ClassException {
+	public Object loadInstance(ClassLoader cl, String className) throws ClassException {
 		return lucee.commons.lang.ClassUtil.loadInstance(cl, className);
 	}
 
 	@Override
-	public Object loadInstance(Class<?>clazz, Object defaultValue) {
+	public Object loadInstance(Class<?> clazz, Object defaultValue) {
 		return lucee.commons.lang.ClassUtil.loadInstance(clazz, defaultValue);
 	}
 
 	@Override
 	public Object loadInstance(String className, Object defaultValue) {
-		return lucee.commons.lang.ClassUtil.loadInstance(className,defaultValue);
+		return lucee.commons.lang.ClassUtil.loadInstance(className, defaultValue);
 	}
 
 	@Override
-	public Object loadInstance(ClassLoader cl, String className,Object defaultValue) {
-		return lucee.commons.lang.ClassUtil.loadInstance(cl, className,defaultValue);
+	public Object loadInstance(ClassLoader cl, String className, Object defaultValue) {
+		return lucee.commons.lang.ClassUtil.loadInstance(cl, className, defaultValue);
 	}
 
 	@Override
-	public Object loadInstance(Class<?>clazz, Object[] args) throws ClassException, InvocationTargetException {
+	public Object loadInstance(Class<?> clazz, Object[] args) throws ClassException, InvocationTargetException {
 		return lucee.commons.lang.ClassUtil.loadInstance(clazz, args);
 	}
-	
+
 	@Override
 	public Object loadInstance(String className, Object[] args) throws ClassException, InvocationTargetException {
 		return lucee.commons.lang.ClassUtil.loadInstance(className, args);
 	}
 
 	@Override
-	public Object loadInstance(ClassLoader cl, String className,Object[] args) throws ClassException, InvocationTargetException {
+	public Object loadInstance(ClassLoader cl, String className, Object[] args) throws ClassException, InvocationTargetException {
 		return lucee.commons.lang.ClassUtil.loadInstance(cl, className, args);
 	}
 
 	@Override
-	public Object loadInstance(Class<?>clazz, Object[] args,Object defaultValue) {
-		return lucee.commons.lang.ClassUtil.loadInstance(clazz, args,defaultValue);
+	public Object loadInstance(Class<?> clazz, Object[] args, Object defaultValue) {
+		return lucee.commons.lang.ClassUtil.loadInstance(clazz, args, defaultValue);
 	}
 
 	@Override
-	public Object loadInstance(String className, Object[] args,Object defaultValue) {
-		return lucee.commons.lang.ClassUtil.loadInstance(className, args,defaultValue);
+	public Object loadInstance(String className, Object[] args, Object defaultValue) {
+		return lucee.commons.lang.ClassUtil.loadInstance(className, args, defaultValue);
 	}
 
 	@Override
 	public Object loadInstance(ClassLoader cl, String className, Object[] args, Object defaultValue) {
-		return lucee.commons.lang.ClassUtil.loadInstance(cl, className, args,defaultValue);
+		return lucee.commons.lang.ClassUtil.loadInstance(cl, className, args, defaultValue);
 	}
 
 	@Override
@@ -318,13 +331,13 @@ public class ClassUtilImpl implements ClassUtil {
 	}
 
 	@Override
-	public String getName(Class<?>clazz) {
+	public String getName(Class<?> clazz) {
 		return lucee.commons.lang.ClassUtil.getName(clazz);
 	}
 
 	@Override
 	public Method getMethodIgnoreCase(Class<?> clazz, String methodName, Class<?>[] args, Method defaultValue) {
-		return lucee.commons.lang.ClassUtil.getMethodIgnoreCase(clazz, methodName, args,defaultValue);
+		return lucee.commons.lang.ClassUtil.getMethodIgnoreCase(clazz, methodName, args, defaultValue);
 	}
 
 	@Override
@@ -333,17 +346,17 @@ public class ClassUtilImpl implements ClassUtil {
 	}
 
 	@Override
-	public String[] getFieldNames(Class<?>clazz) {
+	public String[] getFieldNames(Class<?> clazz) {
 		return lucee.commons.lang.ClassUtil.getFieldNames(clazz);
 	}
 
 	@Override
-	public byte[] toBytes(Class<?>clazz) throws IOException {
+	public byte[] toBytes(Class<?> clazz) throws IOException {
 		return lucee.commons.lang.ClassUtil.toBytes(clazz);
 	}
 
 	@Override
-	public Class<?>toArrayClass(Class<?>clazz) {
+	public Class<?> toArrayClass(Class<?> clazz) {
 		return lucee.commons.lang.ClassUtil.toArrayClass(clazz);
 	}
 
@@ -353,7 +366,7 @@ public class ClassUtilImpl implements ClassUtil {
 	}
 
 	@Override
-	public String getSourcePathForClass(Class<?>clazz, String defaultValue) {
+	public String getSourcePathForClass(Class<?> clazz, String defaultValue) {
 		return lucee.commons.lang.ClassUtil.getSourcePathForClass(clazz, defaultValue);
 	}
 
@@ -378,7 +391,7 @@ public class ClassUtilImpl implements ClassUtil {
 	}
 
 	@Override
-	public Bundle addBundle(BundleContext context, InputStream is, boolean closeStream,boolean checkExistence) throws BundleException, IOException {
-		return OSGiUtil.installBundle(context, is, closeStream,checkExistence);
+	public Bundle addBundle(BundleContext context, InputStream is, boolean closeStream, boolean checkExistence) throws BundleException, IOException {
+		return OSGiUtil.installBundle(context, is, closeStream, checkExistence);
 	}
 }

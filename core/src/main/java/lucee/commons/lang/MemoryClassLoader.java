@@ -18,34 +18,32 @@
 package lucee.commons.lang;
 
 import java.io.IOException;
-import java.lang.instrument.ClassDefinition;
 import java.lang.instrument.UnmodifiableClassException;
 
-import lucee.aprint;
 import lucee.commons.io.SystemUtil;
 import lucee.runtime.config.Config;
-import lucee.runtime.instrumentation.InstrumentationFactory;
+import lucee.transformer.bytecode.util.ClassRenamer;
 
 /**
  * ClassLoader that loads classes in memory that are not stored somewhere physically
  */
 public final class MemoryClassLoader extends ExtendableClassLoader {
-	
+
 	private Config config;
 	private ClassLoader pcl;
 	private long size;
-	
-	
+
 	/**
 	 * Constructor of the class
+	 * 
 	 * @param directory
 	 * @param parent
 	 * @throws IOException
 	 */
-	public MemoryClassLoader(Config config,ClassLoader parent) throws IOException {
+	public MemoryClassLoader(Config config, ClassLoader parent) throws IOException {
 		super(parent);
-		this.pcl=parent;
-		this.config=config;
+		this.pcl = parent;
+		this.config = config;
 	}
 
 	@Override
@@ -59,9 +57,10 @@ public final class MemoryClassLoader extends ExtendableClassLoader {
 		Class<?> c = findLoadedClass(name);
 		if (c == null) {
 			try {
-				c =pcl.loadClass(name);//if(name.indexOf("sub")!=-1)print.ds(name);
-			} 
+				c = pcl.loadClass(name);// if(name.indexOf("sub")!=-1)print.ds(name);
+			}
 			catch (Throwable t) {
+				ExceptionUtil.rethrowIfNecessary(t);
 				c = findClass(name);
 			}
 		}
@@ -69,55 +68,75 @@ public final class MemoryClassLoader extends ExtendableClassLoader {
 			resolveClass(c);
 		}
 		return c;
-   }
+	}
 
 	@Override
 	protected Class<?> findClass(String name) throws ClassNotFoundException {
-		throw new ClassNotFoundException("class "+name+" is invalid or doesn't exist");
+		throw new ClassNotFoundException("class " + name + " is invalid or doesn't exist");
 	}
-	
 
 	@Override
 	public synchronized Class<?> loadClass(String name, byte[] barr) throws UnmodifiableClassException {
-		Class<?> clazz=null;
+		Class<?> clazz = null;
 		try {
 			clazz = loadClass(name);
-		} catch (ClassNotFoundException cnf) {}
-		
+		}
+		catch (ClassNotFoundException cnf) {}
+
 		// if class already exists
-		if(clazz!=null) {
-			try {
-				InstrumentationFactory.getInstrumentation(config).redefineClasses(new ClassDefinition(clazz,barr));
-			} 
-			catch (ClassNotFoundException e) {
-				// the documentation clearly sais that this exception only exists for backward compatibility and never happen
-			}
-			aprint.e("redefined:memory:"+clazz.getName());
-			return clazz;
+		if (clazz != null) {
+			return rename(clazz, barr);
+
+			/*
+			 * try { InstrumentationFactory.getInstrumentation(config).redefineClasses(new
+			 * ClassDefinition(clazz, barr)); } catch (ClassNotFoundException e) { // the documentation clearly
+			 * sais that this exception only exists for backward compatibility and // never happen } return
+			 * clazz;
+			 */
 		}
 		// class not exists yet
 		return _loadClass(name, barr);
 	}
-	
+
+	private Class<?> rename(Class<?> clazz, byte[] barr) {
+		String prefix = clazz.getName();
+		Class<?> clazz2 = null;
+		String newName;
+		int index = 0;
+		do {
+			clazz2 = null;
+			newName = prefix + "$" + (++index);
+			try {
+				clazz2 = loadClass(newName); // we do not load existing class from disk
+			}
+			catch (ClassNotFoundException cnf) {}
+		}
+		while (clazz2 != null);
+		return _loadClass(newName, ClassRenamer.rename(barr, newName));
+
+	}
+
 	private synchronized Class<?> _loadClass(String name, byte[] barr) {
-		size+=barr.length;
+		size += barr.length;
 		// class not exists yet
 		try {
-			return defineClass(name,barr,0,barr.length);
-		} 
+			return defineClass(name, barr, 0, barr.length);
+		}
 		catch (Throwable t) {
+			ExceptionUtil.rethrowIfNecessary(t);
 			SystemUtil.sleep(1);
 			try {
-				return defineClass(name,barr,0,barr.length);
-			} 
+				return defineClass(name, barr, 0, barr.length);
+			}
 			catch (Throwable t2) {
+				ExceptionUtil.rethrowIfNecessary(t2);
 				SystemUtil.sleep(1);
-				return defineClass(name,barr,0,barr.length);
+				return defineClass(name, barr, 0, barr.length);
 			}
 		}
 	}
-	
-	public long getSize(){
+
+	public long getSize() {
 		return size;
 	}
 }

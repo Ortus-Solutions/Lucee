@@ -23,22 +23,22 @@ import lucee.transformer.bytecode.expression.var.Argument;
 import lucee.transformer.bytecode.expression.var.BIF;
 import lucee.transformer.bytecode.op.OpBigDecimal;
 import lucee.transformer.bytecode.op.OpDouble;
+import lucee.transformer.cfml.evaluator.EvaluatorException;
 import lucee.transformer.cfml.evaluator.FunctionEvaluator;
 import lucee.transformer.expression.Expression;
 import lucee.transformer.library.function.FunctionLibFunction;
 
-
 public class PrecisionEvaluate implements FunctionEvaluator {
 
 	@Override
-	public void evaluate(BIF bif, FunctionLibFunction flf) throws TemplateException {
+	public void execute(BIF bif, FunctionLibFunction flf) throws TemplateException {
 
 		Argument[] args = bif.getArguments();
 
-		for (Argument arg : args) {
+		for (Argument arg: args) {
 			Expression value = arg.getValue();
 			if (value instanceof OpDouble) {
-				arg.setValue(value.getFactory().toExprString(toOpBigDecimal(((OpDouble)value))), "any");
+				arg.setValue(value.getFactory().toExprString(toOpBigDecimal(((OpDouble) value))), "any");
 			}
 		}
 	}
@@ -46,8 +46,16 @@ public class PrecisionEvaluate implements FunctionEvaluator {
 	private OpBigDecimal toOpBigDecimal(OpDouble op) {
 		Expression left = op.getLeft();
 		Expression right = op.getRight();
-		if(left instanceof OpDouble) left=toOpBigDecimal((OpDouble) left);
-		if(right instanceof OpDouble) right=toOpBigDecimal((OpDouble) right);
+		if (left instanceof OpDouble) left = toOpBigDecimal((OpDouble) left);
+		if (right instanceof OpDouble) right = toOpBigDecimal((OpDouble) right);
 		return new OpBigDecimal(left, right, op.getOperation());
+	}
+
+	@Override
+	public void evaluate(BIF bif, FunctionLibFunction flf) throws EvaluatorException {}
+
+	@Override
+	public FunctionLibFunction pre(BIF bif, FunctionLibFunction flf) throws TemplateException {
+		return null;
 	}
 }

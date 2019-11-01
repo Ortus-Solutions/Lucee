@@ -34,34 +34,35 @@ public abstract class Big extends RefSupport implements Ref {
 
 	private Ref right;
 	private Ref left;
+	protected boolean limited;
 
 	/**
 	 * constructor of the class
+	 * 
 	 * @param left
 	 * @param right
 	 */
-	public Big(Ref left, Ref right) {
-		
-		
-		this.left=left;
-		this.right=right;
+	public Big(Ref left, Ref right, boolean limited) {
+		this.left = left;
+		this.right = right;
+		this.limited = limited;
 	}
 
-	protected static BigDecimal toBigDecimal(PageContext pc,Ref ref) throws PageException {
-		if(ref instanceof LBigDecimal) return ((LBigDecimal)ref).getBigDecimal();
+	protected static BigDecimal toBigDecimal(PageContext pc, Ref ref) throws PageException {
+		if (ref instanceof LBigDecimal) return ((LBigDecimal) ref).getBigDecimal();
 		return new BigDecimal(Caster.toString(ref.getValue(pc)));
 	}
 
 	protected final BigDecimal getLeft(PageContext pc) throws PageException {
-		return toBigDecimal(pc,left);
+		return toBigDecimal(pc, left);
 	}
-	
+
 	protected final BigDecimal getRight(PageContext pc) throws PageException {
-		return toBigDecimal(pc,right);
+		return toBigDecimal(pc, right);
 	}
 
 	@Override
-    public final String getTypeName() {
+	public final String getTypeName() {
 		return "operation";
 	}
 

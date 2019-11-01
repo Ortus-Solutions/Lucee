@@ -32,12 +32,11 @@ import lucee.runtime.op.Caster;
 
 public class HTTPResourceProvider implements ResourceProviderPro {
 
-
-	private int lockTimeout=20000;
-	private final ResourceLockImpl lock=new ResourceLockImpl(lockTimeout,false);
-	private String scheme="http";
-	private int clientTimeout=30000;
-	private int socketTimeout=20000;
+	private int lockTimeout = 20000;
+	private final ResourceLockImpl lock = new ResourceLockImpl(lockTimeout, false);
+	private String scheme = "http";
+	private int clientTimeout = 30000;
+	private int socketTimeout = 20000;
 	private Map arguments;
 
 	@Override
@@ -50,50 +49,49 @@ public class HTTPResourceProvider implements ResourceProviderPro {
 	}
 
 	public void setScheme(String scheme) {
-		if(!StringUtil.isEmpty(scheme))this.scheme=scheme;
+		if (!StringUtil.isEmpty(scheme)) this.scheme = scheme;
 	}
 
 	@Override
 	public ResourceProvider init(String scheme, Map arguments) {
 		setScheme(scheme);
-		
-		if(arguments!=null) {
-			this.arguments=arguments;
+
+		if (arguments != null) {
+			this.arguments = arguments;
 			// client-timeout
-			String strTimeout=(String) arguments.get("client-timeout");
-			if(strTimeout!=null) {
-				clientTimeout = Caster.toIntValue(strTimeout,clientTimeout);
+			String strTimeout = (String) arguments.get("client-timeout");
+			if (strTimeout != null) {
+				clientTimeout = Caster.toIntValue(strTimeout, clientTimeout);
 			}
 			// socket-timeout
-			strTimeout=(String) arguments.get("socket-timeout");
-			if(strTimeout!=null) {
-				socketTimeout=Caster.toIntValue(strTimeout,socketTimeout);
+			strTimeout = (String) arguments.get("socket-timeout");
+			if (strTimeout != null) {
+				socketTimeout = Caster.toIntValue(strTimeout, socketTimeout);
 			}
 			// lock-timeout
 			strTimeout = (String) arguments.get("lock-timeout");
-			if(strTimeout!=null) {
-				lockTimeout=Caster.toIntValue(strTimeout,lockTimeout);
+			if (strTimeout != null) {
+				lockTimeout = Caster.toIntValue(strTimeout, lockTimeout);
 			}
 		}
 		lock.setLockTimeout(lockTimeout);
 		return this;
 	}
-	
 
 	@Override
 	public Resource getResource(String path) {
-		
-		int indexQ=path.indexOf('?');
-		if(indexQ!=-1){
-			int indexS=path.lastIndexOf('/');
-			while((indexS=path.lastIndexOf('/'))>indexQ){
-				path=path.substring(0,indexS)+"%2F"+path.substring(indexS+1);	
+
+		int indexQ = path.indexOf('?');
+		if (indexQ != -1) {
+			int indexS = path.lastIndexOf('/');
+			while ((indexS = path.lastIndexOf('/')) > indexQ) {
+				path = path.substring(0, indexS) + "%2F" + path.substring(indexS + 1);
 			}
 		}
-		
-		path=ResourceUtil.translatePath(ResourceUtil.removeScheme(scheme,path),false,false);
-		
-		return new HTTPResource(this,new HTTPConnectionData(path,getSocketTimeout()));
+
+		path = ResourceUtil.translatePath(ResourceUtil.removeScheme(scheme, path), false, false);
+
+		return new HTTPResource(this, new HTTPConnectionData(path, getSocketTimeout()));
 	}
 
 	@Override
@@ -112,8 +110,7 @@ public class HTTPResourceProvider implements ResourceProviderPro {
 	}
 
 	@Override
-	public void setResources(Resources resources) {
-	}
+	public void setResources(Resources resources) {}
 
 	@Override
 	public void lock(Resource res) throws IOException {
@@ -151,12 +148,11 @@ public class HTTPResourceProvider implements ResourceProviderPro {
 		return socketTimeout;
 	}
 
-
 	@Override
 	public Map getArguments() {
 		return arguments;
 	}
-	
+
 	@Override
 	public char getSeparator() {
 		return '/';

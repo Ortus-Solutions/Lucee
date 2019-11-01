@@ -34,21 +34,18 @@ public interface LockManager {
 	public static final int TYPE_EXCLUSIVE = 1;
 
 	/**
-	 * locks a thread if already a other thread is come
-	 * until other thread notify him by unlock method
+	 * locks a thread if already a other thread is come until other thread notify him by unlock method
 	 * 
 	 * @param type
 	 * @param name Lock Name (not case sensitive)
-	 * @param timeout tiemout to for waiting in this method, if timeout occurs
-	 *            "lockTiemoutException" will be throwd
+	 * @param timeout timeout to for waiting in this method, if timeout occurs "lockTimeoutException"
+	 *            will be thrown
 	 * @param pageContextId
 	 * @return lock data object key for unlocking this lock
 	 * @throws LockTimeoutException
 	 * @throws InterruptedException
 	 */
-	public abstract LockData lock(int type, String name, int timeout,
-			int pageContextId) throws LockTimeoutException,
-			InterruptedException;
+	public abstract LockData lock(int type, String name, int timeout, int pageContextId) throws LockTimeoutException, InterruptedException;
 
 	/**
 	 * unlocks a locked thread in lock method

@@ -48,10 +48,10 @@ public class PreparedStatementProxy extends StatementProxy implements PreparedSt
 
 	public PreparedStatementProxy(ConnectionProxy conn, PreparedStatement stat, String sql) {
 		super(conn, stat);
-		this.stat=stat;
-		this.sql=sql;
+		this.stat = stat;
+		this.sql = sql;
 	}
-	
+
 	public String getSQL() {
 		return sql;
 	}
@@ -70,22 +70,22 @@ public class PreparedStatementProxy extends StatementProxy implements PreparedSt
 	public int executeUpdate() throws SQLException {
 		return stat.executeUpdate();
 	}
-	
+
 	@Override
-	public boolean execute(PageContext pc) throws SQLException{
+	public boolean execute(PageContext pc) throws SQLException {
 		return stat.execute();
 	}
-	
+
 	@Override
-	public ResultSet executeQuery(PageContext pc) throws SQLException{
+	public ResultSet executeQuery(PageContext pc) throws SQLException {
 		return stat.executeQuery();
 	}
-	
+
 	@Override
-	public int executeUpdate(PageContext pc) throws SQLException{
+	public int executeUpdate(PageContext pc) throws SQLException {
 		return stat.executeUpdate();
 	}
-	
+
 	@Override
 	public void addBatch() throws SQLException {
 		stat.addBatch();
@@ -118,7 +118,7 @@ public class PreparedStatementProxy extends StatementProxy implements PreparedSt
 
 	@Override
 	public void setAsciiStream(int parameterIndex, InputStream x, int length) throws SQLException {
-		stat.setAsciiStream(parameterIndex, x,length);
+		stat.setAsciiStream(parameterIndex, x, length);
 	}
 
 	@Override

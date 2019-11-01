@@ -24,18 +24,16 @@
  */
 package lucee.runtime.util;
 
-
 /**
  * 
  */
 public final class InvalidMaskException extends Exception {
 
-    /**
-     * @param message
-     */
-    public InvalidMaskException(String message) {
-        super(message);
-    }
-    
+	/**
+	 * @param message
+	 */
+	public InvalidMaskException(String message) {
+		super(message);
+	}
 
 }

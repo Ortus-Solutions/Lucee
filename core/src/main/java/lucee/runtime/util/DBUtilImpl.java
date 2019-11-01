@@ -35,13 +35,16 @@ import lucee.runtime.config.ConfigWebImpl;
 import lucee.runtime.db.DataSource;
 import lucee.runtime.db.DataSourceUtil;
 import lucee.runtime.db.DatasourceConnection;
+import lucee.runtime.db.DatasourceManagerImpl;
 import lucee.runtime.db.SQL;
 import lucee.runtime.db.SQLCaster;
 import lucee.runtime.db.SQLImpl;
 import lucee.runtime.db.SQLItem;
 import lucee.runtime.db.SQLItemImpl;
 import lucee.runtime.engine.ThreadLocalPageContext;
+import lucee.runtime.exp.ApplicationException;
 import lucee.runtime.exp.PageException;
+import lucee.runtime.exp.PageRuntimeException;
 import lucee.runtime.type.Collection.Key;
 import lucee.runtime.type.Query;
 import lucee.runtime.type.util.QueryUtil;
@@ -52,17 +55,15 @@ public class DBUtilImpl implements DBUtil {
 	public Object toSqlType(SQLItem item) throws PageException {
 		return SQLCaster.toSqlType(item);
 	}
-	
+
 	@Override
-	public void setValue(TimeZone tz, PreparedStatement stat,
-			int parameterIndex, SQLItem item) throws PageException,SQLException {
-		SQLCaster.setValue(ThreadLocalPageContext.get(),tz, stat, parameterIndex, item);
+	public void setValue(TimeZone tz, PreparedStatement stat, int parameterIndex, SQLItem item) throws PageException, SQLException {
+		SQLCaster.setValue(ThreadLocalPageContext.get(), tz, stat, parameterIndex, item);
 	}
 
 	@Override
-	public void setValue(PageContext pc,TimeZone tz, PreparedStatement stat,
-			int parameterIndex, SQLItem item) throws PageException,SQLException {
-		SQLCaster.setValue(pc,tz, stat, parameterIndex, item);
+	public void setValue(PageContext pc, TimeZone tz, PreparedStatement stat, int parameterIndex, SQLItem item) throws PageException, SQLException {
+		SQLCaster.setValue(pc, tz, stat, parameterIndex, item);
 	}
 
 	@Override
@@ -112,27 +113,83 @@ public class DBUtilImpl implements DBUtil {
 
 	@Override
 	public SQLItem toSQLItem(Object value, int type) {
-		return new SQLItemImpl(value,type);
+		return new SQLItemImpl(value, type);
 	}
 
 	@Override
 	public SQL toSQL(String sql, SQLItem[] items) {
-		return new SQLImpl(sql,items);
+		return new SQLImpl(sql, items);
+	}
+
+	public void releaseDatasourceConnection(PageContext pc, DatasourceConnection dc, boolean managed) {
+		pc = ThreadLocalPageContext.get(pc);
+
+		if (managed) {
+			if (pc == null) throw new PageRuntimeException(new ApplicationException("missing PageContext to access the Database Connection Manager"));
+			DatasourceManagerImpl manager = (DatasourceManagerImpl) pc.getDataSourceManager();
+			manager.releaseConnection(pc, dc);
+			return;
+		}
+		releaseDatasourceConnection(ThreadLocalPageContext.getConfig(pc), dc);
+	}
+
+	public void releaseDatasourceConnection(Config config, DatasourceConnection dc) {
+		ConfigImpl ci = (ConfigWebImpl) ThreadLocalPageContext.getConfig(config);
+		ci.getDatasourceConnectionPool().releaseDatasourceConnection(dc);
 	}
 
 	@Override
 	public void releaseDatasourceConnection(Config config, DatasourceConnection dc, boolean async) {
-		((ConfigImpl)config).getDatasourceConnectionPool().releaseDatasourceConnection(config, dc, async);
+		releaseDatasourceConnection(config, dc);
 	}
 
 	@Override
-	public DatasourceConnection getDatasourceConnection(PageContext pc,DataSource datasource, String user, String pass) throws PageException {
-		return ((ConfigWebImpl)pc.getConfig()).getDatasourceConnectionPool().getDatasourceConnection(ThreadLocalPageContext.getConfig(pc), datasource, user, pass);
+	public DatasourceConnection getDatasourceConnection(PageContext pc, DataSource datasource, String user, String pass) throws PageException {
+		return getDatasourceConnection(pc, datasource, user, pass, false);
+	}
+
+	public DatasourceConnection getDatasourceConnection(PageContext pc, DataSource datasource, String user, String pass, boolean managed) throws PageException {
+		pc = ThreadLocalPageContext.get(pc);
+
+		if (managed) {
+			if (pc == null) throw new ApplicationException("missing PageContext to access the Database Connection Manager");
+			DatasourceManagerImpl manager = (DatasourceManagerImpl) pc.getDataSourceManager();
+			return manager.getConnection(pc, datasource, user, pass);
+		}
+		return getDatasourceConnection(ThreadLocalPageContext.getConfig(pc), datasource, user, pass);
+	}
+
+	public DatasourceConnection getDatasourceConnection(Config config, DataSource datasource, String user, String pass) throws PageException {
+		ConfigImpl ci = (ConfigWebImpl) ThreadLocalPageContext.getConfig(config);
+		return ci.getDatasourceConnectionPool().getDatasourceConnection(config, datasource, user, pass);
 	}
 
 	@Override
-	public DatasourceConnection getDatasourceConnection(PageContext pc,String datasourceName, String user, String pass) throws PageException {
-		return ((ConfigWebImpl)pc.getConfig()).getDatasourceConnectionPool().getDatasourceConnection(ThreadLocalPageContext.getConfig(pc), pc.getDataSource(datasourceName), user, pass);
+	public DatasourceConnection getDatasourceConnection(PageContext pc, String datasourceName, String user, String pass) throws PageException {
+		return getDatasourceConnection(pc, datasourceName, user, pass, true);
+	}
+
+	public DatasourceConnection getDatasourceConnection(PageContext pc, String datasourceName, String user, String pass, boolean managed) throws PageException {
+		DataSource datasource = null;
+		pc = ThreadLocalPageContext.get(pc);
+		if (pc != null) {
+			// default datasource
+			if ("__default__".equalsIgnoreCase(datasourceName)) {
+				Object obj = pc.getApplicationContext().getDefDataSource();
+				if (obj instanceof String) datasourceName = (String) obj;
+				else datasource = (DataSource) obj;
+			}
+
+			// get datasource from application context
+			if (datasource == null) datasource = pc.getApplicationContext().getDataSource(datasourceName, null);
+		}
+
+		// get datasource from config
+		if (datasource == null) {
+			Config config = ThreadLocalPageContext.getConfig(pc);
+			datasource = config.getDataSource(datasourceName);
+		}
+		return getDatasourceConnection(pc, datasource, user, pass, managed);
 	}
 
 	@Override

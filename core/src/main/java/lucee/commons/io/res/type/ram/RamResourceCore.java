@@ -30,46 +30,46 @@ public final class RamResourceCore implements Serializable {
 	/**
 	 * Directory Resource
 	 */
-	public static final int TYPE_DIRECTORY=1;
+	public static final int TYPE_DIRECTORY = 1;
 
 	/**
 	 * Directory Resource
 	 */
-	public static final int TYPE_FILE=2;
+	public static final int TYPE_FILE = 2;
 
 	private static final String[] EMPTY_NAMES = new String[0];
-	
+
 	private int type;
 	private String name;
 	private byte[] data;
 	private List children;
-	private long lastModified=System.currentTimeMillis();
+	private long lastModified = System.currentTimeMillis();
 
-	private int mode=0777;
-	private int attributes=0;
-	
-	
+	private int mode = 0777;
+	private int attributes = 0;
+
 	private RamResourceCore parent;
-	
+
 	/**
 	 * Konstruktor
+	 * 
 	 * @param parent
 	 * @param type
 	 * @param name
-	 * @param caseSensitive 
+	 * @param caseSensitive
 	 */
-	public RamResourceCore(RamResourceCore parent, int type,String name) {
-		if(parent!=null) {
+	public RamResourceCore(RamResourceCore parent, int type, String name) {
+		if (parent != null) {
 			parent.addChild(this);
 		}
-		this.parent=parent;
-		this.type=type;
-		this.name=name;
+		this.parent = parent;
+		this.type = type;
+		this.name = name;
 	}
-
 
 	/**
 	 * Gibt den Feldnamen lastModified zurueck.
+	 * 
 	 * @return lastModified
 	 */
 	public long getLastModified() {
@@ -78,7 +78,8 @@ public final class RamResourceCore implements Serializable {
 
 	/**
 	 * Setzt den Feldnamen lastModified.
-	 * @param lastModified lastModified 
+	 * 
+	 * @param lastModified lastModified
 	 */
 	public void setLastModified(long lastModified) {
 		this.lastModified = lastModified;
@@ -86,20 +87,22 @@ public final class RamResourceCore implements Serializable {
 
 	/**
 	 * Gibt den Feldnamen children zurueck.
+	 * 
 	 * @return children
 	 */
 	public String[] getChildNames() {
-		if(children==null || children.size()==0) return EMPTY_NAMES;
+		if (children == null || children.size() == 0) return EMPTY_NAMES;
 		String[] arr = new String[children.size()];
-		for(int i=0;i<arr.length;i++) {
-			arr[i]=((RamResourceCore)children.get(i)).getName();
+		for (int i = 0; i < arr.length; i++) {
+			arr[i] = ((RamResourceCore) children.get(i)).getName();
 		}
 		return arr;
 	}
 
 	/**
 	 * Setzt den Feldnamen children.
-	 * @param children children 
+	 * 
+	 * @param children children
 	 */
 	public void setChildren(List children) {
 		this.children = children;
@@ -107,6 +110,7 @@ public final class RamResourceCore implements Serializable {
 
 	/**
 	 * Gibt den Feldnamen data zurueck.
+	 * 
 	 * @return data
 	 */
 	public byte[] getData() {
@@ -115,40 +119,42 @@ public final class RamResourceCore implements Serializable {
 
 	/**
 	 * Setzt den Feldnamen data.
-	 * @param data data 
-	 * @param append 
+	 * 
+	 * @param data data
+	 * @param append
 	 */
-	public void setData(byte[] data,boolean append) {
-		lastModified=System.currentTimeMillis();
-		
+	public void setData(byte[] data, boolean append) {
+		lastModified = System.currentTimeMillis();
+
 		// set data
-		if(append) {
-			if(this.data!=null && data!=null) {
-				byte[] newData=new byte[this.data.length+data.length];
-				int i=0;
-				for(;i<this.data.length;i++) {
-					newData[i]=this.data[i];
+		if (append) {
+			if (this.data != null && data != null) {
+				byte[] newData = new byte[this.data.length + data.length];
+				int i = 0;
+				for (; i < this.data.length; i++) {
+					newData[i] = this.data[i];
 				}
-				for(;i<this.data.length+data.length;i++) {
-					newData[i]=data[i-this.data.length];
+				for (; i < this.data.length + data.length; i++) {
+					newData[i] = data[i - this.data.length];
 				}
-				this.data=newData;
+				this.data = newData;
 			}
-			else if(data!=null) {
-				this.data=data;
+			else if (data != null) {
+				this.data = data;
 			}
 		}
 		else {
-			this.data=data;
+			this.data = data;
 		}
-		
+
 		// set type
-		if(this.data!=null) this.type=RamResourceCore.TYPE_FILE;
-		
+		if (this.data != null) this.type = RamResourceCore.TYPE_FILE;
+
 	}
 
 	/**
 	 * Gibt den Feldnamen name zurueck.
+	 * 
 	 * @return name
 	 */
 	public String getName() {
@@ -157,15 +163,17 @@ public final class RamResourceCore implements Serializable {
 
 	/**
 	 * Setzt den Feldnamen name.
-	 * @param name name 
+	 * 
+	 * @param name name
 	 */
 	public void setName(String name) {
-		lastModified=System.currentTimeMillis();
+		lastModified = System.currentTimeMillis();
 		this.name = name;
 	}
 
 	/**
 	 * Gibt den Feldnamen type zurueck.
+	 * 
 	 * @return type
 	 */
 	public int getType() {
@@ -174,38 +182,39 @@ public final class RamResourceCore implements Serializable {
 
 	/**
 	 * Setzt den Feldnamen type.
-	 * @param type type 
+	 * 
+	 * @param type type
 	 */
 	public void setType(int type) {
-		lastModified=System.currentTimeMillis();
+		lastModified = System.currentTimeMillis();
 		this.type = type;
 	}
-	
+
 	public void addChild(RamResourceCore child) {
-		if(children==null)children=new ArrayList();
+		if (children == null) children = new ArrayList();
 		children.add(child);
 	}
-	
+
 	/**
 	 * returns a child that match given name
+	 * 
 	 * @param name
 	 * @return matching child
 	 */
 	public RamResourceCore getChild(String name, boolean caseSensitive) {
-		if(children==null) return null;
-		
+		if (children == null) return null;
+
 		RamResourceCore child;
-		for(int i=children.size()-1;i>=0;i--) {
-			child=(RamResourceCore) children.get(i);
-			if(child!=null 
-					&& (caseSensitive?child.getName().equals(name):child.getName().equalsIgnoreCase(name)))
-				return child;
+		for (int i = children.size() - 1; i >= 0; i--) {
+			child = (RamResourceCore) children.get(i);
+			if (child != null && (caseSensitive ? child.getName().equals(name) : child.getName().equalsIgnoreCase(name))) return child;
 		}
 		return null;
 	}
 
 	/**
 	 * returns the parent if this core
+	 * 
 	 * @return parent core or null if no parent available
 	 */
 	public RamResourceCore getParent() {
@@ -214,21 +223,23 @@ public final class RamResourceCore implements Serializable {
 
 	/**
 	 * remove given child from this core
+	 * 
 	 * @param core
 	 */
 	public void removeChild(RamResourceCore core) {
-		
-		if(children==null) return;
+
+		if (children == null) return;
 
 		RamResourceCore child;
-		for(int i=children.size()-1;i>=0;i--) {
-			child=(RamResourceCore) children.get(i);
-			if(child==core) {
+		for (int i = children.size() - 1; i >= 0; i--) {
+			child = (RamResourceCore) children.get(i);
+			if (child == core) {
 				children.remove(i);
 				break;
-			}		
+			}
 		}
 	}
+
 	/**
 	 * @return the mode
 	 */
@@ -240,23 +251,23 @@ public final class RamResourceCore implements Serializable {
 	 * @param mode the mode to set
 	 */
 	public void setMode(int mode) {
-		this.mode=mode;
+		this.mode = mode;
 	}
-	
+
 	public int getAttributes() {
 		return attributes;
 	}
-	
+
 	public void setAttributes(int attributes) {
-		this.attributes=attributes;
+		this.attributes = attributes;
 	}
 
 	public void remove() {
 		setType(0);
-		setData(null,false);
+		setData(null, false);
 		setChildren(null);
-		RamResourceCore p=getParent();
-		if(p!=null)p.removeChild(this);
+		RamResourceCore p = getParent();
+		if (p != null) p.removeChild(this);
 	}
 
 }

@@ -45,9 +45,9 @@ public class VersionInfo {
 	}
 
 	/**
-	 * return creattion time of this version
+	 * return creation time of this version
 	 * 
-	 * @return creattion time
+	 * @return creation time
 	 */
 	public static long getCreateTime() {
 		init();
@@ -55,27 +55,25 @@ public class VersionInfo {
 	}
 
 	private static void init() {
-		if (version != null)
-			return;
+		if (version != null) return;
 		String content = "9000000:" + System.currentTimeMillis();
 		try {
-			content = getContentAsString(new TP().getClass().getClassLoader()
-					.getResourceAsStream("lucee/version"), "UTF-8");
+			content = getContentAsString(new TP().getClass().getClassLoader().getResourceAsStream("lucee/version"), "UTF-8");
 
-		} catch (final IOException e) {
 		}
+		catch (final IOException e) {}
 
 		final int index = content.indexOf(':');
-		version = CFMLEngineFactorySupport.toVersion(
-				content.substring(0, index), CFMLEngineFactory.VERSION_ZERO);
+		version = CFMLEngineFactorySupport.toVersion(content.substring(0, index), CFMLEngineFactory.VERSION_ZERO);
 		final String d = content.substring(index + 1);
 		try {
 			created = Long.parseLong(d);
-		} catch (final NumberFormatException nfe) {
+		}
+		catch (final NumberFormatException nfe) {
 			try {
-				created = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss z")
-						.parse(d).getTime();
-			} catch (final ParseException pe) {
+				created = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss z").parse(d).getTime();
+			}
+			catch (final ParseException pe) {
 				pe.printStackTrace();
 				created = 0;
 			}
@@ -83,12 +81,9 @@ public class VersionInfo {
 
 	}
 
-	private static String getContentAsString(final InputStream is,
-			final String charset) throws IOException {
+	private static String getContentAsString(final InputStream is, final String charset) throws IOException {
 
-		final BufferedReader br = (charset == null) ? new BufferedReader(
-				new InputStreamReader(is)) : new BufferedReader(
-				new InputStreamReader(is, charset));
+		final BufferedReader br = (charset == null) ? new BufferedReader(new InputStreamReader(is)) : new BufferedReader(new InputStreamReader(is, charset));
 		final StringBuffer content = new StringBuffer();
 
 		String line = br.readLine();

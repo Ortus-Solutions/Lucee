@@ -18,116 +18,107 @@
  **/
 package lucee.commons.io.res.filter;
 
-
 import lucee.commons.io.res.Resource;
 import lucee.commons.lang.StringUtil;
 
 /**
- * Filter fuer die <code>listFiles</code> Methode des FIle Objekt, 
- * zum filtern von FIles mit einer bestimmten Extension.
+ * Filter fuer die <code>listFiles</code> Methode des FIle Objekt, zum filtern von FIles mit einer
+ * bestimmten Extension.
  */
 public final class ExtensionResourceFilter implements ResourceFilter {
-	
+
 	private String[] extensions;
 	private final boolean allowDir;
 	private final boolean ignoreCase;
-    //private int extLen;
+	// private int extLen;
 
 	public static final ExtensionResourceFilter EXTENSION_JAR_NO_DIR = new ExtensionResourceFilter(".jar", false);
-	public static final ExtensionResourceFilter EXTENSION_CLASS_DIR  = new ExtensionResourceFilter(".class", true);
-
+	public static final ExtensionResourceFilter EXTENSION_CLASS_DIR = new ExtensionResourceFilter(".class", true);
 
 	/**
 	 * Konstruktor des Filters
+	 * 
 	 * @param extension Endung die geprueft werden soll.
 	 */
 	public ExtensionResourceFilter(String extension) {
-		this(new String[]{extension},false,true);
+		this(new String[] { extension }, false, true);
 	}
 
 	/**
 	 * Konstruktor des Filters
+	 * 
 	 * @param extension Endung die geprueft werden soll.
 	 */
 	public ExtensionResourceFilter(String extension, boolean allowDir) {
-		this(new String[]{extension},allowDir,true);
-	}
-	
-	public ExtensionResourceFilter(String[] extensions) {
-		this(extensions,false,true);
-	}
-	
-	public ExtensionResourceFilter(String[] extensions, boolean allowDir) {
-		this(extensions,allowDir,true);
+		this(new String[] { extension }, allowDir, true);
 	}
 
-	
-	public ExtensionResourceFilter(String[] extensions, boolean allowDir, boolean ignoreCase) {
-		String[] tmp=new String[extensions.length];
-		for(int i=0;i<extensions.length;i++) {
-			if(!StringUtil.startsWith(extensions[i],'.'))
-	            tmp[i]="."+extensions[i];
-			else 
-				tmp[i]=extensions[i];
-		}
-		this.extensions=tmp;
-    	this.allowDir=allowDir;
-    	this.ignoreCase=ignoreCase;
+	public ExtensionResourceFilter(String[] extensions) {
+		this(extensions, false, true);
 	}
-	
+
+	public ExtensionResourceFilter(String[] extensions, boolean allowDir) {
+		this(extensions, allowDir, true);
+	}
+
+	public ExtensionResourceFilter(String[] extensions, boolean allowDir, boolean ignoreCase) {
+		String[] tmp = new String[extensions.length];
+		for (int i = 0; i < extensions.length; i++) {
+			if (!StringUtil.startsWith(extensions[i], '.')) tmp[i] = "." + extensions[i];
+			else tmp[i] = extensions[i];
+		}
+		this.extensions = tmp;
+		this.allowDir = allowDir;
+		this.ignoreCase = ignoreCase;
+	}
+
 	public void addExtension(String extension) {
-		String[] tmp=new String[extensions.length+1];
+		String[] tmp = new String[extensions.length + 1];
 		// add existing
-		for(int i=0;i<extensions.length;i++) {
-			tmp[i]=extensions[i];
+		for (int i = 0; i < extensions.length; i++) {
+			tmp[i] = extensions[i];
 		}
 		// add the new one
-		if(!StringUtil.startsWith(extension,'.'))
-            tmp[extensions.length]="."+extension;
-		else 
-			tmp[extensions.length]=extension;
-		
-		this.extensions=tmp;
+		if (!StringUtil.startsWith(extension, '.')) tmp[extensions.length] = "." + extension;
+		else tmp[extensions.length] = extension;
+
+		this.extensions = tmp;
 	}
 
 	@Override
 	public boolean accept(Resource res) {
-		if(res.isDirectory()) return allowDir;
-		if(res.exists()) {
-			String name=res.getName();
-			for(int i=0;i<extensions.length;i++) {
-				if(ignoreCase){
-					if(StringUtil.endsWithIgnoreCase(name,extensions[i]))
-						return true;
+		if (res.isDirectory()) return allowDir;
+		if (res.exists()) {
+			String name = res.getName();
+			for (int i = 0; i < extensions.length; i++) {
+				if (ignoreCase) {
+					if (StringUtil.endsWithIgnoreCase(name, extensions[i])) return true;
 				}
 				else {
-					if(name.endsWith(extensions[i]))
-						return true;
+					if (name.endsWith(extensions[i])) return true;
 				}
 			}
 		}
 		return false;
 	}
-	
+
 	public boolean accept(String name) {
-			for(int i=0;i<extensions.length;i++) {
-				if(ignoreCase){
-					if(StringUtil.endsWithIgnoreCase(name,extensions[i]))
-						return true;
-				}
-				else {
-					if(name.endsWith(extensions[i]))
-						return true;
-				}
+		for (int i = 0; i < extensions.length; i++) {
+			if (ignoreCase) {
+				if (StringUtil.endsWithIgnoreCase(name, extensions[i])) return true;
 			}
-		
+			else {
+				if (name.endsWith(extensions[i])) return true;
+			}
+		}
+
 		return false;
 	}
-	
-    /**
-     * @return Returns the extension.
-     */
-    public String[] getExtensions() {
-        return extensions;
-    }
+
+	/**
+	 * @return Returns the extension.
+	 */
+	public String[] getExtensions() {
+		return extensions;
+	}
 }

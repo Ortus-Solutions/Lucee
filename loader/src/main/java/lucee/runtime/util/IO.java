@@ -120,8 +120,7 @@ public interface IO {
 	 * @param closeOS close output stream when done
 	 * @throws IOException
 	 */
-	public void copy(InputStream in, OutputStream out, boolean closeIS,
-			boolean closeOS) throws IOException;
+	public void copy(InputStream in, OutputStream out, boolean closeIS, boolean closeOS) throws IOException;
 
 	/**
 	 * copy data from reader to writer
@@ -132,8 +131,7 @@ public interface IO {
 	 * @param closeW close the writer when done
 	 * @throws IOException
 	 */
-	public void copy(Reader in, Writer out, boolean closeR, boolean closeW)
-			throws IOException;
+	public void copy(Reader in, Writer out, boolean closeR, boolean closeW) throws IOException;
 
 	/**
 	 * copy content from source to target
@@ -148,11 +146,9 @@ public interface IO {
 
 	public BufferedOutputStream toBufferedOutputStream(OutputStream os);
 
-	public void write(Resource res, String content, boolean append,
-			Charset charset) throws IOException;
+	public void write(Resource res, String content, boolean append, Charset charset) throws IOException;
 
-	public void write(Resource res, byte[] content, boolean append)
-			throws IOException;
+	public void write(Resource res, byte[] content, boolean append) throws IOException;
 
 	public Reader getReader(InputStream is, Charset charset) throws IOException;
 
@@ -160,7 +156,8 @@ public interface IO {
 
 	public Reader toBufferedReader(Reader reader);
 
-	public void copy(InputStream is, Resource out, boolean closeIS)
-			throws IOException;
+	public void copy(InputStream is, Resource out, boolean closeIS) throws IOException;
+
+	public OutputStream createTemporaryStream();
 
 }

@@ -38,60 +38,68 @@ import lucee.runtime.type.dt.DateTime;
 import lucee.runtime.type.it.EntryIterator;
 import lucee.runtime.type.it.StringIterator;
 import lucee.runtime.type.util.StructSupport;
+import lucee.runtime.type.util.StructUtil;
 
 /**
  * CFML data type struct
  */
 public final class StructImplKey extends StructSupport implements Struct {
 
-	public static final int TYPE_WEAKED=0;
-	public static final int TYPE_LINKED=1;
-	public static final int TYPE_SYNC=2;
-	public static final int TYPE_REGULAR=3;
-	
-	private Map<Collection.Key,Object> _map;
-	//private static  int scount=0;
-	//private static int kcount=0;
-	
+	public static final int TYPE_WEAKED = 0;
+	public static final int TYPE_LINKED = 1;
+	public static final int TYPE_SYNC = 2;
+	public static final int TYPE_REGULAR = 3;
+
+	private Map<Collection.Key, Object> _map;
+	// private static int scount=0;
+	// private static int kcount=0;
+
 	/**
 	 * default constructor
 	 */
 	public StructImplKey() {
-		_map=new HashMap<Collection.Key,Object>();
-	}
-	
-    /**
-     * This implementation spares its clients from the unspecified, 
-     * generally chaotic ordering provided by normally Struct , 
-     * without incurring the increased cost associated with TreeMap. 
-     * It can be used to produce a copy of a map that has the same order as the original
-     * @param doubleLinked
-     */
-    public StructImplKey(int type) {
-    	if(type==TYPE_LINKED)		_map=new LinkedHashMap<Collection.Key,Object>();
-    	else if(type==TYPE_WEAKED)	_map=new java.util.WeakHashMap<Collection.Key,Object>();
-        else if(type==TYPE_SYNC)	_map=MapFactory.<Collection.Key,Object>getConcurrentMap();
-        else 						_map=new HashMap<Collection.Key,Object>();
-    }
-    
-	/**
-	 * @see lucee.runtime.type.Collection#get(lucee.runtime.type.Collection.Key, java.lang.Object)
-	 */
-	@Override
-	public Object get(Collection.Key key, Object defaultValue) {
-		Object rtn=_map.get(key);
-		if(rtn!=null) return rtn;
-		return defaultValue;
+		_map = new HashMap<Collection.Key, Object>();
 	}
 
 	/**
-	 *
-	 * @see lucee.runtime.type.Collection#get(lucee.runtime.type.Collection.Key)
+	 * This implementation spares its clients from the unspecified, generally chaotic ordering provided
+	 * by normally Struct , without incurring the increased cost associated with TreeMap. It can be used
+	 * to produce a copy of a map that has the same order as the original
+	 * 
+	 * @param doubleLinked
 	 */
+	public StructImplKey(int type) {
+		if (type == TYPE_LINKED) _map = new LinkedHashMap<Collection.Key, Object>();
+		else if (type == TYPE_WEAKED) _map = new java.util.WeakHashMap<Collection.Key, Object>();
+		else if (type == TYPE_SYNC) _map = MapFactory.<Collection.Key, Object>getConcurrentMap();
+		else _map = new HashMap<Collection.Key, Object>();
+	}
+
 	@Override
-	public Object get(Collection.Key key) throws PageException {//print.out("k:"+(kcount++));
-		Object rtn=_map.get(key);
-		if(rtn!=null) return rtn;
+	public final Object get(Collection.Key key, Object defaultValue) {
+		Object rtn = _map.get(key);
+		if (rtn != null) return rtn;
+		return defaultValue;
+	}
+
+	@Override
+	public final Object get(PageContext pc, Collection.Key key, Object defaultValue) {
+		Object rtn = _map.get(key);
+		if (rtn != null) return rtn;
+		return defaultValue;
+	}
+
+	@Override
+	public final Object get(Collection.Key key) throws PageException {// print.out("k:"+(kcount++));
+		Object rtn = _map.get(key);
+		if (rtn != null) return rtn;
+		throw invalidKey(key.getString());
+	}
+
+	@Override
+	public final Object get(PageContext pc, Collection.Key key) throws PageException {// print.out("k:"+(kcount++));
+		Object rtn = _map.get(key);
+		if (rtn != null) return rtn;
 		throw invalidKey(key.getString());
 	}
 
@@ -100,7 +108,7 @@ public final class StructImplKey extends StructSupport implements Struct {
 	 */
 	@Override
 	public Object set(Collection.Key key, Object value) throws PageException {
-		_map.put(key,value);
+		_map.put(key, value);
 		return value;
 	}
 
@@ -109,7 +117,7 @@ public final class StructImplKey extends StructSupport implements Struct {
 	 */
 	@Override
 	public Object setEL(Collection.Key key, Object value) {
-        _map.put(key,value);
+		_map.put(key, value);
 		return value;
 	}
 
@@ -122,12 +130,12 @@ public final class StructImplKey extends StructSupport implements Struct {
 	}
 
 	@Override
-	public Collection.Key[] keys() {//print.out("keys");
+	public Collection.Key[] keys() {// print.out("keys");
 		Iterator<Key> it = keyIterator();
 		Collection.Key[] keys = new Collection.Key[size()];
-		int count=0;
-		while(it.hasNext()) {
-			keys[count++]=it.next();
+		int count = 0;
+		while (it.hasNext()) {
+			keys[count++] = it.next();
 		}
 		return keys;
 	}
@@ -137,16 +145,16 @@ public final class StructImplKey extends StructSupport implements Struct {
 	 */
 	@Override
 	public Object remove(Collection.Key key) throws PageException {
-		Object obj= _map.remove(key);
-		if(obj==null) throw new ExpressionException("can't remove key ["+key.getString()+"] from struct, key doesn't exist");
+		Object obj = _map.remove(key);
+		if (obj == null) throw new ExpressionException("can't remove key [" + key.getString() + "] from struct, key doesn't exist");
 		return obj;
 	}
-	
+
 	@Override
 	public Object removeEL(Collection.Key key) {
 		return _map.remove(key);
 	}
-	
+
 	/**
 	 * @see lucee.runtime.type.Collection#clear()
 	 */
@@ -154,25 +162,25 @@ public final class StructImplKey extends StructSupport implements Struct {
 	public void clear() {
 		_map.clear();
 	}
-	 
+
 	/**
 	 *
 	 * @see lucee.runtime.dump.Dumpable#toDumpData(lucee.runtime.PageContext, int)
 	 */
 	@Override
 	public DumpData toDumpData(PageContext pageContext, int maxlevel, DumpProperties dp) {
-	    Iterator it=_map.keySet().iterator();
-		
-		DumpTable table = new DumpTable("struct","#9999ff","#ccccff","#000000");
+		Iterator it = _map.keySet().iterator();
+
+		DumpTable table = new DumpTable("struct", "#9999ff", "#ccccff", "#000000");
 		table.setTitle("Struct");
 		maxlevel--;
-		int maxkeys=dp.getMaxKeys();
-		int index=0;
-		while(it.hasNext()) {
-			Object key=it.next();
-			if(DumpUtil.keyValid(dp, maxlevel,key.toString())){
-				if(maxkeys<=index++)break;
-				table.appendRow(1,new SimpleDumpData(key.toString()),DumpUtil.toDumpData(_map.get(key), pageContext,maxlevel,dp));
+		int maxkeys = dp.getMaxKeys();
+		int index = 0;
+		while (it.hasNext()) {
+			Object key = it.next();
+			if (DumpUtil.keyValid(dp, maxlevel, key.toString())) {
+				if (maxkeys <= index++) break;
+				table.appendRow(1, new SimpleDumpData(key.toString()), DumpUtil.toDumpData(_map.get(key), pageContext, maxlevel, dp));
 			}
 		}
 		return table;
@@ -180,11 +188,12 @@ public final class StructImplKey extends StructSupport implements Struct {
 
 	/**
 	 * throw exception for invalid key
+	 * 
 	 * @param key Invalid key
 	 * @return returns an invalid key Exception
 	 */
 	protected ExpressionException invalidKey(String key) {
-		return new ExpressionException("key ["+key+"] doesn't exist in struct");
+		return new ExpressionException("key [" + key + "] doesn't exist in struct");
 	}
 
 	/**
@@ -192,25 +201,24 @@ public final class StructImplKey extends StructSupport implements Struct {
 	 */
 	@Override
 	public Collection duplicate(boolean deepCopy) {
-		Struct sct=new StructImplKey();
-		copy(this,sct,deepCopy);
+		Struct sct = new StructImplKey();
+		copy(this, sct, deepCopy);
 		return sct;
 	}
-	
-	
-	public static void copy(Struct src,Struct trg,boolean deepCopy) {
-		boolean inside=ThreadLocalDuplication.set(src, trg);
+
+	public static void copy(Struct src, Struct trg, boolean deepCopy) {
+		boolean inside = ThreadLocalDuplication.set(src, trg);
 		try {
 			Iterator<Entry<Key, Object>> it = src.entryIterator();
 			Entry<Key, Object> e;
-			while(it.hasNext()) {
+			while (it.hasNext()) {
 				e = it.next();
-				if(!deepCopy) trg.setEL(e.getKey(),e.getValue());
-				else trg.setEL(e.getKey(),Duplicator.duplicate(e.getValue(),deepCopy));
+				if (!deepCopy) trg.setEL(e.getKey(), e.getValue());
+				else trg.setEL(e.getKey(), Duplicator.duplicate(e.getValue(), deepCopy));
 			}
 		}
 		finally {
-			if(!inside)ThreadLocalDuplication.reset();
+			if (!inside) ThreadLocalDuplication.reset();
 		}
 	}
 
@@ -218,17 +226,17 @@ public final class StructImplKey extends StructSupport implements Struct {
 	public Iterator<Collection.Key> keyIterator() {
 		return _map.keySet().iterator();
 	}
-    
+
 	@Override
 	public Iterator<String> keysAsStringIterator() {
-    	return new StringIterator(keys());
-    }
-	
+		return new StringIterator(keys());
+	}
+
 	@Override
 	public Iterator<Entry<Key, Object>> entryIterator() {
 		return new EntryIterator(this, keys());
 	}
-	
+
 	/**
 	 * @see lucee.runtime.type.Iteratorable#iterator()
 	 */
@@ -237,22 +245,23 @@ public final class StructImplKey extends StructSupport implements Struct {
 		return _map.values().iterator();
 	}
 
-    /**
-     * @see lucee.runtime.type.Collection#_contains(java.lang.String)
-     */
-    @Override
-	public boolean containsKey(Collection.Key key) {
-        return _map.containsKey(key);
-    }
+	@Override
+	public final boolean containsKey(Collection.Key key) {
+		return _map.containsKey(key);
+	}
 
-    /**
-     * @see lucee.runtime.op.Castable#castToString()
-     */
-    @Override
+	@Override
+	public final boolean containsKey(PageContext pc, Collection.Key key) {
+		return _map.containsKey(key);
+	}
+
+	/**
+	 * @see lucee.runtime.op.Castable#castToString()
+	 */
+	@Override
 	public String castToString() throws ExpressionException {
-        throw new ExpressionException("Can't cast Complex Object Type Struct to String",
-          "Use Built-In-Function \"serialize(Struct):String\" to create a String from Struct");
-    }
+		throw new ExpressionException("Can't cast Complex Object Type Struct to String", "Use Built-In-Function \"serialize(Struct):String\" to create a String from Struct");
+	}
 
 	/**
 	 * @see lucee.runtime.type.util.StructSupport#castToString(java.lang.String)
@@ -262,55 +271,53 @@ public final class StructImplKey extends StructSupport implements Struct {
 		return defaultValue;
 	}
 
-    /**
-     * @see lucee.runtime.op.Castable#castToBooleanValue()
-     */
-    @Override
+	/**
+	 * @see lucee.runtime.op.Castable#castToBooleanValue()
+	 */
+	@Override
 	public boolean castToBooleanValue() throws ExpressionException {
-        throw new ExpressionException("can't cast Complex Object Type Struct to a boolean value");
-    }
-    
-    /**
-     * @see lucee.runtime.op.Castable#castToBoolean(java.lang.Boolean)
-     */
-    @Override
+		throw new ExpressionException("can't cast Complex Object Type Struct to a boolean value");
+	}
+
+	/**
+	 * @see lucee.runtime.op.Castable#castToBoolean(java.lang.Boolean)
+	 */
+	@Override
 	public Boolean castToBoolean(Boolean defaultValue) {
-        return defaultValue;
-    }
+		return defaultValue;
+	}
 
-
-    /**
-     * @see lucee.runtime.op.Castable#castToDoubleValue()
-     */
-    @Override
+	/**
+	 * @see lucee.runtime.op.Castable#castToDoubleValue()
+	 */
+	@Override
 	public double castToDoubleValue() throws ExpressionException {
-        throw new ExpressionException("can't cast Complex Object Type Struct to a number value");
-    }
-    
-    /**
-     * @see lucee.runtime.op.Castable#castToDoubleValue(double)
-     */
-    @Override
+		throw new ExpressionException("can't cast Complex Object Type Struct to a number value");
+	}
+
+	/**
+	 * @see lucee.runtime.op.Castable#castToDoubleValue(double)
+	 */
+	@Override
 	public double castToDoubleValue(double defaultValue) {
-        return defaultValue;
-    }
+		return defaultValue;
+	}
 
-
-    /**
-     * @see lucee.runtime.op.Castable#castToDateTime()
-     */
-    @Override
+	/**
+	 * @see lucee.runtime.op.Castable#castToDateTime()
+	 */
+	@Override
 	public DateTime castToDateTime() throws ExpressionException {
-        throw new ExpressionException("can't cast Complex Object Type Struct to a Date");
-    }
-    
-    /**
-     * @see lucee.runtime.op.Castable#castToDateTime(lucee.runtime.type.dt.DateTime)
-     */
-    @Override
+		throw new ExpressionException("can't cast Complex Object Type Struct to a Date");
+	}
+
+	/**
+	 * @see lucee.runtime.op.Castable#castToDateTime(lucee.runtime.type.dt.DateTime)
+	 */
+	@Override
 	public DateTime castToDateTime(DateTime defaultValue) {
-        return defaultValue;
-    }
+		return defaultValue;
+	}
 
 	/**
 	 * @see lucee.runtime.op.Castable#compare(boolean)
@@ -343,7 +350,7 @@ public final class StructImplKey extends StructSupport implements Struct {
 	public int compareTo(String str) throws PageException {
 		throw new ExpressionException("can't compare Complex Object Type Struct with a String");
 	}
-    
+
 	@Override
 	public boolean containsValue(Object value) {
 		return _map.containsValue(value);
@@ -352,6 +359,11 @@ public final class StructImplKey extends StructSupport implements Struct {
 	@Override
 	public java.util.Collection values() {
 		return _map.values();
+	}
+
+	@Override
+	public int getType() {
+		return StructUtil.getType(_map);
 	}
 
 }

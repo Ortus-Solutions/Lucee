@@ -33,7 +33,7 @@ public interface ApplicationListener {
 	public static final int MODE_CURRENT = 1;
 	public static final int MODE_ROOT = 2;
 	public static final int MODE_CURRENT_OR_ROOT = 4;
-	
+
 	public static final int TYPE_NONE = 0;
 	public static final int TYPE_CLASSIC = 1;
 	public static final int TYPE_MODERN = 2;
@@ -57,8 +57,7 @@ public interface ApplicationListener {
 	 * @param requestedPage
 	 * @throws PageException
 	 */
-	public void onRequest(PageContext pc, PageSource requestedPage,
-			RequestListener rl) throws PageException;
+	public void onRequest(PageContext pc, PageSource requestedPage, RequestListener rl) throws PageException;
 
 	/**
 	 * this method will be called when a new session starts
@@ -75,8 +74,7 @@ public interface ApplicationListener {
 	 * @param cfid
 	 * @throws PageException
 	 */
-	public void onSessionEnd(CFMLFactory cfmlFactory, String applicationName,
-			String cfid) throws PageException;
+	public void onSessionEnd(CFMLFactory cfmlFactory, String applicationName, String cfid) throws PageException;
 
 	/**
 	 * this method will be called when a new application context starts
@@ -90,8 +88,7 @@ public interface ApplicationListener {
 	 * 
 	 * @throws PageException
 	 */
-	public void onApplicationEnd(CFMLFactory cfmlFactory, String applicationName)
-			throws PageException;
+	public void onApplicationEnd(CFMLFactory cfmlFactory, String applicationName) throws PageException;
 
 	/**
 	 * this method will be called when a server starts
@@ -101,24 +98,22 @@ public interface ApplicationListener {
 	public void onServerStart() throws PageException;
 
 	/**
-	 * this method will be called when the server shutdown correctly (no
-	 * crashes)
+	 * this method will be called when the server shutdown correctly (no crashes)
 	 * 
 	 * @throws PageException
 	 */
 	public void onServerEnd() throws PageException;
 
 	/**
-	 * this method will be called if server has a error (exception) not throwed
-	 * by a try-catch block
+	 * this method will be called if server has a error (exception) not throwed by a try-catch block
 	 * 
 	 * @param pe PageExcpetion Exception that has been throwed
 	 */
 	public void onError(PageContext pc, PageException pe);
 
 	/**
-	 * called after "onRequestEnd" to generate debugging output, will only be
-	 * called when debugging is enabled
+	 * called after "onRequestEnd" to generate debugging output, will only be called when debugging is
+	 * enabled
 	 * 
 	 * @throws PageException
 	 */

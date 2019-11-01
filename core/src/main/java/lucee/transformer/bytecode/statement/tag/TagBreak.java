@@ -28,11 +28,11 @@ import lucee.transformer.bytecode.statement.FlowControlFinal;
 import lucee.transformer.bytecode.util.ASMUtil;
 
 public final class TagBreak extends TagBase {
-	
+
 	private String label;
 
-	public TagBreak(Factory f, Position start,Position end) {
-		super(f,start,end);
+	public TagBreak(Factory f, Position start, Position end) {
+		super(f, start, end);
 		setHasFlowController(true);
 	}
 
@@ -41,11 +41,10 @@ public final class TagBreak extends TagBase {
 	 */
 	@Override
 	public void _writeOut(BytecodeContext bc) throws TransformerException {
-		
-		
-		ASMUtil.leadFlow(bc,this,FlowControl.BREAK,label);
+
+		ASMUtil.leadFlow(bc, this, FlowControl.BREAK, label);
 	}
-	
+
 	/**
 	 *
 	 * @see lucee.transformer.bytecode.statement.StatementBase#setParent(lucee.transformer.bytecode.Statement)
@@ -55,13 +54,13 @@ public final class TagBreak extends TagBase {
 		super.setParent(parent);
 		parent.setHasFlowController(true);
 	}
-	
+
 	@Override
 	public FlowControlFinal getFlowControlFinal() {
 		return null;
 	}
 
 	public void setLabel(String label) {
-		this.label=label;
+		this.label = label;
 	}
 }

@@ -40,24 +40,22 @@ import lucee.transformer.library.tag.TagLibTagAttr;
  */
 public abstract class TagBase extends StatementBase implements Tag {
 
-	private Body body=null;
+	private Body body = null;
 	private String appendix;
 	private String fullname;
 	private TagLibTag tagLibTag;
-	Map<String,Attribute> attributes=new LinkedHashMap<String,Attribute>();
-	//Map<String,String> missingAttributes=new HashMap<String,String>();
-	HashSet<TagLibTagAttr> missingAttributes=new HashSet<TagLibTagAttr>();
-	private boolean scriptBase=false;
-	
+	Map<String, Attribute> attributes = new LinkedHashMap<String, Attribute>();
+	// Map<String,String> missingAttributes=new HashMap<String,String>();
+	HashSet<TagLibTagAttr> missingAttributes = new HashSet<TagLibTagAttr>();
+	private boolean scriptBase = false;
+
 	private Map<String, Attribute> metadata;
-	//private Label finallyLabel;
+	// private Label finallyLabel;
 
-
-	public TagBase(Factory factory,Position start, Position end) {
-    	super(factory,start,end);
+	public TagBase(Factory factory, Position start, Position end) {
+		super(factory, start, end);
 	}
 
-    
 	/**
 	 * @see lucee.transformer.bytecode.statement.tag.Tag#getAppendix()
 	 */
@@ -67,7 +65,7 @@ public abstract class TagBase extends StatementBase implements Tag {
 	}
 
 	@Override
-	public Map<String,Attribute> getAttributes() {
+	public Map<String, Attribute> getAttributes() {
 		return attributes;
 	}
 
@@ -83,17 +81,17 @@ public abstract class TagBase extends StatementBase implements Tag {
 
 	@Override
 	public void setAppendix(String appendix) {
-		this.appendix=appendix;
+		this.appendix = appendix;
 	}
 
 	@Override
 	public void setFullname(String fullname) {
-		this.fullname=fullname;
+		this.fullname = fullname;
 	}
 
 	@Override
 	public void setTagLibTag(TagLibTag tagLibTag) {
-		this.tagLibTag=tagLibTag;
+		this.tagLibTag = tagLibTag;
 	}
 
 	@Override
@@ -119,26 +117,26 @@ public abstract class TagBase extends StatementBase implements Tag {
 
 	@Override
 	public void _writeOut(BytecodeContext bc) throws TransformerException {
-		_writeOut(bc,true,null);
+		_writeOut(bc, true, null);
 	}
-	
+
 	public void _writeOut(BytecodeContext bc, boolean doReuse) throws TransformerException {
-		_writeOut(bc,doReuse,null);
+		_writeOut(bc, doReuse, null);
 	}
-	
+
 	protected void _writeOut(BytecodeContext bc, boolean doReuse, final FlowControlFinal fcf) throws TransformerException {
-		//_writeOut(bc, true);
-		boolean output=tagLibTag.getParseBody() || Caster.toBooleanValue(getAttribute("output"), false);
-		
-		if(output) {
-			ParseBodyVisitor pbv=new ParseBodyVisitor();
+		// _writeOut(bc, true);
+		boolean output = tagLibTag.getParseBody() || Caster.toBooleanValue(getAttribute("output"), false);
+
+		if (output) {
+			ParseBodyVisitor pbv = new ParseBodyVisitor();
 			pbv.visitBegin(bc);
-				TagHelper.writeOut(this,bc, doReuse,fcf);
+			TagHelper.writeOut(this, bc, doReuse, fcf);
 			pbv.visitEnd(bc);
 		}
-		else TagHelper.writeOut(this,bc, doReuse,fcf);
+		else TagHelper.writeOut(this, bc, doReuse, fcf);
 	}
-	
+
 	@Override
 	public Attribute getAttribute(String name) {
 		return attributes.get(name.toLowerCase());
@@ -151,40 +149,39 @@ public abstract class TagBase extends StatementBase implements Tag {
 
 	@Override
 	public String toString() {
-		return appendix+":"+fullname+":"+super.toString();
+		return appendix + ":" + fullname + ":" + super.toString();
 	}
-	
+
 	@Override
 	public boolean isScriptBase() {
 		return scriptBase;
 	}
-	
+
 	@Override
 	public void setScriptBase(boolean scriptBase) {
 		this.scriptBase = scriptBase;
 	}
-	
+
 	@Override
 	public void addMissingAttribute(TagLibTagAttr attr) {
 		missingAttributes.add(attr);
 	}
-	
+
 	@Override
 	public TagLibTagAttr[] getMissingAttributes() {
-		
+
 		return missingAttributes.toArray(new TagLibTagAttr[missingAttributes.size()]);
 	}
-	
+
 	@Override
 	public void addMetaData(Attribute metadata) {
-		if(this.metadata==null) this.metadata=new HashMap<String, Attribute>();
+		if (this.metadata == null) this.metadata = new HashMap<String, Attribute>();
 		this.metadata.put(metadata.getName(), metadata);
 	}
-	
+
 	@Override
 	public Map<String, Attribute> getMetaData() {
 		return metadata;
 	}
-	
-	
+
 }

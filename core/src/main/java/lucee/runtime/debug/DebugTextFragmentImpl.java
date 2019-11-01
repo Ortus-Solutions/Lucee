@@ -24,17 +24,17 @@ public class DebugTextFragmentImpl implements DebugTextFragment {
 	private final String text;
 	private final String template;
 	private final int line;
-	
-	public DebugTextFragmentImpl(String text, String template, int line){
-		this.text=text;
-		this.template=template;
-		this.line=line;
+
+	public DebugTextFragmentImpl(String text, String template, int line) {
+		this.text = text;
+		this.template = template;
+		this.line = line;
 	}
 
 	public DebugTextFragmentImpl(String text, TemplateLine tl) {
-		this.text=text;
-		this.template=tl.template;
-		this.line=tl.line;
+		this.text = text;
+		this.template = tl.template;
+		this.line = tl.line;
 	}
 
 	@Override

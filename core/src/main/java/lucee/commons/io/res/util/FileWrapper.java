@@ -39,250 +39,215 @@ public final class FileWrapper extends File implements Resource {
 
 	/**
 	 * Constructor of the class
+	 * 
 	 * @param res
 	 */
 	private FileWrapper(Resource res) {
 		super(res.getPath());
-		this.res=res;
+		this.res = res;
 	}
-	
+
 	@Override
 	public boolean canRead() {
 		return res.canRead();
 	}
-
 
 	@Override
 	public boolean canWrite() {
 		return res.canWrite();
 	}
 
-
 	@Override
 	public int compareTo(File pathname) {
-		if(res instanceof File) ((File)res).compareTo(pathname);
+		if (res instanceof File) ((File) res).compareTo(pathname);
 		return res.getPath().compareTo(pathname.getPath());
 	}
-
-
 
 	@Override
 	public boolean createNewFile() {
 		return res.createNewFile();
 	}
 
-
 	@Override
 	public boolean delete() {
 		return res.delete();
 	}
 
-
 	@Override
 	public void deleteOnExit() {
-		if(res instanceof File) ((File)res).deleteOnExit();
+		if (res instanceof File) ((File) res).deleteOnExit();
 	}
-
 
 	@Override
 	public boolean equals(Object obj) {
 		return res.equals(obj);
 	}
 
-
 	@Override
 	public boolean exists() {
 		return res.exists();
 	}
 
-
 	@Override
 	public File getAbsoluteFile() {
-		if(res.isAbsolute()) return this;
+		if (res.isAbsolute()) return this;
 		return new FileWrapper(res.getAbsoluteResource());
 	}
-
 
 	@Override
 	public String getAbsolutePath() {
 		return res.getAbsolutePath();
 	}
 
-
 	@Override
 	public File getCanonicalFile() throws IOException {
 		return new FileWrapper(res.getCanonicalResource());
 	}
-
 
 	@Override
 	public String getCanonicalPath() throws IOException {
 		return res.getCanonicalPath();
 	}
 
-
 	@Override
 	public String getName() {
 		return res.getName();
 	}
-
 
 	@Override
 	public String getParent() {
 		return res.getParent();
 	}
 
-
 	@Override
 	public File getParentFile() {
 		return new FileWrapper(this.getParentResource());
 	}
-
 
 	@Override
 	public String getPath() {
 		return res.getPath();
 	}
 
-
 	@Override
 	public int hashCode() {
 		return res.hashCode();
 	}
-
 
 	@Override
 	public boolean isAbsolute() {
 		return res.isAbsolute();
 	}
 
-
 	@Override
 	public boolean isDirectory() {
 		return res.isDirectory();
 	}
-
 
 	@Override
 	public boolean isFile() {
 		return res.isFile();
 	}
 
-
 	@Override
 	public boolean isHidden() {
 		return res.isHidden();
 	}
-
 
 	@Override
 	public long lastModified() {
 		return res.lastModified();
 	}
 
-
 	@Override
 	public long length() {
 		return res.length();
 	}
-
 
 	@Override
 	public String[] list() {
 		return res.list();
 	}
 
-
 	@Override
 	public String[] list(FilenameFilter filter) {
-		if(res instanceof File) ((File)res).list(filter);
-		return list((ResourceNameFilter)new FileNameFilterWrapper(filter));
+		if (res instanceof File) ((File) res).list(filter);
+		return list((ResourceNameFilter) new FileNameFilterWrapper(filter));
 	}
-
 
 	@Override
 	public File[] listFiles() {
-		//if(res instanceof File) return ((File)res).listFiles();
+		// if(res instanceof File) return ((File)res).listFiles();
 		return toFiles(listResources());
 	}
-	
+
 	private File[] toFiles(Resource[] resources) {
 		File[] files = new File[resources.length];
-		for(int i=0;i<resources.length;i++) {
-			files[i]=new FileWrapper(resources[i]);
+		for (int i = 0; i < resources.length; i++) {
+			files[i] = new FileWrapper(resources[i]);
 		}
 		return files;
 	}
 
-
 	@Override
 	public File[] listFiles(FileFilter filter) {
-		//if(res instanceof File) return ((File)res).listFiles(filter);
+		// if(res instanceof File) return ((File)res).listFiles(filter);
 		return toFiles(listResources(new FileFilterWrapper(filter)));
 	}
 
-
 	@Override
 	public File[] listFiles(FilenameFilter filter) {
-		//if(res instanceof File) return ((File)res).listFiles(filter);
+		// if(res instanceof File) return ((File)res).listFiles(filter);
 		return toFiles(listResources(new FileNameFilterWrapper(filter)));
 	}
-
 
 	@Override
 	public boolean mkdir() {
 		return res.mkdir();
 	}
 
-
 	@Override
 	public boolean mkdirs() {
 		return res.mkdirs();
 	}
 
-
 	@Override
 	public boolean renameTo(File dest) {
 		try {
-			if(res instanceof File) return ((File)res).renameTo(dest);
-			if(dest instanceof Resource) return res.renameTo((Resource)dest);
-			ResourceUtil.moveTo(this, ResourceUtil.toResource(dest),true);
+			if (res instanceof File) return ((File) res).renameTo(dest);
+			if (dest instanceof Resource) return res.renameTo((Resource) dest);
+			ResourceUtil.moveTo(this, ResourceUtil.toResource(dest), true);
 			return true;
 		}
-		catch(IOException ioe) {
+		catch (IOException ioe) {
 			return false;
 		}
 	}
-
 
 	@Override
 	public boolean setLastModified(long time) {
 		return res.setLastModified(time);
 	}
 
-
 	@Override
 	public boolean setReadOnly() {
 		return res.setReadOnly();
 	}
-
 
 	@Override
 	public String toString() {
 		return res.toString();
 	}
 
-
 	@Override
 	public URI toURI() {
-		if(res instanceof File) return ((File)res).toURI();
+		if (res instanceof File) return ((File) res).toURI();
 		return null;
 	}
 
-
 	@Override
 	public URL toURL() throws MalformedURLException {
-		if(res instanceof File) return ((File)res).toURL();
+		if (res instanceof File) return ((File) res).toURL();
 		return null;
 	}
 
@@ -411,16 +376,14 @@ public final class FileWrapper extends File implements Resource {
 		res.setMode(mode);
 	}
 
-
 	/**
 	 * @param res
 	 * @return
 	 */
 	public static File toFile(Resource res) {
-		if(res instanceof File) return (File)res;
+		if (res instanceof File) return (File) res;
 		return new FileWrapper(res);
 	}
-
 
 	@Override
 	public void setArchive(boolean value) throws IOException {
@@ -437,24 +400,20 @@ public final class FileWrapper extends File implements Resource {
 		res.setSystem(value);
 	}
 
-
 	@Override
 	public boolean getAttribute(short attribute) {
 		return res.getAttribute(attribute);
 	}
-
 
 	@Override
 	public void setAttribute(short attribute, boolean value) throws IOException {
 		res.setAttribute(attribute, value);
 	}
 
-
 	@Override
 	public boolean setReadable(boolean value) {
 		return res.setReadable(value);
 	}
-
 
 	@Override
 	public boolean setWritable(boolean value) {

@@ -97,11 +97,8 @@ public interface SearchCollection extends Serializable {
 	 * @throws MalformedURLException
 	 * @throws SearchException
 	 */
-	public abstract IndexResult index(PageContext pc, String key, short type,
-			String urlpath, String title, String body, String language,
-			String[] extensions, String query, boolean recurse,
-			String categoryTree, String[] categories, long timeout,
-			String custom1, String custom2, String custom3, String custom4)
+	public abstract IndexResult index(PageContext pc, String key, short type, String urlpath, String title, String body, String language, String[] extensions, String query,
+			boolean recurse, String categoryTree, String[] categories, long timeout, String custom1, String custom2, String custom3, String custom4)
 			throws PageException, MalformedURLException, SearchException;
 
 	/**
@@ -113,8 +110,7 @@ public interface SearchCollection extends Serializable {
 	 * @param language
 	 * @throws SearchException
 	 */
-	public abstract IndexResult indexFile(String id, String title,
-			Resource file, String language) throws SearchException;
+	public abstract IndexResult indexFile(String id, String title, Resource file, String language) throws SearchException;
 
 	/**
 	 * updates a collection with a path
@@ -127,9 +123,7 @@ public interface SearchCollection extends Serializable {
 	 * @param language
 	 * @throws SearchException
 	 */
-	public abstract IndexResult indexPath(String id, String title,
-			Resource dir, String[] extensions, boolean recurse, String language)
-			throws SearchException;
+	public abstract IndexResult indexPath(String id, String title, Resource dir, String[] extensions, boolean recurse, String language) throws SearchException;
 
 	/**
 	 * updates a collection with a url
@@ -142,9 +136,7 @@ public interface SearchCollection extends Serializable {
 	 * @param language
 	 * @throws SearchException
 	 */
-	public abstract IndexResult indexURL(String id, String title, URL url,
-			String[] extensions, boolean recurse, String language, long timeout)
-			throws SearchException;
+	public abstract IndexResult indexURL(String id, String title, URL url, String[] extensions, boolean recurse, String language, long timeout) throws SearchException;
 
 	/**
 	 * updates a collection with a custom
@@ -160,11 +152,8 @@ public interface SearchCollection extends Serializable {
 	 * @param custom4
 	 * @throws SearchException
 	 */
-	public abstract IndexResult indexCustom(String id, QueryColumn title,
-			QueryColumn keyColumn, QueryColumn[] bodyColumns,
-			String language, 
-			QueryColumn custom1, QueryColumn custom2, QueryColumn custom3,QueryColumn custom4) throws SearchException;
-
+	public abstract IndexResult indexCustom(String id, QueryColumn title, QueryColumn keyColumn, QueryColumn[] bodyColumns, String language, QueryColumn custom1,
+			QueryColumn custom2, QueryColumn custom3, QueryColumn custom4) throws SearchException;
 
 	/**
 	 * updates a collection with a custom
@@ -174,19 +163,17 @@ public interface SearchCollection extends Serializable {
 	 * @param keyColumn Key Column
 	 * @param bodyColumns Body Column Array
 	 * @param language Language for index
-	 * @param urlpath 
+	 * @param urlpath
 	 * @param custom1
 	 * @param custom2
 	 * @param custom3
 	 * @param custom4
-	 * @throws SearchException
-	 FUTURE add
-	public abstract IndexResult indexCustom(String id, QueryColumn title,
-			QueryColumn keyColumn, QueryColumn[] bodyColumns,
-			String language,QueryColumn urlpath, 
-			QueryColumn custom1, QueryColumn custom2, QueryColumn custom3,QueryColumn custom4) throws SearchException;
-*/
-	
+	 * @throws SearchException FUTURE add public abstract IndexResult indexCustom(String id, QueryColumn
+	 *             title, QueryColumn keyColumn, QueryColumn[] bodyColumns, String language,QueryColumn
+	 *             urlpath, QueryColumn custom1, QueryColumn custom2, QueryColumn custom3,QueryColumn
+	 *             custom4) throws SearchException;
+	 */
+
 	/**
 	 * @return Returns the language.
 	 */
@@ -215,8 +202,7 @@ public interface SearchCollection extends Serializable {
 	 * @param queryName
 	 * @throws SearchException
 	 */
-	public abstract IndexResult deleteIndex(PageContext pc, String key,
-			short type, String queryName) throws SearchException;
+	public abstract IndexResult deleteIndex(PageContext pc, String key, short type, String queryName) throws SearchException;
 
 	/**
 	 * @return Returns the path.
@@ -259,7 +245,7 @@ public interface SearchCollection extends Serializable {
 	 * search the collection
 	 * 
 	 * @param data
-	 * @param qry Query to append resuts
+	 * @param qry Query to append results
 	 * @param criteria
 	 * @param language
 	 * @param type SEARCH_TYPE_EXPLICIT or SEARCH_TYPE_SIMPLE
@@ -271,10 +257,8 @@ public interface SearchCollection extends Serializable {
 	 * @throws SearchException
 	 * @throws PageException
 	 */
-	public abstract int search(SearchData data, Query qry, String criteria,
-			String language, short type, int startrow, int maxrow,
-			String categoryTree, String[] category) throws SearchException,
-			PageException;
+	public abstract int search(SearchData data, Query qry, String criteria, String language, short type, int startrow, int maxrow, String categoryTree, String[] category)
+			throws SearchException, PageException;
 
 	/**
 	 * search the collection
@@ -288,9 +272,7 @@ public interface SearchCollection extends Serializable {
 	 * @return Result as SearchRecord Array
 	 * @throws SearchException
 	 */
-	public abstract SearchResulItem[] _search(SearchData data, String criteria,
-			String language, short type, String categoryTree, String[] category)
-			throws SearchException;
+	public abstract SearchResulItem[] _search(SearchData data, String criteria, String language, short type, String categoryTree, String[] category) throws SearchException;
 
 	/**
 	 * @return the size of the collection in KB

@@ -20,9 +20,9 @@ package lucee.runtime.util;
 
 import lucee.runtime.PageContext;
 import lucee.runtime.type.Collection;
+import lucee.runtime.type.Collection.Key;
 import lucee.runtime.type.Query;
 import lucee.runtime.type.QueryColumn;
-import lucee.runtime.type.Collection.Key;
 
 /**
  * Query Stack
@@ -47,7 +47,7 @@ public interface QueryStack {
 	public abstract boolean isEmpty();
 
 	/**
-	 * loop over all Queries and return value at first ocurrence
+	 * loop over all Queries and return value at first occurrence
 	 * 
 	 * @param key column name of the value to get
 	 * @return value
@@ -56,7 +56,7 @@ public interface QueryStack {
 	public Object getDataFromACollection(PageContext pc, Key key, Object defaultValue);
 
 	/**
-	 * loop over all Queries and return value as QueryColumn at first ocurrence
+	 * loop over all Queries and return value as QueryColumn at first occurrence
 	 * 
 	 * @param key column name of the value to get
 	 * @return value

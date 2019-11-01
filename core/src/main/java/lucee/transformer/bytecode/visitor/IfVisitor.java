@@ -18,10 +18,10 @@
  **/
 package lucee.transformer.bytecode.visitor;
 
-import lucee.transformer.bytecode.BytecodeContext;
-
 import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
+
+import lucee.transformer.bytecode.BytecodeContext;
 
 public final class IfVisitor {
 
@@ -29,11 +29,8 @@ public final class IfVisitor {
 
 	public void visitBeforeExpression() {
 
-
 		end = new Label();
-		
-		
-		
+
 	}
 
 	public void visitAfterExpressionBeforeBody(BytecodeContext bc) {

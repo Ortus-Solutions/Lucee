@@ -24,18 +24,18 @@ import java.sql.SQLException;
 import java.sql.SQLFeatureNotSupportedException;
 import java.util.logging.Logger;
 
+import coldfusion.sql.DataSource;
+import coldfusion.sql.DataSourceDef;
 import lucee.runtime.PageContext;
 import lucee.runtime.engine.ThreadLocalPageContext;
 import lucee.runtime.exp.PageException;
-import coldfusion.sql.DataSource;
-import coldfusion.sql.DataSourceDef;
 
 public class DataSourceImpl implements DataSource {
 
 	private lucee.runtime.db.DataSource ds;
 
 	public DataSourceImpl(lucee.runtime.db.DataSource ds) {
-		this.ds=ds;
+		this.ds = ds;
 	}
 
 	@Override
@@ -44,12 +44,12 @@ public class DataSourceImpl implements DataSource {
 	}
 
 	@Override
-	public Connection getConnection(String user, String pass)
-			throws SQLException {
+	public Connection getConnection(String user, String pass) throws SQLException {
 		try {
 			PageContext pc = ThreadLocalPageContext.get();
-			return pc.getDataSourceManager().getConnection(pc,ds.getName(),user, pass).getConnection();
-		} catch (PageException e) {
+			return pc.getDataSourceManager().getConnection(pc, ds.getName(), user, pass).getConnection();
+		}
+		catch (PageException e) {
 			throw new SQLException(e.getMessage());
 		}
 	}

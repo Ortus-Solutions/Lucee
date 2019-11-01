@@ -18,6 +18,8 @@
  */
 package lucee.transformer.bytecode.statement.tag;
 
+import org.objectweb.asm.Label;
+
 import lucee.transformer.Factory;
 import lucee.transformer.Position;
 import lucee.transformer.TransformerException;
@@ -27,17 +29,14 @@ import lucee.transformer.bytecode.statement.FlowControlContinue;
 import lucee.transformer.bytecode.visitor.WhileVisitor;
 import lucee.transformer.expression.Expression;
 
-import org.objectweb.asm.Label;
-
-public final class TagWhile extends TagBaseNoFinal implements FlowControlBreak,FlowControlContinue {
+public final class TagWhile extends TagBaseNoFinal implements FlowControlBreak, FlowControlContinue {
 
 	private WhileVisitor wv;
 	private String label;
 
-	public TagWhile(Factory f, Position start,Position end) {
-		super(f,start,end);
+	public TagWhile(Factory f, Position start, Position end) {
+		super(f, start, end);
 	}
-
 
 	/**
 	 * @see lucee.transformer.bytecode.statement.StatementBase#_writeOut(org.objectweb.asm.commons.GeneratorAdapter)
@@ -46,12 +45,11 @@ public final class TagWhile extends TagBaseNoFinal implements FlowControlBreak,F
 	public void _writeOut(BytecodeContext bc) throws TransformerException {
 		wv = new WhileVisitor();
 		wv.visitBeforeExpression(bc);
-			getAttribute("condition").getValue().writeOut(bc, Expression.MODE_VALUE);
+		getAttribute("condition").getValue().writeOut(bc, Expression.MODE_VALUE);
 		wv.visitAfterExpressionBeforeBody(bc);
-			getBody().writeOut(bc);
-		wv.visitAfterBody(bc,getEnd());
+		getBody().writeOut(bc);
+		wv.visitAfterBody(bc, getEnd());
 	}
-
 
 	/**
 	 * @see lucee.transformer.bytecode.statement.FlowControl#getBreakLabel()
@@ -61,7 +59,6 @@ public final class TagWhile extends TagBaseNoFinal implements FlowControlBreak,F
 		return wv.getBreakLabel();
 	}
 
-
 	/**
 	 * @see lucee.transformer.bytecode.statement.FlowControl#getContinueLabel()
 	 */
@@ -70,14 +67,13 @@ public final class TagWhile extends TagBaseNoFinal implements FlowControlBreak,F
 		return wv.getContinueLabel();
 	}
 
-
 	@Override
 	public String getLabel() {
 		return label;
 	}
 
 	public void setLabel(String label) {
-		this.label=label;
+		this.label = label;
 	}
 
 }

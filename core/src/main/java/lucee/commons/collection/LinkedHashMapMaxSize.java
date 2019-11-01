@@ -21,16 +21,16 @@ package lucee.commons.collection;
 import java.util.LinkedHashMap;
 
 public class LinkedHashMapMaxSize<K, V> extends LinkedHashMap<K, V> {
-	
+
 	private int maxSize;
 
 	public LinkedHashMapMaxSize(int maxSize, int initCapacity, boolean accessOrder) {
-		super( initCapacity, 0.75f, accessOrder );
-		this.maxSize=maxSize;
+		super(initCapacity, 0.75f, accessOrder);
+		this.maxSize = maxSize;
 	}
 
 	public LinkedHashMapMaxSize(int maxSize) {
-		this( maxSize, (int)Math.ceil( maxSize / 0.75f ), false );
+		this(maxSize, (int) Math.ceil(maxSize / 0.75f), false);
 	}
 
 	@Override

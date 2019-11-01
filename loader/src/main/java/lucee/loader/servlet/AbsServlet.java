@@ -24,8 +24,7 @@ import lucee.loader.engine.CFMLEngine;
 import lucee.loader.engine.CFMLEngineFactory;
 import lucee.loader.engine.EngineChangeListener;
 
-public abstract class AbsServlet extends HttpServlet implements
-		EngineChangeListener {
+public abstract class AbsServlet extends HttpServlet implements EngineChangeListener {
 
 	private static final long serialVersionUID = 3911001884655921666L;
 
@@ -36,7 +35,8 @@ public abstract class AbsServlet extends HttpServlet implements
 		try {
 			// make sure that config is registered
 			engine = CFMLEngineFactory.getInstance(getServletConfig(), this);
-		} catch (final ServletException e) {
+		}
+		catch (final ServletException e) {
 
 		}
 	}

@@ -39,8 +39,7 @@ public interface ActionMonitor extends Monitor {
 	 * @param data
 	 * @throws IOException
 	 */
-	public void log(PageContext pc, String type, String label,
-			long executionTime, Object data) throws IOException;
+	public void log(PageContext pc, String type, String label, long executionTime, Object data) throws IOException;
 
 	/**
 	 * logs certain action outside a Request, like sending mails
@@ -52,8 +51,7 @@ public interface ActionMonitor extends Monitor {
 	 * @param data
 	 * @throws IOException
 	 */
-	public void log(ConfigWeb config, String type, String label,
-			long executionTime, Object data) throws IOException;
+	public void log(ConfigWeb config, String type, String label, long executionTime, Object data) throws IOException;
 
 	public Query getData(Map<String, Object> arguments) throws PageException;
 }

@@ -51,10 +51,12 @@ public interface IPageException extends Dumpable {
 	 */
 	public String getExtendedInfo();
 
-	/* *
-	 * @return returns the line where the failure occured
+	/*
+	 * *
+	 * 
+	 * @return returns the line where the failure occurred
 	 */
-	//public String getLine();
+	// public String getLine();
 
 	/**
 	 * @return Returns the tracePointer.
@@ -112,8 +114,7 @@ public interface IPageException extends Dumpable {
 	 * @param line line of the error
 	 * @param column column of the error
 	 */
-	public void addContext(PageSource pageSource, int line, int column,
-			StackTraceElement element);
+	public void addContext(PageSource pageSource, int line, int column, StackTraceElement element);
 
 	/**
 	 * compare error type as String

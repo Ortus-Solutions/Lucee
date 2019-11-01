@@ -18,7 +18,6 @@
  **/
 package lucee.runtime.crypt;
 
-import java.security.InvalidKeyException;
 import java.security.Key;
 import java.security.SecureRandom;
 import java.security.spec.AlgorithmParameterSpec;
@@ -30,7 +29,7 @@ import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.PBEParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
-import lucee.print;
+import lucee.commons.lang.ExceptionUtil;
 import lucee.commons.lang.StringUtil;
 import lucee.runtime.coder.Coder;
 import lucee.runtime.exp.PageException;
@@ -41,174 +40,165 @@ import lucee.runtime.op.Caster;
  */
 public class Cryptor {
 
-    public final static String DEFAULT_CHARSET  = "UTF-8";
-    public final static String DEFAULT_ENCODING = "UU";
-    public final static int DEFAULT_ITERATIONS  = 1000;                                                                 // minimum recommended per NIST
+	public final static String DEFAULT_CHARSET = "UTF-8";
+	public final static String DEFAULT_ENCODING = "UU";
+	public final static int DEFAULT_ITERATIONS = 1000; // minimum recommended per NIST
 
-    private final static SecureRandom secureRandom = new SecureRandom();
+	private final static SecureRandom secureRandom = new SecureRandom();
 
+	/**
+	 * @param input - the clear-text input to be encrypted, or the encrypted input to be decrypted
+	 * @param key - the encryption key
+	 * @param algorithm - algorithm in JCE scheme
+	 * @param ivOrSalt - Initialization Vector for algorithms with Feedback Mode that is not ECB, or
+	 *            Salt for Password Based Encryption algorithms
+	 * @param iterations - number of Iterations for Password Based Encryption algorithms (recommended
+	 *            minimum value is 1000)
+	 * @param doDecrypt - the Operation Type, pass false for Encrypt or true for Decrypt
+	 * @return
+	 * @throws PageException
+	 */
+	static byte[] crypt(byte[] input, String key, String algorithm, byte[] ivOrSalt, int iterations, boolean doDecrypt) throws PageException {
 
-    /**
-     * @param input - the clear-text input to be encrypted, or the encrypted input to be decrypted
-     * @param key - the encryption key
-     * @param algorithm - algorithm in JCE scheme
-     * @param ivOrSalt - Initialization Vector for algorithms with Feedback Mode that is not ECB, or Salt for Password Based Encryption algorithms
-     * @param iterations - number of Iterations for Password Based Encryption algorithms (recommended minimum value is 1000)
-     * @param doDecrypt - the Operation Type, pass false for Encrypt or true for Decrypt
-     * @return
-     * @throws PageException
-     */
-    static byte[] crypt( byte[] input, String key, String algorithm, byte[] ivOrSalt, int iterations, boolean doDecrypt ) throws PageException {
-    	
-	    try {
-	    	return _crypt( input, key, algorithm, ivOrSalt, iterations, doDecrypt );
+		try {
+			return _crypt(input, key, algorithm, ivOrSalt, iterations, doDecrypt);
 		}
 		// this is an ugly patch but it looks lime that ACF simply double to short keys
-		catch(PageException pe){
-			String msg=pe.getMessage();
-			if(msg!=null && key.length()==4 && msg.indexOf(" 40 ")!=-1 && msg.indexOf(" 1024 ")!=-1) {
-				return _crypt( input, key+key, algorithm, ivOrSalt, iterations, doDecrypt );
+		catch (PageException pe) {
+			String msg = pe.getMessage();
+			if (msg != null && key.length() == 4 && msg.indexOf(" 40 ") != -1 && msg.indexOf(" 1024 ") != -1) {
+				return _crypt(input, key + key, algorithm, ivOrSalt, iterations, doDecrypt);
 			}
-			if(msg!=null  && key.length()>4 && key.length()%4==0  && msg.indexOf("Illegal key size")!=-1) {
-				return crypt( input, key.substring(0,key.length()-4), algorithm, ivOrSalt, iterations, doDecrypt );
+			if (msg != null && key.length() > 4 && key.length() % 4 == 0 && msg.indexOf("Illegal key size") != -1) {
+				return crypt(input, key.substring(0, key.length() - 4), algorithm, ivOrSalt, iterations, doDecrypt);
 			}
 			throw pe;
 		}
-    }
-    
-    public static void main(String[] args) throws PageException {
-		print.e(encrypt("dsadsd", "abcdabcdabcdabcdabcdabcdabcdabcdabcd", "RC4", null, 1, null,"UTF-8"));
 	}
-    
-    private static byte[] _crypt( byte[] input, String key, String algorithm, byte[] ivOrSalt, int iterations, boolean doDecrypt ) throws PageException {
 
-        byte[] result = null;
-        Key secretKey = null;
-        AlgorithmParameterSpec params = null;
+	private static byte[] _crypt(byte[] input, String key, String algorithm, byte[] ivOrSalt, int iterations, boolean doDecrypt) throws PageException {
 
-        String  algo  = algorithm;
-        boolean isFBM = false, isPBE = StringUtil.startsWithIgnoreCase( algo, "PBE" );
-        int ivsLen = 0, algoDelimPos = algorithm.indexOf( '/' );
+		byte[] result = null;
+		Key secretKey = null;
+		AlgorithmParameterSpec params = null;
 
-        if ( algoDelimPos > -1 ) {
+		String algo = algorithm;
+		boolean isFBM = false, isPBE = StringUtil.startsWithIgnoreCase(algo, "PBE");
+		int ivsLen = 0, algoDelimPos = algorithm.indexOf('/');
 
-            algo  = algorithm.substring( 0, algoDelimPos );
-            isFBM = !StringUtil.startsWithIgnoreCase( algorithm.substring( algoDelimPos + 1 ), "ECB" );
-        }
+		if (algoDelimPos > -1) {
 
-        try {
+			algo = algorithm.substring(0, algoDelimPos);
+			isFBM = !StringUtil.startsWithIgnoreCase(algorithm.substring(algoDelimPos + 1), "ECB");
+		}
 
-            Cipher cipher = Cipher.getInstance( algorithm );
-            
-            
-            if ( ivOrSalt == null ) {
+		try {
 
-                if ( isPBE || isFBM ) {
+			Cipher cipher = Cipher.getInstance(algorithm);
 
-                    ivsLen   = cipher.getBlockSize();
-                    ivOrSalt = new byte[ ivsLen ];
+			if (ivOrSalt == null) {
 
-                    if ( doDecrypt )
-                        System.arraycopy( input, 0, ivOrSalt, 0, ivsLen );
-                    else
-                        secureRandom.nextBytes( ivOrSalt );
-                }
-            }
+				if (isPBE || isFBM) {
 
-            if ( isPBE ) {
+					ivsLen = cipher.getBlockSize();
+					ivOrSalt = new byte[ivsLen];
 
-                secretKey  = SecretKeyFactory.getInstance( algorithm ).generateSecret( new PBEKeySpec( key.toCharArray() ) );
-                params     = new PBEParameterSpec( ivOrSalt, iterations > 0 ? iterations : DEFAULT_ITERATIONS );        // set Salt and Iterations for PasswordBasedEncryption
-            }
-            else {
-            	secretKey  = new SecretKeySpec( Coder.decode( Coder.ENCODING_BASE64, key ), algo );
-                if ( isFBM )
-                    params = new IvParameterSpec( ivOrSalt );                                                           // set Initialization Vector for non-ECB Feedback Mode
-            }
+					if (doDecrypt) System.arraycopy(input, 0, ivOrSalt, 0, ivsLen);
+					else secureRandom.nextBytes(ivOrSalt);
+				}
+			}
 
-            if ( doDecrypt ) {
+			if (isPBE) {
 
-                cipher.init( Cipher.DECRYPT_MODE, secretKey, params );
+				secretKey = SecretKeyFactory.getInstance(algorithm).generateSecret(new PBEKeySpec(key.toCharArray()));
+				params = new PBEParameterSpec(ivOrSalt, iterations > 0 ? iterations : DEFAULT_ITERATIONS); // set Salt and Iterations for PasswordBasedEncryption
+			}
+			else {
+				secretKey = new SecretKeySpec(Coder.decode(Coder.ENCODING_BASE64, key), algo);
+				if (isFBM) params = new IvParameterSpec(ivOrSalt); // set Initialization Vector for non-ECB Feedback Mode
+			}
 
-                result = cipher.doFinal( input, ivsLen, input.length - ivsLen );
-            }
-            else {
+			if (doDecrypt) {
 
-                cipher.init( Cipher.ENCRYPT_MODE, secretKey, params );
+				cipher.init(Cipher.DECRYPT_MODE, secretKey, params);
 
-                result = new byte[ ivsLen + cipher.getOutputSize( input.length ) ];
+				result = cipher.doFinal(input, ivsLen, input.length - ivsLen);
+			}
+			else {
 
-                if ( ivsLen > 0 )
-                    System.arraycopy( ivOrSalt, 0, result, 0, ivsLen );
+				cipher.init(Cipher.ENCRYPT_MODE, secretKey, params);
 
-                cipher.doFinal( input, 0, input.length, result, ivsLen );
-            }
+				result = new byte[ivsLen + cipher.getOutputSize(input.length)];
 
-            return result;
-        }
-        catch ( Throwable t ) {
+				if (ivsLen > 0) System.arraycopy(ivOrSalt, 0, result, 0, ivsLen);
 
-            throw Caster.toPageException( t );
-        }
-    }
+				cipher.doFinal(input, 0, input.length, result, ivsLen);
+			}
 
+			return result;
+		}
+		catch (Throwable t) {
+			ExceptionUtil.rethrowIfNecessary(t);
+			throw Caster.toPageException(t);
+		}
+	}
 
-    /**
-     * an encrypt method that takes a byte-array for input and returns an encrypted byte-array
-     */
-    public static byte[] encrypt(byte[] input, String key, String algorithm, byte[] ivOrSalt, int iterations) throws PageException {
-    	return crypt( input, key, algorithm, ivOrSalt, iterations, false );
-    }
+	/**
+	 * an encrypt method that takes a byte-array for input and returns an encrypted byte-array
+	 */
+	public static byte[] encrypt(byte[] input, String key, String algorithm, byte[] ivOrSalt, int iterations) throws PageException {
+		return crypt(input, key, algorithm, ivOrSalt, iterations, false);
+	}
 
+	/**
+	 * an encrypt method that takes a clear-text String for input and returns an encrypted, encoded,
+	 * String
+	 */
+	public static String encrypt(String input, String key, String algorithm, byte[] ivOrSalt, int iterations, String encoding, String charset) throws PageException {
 
-    /**
-     * an encrypt method that takes a clear-text String for input and returns an encrypted, encoded, String
-     */
-    public static String encrypt(String input, String key, String algorithm, byte[] ivOrSalt, int iterations, String encoding, String charset) throws PageException {
+		try {
 
-        try {
+			if (charset == null) charset = DEFAULT_CHARSET;
+			if (encoding == null) encoding = DEFAULT_ENCODING;
 
-            if ( charset  == null )     charset  = DEFAULT_CHARSET;
-            if ( encoding == null )     encoding = DEFAULT_ENCODING;
+			byte[] baInput = input.getBytes(charset);
+			byte[] encrypted = encrypt(baInput, key, algorithm, ivOrSalt, iterations);
 
-            byte[] baInput = input.getBytes( charset );
-            byte[] encrypted = encrypt( baInput, key, algorithm, ivOrSalt, iterations );
+			return Coder.encode(encoding, encrypted);
+		}
+		catch (Throwable t) {
+			ExceptionUtil.rethrowIfNecessary(t);
+			throw Caster.toPageException(t);
+		}
+	}
 
-            return Coder.encode( encoding, encrypted );
-        }
-        catch ( Throwable t ) {
+	/**
+	 * a decrypt method that takes an encrypted byte-array for input and returns an unencrypted
+	 * byte-array
+	 */
+	public static byte[] decrypt(byte[] input, String key, String algorithm, byte[] ivOrSalt, int iterations) throws PageException {
+		return crypt(input, key, algorithm, ivOrSalt, iterations, true);
+	}
 
-            throw Caster.toPageException( t );
-        }
-    }
+	/**
+	 * a decrypt method that takes an encrypted, encoded, String for input and returns a clear-text
+	 * String
+	 */
+	public static String decrypt(String input, String key, String algorithm, byte[] ivOrSalt, int iterations, String encoding, String charset) throws PageException {
 
+		try {
 
-    /**
-     * a decrypt method that takes an encrypted byte-array for input and returns an unencrypted byte-array
-     */
-    public static byte[] decrypt(byte[] input, String key, String algorithm, byte[] ivOrSalt, int iterations) throws PageException {
-    	return crypt( input, key, algorithm, ivOrSalt, iterations, true );
-    }
+			if (charset == null) charset = DEFAULT_CHARSET;
+			if (encoding == null) encoding = DEFAULT_ENCODING;
 
+			byte[] baInput = Coder.decode(encoding, input);
+			byte[] decrypted = decrypt(baInput, key, algorithm, ivOrSalt, iterations);
 
-    /**
-     * a decrypt method that takes an encrypted, encoded, String for input and returns a clear-text String
-     */
-    public static String decrypt(String input, String key, String algorithm, byte[] ivOrSalt, int iterations, String encoding, String charset) throws PageException {
-
-        try {
-
-            if ( charset  == null )     charset  = DEFAULT_CHARSET;
-            if ( encoding == null )     encoding = DEFAULT_ENCODING;
-
-            byte[] baInput = Coder.decode( encoding, input );
-            byte[] decrypted = decrypt( baInput, key, algorithm, ivOrSalt, iterations );
-
-            return new String( decrypted, charset );
-        }
-        catch ( Throwable t ) {
-
-            throw Caster.toPageException( t );
-        }
-    }
+			return new String(decrypted, charset);
+		}
+		catch (Throwable t) {
+			ExceptionUtil.rethrowIfNecessary(t);
+			throw Caster.toPageException(t);
+		}
+	}
 }

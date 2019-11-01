@@ -19,21 +19,21 @@
 package lucee.runtime.functions.xml;
 
 import lucee.runtime.PageContext;
+import lucee.runtime.config.ConfigImpl;
+import lucee.runtime.engine.ThreadLocalPageContext;
 import lucee.runtime.exp.PageException;
-import lucee.runtime.net.rpc.AxisUtil;
 import lucee.runtime.op.Caster;
-
-import org.apache.axis.AxisFault;
 
 public class AddSOAPResponseHeader {
 	public static boolean call(PageContext pc, String nameSpace, String name, Object value) throws PageException {
-		return call(pc, nameSpace, name, value,false);
+		return call(pc, nameSpace, name, value, false);
 	}
+
 	public static boolean call(PageContext pc, String nameSpace, String name, Object value, boolean mustUnderstand) throws PageException {
 		try {
-			AxisUtil.addSOAPResponseHeader(nameSpace, name, value, mustUnderstand);
-		} 
-		catch (AxisFault e) {
+			((ConfigImpl) ThreadLocalPageContext.getConfig(pc)).getWSHandler().addSOAPResponseHeader(nameSpace, name, value, mustUnderstand);
+		}
+		catch (Exception e) {
 			throw Caster.toPageException(e);
 		}
 		return true;

@@ -105,16 +105,10 @@ public abstract class TagSupport implements Tag {
 	 * @param attribute
 	 * @throws PageException
 	 */
-	public void required(final String tagName, final String actionName,
-			final String attributeName, final Object attribute)
-			throws PageException {
+	public void required(final String tagName, final String actionName, final String attributeName, final Object attribute) throws PageException {
 		if (attribute == null) {
-			final Excepton util = CFMLEngineFactory.getInstance()
-					.getExceptionUtil();
-			throw util.createApplicationException("Attribute [" + attributeName
-					+ "] for tag [" + tagName
-					+ "] is required if attribute action has the value ["
-					+ actionName + "]");
+			final Excepton util = CFMLEngineFactory.getInstance().getExceptionUtil();
+			throw util.createApplicationException("Attribute [" + attributeName + "] for tag [" + tagName + "] is required if attribute action has the value [" + actionName + "]");
 		}
 	}
 

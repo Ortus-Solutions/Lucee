@@ -22,18 +22,19 @@ import java.io.IOException;
 import java.io.Reader;
 
 /**
- * Close the Reader automaticlly when object will destroyed by the garbage
+ * Close the Reader automatically when object will destroyed by the garbage
  */
 public final class AutoCloseReader extends Reader {
-	
+
 	private final Reader reader;
 
 	/**
 	 * constructor of the class
+	 * 
 	 * @param reader
 	 */
 	public AutoCloseReader(Reader reader) {
-		this.reader=reader;
+		this.reader = reader;
 	}
 
 	@Override
@@ -58,7 +59,7 @@ public final class AutoCloseReader extends Reader {
 
 	@Override
 	public int read(char[] cbuf, int off, int len) throws IOException {
-		return reader.read(cbuf,off,len);
+		return reader.read(cbuf, off, len);
 	}
 
 	@Override
@@ -80,14 +81,14 @@ public final class AutoCloseReader extends Reader {
 	public long skip(long n) throws IOException {
 		return reader.skip(n);
 	}
-	
+
 	@Override
 	public void finalize() throws Throwable {
 		super.finalize();
 		try {
 			reader.close();
 		}
-		catch(Exception e) {}
+		catch (Exception e) {}
 	}
 
 }

@@ -26,36 +26,35 @@ import lucee.runtime.ext.tag.TagImpl;
  * this tag is not used, it will ranslation over a evaluator
  * 
  * 
-* Imports a jsp Tag Library or a Custom Tag Directory
-*
-*
-*
-**/
+ * Imports a jsp Tag Library or a Custom Tag Directory
+ *
+ *
+ *
+ **/
 public final class ImportTag extends TagImpl {
 
 	private String path;
 
 	@Override
 	public void release() {
-		path=null;
+		path = null;
 		super.release();
 	}
 
 	/**
 	 * @param prefix
 	 */
-	public void setPrefix(String prefix)	{}
-	
-	public void setPath(String path)	{
-		this.path=path;
-		
+	public void setPrefix(String prefix) {}
+
+	public void setPath(String path) {
+		this.path = path;
+
 	}
 
 	/**
 	 * @param taglib
 	 */
-	public void setTaglib(String taglib)	{}
-
+	public void setTaglib(String taglib) {}
 
 	@Override
 	public int doStartTag() throws ExpressionException, ApplicationException {
@@ -63,7 +62,7 @@ public final class ImportTag extends TagImpl {
 	}
 
 	@Override
-	public int doEndTag()	{
+	public int doEndTag() {
 		return EVAL_PAGE;
 	}
 }

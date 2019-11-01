@@ -24,8 +24,8 @@ public class RestSettingImpl implements RestSettings {
 	private int returnFormat;
 
 	public RestSettingImpl(boolean skipCFCWithError, int returnFormat) {
-		this.skipCFCWithError=skipCFCWithError;
-		this.returnFormat=returnFormat;
+		this.skipCFCWithError = skipCFCWithError;
+		this.returnFormat = returnFormat;
 	}
 
 	@Override

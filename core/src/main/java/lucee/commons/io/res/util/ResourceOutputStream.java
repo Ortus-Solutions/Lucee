@@ -30,14 +30,15 @@ public class ResourceOutputStream extends OutputStream {
 
 	/**
 	 * Constructor of the class
+	 * 
 	 * @param res
 	 * @param os
 	 */
 	public ResourceOutputStream(Resource res, OutputStream os) {
-		this.res=res;
-		this.os=os;
+		this.res = res;
+		this.os = os;
 	}
-	
+
 	@Override
 	public void write(int b) throws IOException {
 		os.write(b);

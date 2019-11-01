@@ -21,96 +21,83 @@ package lucee.transformer.bytecode.expression.var;
 import lucee.runtime.db.ClassDefinition;
 import lucee.transformer.Factory;
 import lucee.transformer.cfml.TransfomerSettings;
-import lucee.transformer.expression.ExprString;
 import lucee.transformer.library.function.FunctionLibFunction;
 
-
-
 public final class BIF extends FunctionMember {
-	
-		private static String ANY="any";
-	
-		private ExprString name;
-		private int argType;
-		private ClassDefinition cd;
-		private String returnType=ANY;
-		private FunctionLibFunction flf;
 
-		private final Factory factory;
+	private static String ANY = "any";
 
-		public final TransfomerSettings ts; 
+	// private ExprString nameq;
+	private int argType;
+	private ClassDefinition cd;
+	private String returnType = ANY;
+	private FunctionLibFunction flf;
 
+	private final Factory factory;
 
+	public final TransfomerSettings ts;
 
-		public BIF(TransfomerSettings ts,ExprString name, FunctionLibFunction flf) {
-			this.ts=ts;
-			this.name=name;
-			this.flf=flf;
-			this.factory=name.getFactory();
-		}
-		
-		public BIF(TransfomerSettings ts,Factory factory,String name, FunctionLibFunction flf) {
-			this.ts=ts;
-			this.name=factory.createLitString(name);
-			this.flf=flf;
-			this.factory=factory;
-		}
-
-		public Factory getFactory() {
-			return factory;
-		}
-		
-		public void setArgType(int argType) {
-			this.argType=argType;
-		}
-
-		public void setClassDefinition(ClassDefinition cd) {
-			this.cd=cd;
-		}
-
-		public void setReturnType(String returnType) {
-			this.returnType=returnType;
-		}
-
-		/**
-		 * @return the argType
-		 */
-		public int getArgType() {
-			return argType;
-		}
-
-		/**
-		 * @return the class
-		 */
-		public ClassDefinition getClassDefinition() {
-			return cd;
-		}
-
-		/**
-		 * @return the name
-		 */
-		public ExprString getName() {
-			return name;
-		}
-
-		/**
-		 * @return the returnType
-		 */
-		public String getReturnType() {
-			return returnType;
-		}
-
-		/**
-		 * @return the flf
-		 */
-		public FunctionLibFunction getFlf() {
-			return flf;
-		}
-
-		/**
-		 * @param flf the flf to set
-		 */
-		public void setFlf(FunctionLibFunction flf) {
-			this.flf = flf;
-		}
+	public BIF(Factory factory, TransfomerSettings ts, FunctionLibFunction flf) {
+		this.ts = ts;
+		// this.name=name;
+		this.flf = flf;
+		this.factory = factory;// name.getFactory();
 	}
+
+	public Factory getFactory() {
+		return factory;
+	}
+
+	public void setArgType(int argType) {
+		this.argType = argType;
+	}
+
+	public void setClassDefinition(ClassDefinition cd) {
+		this.cd = cd;
+	}
+
+	public void setReturnType(String returnType) {
+		this.returnType = returnType;
+	}
+
+	/**
+	 * @return the argType
+	 */
+	public int getArgType() {
+		return argType;
+	}
+
+	/**
+	 * @return the class
+	 */
+	public ClassDefinition getClassDefinition() {
+		return cd;
+	}
+
+	/**
+	 * @return the name
+	 * 
+	 *         public ExprString getNameX() { return name; }
+	 */
+
+	/**
+	 * @return the returnType
+	 */
+	public String getReturnType() {
+		return returnType;
+	}
+
+	/**
+	 * @return the flf
+	 */
+	public FunctionLibFunction getFlf() {
+		return flf;
+	}
+
+	/**
+	 * @param flf the flf to set
+	 */
+	public void setFlf(FunctionLibFunction flf) {
+		this.flf = flf;
+	}
+}

@@ -24,7 +24,7 @@ import lucee.runtime.PageContext;
 
 public interface ClientScopeService extends Service {
 
-	//public abstract ClientScope GetClientScope(PageContext pc,ClientScopeKey arg1, Properties arg2);
+	// public abstract ClientScope GetClientScope(PageContext pc,ClientScopeKey arg1, Properties arg2);
 
 	public abstract int GetClientId(PageContext pc);
 
@@ -32,7 +32,7 @@ public interface ClientScopeService extends Service {
 
 	public abstract void PersistClientVariablesForRequest();
 
-	//public abstract void UpdateGlobals(PageContext pc, ClientScope arg1);
+	// public abstract void UpdateGlobals(PageContext pc, ClientScope arg1);
 
 	public abstract String GetDefaultDSN();
 

@@ -80,15 +80,13 @@ public interface ConfigServer extends Config {
 	 * @param strUpdateLocation The updateLocation to set.
 	 * @throws MalformedURLException
 	 */
-	public abstract void setUpdateLocation(String strUpdateLocation)
-			throws MalformedURLException;
+	public abstract void setUpdateLocation(String strUpdateLocation) throws MalformedURLException;
 
 	/**
 	 * @param strUpdateLocation The updateLocation to set.
 	 * @param defaultValue
 	 */
-	public abstract void setUpdateLocation(String strUpdateLocation,
-			URL defaultValue);
+	public abstract void setUpdateLocation(String strUpdateLocation, URL defaultValue);
 
 	/**
 	 * @return the configListener

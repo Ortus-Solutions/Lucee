@@ -22,12 +22,13 @@
 package lucee.runtime.functions.dynamicEvaluation;
 
 import lucee.runtime.PageContext;
+import lucee.runtime.exp.PageException;
 import lucee.runtime.ext.function.Function;
 import lucee.runtime.functions.string.Replace;
 
 public final class DE implements Function {
-	public static String call(PageContext pc , String string) {
-		return new StringBuilder().append('"').append(Replace.call(pc,string,"\"","\"\"","all")).append('"').toString();
-		
+	public static String call(PageContext pc, String string) throws PageException {
+		return new StringBuilder().append('"').append(Replace.call(pc, string, "\"", "\"\"", "all")).append('"').toString();
+
 	}
 }

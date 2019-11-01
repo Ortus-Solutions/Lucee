@@ -23,6 +23,9 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.Map.Entry;
 
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+
 import lucee.runtime.PageContext;
 import lucee.runtime.dump.DumpData;
 import lucee.runtime.dump.DumpProperties;
@@ -38,44 +41,39 @@ import lucee.runtime.type.it.StringIterator;
 import lucee.runtime.type.util.ArraySupport;
 import lucee.runtime.type.wrap.ArrayAsArrayList;
 
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-
 public class XMLMultiElementArray extends ArraySupport {
 
 	private static final long serialVersionUID = -2673749147723742450L;
 	private XMLMultiElementStruct struct;
 
 	public XMLMultiElementArray(XMLMultiElementStruct struct) {
-		this.struct=struct;
+		this.struct = struct;
 	}
 
 	@Override
 	public Object append(Object o) throws PageException {
-		return setE(size()+1,o);
+		return setE(size() + 1, o);
 	}
 
 	@Override
 	public Object appendEL(Object o) {
-		return setEL(size()+1,o);
+		return setEL(size() + 1, o);
 	}
-
 
 	@Override
 	public boolean containsKey(int key) {
-		return get(key,null)!=null;
+		return get(key, null) != null;
 	}
 
 	@Override
 	public Object get(int key, Object defaultValue) {
-		return struct.get(key,defaultValue);
+		return struct.get(key, defaultValue);
 	}
 
 	@Override
 	public Object getE(int key) throws PageException {
 		return struct.get(key);
 	}
-
 
 	@Override
 	public int getDimension() {
@@ -84,18 +82,18 @@ public class XMLMultiElementArray extends ArraySupport {
 
 	@Override
 	public boolean insert(int index, Object value) throws PageException {
-    	Element element=XMLCaster.toElement(struct.getOwnerDocument(),value);
-    	boolean rtn = struct.getInnerArray().insert(index, element);
-    	Object obj = struct.getInnerArray().get(index,null);
-        
-    	if(obj instanceof Element) {
-    		Element el = ((Element)obj);
-    		el.getParentNode().insertBefore(XMLCaster.toRawNode(element), el);
-    	}
-    	else  {
-    		struct.getParentNode().appendChild(XMLCaster.toRawNode(element));
-    	}
-    	return rtn;
+		Element element = XMLCaster.toElement(struct.getOwnerDocument(), value);
+		boolean rtn = struct.getInnerArray().insert(index, element);
+		Object obj = struct.getInnerArray().get(index, null);
+
+		if (obj instanceof Element) {
+			Element el = ((Element) obj);
+			el.getParentNode().insertBefore(XMLCaster.toRawNode(element), el);
+		}
+		else {
+			struct.getParentNode().appendChild(XMLCaster.toRawNode(element));
+		}
+		return rtn;
 	}
 
 	@Override
@@ -105,17 +103,17 @@ public class XMLMultiElementArray extends ArraySupport {
 
 	@Override
 	public Object prepend(Object value) throws PageException {
-    	Element element=XMLCaster.toElement(struct.getOwnerDocument(),value);
-    	Object obj = struct.getInnerArray().get(1,null);
-        
-    	if(obj instanceof Element) {
-    		Element el = ((Element)obj);
-    		el.getParentNode().insertBefore(XMLCaster.toRawNode(element), el);
-    	}
-    	else  {
-    		struct.getParentNode().appendChild(XMLCaster.toRawNode(element));
-    	}
-    	return struct.getInnerArray().prepend(element);
+		Element element = XMLCaster.toElement(struct.getOwnerDocument(), value);
+		Object obj = struct.getInnerArray().get(1, null);
+
+		if (obj instanceof Element) {
+			Element el = ((Element) obj);
+			el.getParentNode().insertBefore(XMLCaster.toRawNode(element), el);
+		}
+		else {
+			struct.getParentNode().appendChild(XMLCaster.toRawNode(element));
+		}
+		return struct.getInnerArray().prepend(element);
 	}
 
 	@Override
@@ -145,37 +143,36 @@ public class XMLMultiElementArray extends ArraySupport {
 
 	@Override
 	public void sort(String sortType, String sortOrder) throws PageException {
-		if(size()<=1) return;
-		
+		if (size() <= 1) return;
+
 		struct.getInnerArray().sort(sortType, sortOrder);
-		
+
 		Object[] nodes = struct.getInnerArray().toArray();
-		Node last=(Node) nodes[nodes.length-1],current;
-		Node parent=last.getParentNode();
-		for(int i=nodes.length-2;i>=0;i--) {
-			current=(Node) nodes[i];
+		Node last = (Node) nodes[nodes.length - 1], current;
+		Node parent = last.getParentNode();
+		for (int i = nodes.length - 2; i >= 0; i--) {
+			current = (Node) nodes[i];
 			parent.insertBefore(current, last);
-			last=current;
-		}// MUST testen
+			last = current;
+		} // MUST testen
 	}
 
 	@Override
 	public void sortIt(Comparator comp) {
-		if(size()<=1) return;
-		
+		if (size() <= 1) return;
+
 		struct.getInnerArray().sortIt(comp);
-		
+
 		Object[] nodes = struct.getInnerArray().toArray();
-		Node last=(Node) nodes[nodes.length-1],current;
-		Node parent=last.getParentNode();
-		for(int i=nodes.length-2;i>=0;i--) {
-			current=(Node) nodes[i];
+		Node last = (Node) nodes[nodes.length - 1], current;
+		Node parent = last.getParentNode();
+		for (int i = nodes.length - 2; i >= 0; i--) {
+			current = (Node) nodes[i];
 			parent.insertBefore(current, last);
-			last=current;
-		}// MUST testen
+			last = current;
+		} // MUST testen
 	}
-	
-	
+
 	@Override
 	public Object[] toArray() {
 		return struct.getInnerArray().toArray();
@@ -186,7 +183,7 @@ public class XMLMultiElementArray extends ArraySupport {
 	}
 
 	@Override
-	public void clear() {//MUST
+	public void clear() {// MUST
 	}
 
 	@Override
@@ -201,9 +198,8 @@ public class XMLMultiElementArray extends ArraySupport {
 
 	@Override
 	public Collection duplicate(boolean deepCopy) {
-		return new XMLMultiElementArray((XMLMultiElementStruct)Duplicator.duplicate(struct,deepCopy));
+		return new XMLMultiElementArray((XMLMultiElementStruct) Duplicator.duplicate(struct, deepCopy));
 	}
-	
 
 	@Override
 	public Object get(String key) throws PageException {
@@ -211,18 +207,28 @@ public class XMLMultiElementArray extends ArraySupport {
 	}
 
 	@Override
-	public Object get(Key key) throws PageException {
+	public final Object get(Key key) throws PageException {
+		return struct.get(key);
+	}
+
+	@Override
+	public final Object get(PageContext pc, Key key) throws PageException {
 		return struct.get(key);
 	}
 
 	@Override
 	public Object get(String key, Object defaultValue) {
-		return struct.get(key,defaultValue);
+		return struct.get(key, defaultValue);
 	}
 
 	@Override
-	public Object get(Key key, Object defaultValue) {
-		return struct.get(key,defaultValue);
+	public final Object get(Key key, Object defaultValue) {
+		return struct.get(key, defaultValue);
+	}
+
+	@Override
+	public final Object get(PageContext pc, Key key, Object defaultValue) {
+		return struct.get(pc, key, defaultValue);
 	}
 
 	@Override
@@ -267,59 +273,59 @@ public class XMLMultiElementArray extends ArraySupport {
 
 	@Override
 	public DumpData toDumpData(PageContext pageContext, int maxlevel, DumpProperties dp) {
-		return struct.toDumpData(pageContext, maxlevel,dp);
+		return struct.toDumpData(pageContext, maxlevel, dp);
 	}
 
 	@Override
 	public Iterator<Collection.Key> keyIterator() {
 		return new KeyIterator(keys());
 	}
-    
-    @Override
+
+	@Override
 	public Iterator<String> keysAsStringIterator() {
-    	return new StringIterator(keys());
-    }
-	
+		return new StringIterator(keys());
+	}
+
 	@Override
 	public Iterator<Entry<Key, Object>> entryIterator() {
-		return new EntryIterator(this,keys());
+		return new EntryIterator(this, keys());
 	}
 
 	@Override
 	public boolean castToBooleanValue() throws PageException {
 		return struct.castToBooleanValue();
 	}
-    
-    @Override
-    public Boolean castToBoolean(Boolean defaultValue) {
-        return struct.castToBoolean(defaultValue);
-    }
+
+	@Override
+	public Boolean castToBoolean(Boolean defaultValue) {
+		return struct.castToBoolean(defaultValue);
+	}
 
 	@Override
 	public DateTime castToDateTime() throws PageException {
 		return struct.castToDateTime();
 	}
-    
-    @Override
-    public DateTime castToDateTime(DateTime defaultValue) {
-        return struct.castToDateTime(defaultValue);
-    }
+
+	@Override
+	public DateTime castToDateTime(DateTime defaultValue) {
+		return struct.castToDateTime(defaultValue);
+	}
 
 	@Override
 	public double castToDoubleValue() throws PageException {
 		return struct.castToDoubleValue();
 	}
-    
-    @Override
-    public double castToDoubleValue(double defaultValue) {
-        return struct.castToDoubleValue(defaultValue);
-    }
+
+	@Override
+	public double castToDoubleValue(double defaultValue) {
+		return struct.castToDoubleValue(defaultValue);
+	}
 
 	@Override
 	public String castToString() throws PageException {
 		return struct.castToString();
 	}
-	
+
 	@Override
 	public String castToString(String defaultValue) {
 		return struct.castToString(defaultValue);
@@ -344,7 +350,7 @@ public class XMLMultiElementArray extends ArraySupport {
 	public int compareTo(DateTime dt) throws PageException {
 		return struct.compareTo(dt);
 	}
-	
+
 	@Override
 	public Object clone() {
 		return duplicate(true);

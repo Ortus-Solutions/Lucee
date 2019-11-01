@@ -20,14 +20,14 @@ package lucee.runtime.type.it;
 
 import java.util.Iterator;
 
+import lucee.commons.lang.StringUtil;
+
 public class UCKeyIterator implements Iterator {
 
-	
-	
 	private Iterator it;
 
 	public UCKeyIterator(Iterator it) {
-		this.it=it;
+		this.it = it;
 	}
 
 	@Override
@@ -39,9 +39,9 @@ public class UCKeyIterator implements Iterator {
 	public Object next() {
 		return nextString();
 	}
-	
+
 	public String nextString() {
-		return it.next().toString().toUpperCase();
+		return StringUtil.toStringNative(it.next(), "").toUpperCase();
 	}
 
 	@Override

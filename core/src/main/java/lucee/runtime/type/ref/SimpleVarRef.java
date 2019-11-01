@@ -25,12 +25,12 @@ import lucee.runtime.type.Collection;
 
 public class SimpleVarRef implements Reference {
 
-	//private PageContextImpl pc;
+	// private PageContextImpl pc;
 
 	public SimpleVarRef(PageContextImpl pc, String key) {
-		//this.pc=pc;
+		// this.pc=pc;
 	}
-	
+
 	@Override
 	public Object get(PageContext pc) throws PageException {
 		// TODO Auto-generated method stub
@@ -48,6 +48,7 @@ public class SimpleVarRef implements Reference {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
 	@Override
 	public String getKeyAsString() throws PageException {
 		// TODO Auto-generated method stub

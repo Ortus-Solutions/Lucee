@@ -24,7 +24,7 @@ import lucee.runtime.type.Struct;
 
 public class ComponentCacheList {
 	public static Struct call(PageContext pc) {
-		ConfigImpl config = (ConfigImpl)pc.getConfig();
+		ConfigImpl config = (ConfigImpl) pc.getConfig();
 		return config.listComponentCache();
 	}
 }

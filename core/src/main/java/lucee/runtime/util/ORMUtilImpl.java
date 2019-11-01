@@ -39,7 +39,7 @@ public class ORMUtilImpl implements ORMUtil {
 	}
 
 	@Override
-	public Object getPropertyValue(Component cfc, String name,Object defaultValue) {
+	public Object getPropertyValue(Component cfc, String name, Object defaultValue) {
 		return lucee.runtime.orm.ORMUtil.getPropertyValue(cfc, name, defaultValue);
 	}
 
@@ -59,7 +59,7 @@ public class ORMUtilImpl implements ORMUtil {
 	}
 
 	@Override
-	public DataSource getDefaultDataSource(PageContext pc,DataSource defaultValue) {
+	public DataSource getDefaultDataSource(PageContext pc, DataSource defaultValue) {
 		return lucee.runtime.orm.ORMUtil.getDefaultDataSource(pc, defaultValue);
 	}
 
@@ -69,8 +69,7 @@ public class ORMUtilImpl implements ORMUtil {
 	}
 
 	@Override
-	public DataSource getDataSource(PageContext pc, String dsn)
-			throws PageException {
+	public DataSource getDataSource(PageContext pc, String dsn) throws PageException {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -86,7 +85,7 @@ public class ORMUtilImpl implements ORMUtil {
 	}
 
 	@Override
-	public String getDataSourceName(PageContext pc, Component cfc)throws PageException {
+	public String getDataSourceName(PageContext pc, Component cfc) throws PageException {
 		return lucee.runtime.orm.ORMUtil.getDataSourceName(pc, cfc);
 	}
 
@@ -106,8 +105,7 @@ public class ORMUtilImpl implements ORMUtil {
 	}
 
 	@Override
-	public PageException createException(ORMSession session, Component cfc,
-			String message, String detail) {
+	public PageException createException(ORMSession session, Component cfc, String message, String detail) {
 		return ORMExceptionUtil.createException(session, cfc, message, detail);
 	}
 

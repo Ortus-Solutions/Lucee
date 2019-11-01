@@ -18,109 +18,104 @@
  **/
 package lucee.runtime.text.xml.struct;
 
-import lucee.runtime.text.xml.XMLCaster;
-import lucee.runtime.text.xml.XMLUtil;
-import lucee.runtime.type.Collection;
-
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.Text;
 
+import lucee.runtime.text.xml.XMLCaster;
+import lucee.runtime.text.xml.XMLUtil;
+import lucee.runtime.type.Collection;
+
 /**
  * 
  */
 public final class XMLTextStruct extends XMLNodeStruct implements Text {
-    
-    
-    private Text text;
 
-    /**
-     * @param text
-     * @param caseSensitive
-     */
-    public XMLTextStruct(Text text, boolean caseSensitive) {
-        super(text,caseSensitive);
-        this.text=text;
-    }
+	private Text text;
 
-    @Override
-    public Text splitText(int offset) throws DOMException {
-        return text.splitText(offset);
-    }
+	/**
+	 * @param text
+	 * @param caseSensitive
+	 */
+	public XMLTextStruct(Text text, boolean caseSensitive) {
+		super(text, caseSensitive);
+		this.text = text;
+	}
 
-    @Override
-    public int getLength() {
-        return text.getLength();
-    }
+	@Override
+	public Text splitText(int offset) throws DOMException {
+		return text.splitText(offset);
+	}
 
-    @Override
-    public void deleteData(int offset, int count) throws DOMException {
-        text.deleteData(offset,count);
-    }
+	@Override
+	public int getLength() {
+		return text.getLength();
+	}
 
-    @Override
-    public String getData() throws DOMException {
-        return text.getData();
-    }
+	@Override
+	public void deleteData(int offset, int count) throws DOMException {
+		text.deleteData(offset, count);
+	}
 
-    @Override
-    public String substringData(int offset, int count) throws DOMException {
-        return text.substringData(offset,count);
-    }
+	@Override
+	public String getData() throws DOMException {
+		return text.getData();
+	}
 
-    @Override
-    public void replaceData(int offset, int count, String arg)
-            throws DOMException {
-        text.replaceData(offset,count,arg);
-    }
+	@Override
+	public String substringData(int offset, int count) throws DOMException {
+		return text.substringData(offset, count);
+	}
 
-    @Override
-    public void insertData(int offset, String arg) throws DOMException {
-        text.insertData(offset,arg);
-    }
+	@Override
+	public void replaceData(int offset, int count, String arg) throws DOMException {
+		text.replaceData(offset, count, arg);
+	}
 
-    @Override
-    public void appendData(String arg) throws DOMException {
-        text.appendData(arg);
-    }
+	@Override
+	public void insertData(int offset, String arg) throws DOMException {
+		text.insertData(offset, arg);
+	}
 
-    @Override
-    public void setData(String data) throws DOMException {
-        text.setData(data);
-    }
+	@Override
+	public void appendData(String arg) throws DOMException {
+		text.appendData(arg);
+	}
 
- // used only with java 7, do not set @Override
+	@Override
+	public void setData(String data) throws DOMException {
+		text.setData(data);
+	}
+
+	// used only with java 7, do not set @Override
 	public boolean isElementContentWhitespace() {
-        return text.getNodeValue().trim().length()==0;
-    }
+		return text.getNodeValue().trim().length() == 0;
+	}
 
- // used only with java 7, do not set @Override
+	// used only with java 7, do not set @Override
 	public String getWholeText() {
-        return text.getNodeValue();
-    }
+		return text.getNodeValue();
+	}
 
- // used only with java 7, do not set @Override
+	// used only with java 7, do not set @Override
 	public Text replaceWholeText(String content) throws DOMException {
-        Text oldText = text;
-        Document doc = XMLUtil.getDocument(text);
-        Text newText = doc.createTextNode(content);
-        Node parent = oldText.getParentNode();
-        parent.replaceChild(XMLCaster.toRawNode(newText),XMLCaster.toRawNode(oldText));
-        return oldText;
-    }
-    
+		Text oldText = text;
+		Document doc = XMLUtil.getDocument(text);
+		Text newText = doc.createTextNode(content);
+		Node parent = oldText.getParentNode();
+		parent.replaceChild(XMLCaster.toRawNode(newText), XMLCaster.toRawNode(oldText));
+		return oldText;
+	}
 
 	@Override
 	public Collection duplicate(boolean deepCopy) {
-		return new XMLTextStruct((Text)text.cloneNode(deepCopy),caseSensitive);
+		return new XMLTextStruct((Text) text.cloneNode(deepCopy), caseSensitive);
 	}
-	
 
 	@Override
 	public Node cloneNode(boolean deep) {
-		return new XMLTextStruct((Text)text.cloneNode(deep),caseSensitive);
+		return new XMLTextStruct((Text) text.cloneNode(deep), caseSensitive);
 	}
-
 
 }

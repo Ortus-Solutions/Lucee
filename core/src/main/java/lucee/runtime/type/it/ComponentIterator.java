@@ -27,14 +27,14 @@ import lucee.runtime.op.Caster;
 import lucee.runtime.type.Resetable;
 import lucee.runtime.type.util.KeyConstants;
 
-public class ComponentIterator implements Iterator,Resetable {
+public class ComponentIterator implements Iterator, Resetable {
 
 	private static final Object[] EMPTY = new Object[0];
-	
+
 	private ComponentImpl cfc;
 
 	public ComponentIterator(ComponentImpl cfc) {
-		this.cfc=cfc;
+		this.cfc = cfc;
 	}
 
 	@Override
@@ -66,7 +66,7 @@ public class ComponentIterator implements Iterator,Resetable {
 			throw new PageRuntimeException(pe);
 		}
 	}
-	
+
 	@Override
 	public void reset() {
 		try {

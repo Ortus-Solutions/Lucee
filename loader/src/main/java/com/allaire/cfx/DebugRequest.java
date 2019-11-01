@@ -46,25 +46,11 @@ public class DebugRequest implements Request {
 		this(attributes, null, null);
 	}
 
-	/**
-	 * constructor of the class
-	 * 
-	 * @param attributes
-	 * @param query
-	 */
 	public DebugRequest(final Hashtable attributes, final Query query) {
 		this(attributes, query, null);
 	}
 
-	/**
-	 * constructor of the class
-	 * 
-	 * @param attributes
-	 * @param query
-	 * @param settings
-	 */
-	public DebugRequest(final Hashtable attributes, final Query query,
-			final Hashtable settings) {
+	public DebugRequest(final Hashtable attributes, final Query query, final Hashtable settings) {
 		this.attributes = toStruct(attributes);
 		this.query = query;
 		this.settings = toStruct(settings);
@@ -85,18 +71,15 @@ public class DebugRequest implements Request {
 	@Override
 	public boolean debug() {
 		final Object o = attributes.get("debug", Boolean.FALSE);
-		return CFMLEngineFactory.getInstance().getCastUtil()
-				.toBooleanValue(o, false);
+		return CFMLEngineFactory.getInstance().getCastUtil().toBooleanValue(o, false);
 	}
 
 	/**
-	 * @see com.allaire.cfx.Request#getAttribute(java.lang.String,
-	 *      java.lang.String)
+	 * @see com.allaire.cfx.Request#getAttribute(java.lang.String, java.lang.String)
 	 */
 	@Override
 	public String getAttribute(final String key, final String defaultValue) {
-		return CFMLEngineFactory.getInstance().getCastUtil()
-				.toString(attributes.get(key, defaultValue), defaultValue);
+		return CFMLEngineFactory.getInstance().getCastUtil().toString(attributes.get(key, defaultValue), defaultValue);
 	}
 
 	/**
@@ -125,10 +108,8 @@ public class DebugRequest implements Request {
 	@Override
 	public int getIntAttribute(final String key, final int defaultValue) {
 		final Object o = attributes.get(key, null);
-		if (o == null)
-			return defaultValue;
-		return (int) CFMLEngineFactory.getInstance().getCastUtil()
-				.toDoubleValue(o, defaultValue);
+		if (o == null) return defaultValue;
+		return (int) CFMLEngineFactory.getInstance().getCastUtil().toDoubleValue(o, defaultValue);
 	}
 
 	/**
@@ -152,8 +133,7 @@ public class DebugRequest implements Request {
 	 */
 	@Override
 	public String getSetting(final String key) {
-		return settings == null ? "" : CFMLEngineFactory.getInstance()
-				.getCastUtil().toString(settings.get(key, ""), "");
+		return settings == null ? "" : CFMLEngineFactory.getInstance().getCastUtil().toString(settings.get(key, ""), "");
 	}
 
 	/**
@@ -161,12 +141,10 @@ public class DebugRequest implements Request {
 	 * @return casted struct
 	 */
 	private static Struct toStruct(final Hashtable hashTable) {
-		if (hashTable == null)
-			return null;
+		if (hashTable == null) return null;
 
 		final Enumeration e = hashTable.keys();
-		final Struct sct = CFMLEngineFactory.getInstance().getCreationUtil()
-				.createStruct();
+		final Struct sct = CFMLEngineFactory.getInstance().getCreationUtil().createStruct();
 		while (e.hasMoreElements()) {
 			final Object key = e.nextElement();
 			sct.setEL(key.toString(), hashTable.get(key));

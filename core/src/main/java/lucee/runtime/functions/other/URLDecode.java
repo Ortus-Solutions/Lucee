@@ -23,29 +23,33 @@ package lucee.runtime.functions.other;
 
 import java.io.UnsupportedEncodingException;
 
+import lucee.commons.lang.ExceptionUtil;
 import lucee.commons.net.URLDecoder;
 import lucee.runtime.PageContext;
 import lucee.runtime.exp.ExpressionException;
 import lucee.runtime.ext.function.Function;
 
 public final class URLDecode implements Function {
-	public static String call(PageContext pc , String str) throws ExpressionException {
-		return call(pc,str,"utf-8");
+	public static String call(PageContext pc, String str) throws ExpressionException {
+		return call(pc, str, "utf-8");
 	}
-	public static String call(PageContext pc , String str, String encoding) throws ExpressionException {
+
+	public static String call(PageContext pc, String str, String encoding) throws ExpressionException {
 		try {
-			return java.net.URLDecoder.decode(str,encoding);
-		} catch (Throwable t) {
+			return java.net.URLDecoder.decode(str, encoding);
+		}
+		catch (Throwable t) {
+			ExceptionUtil.rethrowIfNecessary(t);
 			try {
-				return URLDecoder.decode(str,encoding,true);
-			} catch (UnsupportedEncodingException uee) {
+				return URLDecoder.decode(str, encoding, true);
+			}
+			catch (UnsupportedEncodingException uee) {
 				throw new ExpressionException(uee.getMessage());
 			}
 		}
-		/*try {
-			return URLDecoder.decode(str,encoding);
-		} catch (UnsupportedEncodingException e) {
-			throw new ExpressionException(e.getMessage());
-		}*/
+		/*
+		 * try { return URLDecoder.decode(str,encoding); } catch (UnsupportedEncodingException e) { throw
+		 * new ExpressionException(e.getMessage()); }
+		 */
 	}
 }

@@ -29,17 +29,14 @@ public class FeedStruct extends StructImpl {
 
 	private StringBuilder content;
 	private String uri;
-	
 
 	public FeedStruct(String path, Key inside, String uri) {
-		this.path=path;
-		this.inside=inside;
-		this.uri=uri;
+		this.path = path;
+		this.inside = inside;
+		this.uri = uri;
 	}
 
-	public FeedStruct() {
-	}
-	
+	public FeedStruct() {}
 
 	/**
 	 * @return the uri
@@ -72,21 +69,21 @@ public class FeedStruct extends StructImpl {
 	public Key getInside() {
 		return inside;
 	}
-	
+
 	public void append(String str) {
-		if(content==null) content=new StringBuilder();
+		if (content == null) content = new StringBuilder();
 		content.append(str);
 	}
-	
+
 	public String getString() {
-		if(content==null) return"";
+		if (content == null) return "";
 		return content.toString();
 	}
-	
+
 	@Override
 	public Collection duplicate(boolean deepCopy) {
-		FeedStruct trg=new FeedStruct(path,inside,uri);
-		trg.hasAttribute=hasAttribute;
+		FeedStruct trg = new FeedStruct(path, inside, uri);
+		trg.hasAttribute = hasAttribute;
 		copy(this, trg, deepCopy);
 		return trg;
 	}

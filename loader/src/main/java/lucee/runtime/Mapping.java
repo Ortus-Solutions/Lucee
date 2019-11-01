@@ -30,18 +30,15 @@ import lucee.runtime.config.Config;
  */
 public interface Mapping extends Serializable {
 
-	public Class<?> getArchiveClass(String className)
-			throws ClassNotFoundException;
+	public Class<?> getArchiveClass(String className) throws ClassNotFoundException;
 
 	public Class<?> getArchiveClass(String className, Class<?> defaultValue);
 
 	public InputStream getArchiveResourceAsStream(String string);
 
-	public Class<?> getPhysicalClass(String className)
-			throws ClassNotFoundException, IOException;
+	public Class<?> getPhysicalClass(String className) throws ClassNotFoundException, IOException;
 
-	public Class<?> getPhysicalClass(String className, byte[] code)
-			throws IOException;
+	public Class<?> getPhysicalClass(String className, byte[] code) throws IOException;
 
 	/**
 	 * @return Returns the physical.
@@ -79,7 +76,7 @@ public interface Mapping extends Serializable {
 	public abstract Resource getClassRootDirectory();
 
 	/**
-	 * pagesoucre matching given realpath
+	 * pagesource matching given realpath
 	 * 
 	 * @param realPath
 	 * @return matching pagesource
@@ -89,7 +86,7 @@ public interface Mapping extends Serializable {
 	/**
 	 * @param path
 	 * @param isOut
-	 * @return matching pagesoucre
+	 * @return matching pagesource
 	 */
 	public abstract PageSource getPageSource(String path, boolean isOut);
 
@@ -147,14 +144,16 @@ public interface Mapping extends Serializable {
 	public Config getConfig();
 
 	/**
-	 * mapping can have a specific listener mode to overwrite the listener mode
-	 * coming from the Application Context
+	 * mapping can have a specific listener mode to overwrite the listener mode coming from the
+	 * Application Context
 	 */
 	public int getListenerMode();
 
 	/**
-	 * mapping can have a specific listener type to overwrite the listener mode
-	 * coming from the Application Context
+	 * mapping can have a specific listener type to overwrite the listener mode coming from the
+	 * Application Context
 	 */
 	public int getListenerType();
+
+	// public void flush(); FUTURE
 }

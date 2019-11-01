@@ -28,14 +28,14 @@ import lucee.runtime.ext.tag.TagImpl;
 // attr omit
 
 /**
-* Required for cfhttp POST operations, cfhttpparam is used to specify the parameters necessary to 
-* 	 build a cfhttp POST.
-*
-*
-*
-**/
+ * Required for cfhttp POST operations, cfhttpparam is used to specify the parameters necessary to
+ * build a cfhttp POST.
+ *
+ *
+ *
+ **/
 public final class InvokeArgument extends TagImpl {
-	
+
 	/** A variable name for the data being passed. */
 	private String name;
 
@@ -43,21 +43,22 @@ public final class InvokeArgument extends TagImpl {
 	private Object value;
 	private boolean omit;
 
-	
-
-
-	/** set the value value
-	* @param value value to set
-	**/
-	public void setValue(Object value)	{
-		this.value=value;
+	/**
+	 * set the value value
+	 * 
+	 * @param value value to set
+	 **/
+	public void setValue(Object value) {
+		this.value = value;
 	}
 
-	/** set the value name
-	* @param name value to set
-	**/
-	public void setName(String name)	{
-		this.name=name;
+	/**
+	 * set the value name
+	 * 
+	 * @param name value to set
+	 **/
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	/**
@@ -68,32 +69,32 @@ public final class InvokeArgument extends TagImpl {
 	}
 
 	@Override
-	public int doStartTag() throws PageException	{
-		Tag parent=getParent();
-		while(parent!=null && !(parent instanceof Invoke)) {
-			parent=parent.getParent();
+	public int doStartTag() throws PageException {
+		Tag parent = getParent();
+		while (parent != null && !(parent instanceof Invoke)) {
+			parent = parent.getParent();
 		}
-		
-		if(parent instanceof Invoke) {
-			Invoke invoke = (Invoke)parent;
-			invoke.setArgument(name,value);
+
+		if (parent instanceof Invoke) {
+			Invoke invoke = (Invoke) parent;
+			invoke.setArgument(name, value);
 		}
 		else {
-			throw new ApplicationException("Wrong Context, tag InvokeArgument must be inside a Invoke tag");	
+			throw new ApplicationException("Wrong Context, tag InvokeArgument must be inside a Invoke tag");
 		}
 		return SKIP_BODY;
 	}
 
 	@Override
-	public int doEndTag()	{
+	public int doEndTag() {
 		return EVAL_PAGE;
 	}
 
 	@Override
-	public void release()	{
+	public void release() {
 		super.release();
-		value=null;
-		name=null;
-		omit=false;
+		value = null;
+		name = null;
+		omit = false;
 	}
 }

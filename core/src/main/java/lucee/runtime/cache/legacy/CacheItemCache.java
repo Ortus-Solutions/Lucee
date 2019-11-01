@@ -35,26 +35,25 @@ import lucee.runtime.exp.PageException;
 import lucee.runtime.op.Caster;
 import lucee.runtime.type.dt.TimeSpan;
 
-import org.apache.oro.text.regex.MalformedPatternException;
-
 public class CacheItemCache extends CacheItem {
 
 	private Cache cache;
 	private TimeSpan timespan;
 	private String lcFileName;
 
-	public CacheItemCache(PageContext pc, HttpServletRequest req, String id, String key, boolean useId, Cache cache, TimeSpan timespan)  {
+	public CacheItemCache(PageContext pc, HttpServletRequest req, String id, String key, boolean useId, Cache cache, TimeSpan timespan) {
 		super(pc, req, id, key, useId);
-		this.cache=cache;
-		this.timespan=timespan;
-		lcFileName=fileName;
+		this.cache = cache;
+		this.timespan = timespan;
+		lcFileName = fileName;
 	}
 
 	@Override
 	public boolean isValid() {
 		try {
-			return cache.getValue(lcFileName)!=null;
-		} catch (IOException e) {
+			return cache.getValue(lcFileName) != null;
+		}
+		catch (IOException e) {
 			return false;
 		}
 	}
@@ -65,30 +64,31 @@ public class CacheItemCache extends CacheItem {
 	}
 
 	@Override
-	public void writeTo(OutputStream os,String charset) throws IOException {
-		byte[] barr = getValue().getBytes(StringUtil.isEmpty(charset,true)?"UTF-8":charset);
-		IOUtil.copy(new ByteArrayInputStream(barr),os,true,false);
+	public void writeTo(OutputStream os, String charset) throws IOException {
+		byte[] barr = getValue().getBytes(StringUtil.isEmpty(charset, true) ? "UTF-8" : charset);
+		IOUtil.copy(new ByteArrayInputStream(barr), os, true, false);
 	}
 
 	@Override
 	public String getValue() throws IOException {
 		try {
 			return Caster.toString(cache.getValue(lcFileName));
-		} catch (PageException e) {
+		}
+		catch (PageException e) {
 			throw ExceptionUtil.toIOException(e);
 		}
 	}
 
 	@Override
 	public void store(String value) throws IOException {
-		cache.put(lcFileName, value, null,valueOf(timespan));
-		
+		cache.put(lcFileName, value, null, valueOf(timespan));
+
 	}
 
 	@Override
 	public void store(byte[] barr, boolean append) throws IOException {
-		String value=(append)?getValue():"";
-		value+=IOUtil.toString(barr, "UTF-8");
+		String value = (append) ? getValue() : "";
+		value += IOUtil.toString(barr, "UTF-8");
 		store(value);
 	}
 
@@ -96,12 +96,12 @@ public class CacheItemCache extends CacheItem {
 		cache.remove(CacheKeyFilterAll.getInstance());
 	}
 
-	public static void _flush(PageContext pc, Cache cache, String expireurl) throws MalformedPatternException, IOException {
-		cache.remove(new WildCardFilter(expireurl,true));
+	public static void _flush(PageContext pc, Cache cache, String expireurl) throws IOException {
+		cache.remove(new WildCardFilter(expireurl, true));
 	}
-	
+
 	private static Long valueOf(TimeSpan timeSpan) {
-		if(timeSpan==null) return null;
+		if (timeSpan == null) return null;
 		return Long.valueOf(timeSpan.getMillis());
 	}
 

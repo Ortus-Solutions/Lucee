@@ -18,18 +18,18 @@
  */
 package lucee.runtime.tag;
 
-
 import java.io.IOException;
 
+import lucee.commons.lang.StringUtil;
 import lucee.runtime.PageContextImpl;
 import lucee.runtime.exp.ApplicationException;
 import lucee.runtime.exp.PageException;
 
 /**
-* Writes the text specified in the text attribute to the 'head' section of a generated HTML page. 
-* 	 The cfhtmlhead tag can be useful for embedding CSS code, or placing other HTML tags such, as
-* 	 META, LINK, TITLE, or BASE in an HTML page header.
-*/
+ * Writes the text specified in the text attribute to the 'head' section of a generated HTML page.
+ * The cfhtmlhead tag can be useful for embedding CSS code, or placing other HTML tags such, as
+ * META, LINK, TITLE, or BASE in an HTML page header.
+ */
 public final class HtmlHead extends HtmlHeadBodyBase {
 
 	@Override
@@ -58,16 +58,21 @@ public final class HtmlHead extends HtmlHeadBodyBase {
 	public void actionRead() throws PageException, IOException {
 
 		String str = ((PageContextImpl) pageContext).getRootOut().getHTMLHead();
-		pageContext.setVariable(variable != null ? variable : "cfhtmlhead", str);
+		pageContext.setVariable(!StringUtil.isEmpty(variable) ? variable : "cfhtmlhead", str);
 	}
 
 	@Override
 	public void actionFlush() throws IOException {
 
-		PageContextImpl pci = (PageContextImpl)pageContext;
+		PageContextImpl pci = (PageContextImpl) pageContext;
 
 		pci.write(pci.getRootOut().getHTMLHead());
 		pci.getRootOut().resetHTMLHead();
+	}
+
+	@Override
+	public boolean getDefaultForce() {
+		return true;
 	}
 
 }

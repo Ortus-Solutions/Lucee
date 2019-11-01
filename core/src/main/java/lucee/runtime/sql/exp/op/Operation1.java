@@ -26,7 +26,6 @@ public class Operation1 extends ExpressionSupport implements Operation {
 	private Expression exp;
 	private int operator;
 
-
 	/**
 	 * @return the exp
 	 */
@@ -42,19 +41,19 @@ public class Operation1 extends ExpressionSupport implements Operation {
 	}
 
 	public Operation1(Expression exp, int operator) {
-		this.exp=exp;
-		this.operator=operator;
+		this.exp = exp;
+		this.operator = operator;
 	}
 
 	@Override
 	public String toString(boolean noAlias) {
-		if(!hasAlias() || noAlias) {
-			if(operator==OPERATION1_IS_NULL || operator==OPERATION1_IS_NOT_NULL) {
-				return exp.toString(true)+" "+Operation2.toString(operator);
+		if (!hasAlias() || noAlias) {
+			if (operator == OPERATION1_IS_NULL || operator == OPERATION1_IS_NOT_NULL) {
+				return exp.toString(true) + " " + Operation2.toString(operator);
 			}
-			return Operation2.toString(operator)+" "+exp.toString(true);
+			return Operation2.toString(operator) + " " + exp.toString(true);
 		}
-		return toString(true)+" as "+getAlias();
+		return toString(true) + " as " + getAlias();
 	}
-	
+
 }

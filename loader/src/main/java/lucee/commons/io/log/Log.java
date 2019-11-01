@@ -45,12 +45,10 @@ public interface Log {
 	 */
 	public static final int LEVEL_FATAL = 5;
 
-
 	/**
 	 * log one line
 	 * 
-	 * @param level level to log (Log.LEVEL_DEBUG, Log.LEVEL_WARN,
-	 *            Log.LEVEL_ERROR)
+	 * @param level level to log (Log.LEVEL_DEBUG, Log.LEVEL_WARN, Log.LEVEL_ERROR)
 	 * @param application application name
 	 * @param message message to log
 	 */

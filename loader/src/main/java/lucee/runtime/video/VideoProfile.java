@@ -185,8 +185,7 @@ public interface VideoProfile {
 	public VideoProfile duplicate();
 
 	/**
-	 * set the type of the output format (see constants "TYPE_xxx" of this
-	 * class)
+	 * set the type of the output format (see constants "TYPE_xxx" of this class)
 	 * 
 	 * @param type
 	 */

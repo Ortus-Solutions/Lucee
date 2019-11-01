@@ -27,15 +27,18 @@ import lucee.runtime.type.Struct;
 public class VideoExecuterNotSupported implements VideoExecuter {
 
 	/**
-	 * @see lucee.runtime.video.VideoExecuter#convertRaw(lucee.runtime.config.ConfigWeb, lucee.runtime.video.VideoInput[], lucee.runtime.video.VideoOutput, lucee.runtime.video.VideoProfile)
+	 * @see lucee.runtime.video.VideoExecuter#convertRaw(lucee.runtime.config.ConfigWeb,
+	 *      lucee.runtime.video.VideoInput[], lucee.runtime.video.VideoOutput,
+	 *      lucee.runtime.video.VideoProfile)
 	 */
 	@Override
-	public VideoInfo[] convert(ConfigWeb config, VideoInput[] inputs, VideoOutput output,VideoProfile quality) throws IOException {
+	public VideoInfo[] convert(ConfigWeb config, VideoInput[] inputs, VideoOutput output, VideoProfile quality) throws IOException {
 		throw notSupported();
 	}
 
 	/**
-	 * @see lucee.runtime.video.VideoExecuter#infoRaw(lucee.runtime.config.ConfigWeb, lucee.runtime.video.VideoInput)
+	 * @see lucee.runtime.video.VideoExecuter#infoRaw(lucee.runtime.config.ConfigWeb,
+	 *      lucee.runtime.video.VideoInput)
 	 */
 	@Override
 	public VideoInfo info(ConfigWeb config, VideoInput input) throws IOException {
@@ -59,10 +62,11 @@ public class VideoExecuterNotSupported implements VideoExecuter {
 	}
 
 	/**
-	 * @see lucee.runtime.video.VideoExecuter#install(lucee.runtime.config.ConfigWeb, lucee.runtime.type.Struct)
+	 * @see lucee.runtime.video.VideoExecuter#install(lucee.runtime.config.ConfigWeb,
+	 *      lucee.runtime.type.Struct)
 	 */
 	@Override
-	public void install(ConfigWeb config,Struct data) throws IOException {
+	public void install(ConfigWeb config, Struct data) throws IOException {
 		throw notSupported();
 	}
 

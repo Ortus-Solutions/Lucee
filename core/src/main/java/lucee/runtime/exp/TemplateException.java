@@ -24,7 +24,6 @@ import lucee.runtime.op.Caster;
 import lucee.transformer.util.PageSourceCode;
 import lucee.transformer.util.SourceCode;
 
-
 /**
  * Template Exception Object
  */
@@ -49,71 +48,77 @@ public class TemplateException extends PageExceptionImpl {
 
 	/**
 	 * constructor of the template exception
+	 * 
 	 * @param message Exception Message
 	 */
 	public TemplateException(String message) {
-		super(message,"template");
+		super(message, "template");
 	}
-	
+
 	/**
 	 * constructor of the template exception
+	 * 
 	 * @param message Exception Message
 	 * @param detail Detailed Exception Message
 	 */
 	public TemplateException(String message, String detail) {
-		super(message,"template");
+		super(message, "template");
 		setDetail(detail);
 	}
 
 	/**
 	 * Constructor of the class
+	 * 
 	 * @param srcCode
 	 * @param message
 	 */
-	public TemplateException(PageSource ps, int line, int column,String message) {
-		super(message,"template");
-		//print.err(line+"+"+column);
-		addContext(ps,line,column,null);
-		this.line=line;
-		this.pageSource=ps;
+	public TemplateException(PageSource ps, int line, int column, String message) {
+		super(message, "template");
+		// print.err(line+"+"+column);
+		addContext(ps, line, column, null);
+		this.line = line;
+		this.pageSource = ps;
 	}
 
 	/**
 	 * Constructor of the class
+	 * 
 	 * @param cfml
 	 * @param message
 	 */
 	public TemplateException(SourceCode sc, String message) {
-		this(getPageSource(sc),sc.getLine(),sc.getColumn(),message);
+		this(getPageSource(sc), sc.getLine(), sc.getColumn(), message);
 	}
-	
+
+	public TemplateException(SourceCode sc, int line, int column, String message) {
+		this(getPageSource(sc), line, column, message);
+	}
+
 	/**
 	 * Constructor of the class
+	 * 
 	 * @param cfml
 	 * @param message
 	 * @param detail
 	 */
 	public TemplateException(SourceCode sc, String message, String detail) {
-		this(getPageSource(sc),sc.getLine(),sc.getColumn(),message);
+		this(getPageSource(sc), sc.getLine(), sc.getColumn(), message);
 		setDetail(detail);
 	}
 
 	private static PageSource getPageSource(SourceCode sc) {
-		if(sc instanceof PageSourceCode) return ((PageSourceCode)sc).getPageSource();
+		if (sc instanceof PageSourceCode) return ((PageSourceCode) sc).getPageSource();
 		return null;
 	}
 
 	/**
 	 * Constructor of the class
+	 * 
 	 * @param cfml
 	 * @param e
 	 */
 	public TemplateException(SourceCode cfml, Throwable e) {
-		this(
-				cfml,
-				StringUtil.isEmpty(e.getMessage())?
-						(Caster.toClassName(e)):
-						e.getMessage());
+		this(cfml, StringUtil.isEmpty(e.getMessage()) ? (Caster.toClassName(e)) : e.getMessage());
 		setStackTrace(e.getStackTrace());
 	}
 }

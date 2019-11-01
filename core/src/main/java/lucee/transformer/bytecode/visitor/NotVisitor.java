@@ -18,18 +18,18 @@
  **/
 package lucee.transformer.bytecode.visitor;
 
-import lucee.transformer.bytecode.BytecodeContext;
-
 import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.commons.GeneratorAdapter;
+
+import lucee.transformer.bytecode.BytecodeContext;
 
 public final class NotVisitor {
 
 	public static void visitNot(BytecodeContext bc) {
 		GeneratorAdapter adapter = bc.getAdapter();
 
-		Label l1=new Label();
+		Label l1 = new Label();
 		adapter.visitJumpInsn(Opcodes.IFEQ, l1);
 		adapter.visitInsn(Opcodes.ICONST_0);
 		Label l2 = new Label();

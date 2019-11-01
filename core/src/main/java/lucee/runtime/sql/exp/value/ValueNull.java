@@ -20,12 +20,11 @@ package lucee.runtime.sql.exp.value;
 
 import lucee.runtime.sql.exp.Literal;
 
-
 public class ValueNull extends ValueSupport implements Literal {
 
 	public static final ValueNull NULL = new ValueNull();
-	
-	//private boolean value;
+
+	// private boolean value;
 
 	private ValueNull() {
 		super("NULL");
@@ -33,8 +32,8 @@ public class ValueNull extends ValueSupport implements Literal {
 
 	@Override
 	public String toString(boolean noAlias) {
-		if(noAlias || getIndex()==0)return getString();
-		return getString()+" as "+getAlias();
+		if (noAlias || getIndex() == 0) return getString();
+		return getString() + " as " + getAlias();
 	}
 
 	@Override

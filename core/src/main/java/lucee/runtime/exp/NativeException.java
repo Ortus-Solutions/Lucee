@@ -26,8 +26,6 @@ import lucee.runtime.dump.DumpTable;
 import lucee.runtime.op.Caster;
 import lucee.runtime.reflection.Reflector;
 import lucee.runtime.type.Collection;
-import lucee.runtime.type.util.KeyConstants;
-
 
 /**
  * Box a Native Exception, Native = !PageException
@@ -35,71 +33,79 @@ import lucee.runtime.type.util.KeyConstants;
 public class NativeException extends PageExceptionImpl {
 
 	private static final long serialVersionUID = 6221156691846424801L;
-	
+
 	private Throwable t;
 
-    /**
+	/**
 	 * Standart constructor for native Exception class
+	 * 
 	 * @param t Throwable
 	 */
-	public NativeException(Throwable t) {
-        super(t=getRootCause(t),t.getClass().getName());
-        this.t=t;
-        
-        
-        StackTraceElement[] st = t.getStackTrace();
-        
-        
-        
-        if(hasLuceeRuntime(st))setStackTrace(st);
-        else {
-        	StackTraceElement[] cst = Thread.currentThread().getStackTrace();
-        	if(hasLuceeRuntime(cst)){
-        		StackTraceElement[] mst=new StackTraceElement[st.length+cst.length-1];
-        		System.arraycopy(st, 0, mst, 0, st.length);
-        		System.arraycopy(cst, 1, mst, st.length, cst.length-1);
-        		
-        		setStackTrace(mst);
-        	}
-        	else setStackTrace(st);
-        }
-        setAdditional(KeyConstants._Cause, t.getClass().getName());
+	protected NativeException(Throwable t) {
+		super(t, t.getClass().getName());
+		this.t = t;
+		// set stacktrace
+
+		/*
+		 * StackTraceElement[] st = getRootCause(t).getStackTrace();
+		 * if(hasLuceeRuntime(st))setStackTrace(st); else { StackTraceElement[] cst = new
+		 * Exception().getStackTrace(); if(hasLuceeRuntime(cst)){ StackTraceElement[] mst=new
+		 * StackTraceElement[st.length+cst.length-1]; System.arraycopy(st, 0, mst, 0, st.length);
+		 * System.arraycopy(cst, 1, mst, st.length, cst.length-1);
+		 * 
+		 * setStackTrace(mst); } else setStackTrace(st); }
+		 */
+	}
+
+	public static NativeException newInstance(Throwable t) {
+		return newInstance(t, true);
+	}
+
+	public static NativeException newInstance(Throwable t, boolean rethrowIfNecessary) {
+		if (rethrowIfNecessary && t instanceof ThreadDeath) // never ever catch this
+			throw (ThreadDeath) t;
+		return new NativeException(t);
 	}
 
 	private static Throwable getRootCause(Throwable t) {
 		Throwable c;
-		do{
-			c=t.getCause();
-			if(c==null || c==t) return t;
-			t=c;
-			
-		}while(true);
+		do {
+			c = t.getCause();
+			if (c == null || c == t) return t;
+			t = c;
+
+		}
+		while (true);
 	}
 
 	private boolean hasLuceeRuntime(StackTraceElement[] st) {
-		if(st!=null)for(int i=0;i<st.length;i++){
-			if(st[i].getClassName().indexOf("lucee.runtime")!=-1) return true;
+		if (st != null) for (int i = 0; i < st.length; i++) {
+			if (st[i].getClassName().indexOf("lucee.runtime") != -1) return true;
 		}
 		return false;
 	}
 
 	@Override
 	public DumpData toDumpData(PageContext pageContext, int maxlevel, DumpProperties dp) {
-	    DumpData data = super.toDumpData(pageContext, maxlevel,dp);
-	    if(data instanceof DumpTable)
-        ((DumpTable)data).setTitle(Constants.NAME+" ["+pageContext.getConfig().getFactory().getEngine().getInfo().getVersion()+"] - Error ("+Caster.toClassName(t)+")");
-        
-        return data;
-    }
+		DumpData data = super.toDumpData(pageContext, maxlevel, dp);
+		if (data instanceof DumpTable) ((DumpTable) data)
+				.setTitle(Constants.NAME + " [" + pageContext.getConfig().getFactory().getEngine().getInfo().getVersion() + "] - Error (" + Caster.toClassName(t) + ")");
 
-    @Override
-    public boolean typeEqual(String type) {
-    	if(super.typeEqual(type))return true;
-        return Reflector.isInstaneOfIgnoreCase(t.getClass(),type);
-    }
+		return data;
+	}
+
+	@Override
+	public boolean typeEqual(String type) {
+		if (super.typeEqual(type)) return true;
+		return Reflector.isInstaneOfIgnoreCase(t.getClass(), type);
+	}
 
 	@Override
 	public void setAdditional(Collection.Key key, Object value) {
 		super.setAdditional(key, value);
+	}
+
+	public Throwable getException() {
+		return t;
 	}
 }

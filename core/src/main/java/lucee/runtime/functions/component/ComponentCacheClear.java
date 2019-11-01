@@ -23,7 +23,7 @@ import lucee.runtime.config.ConfigImpl;
 
 public class ComponentCacheClear {
 	public static String call(PageContext pc) {
-		ConfigImpl config = (ConfigImpl)pc.getConfig();
+		ConfigImpl config = (ConfigImpl) pc.getConfig();
 		config.clearComponentCache();
 		return null;
 	}

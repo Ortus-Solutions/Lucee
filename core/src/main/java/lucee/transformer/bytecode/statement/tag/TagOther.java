@@ -28,21 +28,20 @@ import lucee.transformer.bytecode.statement.FlowControlFinalImpl;
 public class TagOther extends TagBase {
 
 	private FlowControlFinalImpl fcf;
-	
+
 	public TagOther(Factory f, Position start, Position end) {
-		super(f,start, end);
+		super(f, start, end);
 	}
-	
+
 	@Override
-	public FlowControlFinal getFlowControlFinal(){
-		if(fcf==null && getTagLibTag().handleException())
-			fcf=new FlowControlFinalImpl();
+	public FlowControlFinal getFlowControlFinal() {
+		if (fcf == null && getTagLibTag().handleException()) fcf = new FlowControlFinalImpl();
 		return fcf;
 	}
-	
+
 	@Override
 	public void _writeOut(BytecodeContext bc) throws TransformerException {
-		_writeOut(bc,true,getFlowControlFinal());
+		_writeOut(bc, true, getFlowControlFinal());
 	}
 
 }

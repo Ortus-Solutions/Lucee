@@ -31,11 +31,11 @@ public class TOStruct extends TOCollection implements Struct {
 	private static final long serialVersionUID = 4868199372417392722L;
 	private Struct sct;
 
-	protected TOStruct(Debugger debugger,Struct sct,int type,String category,String text) {
-		super(debugger,sct, type, category, text);
-		this.sct=sct;
+	protected TOStruct(Debugger debugger, Struct sct, int type, String category, String text) {
+		super(debugger, sct, type, category, text);
+		this.sct = sct;
 	}
-	
+
 	@Override
 	public boolean isEmpty() {
 		log(null);
@@ -99,12 +99,12 @@ public class TOStruct extends TOCollection implements Struct {
 	@Override
 	public Collection duplicate(boolean deepCopy) {
 		log(null);
-		return new TOStruct(debugger,(Struct)Duplicator.duplicate(sct,deepCopy), type, category, text);
+		return new TOStruct(debugger, (Struct) Duplicator.duplicate(sct, deepCopy), type, category, text);
 	}
 
 	@Override
 	public java.util.Iterator<String> getIterator() {
-    	return keysAsStringIterator();
-    } 
+		return keysAsStringIterator();
+	}
 
 }

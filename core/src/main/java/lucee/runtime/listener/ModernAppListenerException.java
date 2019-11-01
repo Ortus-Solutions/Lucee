@@ -46,26 +46,27 @@ public final class ModernAppListenerException extends PageException {
 
 	/**
 	 * Constructor of the class
+	 * 
 	 * @param pe
-	 * @param eventName 
+	 * @param eventName
 	 */
 	public ModernAppListenerException(PageException pe, String eventName) {
-        super(pe.getMessage());
-        setStackTrace(pe.getStackTrace());
-		this.rootCause=pe;
-		this.eventName=eventName;
+		super(pe.getMessage());
+		setStackTrace(pe.getStackTrace());
+		this.rootCause = pe;
+		this.eventName = eventName;
 	}
 
 	@Override
 	public void addContext(PageSource pageSource, int line, int column, StackTraceElement ste) {
-		rootCause.addContext(pageSource, line, column,ste);
+		rootCause.addContext(pageSource, line, column, ste);
 	}
 
 	@Override
 	public Struct getAdditional() {
 		return rootCause.getAdditional();
 	}
-	
+
 	@Override
 	public Struct getAddional() {
 		return rootCause.getAdditional();
@@ -74,24 +75,23 @@ public final class ModernAppListenerException extends PageException {
 	public Struct getCatchBlock() {
 		return getCatchBlock(ThreadLocalPageContext.getConfig());
 	}
-	
+
 	@Override
 	public Struct getCatchBlock(PageContext pc) {
 		return getCatchBlock(pc.getConfig());
 	}
-	
+
 	@Override
 	public CatchBlock getCatchBlock(Config config) {
-		CatchBlock cb=rootCause.getCatchBlock(config);
-		Collection cause = (Collection) Duplicator.duplicate(cb,false);
-		//rtn.setEL("message", getMessage());
-		if(!cb.containsKey(KeyConstants._detail))cb.setEL(KeyConstants._detail, 
-				"Exception throwed while invoking function ["+eventName+"] in application event handler ");
+		CatchBlock cb = rootCause.getCatchBlock(config);
+		Collection cause = (Collection) Duplicator.duplicate(cb, false);
+		// rtn.setEL("message", getMessage());
+		if (!cb.containsKey(KeyConstants._detail)) cb.setEL(KeyConstants._detail, "Exception throwed while invoking function [" + eventName + "] in application event handler ");
 		cb.setEL(ROOT_CAUSE, cause);
 		cb.setEL(CAUSE, cause);
-		//cb.setEL("stacktrace", getStackTraceAsString());
-		//rtn.setEL("tagcontext", new ArrayImpl());
-		//rtn.setEL("type", getTypeAsString());
+		// cb.setEL("stacktrace", getStackTraceAsString());
+		// rtn.setEL("tagcontext", new ArrayImpl());
+		// rtn.setEL("type", getTypeAsString());
 		cb.setEL(KeyConstants._name, eventName);
 		return cb;
 	}
@@ -163,7 +163,7 @@ public final class ModernAppListenerException extends PageException {
 
 	@Override
 	public DumpData toDumpData(PageContext pageContext, int maxlevel, DumpProperties dp) {
-		return rootCause.toDumpData(pageContext,maxlevel,dp);
+		return rootCause.toDumpData(pageContext, maxlevel, dp);
 	}
 
 	/**
@@ -174,7 +174,7 @@ public final class ModernAppListenerException extends PageException {
 	}
 
 	public String getLine(Config config) {
-		return ((PageExceptionImpl)rootCause).getLine(config);
+		return ((PageExceptionImpl) rootCause).getLine(config);
 	}
 
 	@Override
@@ -205,14 +205,14 @@ public final class ModernAppListenerException extends PageException {
 	public PageException getPageException() {
 		return rootCause;
 	}
-    
-    @Override
-    public void setExposeMessage(boolean exposeMessage) {
+
+	@Override
+	public void setExposeMessage(boolean exposeMessage) {
 		rootCause.setExposeMessage(exposeMessage);
 	}
-    
-    @Override
-    public boolean getExposeMessage() {
+
+	@Override
+	public boolean getExposeMessage() {
 		return rootCause.getExposeMessage();
 	}
 

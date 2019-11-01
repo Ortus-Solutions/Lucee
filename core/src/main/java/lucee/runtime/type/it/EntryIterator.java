@@ -26,28 +26,26 @@ import lucee.runtime.type.Collection;
 import lucee.runtime.type.Collection.Key;
 
 public class EntryIterator implements Iterator<Entry<Key, Object>>, Enumeration<Entry<Key, Object>> {
-	
-	
 
 	private Collection coll;
 	protected Key[] keys;
 	protected int pos;
 
-	public EntryIterator(Collection coll, Collection.Key[] keys){
-		this.coll=coll;
-		this.keys=keys;
+	public EntryIterator(Collection coll, Collection.Key[] keys) {
+		this.coll = coll;
+		this.keys = keys;
 	}
-	
+
 	@Override
 	public boolean hasNext() {
-		return (keys.length)>pos;
+		return (keys.length) > pos;
 	}
 
 	@Override
 	public Entry<Key, Object> next() {
 		Key key = keys[pos++];
-		if(key==null) return null;
-		return new EntryImpl(coll,key);
+		if (key == null) return null;
+		return new EntryImpl(coll, key);
 	}
 
 	@Override
@@ -65,15 +63,14 @@ public class EntryIterator implements Iterator<Entry<Key, Object>>, Enumeration<
 		throw new UnsupportedOperationException("this operation is not suppored");
 	}
 
-	
 	public class EntryImpl implements Entry<Key, Object> {
 
 		private Collection coll;
 		protected Key key;
 
 		public EntryImpl(Collection coll, Key key) {
-			this.coll=coll;
-			this.key=key;
+			this.coll = coll;
+			this.key = key;
 		}
 
 		@Override
@@ -83,7 +80,7 @@ public class EntryIterator implements Iterator<Entry<Key, Object>>, Enumeration<
 
 		@Override
 		public Object getValue() {
-			return coll.get(key,null);
+			return coll.get(key, null);
 		}
 
 		@Override

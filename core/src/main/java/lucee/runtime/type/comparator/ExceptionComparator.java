@@ -27,7 +27,7 @@ import lucee.runtime.exp.PageException;
  * Comparator that store Exception
  */
 public interface ExceptionComparator extends Comparator {
-    /**
+	/**
 	 * @return Returns the expressionException.
 	 */
 	public PageException getPageException();

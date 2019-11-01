@@ -24,78 +24,77 @@ import lucee.runtime.InterfaceImpl;
 import lucee.runtime.Page;
 import lucee.runtime.PageContext;
 import lucee.runtime.PageSource;
+import lucee.runtime.exp.MissingIncludeException;
 import lucee.runtime.exp.PageException;
 import lucee.runtime.type.util.ArrayUtil;
 
 public class MetadataUtil {
 
-    public static Page getPageWhenMetaDataStillValid(PageContext pc,ComponentImpl comp, boolean ignoreCache) throws PageException {
-    	Page page = getPage(pc,comp._getPageSource());
-    	if(ignoreCache) return page;
+	public static Page getPageWhenMetaDataStillValid(PageContext pc, ComponentImpl comp, boolean ignoreCache) throws PageException {
+		Page page = getPage(pc, comp._getPageSource());
+		if (ignoreCache) return page;
 
-    	if(page.metaData!=null && page.metaData.get()!=null) {
-    		if(hasChanged(pc,((MetaDataSoftReference)page.metaData).creationTime,comp)) {
-    			page.metaData=null;
-    		}
-    	}
-    	return page;
+		if (page != null && page.metaData != null && page.metaData.get() != null) {
+			if (hasChanged(pc, ((MetaDataSoftReference) page.metaData).creationTime, comp)) {
+				page.metaData = null;
+			}
+		}
+		return page;
 	}
-    public static Page getPageWhenMetaDataStillValid(PageContext pc,InterfaceImpl interf, boolean ignoreCache) throws PageException {
-    	Page page = getPage(pc,interf.getPageSource());
-    	if(ignoreCache) return page;
-    	
-    	if(page.metaData!=null && page.metaData.get()!=null) {
-    		if(hasChanged(pc,((MetaDataSoftReference)page.metaData).creationTime,interf))
-    			page.metaData=null;
-    	}
-    	return page;
+
+	public static Page getPageWhenMetaDataStillValid(PageContext pc, InterfaceImpl interf, boolean ignoreCache) throws PageException {
+		Page page = getPage(pc, interf.getPageSource());
+		if (ignoreCache) return page;
+
+		if (page != null && page.metaData != null && page.metaData.get() != null) {
+			if (hasChanged(pc, ((MetaDataSoftReference) page.metaData).creationTime, interf)) page.metaData = null;
+		}
+		return page;
 	}
-    
-	private static boolean hasChanged(PageContext pc,long lastMetaCreation, ComponentImpl component) throws PageException {
-		if(component==null) return false;
-		
+
+	private static boolean hasChanged(PageContext pc, long lastMetaCreation, ComponentImpl component) throws PageException {
+		if (component == null) return false;
+
 		// check the component
 		Page p = getPage(pc, component._getPageSource());
-		if(hasChanged(p.getCompileTime(),lastMetaCreation)) return true;
-		
+		if (p == null || hasChanged(p.getCompileTime(), lastMetaCreation)) return true;
+
 		// check interfaces
 		Interface[] interfaces = component.getInterfaces();
-        if(!ArrayUtil.isEmpty(interfaces)){
-        	if(hasChanged(pc,lastMetaCreation,interfaces)) return true;
-        }
-        
-        // check base
-		return hasChanged(pc, lastMetaCreation, (ComponentImpl)component.getBaseComponent());
+		if (!ArrayUtil.isEmpty(interfaces)) {
+			if (hasChanged(pc, lastMetaCreation, interfaces)) return true;
+		}
+
+		// check base
+		return hasChanged(pc, lastMetaCreation, (ComponentImpl) component.getBaseComponent());
 	}
-	
-	private static boolean hasChanged(PageContext pc,long lastMetaCreation,Interface[] interfaces) throws PageException {
-		
-		if(!ArrayUtil.isEmpty(interfaces)){
-            for(int i=0;i<interfaces.length;i++){
-            	if(hasChanged(pc,lastMetaCreation,interfaces[i])) return true;
-            }
-        }
+
+	private static boolean hasChanged(PageContext pc, long lastMetaCreation, Interface[] interfaces) throws PageException {
+
+		if (!ArrayUtil.isEmpty(interfaces)) {
+			for (int i = 0; i < interfaces.length; i++) {
+				if (hasChanged(pc, lastMetaCreation, interfaces[i])) return true;
+			}
+		}
 		return false;
 	}
 
-	private static boolean hasChanged(PageContext pc,long lastMetaCreation, Interface inter) throws PageException {
+	private static boolean hasChanged(PageContext pc, long lastMetaCreation, Interface inter) throws PageException {
 		Page p = getPage(pc, inter.getPageSource());
-		if(hasChanged(p.getCompileTime(),lastMetaCreation)) return true;
-    	return hasChanged(pc,lastMetaCreation,inter.getExtends());
+		if (p == null || hasChanged(p.getCompileTime(), lastMetaCreation)) return true;
+		return hasChanged(pc, lastMetaCreation, inter.getExtends());
 	}
-	
 
 	private static boolean hasChanged(long compileTime, long lastMetaCreation) {
-		return compileTime>lastMetaCreation;
+		return compileTime > lastMetaCreation;
 	}
-	
-	private static Page getPage(PageContext pc,PageSource ps) throws PageException {
-		/* assuming this code is not necessary, because loadPage also returns the existing page if ok
-		Page page = (( PageSourceImpl )ps).getPage();
-    	if(page==null) {
-    		page = ps.loadPage(pc,false);
-    	}
-    	return page;*/
-		return ps.loadPage(pc,false);
+
+	private static Page getPage(PageContext pc, PageSource ps) throws PageException {
+		try {
+			return ps.loadPage(pc, false);
+		}
+		catch (MissingIncludeException mie) {
+			return null;
+		}
 	}
 }

@@ -27,11 +27,11 @@ public final class TransformerException extends TemplateException {
 
 	public TransformerException(String message, Position pos) {
 		super(message);
-		this.pos=pos;
+		this.pos = pos;
 	}
 
 	public TransformerException(Throwable cause, Position start) {
-		this(cause.getMessage(),start);
+		this(cause.getMessage(), start);
 		initCause(cause);
 	}
 

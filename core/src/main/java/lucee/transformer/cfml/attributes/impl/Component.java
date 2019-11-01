@@ -32,17 +32,15 @@ import lucee.transformer.library.tag.TagLibTag;
 public final class Component implements AttributeEvaluator {
 
 	@Override
-	public TagLibTag evaluate( TagLibTag tagLibTag, Tag tag) throws AttributeEvaluatorException {
+	public TagLibTag evaluate(TagLibTag tagLibTag, Tag tag) throws AttributeEvaluatorException {
 		tagLibTag.setParseBody(false);
 		Attribute attr = tag.getAttribute("output");
-		if(attr!=null) {
+		if (attr != null) {
 			Expression expr = attr.getValue();
-			
-			if(!(expr instanceof LitBoolean))
-				throw new AttributeEvaluatorException("Attribute output of the Tag Component, must be a static boolean value (true or false)");
-			if(((LitBoolean)expr).getBooleanValue())
-				tagLibTag.setParseBody(true);
+
+			if (!(expr instanceof LitBoolean)) throw new AttributeEvaluatorException("Attribute output of the Tag Component, must be a static boolean value (true or false)");
+			if (((LitBoolean) expr).getBooleanValue()) tagLibTag.setParseBody(true);
 		}
-        return tagLibTag;
-    }
+		return tagLibTag;
+	}
 }

@@ -43,21 +43,19 @@ public final class ArgumentThreadImpl implements Argument {
 
 	private final Struct sct;
 
-	public ArgumentThreadImpl(Struct sct){
-		this.sct=sct;
+	public ArgumentThreadImpl(Struct sct) {
+		this.sct = sct;
 	}
-	
+
 	@Override
 	public Object getFunctionArgument(String key, Object defaultValue) {
-		return sct.get(key,defaultValue);
+		return sct.get(key, defaultValue);
 	}
 
 	@Override
 	public Object getFunctionArgument(Key key, Object defaultValue) {
-		return sct.get(key,defaultValue);
+		return sct.get(key, defaultValue);
 	}
-	
-
 
 	@Override
 	public boolean containsFunctionArgumentKey(Key key) {
@@ -72,7 +70,7 @@ public final class ArgumentThreadImpl implements Argument {
 
 	@Override
 	public void setFunctionArgumentNames(Set functionArgumentNames) {
-		
+
 	}
 
 	@Override
@@ -88,7 +86,7 @@ public final class ArgumentThreadImpl implements Argument {
 
 	@Override
 	public void setBind(boolean bind) {
-		
+
 	}
 
 	@Override
@@ -102,8 +100,7 @@ public final class ArgumentThreadImpl implements Argument {
 	}
 
 	@Override
-	public void initialize(PageContext pc) {
-	}
+	public void initialize(PageContext pc) {}
 
 	@Override
 	public boolean isInitalized() {
@@ -130,7 +127,7 @@ public final class ArgumentThreadImpl implements Argument {
 
 	@Override
 	public Collection duplicate(boolean deepCopy) {
-		return new ArgumentThreadImpl((Struct)Duplicator.duplicate(sct,deepCopy));
+		return new ArgumentThreadImpl((Struct) Duplicator.duplicate(sct, deepCopy));
 	}
 
 	@Override
@@ -170,7 +167,7 @@ public final class ArgumentThreadImpl implements Argument {
 
 	@Override
 	public Object remove(Key key, Object defaultValue) {
-		return sct.remove(key,defaultValue);
+		return sct.remove(key, defaultValue);
 	}
 
 	@Override
@@ -207,12 +204,12 @@ public final class ArgumentThreadImpl implements Argument {
 	public Iterator<Collection.Key> keyIterator() {
 		return sct.keyIterator();
 	}
-    
-    @Override
+
+	@Override
 	public Iterator<String> keysAsStringIterator() {
-    	return sct.keysAsStringIterator();
-    }
-	
+		return sct.keysAsStringIterator();
+	}
+
 	@Override
 	public Iterator<Entry<Key, Object>> entryIterator() {
 		return sct.entryIterator();
@@ -328,7 +325,6 @@ public final class ArgumentThreadImpl implements Argument {
 		return sct.remove(key);
 	}
 
-	
 	@Override
 	public java.util.Collection values() {
 		return sct.values();
@@ -336,12 +332,12 @@ public final class ArgumentThreadImpl implements Argument {
 
 	@Override
 	public Object append(Object o) throws PageException {
-		throw new CasterException(sct,"Array");
+		throw new CasterException(sct, "Array");
 	}
 
 	@Override
 	public Object appendEL(Object o) {
-		throw new PageRuntimeException(new CasterException(sct,"Array"));
+		throw new PageRuntimeException(new CasterException(sct, "Array"));
 	}
 
 	@Override
@@ -351,12 +347,12 @@ public final class ArgumentThreadImpl implements Argument {
 
 	@Override
 	public Object get(int key, Object defaultValue) {
-		return sct.get(ArgumentIntKey.init(key),defaultValue);
+		return sct.get(ArgumentIntKey.init(key), defaultValue);
 	}
 
 	@Override
 	public int getDimension() {
-		throw new PageRuntimeException(new CasterException(sct,"Array"));
+		throw new PageRuntimeException(new CasterException(sct, "Array"));
 	}
 
 	@Override
@@ -366,17 +362,17 @@ public final class ArgumentThreadImpl implements Argument {
 
 	@Override
 	public boolean insert(int key, Object value) throws PageException {
-		throw new CasterException(sct,"Array");
+		throw new CasterException(sct, "Array");
 	}
 
 	@Override
 	public int[] intKeys() {
-		throw new PageRuntimeException(new CasterException(sct,"Array"));
+		throw new PageRuntimeException(new CasterException(sct, "Array"));
 	}
 
 	@Override
 	public Object prepend(Object o) throws PageException {
-		throw new CasterException(sct,"Array");
+		throw new CasterException(sct, "Array");
 	}
 
 	@Override
@@ -391,7 +387,7 @@ public final class ArgumentThreadImpl implements Argument {
 
 	@Override
 	public void resize(int to) throws PageException {
-		throw new CasterException(sct,"Array");
+		throw new CasterException(sct, "Array");
 	}
 
 	/**
@@ -412,19 +408,20 @@ public final class ArgumentThreadImpl implements Argument {
 
 	@Override
 	public void sort(String sortType, String sortOrder) throws PageException {
-		throw new CasterException(sct,"Array");
+		throw new CasterException(sct, "Array");
 	}
 
 	@Override
 	public void sortIt(Comparator com) {
-		throw new PageRuntimeException(new CasterException(sct,"Array"));
+		throw new PageRuntimeException(new CasterException(sct, "Array"));
 	}
 
 	@Override
 	public Object[] toArray() {
 		try {
 			return Caster.toArray(sct).toArray();
-		} catch (PageException pe) {
+		}
+		catch (PageException pe) {
 			throw new PageRuntimeException(pe);
 		}
 	}
@@ -433,13 +430,14 @@ public final class ArgumentThreadImpl implements Argument {
 	public List toList() {
 		try {
 			return Caster.toArray(sct).toList();
-		} catch (PageException pe) {
+		}
+		catch (PageException pe) {
 			throw new PageRuntimeException(pe);
 		}
 	}
-	
+
 	@Override
-	public Object clone(){
+	public Object clone() {
 		return duplicate(true);
 	}
 
@@ -465,17 +463,17 @@ public final class ArgumentThreadImpl implements Argument {
 
 	@Override
 	public Object call(PageContext pc, Key methodName, Object[] args) throws PageException {
-		return MemberUtil.call(pc, this, methodName, args, CFTypes.TYPE_ARRAY, "array");
+		return MemberUtil.call(pc, this, methodName, args, new short[] { CFTypes.TYPE_ARRAY }, new String[] { "array" });
 	}
 
 	@Override
 	public Object callWithNamedValues(PageContext pc, Key methodName, Struct args) throws PageException {
-		return MemberUtil.callWithNamedValues(pc,this,methodName,args, CFTypes.TYPE_ARRAY, "array");
+		return MemberUtil.callWithNamedValues(pc, this, methodName, args, CFTypes.TYPE_ARRAY, "array");
 	}
-	
+
 	@Override
 	public java.util.Iterator<String> getIterator() {
-    	return keysAsStringIterator();
-    } 
+		return keysAsStringIterator();
+	}
 
 }

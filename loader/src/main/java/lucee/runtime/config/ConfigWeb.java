@@ -29,6 +29,7 @@ import lucee.runtime.PageContext;
 import lucee.runtime.cache.tag.CacheHandlerCollection;
 import lucee.runtime.exp.PageException;
 import lucee.runtime.lock.LockManager;
+import lucee.runtime.net.amf.AMFEngine;
 import lucee.runtime.search.SearchEngine;
 
 /**
@@ -57,8 +58,7 @@ public interface ConfigWeb extends Config, ServletConfig {
 	 * @param type Config.CACHE_TYPE_***
 	 * @return
 	 */
-	public CacheHandlerCollection getCacheHandlerCollection(int type,
-			CacheHandlerCollection defaultValue);
+	public CacheHandlerCollection getCacheHandlerCollection(int type, CacheHandlerCollection defaultValue);
 
 	@Override
 	public IdentificationWeb getIdentification();
@@ -68,9 +68,8 @@ public interface ConfigWeb extends Config, ServletConfig {
 	public SearchEngine getSearchEngine(PageContext pc) throws PageException;
 
 	public boolean getSuppressWSBeforeArg();
-	
 
 	public JspWriter getWriter(PageContext pc, HttpServletRequest req, HttpServletResponse rsp);
-	
 
+	public AMFEngine getAMFEngine();
 }

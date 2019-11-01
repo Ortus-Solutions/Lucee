@@ -30,6 +30,7 @@ import lucee.runtime.PageContext;
 import lucee.runtime.dump.DumpData;
 import lucee.runtime.dump.DumpProperties;
 import lucee.runtime.dump.DumpUtil;
+import lucee.runtime.engine.ThreadLocalPageContext;
 import lucee.runtime.exp.ExpressionException;
 import lucee.runtime.exp.PageException;
 import lucee.runtime.op.Caster;
@@ -46,68 +47,74 @@ import lucee.runtime.type.util.ArrayUtil;
 import lucee.runtime.util.VariableUtil;
 import lucee.runtime.util.VariableUtilImpl;
 
-
 /**
  * class to handle initialising and call native object from lucee
  */
-public class JavaObject implements Objects,ObjectWrap {
-	
+public class JavaObject implements Objects, ObjectWrap {
+
+	private static final long serialVersionUID = -3716657460843769960L;
+
 	private Class clazz;
-	private boolean isInit=false;
+	private boolean isInit = false;
 	private Object object;
-    private VariableUtil variableUtil;
-    
+	private transient VariableUtil _variableUtil;
+
 	/**
 	 * constructor with className to load
+	 * 
 	 * @param variableUtil
 	 * @param clazz
 	 * @throws ExpressionException
 	 */
-	public JavaObject(VariableUtil variableUtil,Class clazz) {
-	    this.variableUtil=variableUtil;
-		this.clazz=clazz;
+	public JavaObject(VariableUtil variableUtil, Class clazz) {
+		this._variableUtil = variableUtil;
+		this.clazz = clazz;
 	}
 
-
-	public JavaObject(VariableUtil variableUtil,Object object) {
-	    this.variableUtil=variableUtil;
-		this.clazz=object.getClass();
-		this.object=object;
-		isInit=true;
+	public JavaObject(VariableUtil variableUtil, Object object) {
+		this._variableUtil = variableUtil;
+		this.clazz = object.getClass();
+		this.object = object;
+		isInit = object != null;
 	}
 
 	public Object get(PageContext pc, String propertyName) throws PageException {
-        if(isInit) {
-            return variableUtil.get(pc,object,propertyName);
-        }
-            
-        // Check Field
-            Field[] fields = Reflector.getFieldsIgnoreCase(clazz,propertyName,null);
-            if(!ArrayUtil.isEmpty(fields) && Modifier.isStatic(fields[0].getModifiers())) {
-    			try {
-                    return fields[0].get(null);
-                } 
-                catch (Exception e) {
-                    throw Caster.toPageException(e);
-                }
-    		}
-        // Getter
-            MethodInstance mi = Reflector.getGetterEL(clazz,propertyName);
-            if(mi!=null) {
-                if(Modifier.isStatic(mi.getMethod().getModifiers())) {
-                    try {
-                        return mi.invoke(null);
-                    } 
-                    catch (IllegalAccessException e) {
-                        throw Caster.toPageException(e);
-                    } 
-                    catch (InvocationTargetException e) {
-                        throw Caster.toPageException(e.getTargetException());
-                    }    
-                }
-            }
-        // male Instance
-        return variableUtil.get(pc,init(),propertyName);  
+		if (isInit) {
+			return variableUtil(pc).get(pc, object, propertyName);
+		}
+
+		// Check Field
+		Field[] fields = Reflector.getFieldsIgnoreCase(clazz, propertyName, null);
+		if (!ArrayUtil.isEmpty(fields) && Modifier.isStatic(fields[0].getModifiers())) {
+			try {
+				return fields[0].get(null);
+			}
+			catch (Exception e) {
+				throw Caster.toPageException(e);
+			}
+		}
+		// Getter
+		MethodInstance mi = Reflector.getGetterEL(clazz, propertyName);
+		if (mi != null) {
+			if (Modifier.isStatic(mi.getMethod().getModifiers())) {
+				try {
+					return mi.invoke(null);
+				}
+				catch (IllegalAccessException e) {
+					throw Caster.toPageException(e);
+				}
+				catch (InvocationTargetException e) {
+					throw Caster.toPageException(e.getTargetException());
+				}
+			}
+		}
+		// male Instance
+		return variableUtil(pc).get(pc, init(), propertyName);
+	}
+
+	private VariableUtil variableUtil(PageContext pc) {
+		if (_variableUtil != null) return _variableUtil;
+		return ThreadLocalPageContext.get(pc).getVariableUtil();
 	}
 
 	@Override
@@ -115,33 +122,35 @@ public class JavaObject implements Objects,ObjectWrap {
 		return get(pc, key.getString());
 	}
 
-    public Object get(PageContext pc, String propertyName, Object defaultValue) {
-        if(isInit) {
-            return variableUtil.get(pc,object,propertyName,defaultValue);  
-        }
-        // Field
-        Field[] fields = Reflector.getFieldsIgnoreCase(clazz,propertyName,null);
-        if(!ArrayUtil.isEmpty(fields) && Modifier.isStatic(fields[0].getModifiers())) {
-			try {
-                return fields[0].get(null);
-            } catch (Exception e) {}
+	public Object get(PageContext pc, String propertyName, Object defaultValue) {
+		if (isInit) {
+			return variableUtil(pc).get(pc, object, propertyName, defaultValue);
 		}
-        // Getter
-        MethodInstance mi = Reflector.getGetterEL(clazz,propertyName);
-        if(mi!=null) {
-            if(Modifier.isStatic(mi.getMethod().getModifiers())) {
-                try {
-                    return mi.invoke(null);
-                } 
-                catch (Exception e) {}    
-            }
-        }
-        try {
-            return variableUtil.get(pc,init(),propertyName,defaultValue);  
-        } catch (PageException e1) {
-            return defaultValue;
-        }         
-    }
+		// Field
+		Field[] fields = Reflector.getFieldsIgnoreCase(clazz, propertyName, null);
+		if (!ArrayUtil.isEmpty(fields) && Modifier.isStatic(fields[0].getModifiers())) {
+			try {
+				return fields[0].get(null);
+			}
+			catch (Exception e) {}
+		}
+		// Getter
+		MethodInstance mi = Reflector.getGetterEL(clazz, propertyName);
+		if (mi != null) {
+			if (Modifier.isStatic(mi.getMethod().getModifiers())) {
+				try {
+					return mi.invoke(null);
+				}
+				catch (Exception e) {}
+			}
+		}
+		try {
+			return variableUtil(pc).get(pc, init(), propertyName, defaultValue);
+		}
+		catch (PageException e1) {
+			return defaultValue;
+		}
+	}
 
 	@Override
 	public Object get(PageContext pc, Collection.Key key, Object defaultValue) {
@@ -149,107 +158,108 @@ public class JavaObject implements Objects,ObjectWrap {
 	}
 
 	@Override
-	public Object set(PageContext pc, Collection.Key propertyName, Object value) throws PageException  {
-		if(isInit) {
-		    return ((VariableUtilImpl)variableUtil).set(pc,object,propertyName,value);
+	public Object set(PageContext pc, Collection.Key propertyName, Object value) throws PageException {
+		if (isInit) {
+			return ((VariableUtilImpl) variableUtil(pc)).set(pc, object, propertyName, value);
 		}
-	    // Field
-		Field[] fields=Reflector.getFieldsIgnoreCase(clazz,propertyName.getString(),null);
-		if(!ArrayUtil.isEmpty(fields) && Modifier.isStatic(fields[0].getModifiers())) {
+		// Field
+		Field[] fields = Reflector.getFieldsIgnoreCase(clazz, propertyName.getString(), null);
+		if (!ArrayUtil.isEmpty(fields) && Modifier.isStatic(fields[0].getModifiers())) {
 			try {
-                fields[0].set(null,value);
-                return value;
-            } catch (Exception e) {
-                Caster.toPageException(e);
-            }
+				fields[0].set(null, value);
+				return value;
+			}
+			catch (Exception e) {
+				Caster.toPageException(e);
+			}
 		}
-        // Getter
-        MethodInstance mi = Reflector.getSetter(clazz,propertyName.getString(),value,null);
-        if(mi!=null) {
-            if(Modifier.isStatic(mi.getMethod().getModifiers())) {
-                try {
-                    return mi.invoke(null);
-                } 
-                catch (IllegalAccessException e) {
-                    throw Caster.toPageException(e);
-                } 
-                catch (InvocationTargetException e) {
-                    throw Caster.toPageException(e.getTargetException());
-                }    
-            }
-        }
-        
+		// Getter
+		MethodInstance mi = Reflector.getSetter(clazz, propertyName.getString(), value, null);
+		if (mi != null) {
+			if (Modifier.isStatic(mi.getMethod().getModifiers())) {
+				try {
+					return mi.invoke(null);
+				}
+				catch (IllegalAccessException e) {
+					throw Caster.toPageException(e);
+				}
+				catch (InvocationTargetException e) {
+					throw Caster.toPageException(e.getTargetException());
+				}
+			}
+		}
 
-	    return ((VariableUtilImpl)variableUtil).set(pc,init(),propertyName,value);
+		return ((VariableUtilImpl) variableUtil(pc)).set(pc, init(), propertyName, value);
 	}
 
-    @Override
-    public Object setEL(PageContext pc, Collection.Key propertyName, Object value) {
-		if(isInit) {
-		    return variableUtil.setEL(pc,object,propertyName,value);
+	@Override
+	public Object setEL(PageContext pc, Collection.Key propertyName, Object value) {
+		if (isInit) {
+			return variableUtil(pc).setEL(pc, object, propertyName, value);
 		}
-	    // Field
-		Field[] fields=Reflector.getFieldsIgnoreCase(clazz,propertyName.getString(),null);
-		if(!ArrayUtil.isEmpty(fields) && Modifier.isStatic(fields[0].getModifiers())) {
+		// Field
+		Field[] fields = Reflector.getFieldsIgnoreCase(clazz, propertyName.getString(), null);
+		if (!ArrayUtil.isEmpty(fields) && Modifier.isStatic(fields[0].getModifiers())) {
 			try {
-                fields[0].set(null,value);
-            } catch (Exception e) {}
+				fields[0].set(null, value);
+			}
+			catch (Exception e) {}
 			return value;
 		}
-        // Getter
-        MethodInstance mi = Reflector.getSetter(clazz,propertyName.getString(),value,null);
-        if(mi!=null) {
-            if(Modifier.isStatic(mi.getMethod().getModifiers())) {
-                try {
-                    return mi.invoke(null);
-                } 
-                catch (Exception e) {}    
-            }
-        }
-           
-        try {
-    	    return variableUtil.setEL(pc,init(),propertyName,value);
-        } catch (PageException e1) {
-            return value;
-        }
-    }
+		// Getter
+		MethodInstance mi = Reflector.getSetter(clazz, propertyName.getString(), value, null);
+		if (mi != null) {
+			if (Modifier.isStatic(mi.getMethod().getModifiers())) {
+				try {
+					return mi.invoke(null);
+				}
+				catch (Exception e) {}
+			}
+		}
+
+		try {
+			return variableUtil(pc).setEL(pc, init(), propertyName, value);
+		}
+		catch (PageException e1) {
+			return value;
+		}
+	}
 
 	public Object call(PageContext pc, String methodName, Object[] arguments) throws PageException {
-        if(arguments==null)arguments=new Object[0];
-        
-        // edge cases
-        if(methodName.equalsIgnoreCase("init")) {
-            return init(arguments);
-        }
-        else if(methodName.equalsIgnoreCase("getClass")) {
-            return clazz;
-        }
-        else if(isInit) {
-		    return Reflector.callMethod(object,methodName,arguments);
+		if (arguments == null) arguments = new Object[0];
+
+		// edge cases
+		if (methodName.equalsIgnoreCase("init")) {
+			return init(arguments);
 		}
-        
-        
-	    try {
-		    // get method
-		    MethodInstance mi = Reflector.getMethodInstance(this,clazz,methodName,arguments);
+		else if (methodName.equalsIgnoreCase("getClass")) {
+			return clazz;
+		}
+		else if (isInit) {
+			return Reflector.callMethod(object, methodName, arguments);
+		}
+
+		try {
+			// get method
+			MethodInstance mi = Reflector.getMethodInstance(this, clazz, methodName, arguments);
 			// call static method if exist
-		    if(Modifier.isStatic(mi.getMethod().getModifiers())) {
+			if (Modifier.isStatic(mi.getMethod().getModifiers())) {
 				return mi.invoke(null);
 			}
-		    
-		    if(arguments.length==0 && methodName.equalsIgnoreCase("getClass")){
-		    	return clazz;
-		    }
-		    
-		    // invoke constructor and call instance method
+
+			if (arguments.length == 0 && methodName.equalsIgnoreCase("getClass")) {
+				return clazz;
+			}
+
+			// invoke constructor and call instance method
 			return mi.invoke(init());
 		}
-		catch(InvocationTargetException e) {
+		catch (InvocationTargetException e) {
 			Throwable target = e.getTargetException();
-			if(target instanceof PageException) throw (PageException)target;
+			if (target instanceof PageException) throw (PageException) target;
 			throw Caster.toPageException(e.getTargetException());
 		}
-		catch(Exception e) {
+		catch (Exception e) {
 			throw Caster.toPageException(e);
 		}
 	}
@@ -259,14 +269,14 @@ public class JavaObject implements Objects,ObjectWrap {
 		return call(pc, methodName.getString(), arguments);
 	}
 
-    public Object callWithNamedValues(PageContext pc, String methodName, Struct args) throws PageException {
-        Iterator<Object> it = args.valueIterator();
-    	List<Object> values=new ArrayList<Object>();
-        while(it.hasNext()) {
-            values.add(it.next());
-        }   
-        return call(pc,methodName,values.toArray(new Object[values.size()]));
-    }
+	public Object callWithNamedValues(PageContext pc, String methodName, Struct args) throws PageException {
+		Iterator<Object> it = args.valueIterator();
+		List<Object> values = new ArrayList<Object>();
+		while (it.hasNext()) {
+			values.add(it.next());
+		}
+		return call(pc, methodName, values.toArray(new Object[values.size()]));
+	}
 
 	@Override
 	public Object callWithNamedValues(PageContext pc, Collection.Key methodName, Struct args) throws PageException {
@@ -275,123 +285,129 @@ public class JavaObject implements Objects,ObjectWrap {
 
 	/**
 	 * initialize method (default no object)
+	 * 
 	 * @return initialize object
 	 * @throws PageException
 	 */
 	private Object init() throws PageException {
 		return init(new Object[0]);
 	}
-	
+
 	private Object init(Object defaultValue) {
-		return init(new Object[0],defaultValue);
+		return init(new Object[0], defaultValue);
 	}
-	
+
 	/**
 	 * initialize method
+	 * 
 	 * @param arguments
 	 * @return Initalised Object
 	 * @throws PageException
 	 */
 	private Object init(Object[] arguments) throws PageException {
-		object=Reflector.callConstructor(clazz,arguments);
-		isInit=true;
-		return object;
-	}
-	private Object init(Object[] arguments, Object defaultValue) {
-		object=Reflector.callConstructor(clazz,arguments,defaultValue);
-		isInit=object!=defaultValue;
+		object = Reflector.callConstructor(clazz, arguments);
+		isInit = true;
 		return object;
 	}
 
+	private Object init(Object[] arguments, Object defaultValue) {
+		object = Reflector.callConstructor(clazz, arguments, defaultValue);
+		isInit = object != defaultValue;
+		return object;
+	}
 
 	@Override
 	public Object getEmbededObject() throws PageException {
-		if(object==null)init();
+		if (object == null) init();
 		return object;
 	}
 
 	@Override
 	public DumpData toDumpData(PageContext pageContext, int maxlevel, DumpProperties props) {
 		try {
-			return DumpUtil.toDumpData(getEmbededObject(), pageContext,maxlevel,props);
-		} catch (PageException e) {
-			return DumpUtil.toDumpData(clazz, pageContext,maxlevel,props);
+			return DumpUtil.toDumpData(getEmbededObject(), pageContext, maxlevel, props);
+		}
+		catch (PageException e) {
+			return DumpUtil.toDumpData(clazz, pageContext, maxlevel, props);
 		}
 	}
-	
+
 	/**
 	 * @return the containing Class
 	 */
-	public Class getClazz() {return clazz;}
+	public Class getClazz() {
+		return clazz;
+	}
 
-    public boolean isInitalized() {
-        return isInit;
-    }
+	public boolean isInitalized() {
+		return isInit;
+	}
 
-    @Override
-    public String castToString() throws PageException {
-        return Caster.toString(getEmbededObject());
-    }
-    
+	@Override
+	public String castToString() throws PageException {
+		return Caster.toString(getEmbededObject());
+	}
 
-
-    @Override
-    public String castToString(String defaultValue) {
-    	try {
-			return Caster.toString(getEmbededObject(),defaultValue);
-		} catch (PageException e) {
+	@Override
+	public String castToString(String defaultValue) {
+		try {
+			return Caster.toString(getEmbededObject(), defaultValue);
+		}
+		catch (PageException e) {
 			return defaultValue;
 		}
-    }
-    
+	}
 
-    @Override
-    public boolean castToBooleanValue() throws PageException {
-        return Caster.toBooleanValue(getEmbededObject());
-    }
-    
-    @Override
-    public Boolean castToBoolean(Boolean defaultValue) {
-        try {
-			return Caster.toBoolean(getEmbededObject(),defaultValue);
-		} catch (PageException e) {
+	@Override
+	public boolean castToBooleanValue() throws PageException {
+		return Caster.toBooleanValue(getEmbededObject());
+	}
+
+	@Override
+	public Boolean castToBoolean(Boolean defaultValue) {
+		try {
+			return Caster.toBoolean(getEmbededObject(), defaultValue);
+		}
+		catch (PageException e) {
 			return defaultValue;
 		}
-    }
+	}
 
-    @Override
-    public double castToDoubleValue() throws PageException {
-        return Caster.toDoubleValue(getEmbededObject());
-    }
-    
-    @Override
-    public double castToDoubleValue(double defaultValue) {
-        try {
-			return Caster.toDoubleValue(getEmbededObject(),true,defaultValue);
-		} catch (PageException e) {
+	@Override
+	public double castToDoubleValue() throws PageException {
+		return Caster.toDoubleValue(getEmbededObject());
+	}
+
+	@Override
+	public double castToDoubleValue(double defaultValue) {
+		try {
+			return Caster.toDoubleValue(getEmbededObject(), true, defaultValue);
+		}
+		catch (PageException e) {
 			return defaultValue;
 		}
-    }
+	}
 
-    @Override
-    public DateTime castToDateTime() throws PageException {
-        return Caster.toDatetime(getEmbededObject(),null);
-    }
-    
-    @Override
-    public DateTime castToDateTime(DateTime defaultValue) {
-        try {
-			return DateCaster.toDateAdvanced(getEmbededObject(),DateCaster.CONVERTING_TYPE_OFFSET,null,defaultValue);
-		} catch (PageException e) {
+	@Override
+	public DateTime castToDateTime() throws PageException {
+		return Caster.toDatetime(getEmbededObject(), null);
+	}
+
+	@Override
+	public DateTime castToDateTime(DateTime defaultValue) {
+		try {
+			return DateCaster.toDateAdvanced(getEmbededObject(), DateCaster.CONVERTING_TYPE_OFFSET, null, defaultValue);
+		}
+		catch (PageException e) {
 			return defaultValue;
 		}
-    }
+	}
 
-    @Override
-    public Object getEmbededObject(Object def) {
-    	if(object==null)init(def);
+	@Override
+	public Object getEmbededObject(Object def) {
+		if (object == null) init(def);
 		return object;
-    }
+	}
 
 	/**
 	 * @return the object
@@ -407,7 +423,7 @@ public class JavaObject implements Objects,ObjectWrap {
 
 	@Override
 	public int compareTo(DateTime dt) throws PageException {
-		return Operator.compare((Date)castToDateTime(), (Date)dt);
+		return Operator.compare((Date) castToDateTime(), (Date) dt);
 	}
 
 	@Override

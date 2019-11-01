@@ -27,8 +27,7 @@ import lucee.runtime.op.Castable;
 /**
  * 
  */
-public abstract class DateTime extends Date implements Dumpable, Castable,
-		Serializable {
+public abstract class DateTime extends Date implements Dumpable, Castable, Serializable {
 
 	private static final long serialVersionUID = 2248055338411091647L;
 

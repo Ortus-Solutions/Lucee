@@ -18,8 +18,9 @@
  */
 package lucee.runtime.config;
 
-
+import lucee.commons.lang.ExceptionUtil;
 import lucee.runtime.crypt.CFMXCompat;
+import lucee.runtime.engine.ThreadLocalPageContext;
 import lucee.runtime.exp.PageException;
 import lucee.runtime.functions.other.Encrypt;
 import lucee.runtime.net.proxy.ProxyData;
@@ -44,7 +45,8 @@ public class RemoteClientImpl implements RemoteClient {
 	private String usage;
 	private String id;
 
-	public RemoteClientImpl(String label,String type, String url, String serverUsername, String serverPassword,String adminPassword, ProxyData proxyData, String securityKey,String usage) {
+	public RemoteClientImpl(String label, String type, String url, String serverUsername, String serverPassword, String adminPassword, ProxyData proxyData, String securityKey,
+			String usage) {
 		this.label = label;
 		this.url = url;
 		this.serverUsername = serverUsername;
@@ -115,8 +117,8 @@ public class RemoteClientImpl implements RemoteClient {
 	@Override
 	public String getAdminPasswordEncrypted() {
 		try {
-			return Encrypt.invoke( getAdminPassword(), getSecurityKey(), CFMXCompat.ALGORITHM_NAME, "uu", null, 0 );
-		} 
+			return Encrypt.invoke(getAdminPassword(), getSecurityKey(), CFMXCompat.ALGORITHM_NAME, "uu", null, 0);
+		}
 		catch (PageException e) {
 			return null;
 		}
@@ -134,37 +136,34 @@ public class RemoteClientImpl implements RemoteClient {
 
 	@Override
 	public boolean hasUsage(String usage) {
-		return ListUtil.listFindNoCaseIgnoreEmpty(this.usage,usage,',')!=-1 ;
+		return ListUtil.listFindNoCaseIgnoreEmpty(this.usage, usage, ',') != -1;
 	}
 
 	@Override
 	public String getId(Config config) {
 
-		if(id!=null) return id;
-		
+		if (id != null) return id;
+
 		Struct attrColl = new StructImpl();
 		attrColl.setEL(KeyConstants._action, "getToken");
-		
+
 		Struct args = new StructImpl();
 		args.setEL(KeyConstants._type, getType());
 		args.setEL(RemoteClientTask.PASSWORD, getAdminPasswordEncrypted());
 		args.setEL(RemoteClientTask.CALLER_ID, "undefined");
 		args.setEL(RemoteClientTask.ATTRIBUTE_COLLECTION, attrColl);
-		
-		
-		
+
 		try {
-			WSClient rpc = 
-				WSClient.getInstance(null,getUrl(),getServerUsername(),getServerPassword(),getProxyData());
-			
+			WSClient rpc = ((ConfigImpl) ThreadLocalPageContext.getConfig(config)).getWSHandler().getWSClient(getUrl(), getServerUsername(), getServerPassword(), getProxyData());
+
 			Object result = rpc.callWithNamedValues(config, KeyConstants._invoke, args);
-			return id=IdentificationImpl.createId(securityKey, Caster.toString(result,null),false, null);
-			
-		} 
-		catch (Throwable t) {t.printStackTrace();
+			return id = IdentificationImpl.createId(securityKey, Caster.toString(result, null), false, null);
+
+		}
+		catch (Throwable t) {
+			ExceptionUtil.rethrowIfNecessary(t);
 			return null;
 		}
 	}
-	
 
 }

@@ -22,7 +22,7 @@ public class CommandResult {
 
 	private final String out, err;
 
-	public CommandResult( String out, String err ) {
+	public CommandResult(String out, String err) {
 
 		this.out = out;
 		this.err = err;

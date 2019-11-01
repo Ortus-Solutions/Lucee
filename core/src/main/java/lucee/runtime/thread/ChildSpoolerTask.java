@@ -29,9 +29,9 @@ public class ChildSpoolerTask extends SpoolerTaskSupport {
 
 	private ChildThreadImpl ct;
 
-	public ChildSpoolerTask(ChildThreadImpl ct,ExecutionPlan[] plans) {
+	public ChildSpoolerTask(ChildThreadImpl ct, ExecutionPlan[] plans) {
 		super(plans);
-		this.ct=ct;
+		this.ct = ct;
 	}
 
 	@Override
@@ -44,7 +44,7 @@ public class ChildSpoolerTask extends SpoolerTaskSupport {
 	@Override
 	public Object execute(Config config) throws PageException {
 		PageException pe = ct.execute(config);
-		if(pe!=null) throw pe;
+		if (pe != null) throw pe;
 		return null;
 	}
 

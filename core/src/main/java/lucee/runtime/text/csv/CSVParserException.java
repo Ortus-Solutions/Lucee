@@ -31,12 +31,12 @@ public final class CSVParserException extends ApplicationException {
 	public CSVParserException(String message) {
 		super(message);
 	}
-	
+
 	/**
 	 * @param message
 	 * @param detail
 	 */
 	public CSVParserException(String message, String detail) {
 		super(message, detail);
-	}	
+	}
 }

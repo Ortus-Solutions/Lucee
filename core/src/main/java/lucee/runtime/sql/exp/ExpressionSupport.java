@@ -23,11 +23,10 @@ public abstract class ExpressionSupport implements Expression {
 	private int index;
 	private String alias;
 	private boolean directionBackward;
-	
 
 	@Override
 	public void setIndex(int index) {
-		this.index=index;
+		this.index = index;
 	}
 
 	@Override
@@ -37,7 +36,7 @@ public abstract class ExpressionSupport implements Expression {
 
 	@Override
 	public String getAlias() {
-		if(alias==null) return "column_"+(getIndex()-1);
+		if (alias == null) return "column_" + (getIndex() - 1);
 		return alias;
 	}
 
@@ -48,17 +47,17 @@ public abstract class ExpressionSupport implements Expression {
 
 	@Override
 	public boolean hasAlias() {
-		return alias!=null;
+		return alias != null;
 	}
 
 	@Override
 	public boolean hasIndex() {
-		return index!=0;
+		return index != 0;
 	}
 
 	@Override
 	public void setDirectionBackward(boolean b) {
-		directionBackward=b;
+		directionBackward = b;
 	}
 
 	/**

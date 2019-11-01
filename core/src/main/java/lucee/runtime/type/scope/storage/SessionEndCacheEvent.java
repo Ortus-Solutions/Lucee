@@ -20,6 +20,7 @@ package lucee.runtime.type.scope.storage;
 
 import lucee.commons.io.cache.CacheEntry;
 import lucee.commons.io.cache.CacheEventListener;
+import lucee.commons.lang.ExceptionUtil;
 import lucee.runtime.CFMLFactoryImpl;
 import lucee.runtime.config.Config;
 import lucee.runtime.config.ConfigWeb;
@@ -32,39 +33,40 @@ public class SessionEndCacheEvent implements CacheEventListener {
 
 	@Override
 	public void onExpires(CacheEntry entry) {
-		
-		String key=entry.getKey();
-		
+
+		String key = entry.getKey();
+
 		// type
-		int index=key.indexOf(':'),last;
-		//String type=key.substring(0,index);
-		
+		int index = key.indexOf(':'), last;
+		// String type=key.substring(0,index);
+
 		// cfid
-		last=index+1;
-		index=key.indexOf(':',last);
-		String cfid=key.substring(last,index);
-		
+		last = index + 1;
+		index = key.indexOf(':', last);
+		String cfid = key.substring(last, index);
+
 		// appName
-		last=index+1;
-		index=key.indexOf(':',last);
-		String appName=key.substring(last);
-				
+		last = index + 1;
+		index = key.indexOf(':', last);
+		String appName = key.substring(last);
+
 		Config config = ThreadLocalPageContext.getConfig();
-		
-		_doEnd((CFMLFactoryImpl)( ((ConfigWeb)config).getFactory()), appName, cfid);
+
+		_doEnd((CFMLFactoryImpl) (((ConfigWeb) config).getFactory()), appName, cfid);
 	}
-	
-	private void _doEnd(CFMLFactoryImpl factory,String appName, String cfid) {
+
+	private void _doEnd(CFMLFactoryImpl factory, String appName, String cfid) {
 		ApplicationListener listener = factory.getConfig().getApplicationListener();
 		try {
-			factory.getScopeContext().info("call onSessionEnd for "+appName+"/"+cfid);
+			factory.getScopeContext().info("call onSessionEnd for " + appName + "/" + cfid);
 			listener.onSessionEnd(factory, appName, cfid);
-		} 
+		}
 		catch (Throwable t) {
-			ExceptionHandler.log(factory.getConfig(),Caster.toPageException(t));
+			ExceptionUtil.rethrowIfNecessary(t);
+			ExceptionHandler.log(factory.getConfig(), Caster.toPageException(t));
 		}
 	}
-	
+
 	@Override
 	public void onRemove(CacheEntry entry) {
 		// TODO Auto-generated method stub
@@ -76,7 +78,6 @@ public class SessionEndCacheEvent implements CacheEventListener {
 		// TODO Auto-generated method stub
 
 	}
-
 
 	@Override
 	public CacheEventListener duplicate() {

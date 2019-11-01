@@ -18,7 +18,6 @@
  **/
 package coldfusion.sql;
 
-
 import java.util.Map;
 
 import lucee.runtime.db.ClassDefinition;
@@ -178,7 +177,5 @@ public interface DataSourceDef {
 	public void setMaxPooledStatements(int arg1);
 
 	public int getMaxPooledStatements();
-
-
 
 }

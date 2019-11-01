@@ -23,6 +23,7 @@ package lucee.runtime.functions.arrays;
 
 import lucee.runtime.PageContext;
 import lucee.runtime.exp.ExpressionException;
+import lucee.runtime.exp.FunctionException;
 import lucee.runtime.exp.PageException;
 import lucee.runtime.ext.function.BIF;
 import lucee.runtime.op.Caster;
@@ -33,13 +34,14 @@ public final class ArraySwap extends BIF {
 
 	private static final long serialVersionUID = 4539191577529273165L;
 
-	public static boolean call(PageContext pc ,Array array, double number, double number2) throws ExpressionException {
-		ArrayUtil.swap(array,(int)number,(int)number2);
+	public static boolean call(PageContext pc, Array array, double number, double number2) throws ExpressionException {
+		ArrayUtil.swap(array, (int) number, (int) number2);
 		return true;
 	}
-	
+
 	@Override
 	public Object invoke(PageContext pc, Object[] args) throws PageException {
-		return call(pc,Caster.toArray(args[0]),Caster.toDoubleValue(args[1]),Caster.toDoubleValue(args[2]));
+		if (args.length == 3) return call(pc, Caster.toArray(args[0]), Caster.toDoubleValue(args[1]), Caster.toDoubleValue(args[2]));
+		else throw new FunctionException(pc, "ArraySwap", 3, 3, args.length);
 	}
 }

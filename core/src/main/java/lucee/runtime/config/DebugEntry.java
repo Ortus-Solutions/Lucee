@@ -41,21 +41,21 @@ public class DebugEntry {
 	private final String fullname;
 
 	public DebugEntry(String id, String type, String ipRange, String label, String path, String fullname, Struct custom) throws IOException {
-		this(id,type,IPRange.getInstance(ipRange),ipRange,label,path,fullname,custom,false);
+		this(id, type, IPRange.getInstance(ipRange), ipRange, label, path, fullname, custom, false);
 	}
-	
-	private DebugEntry(String id, String type, IPRange ipRange,String strIpRange, String label, String path, String fullname, Struct custom, boolean readOnly) {
-		this.id=id;
-		this.type=type;
-		this.strIpRange=strIpRange;
-		this.ipRange=ipRange;
-		this.label=label;
-		this.custom=custom;
-		this.readOnly=readOnly;
-		this.path=path;
-		this.fullname=fullname;
+
+	private DebugEntry(String id, String type, IPRange ipRange, String strIpRange, String label, String path, String fullname, Struct custom, boolean readOnly) {
+		this.id = id;
+		this.type = type;
+		this.strIpRange = strIpRange;
+		this.ipRange = ipRange;
+		this.label = label;
+		this.custom = custom;
+		this.readOnly = readOnly;
+		this.path = path;
+		this.fullname = fullname;
 	}
-	
+
 	/**
 	 * @return the path
 	 */
@@ -97,6 +97,7 @@ public class DebugEntry {
 	public String getIpRangeAsString() {
 		return strIpRange;
 	}
+
 	public IPRange getIpRange() {
 		return ipRange;
 	}
@@ -116,31 +117,29 @@ public class DebugEntry {
 	}
 
 	public DebugEntry duplicate(boolean readOnly) {
-		DebugEntry de = new DebugEntry(id, type, ipRange,strIpRange, label, path,fullname,custom,readOnly);
+		DebugEntry de = new DebugEntry(id, type, ipRange, strIpRange, label, path, fullname, custom, readOnly);
 		return de;
 	}
-	
+
 	public static String organizeIPRange(String ipRange) {
 		String[] arr = ListUtil.trim(ListUtil.trimItems(ListUtil.listToStringArray(ipRange, ',')));
-		Set<String> set=new HashSet<String>();
-		for(int i=0;i<arr.length;i++){
+		Set<String> set = new HashSet<String>();
+		for (int i = 0; i < arr.length; i++) {
 			set.add(arr[i]);
 		}
-		arr=set.toArray(new String[set.size()]);
+		arr = set.toArray(new String[set.size()]);
 		Arrays.sort(arr);
 		return ListUtil.arrayToList(arr, ",");
 	}
-	
 
 	public static String ipRangeToId(String ipRange) {
-		ipRange=organizeIPRange(ipRange);
+		ipRange = organizeIPRange(ipRange);
 		try {
 			return MD5.getDigestAsString(ipRange);
-		} catch (IOException e) {
+		}
+		catch (IOException e) {
 			return ipRange;
 		}
 	}
-	
-	
 
 }

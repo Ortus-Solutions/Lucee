@@ -28,28 +28,27 @@ import javax.servlet.ServletInputStream;
 /**
  * implementation of <code>ServletInputStream</code>.
  */
-public final class ServletInputStreamDummy extends ServletInputStream
-{
-    private InputStream stream;
-    
-    /**
-     * @param data
-     */
-    public ServletInputStreamDummy(byte[] data) {
-        stream = new ByteArrayInputStream(data);
-    }
-    
-    /**
-     * @param barr
-     */
-    public ServletInputStreamDummy(InputStream is) {
-        stream = is;
-    }
-        
-    @Override
-    public int read() throws IOException {
-        return stream.read();
-    }
+public final class ServletInputStreamDummy extends ServletInputStream {
+	private InputStream stream;
+
+	/**
+	 * @param data
+	 */
+	public ServletInputStreamDummy(byte[] data) {
+		stream = new ByteArrayInputStream(data == null ? new byte[0] : data);
+	}
+
+	/**
+	 * @param barr
+	 */
+	public ServletInputStreamDummy(InputStream is) {
+		stream = is == null ? new ByteArrayInputStream(new byte[0]) : is;
+	}
+
+	@Override
+	public int read() throws IOException {
+		return stream.read();
+	}
 
 	@Override
 	public int readLine(byte[] barr, int arg1, int arg2) throws IOException {
@@ -98,7 +97,7 @@ public final class ServletInputStreamDummy extends ServletInputStream
 
 	@Override
 	public boolean isFinished() {
-		throw new RuntimeException("not supported!");	
+		throw new RuntimeException("not supported!");
 	}
 
 	@Override

@@ -21,24 +21,23 @@ package lucee.commons.io.res;
 public interface Resources {
 
 	/**
-	 * adds a default factory, this factory is used, when shemecan't be mapped
-	 * to a other factory
+	 * adds a default factory, this factory is used, when shemecan't be mapped to a other factory
 	 * 
-	 * @param provider
+	 * @param provider resource provider to register
 	 */
 	public void registerDefaultResourceProvider(ResourceProvider provider);
 
 	/**
 	 * adds a additional resource to System
 	 * 
-	 * @param provider
+	 * @param provider resource provider to register
 	 */
 	public void registerResourceProvider(ResourceProvider provider);
 
 	/**
 	 * returns a resource that matching the given path
 	 * 
-	 * @param path
+	 * @param path path to resource
 	 * @return matching resource
 	 */
 	public Resource getResource(String path);

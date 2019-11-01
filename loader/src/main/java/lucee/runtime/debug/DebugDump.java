@@ -35,5 +35,5 @@ public interface DebugDump extends Serializable {
 	/**
 	 * @return the text
 	 */
-	public String getOutput();	
+	public String getOutput();
 }

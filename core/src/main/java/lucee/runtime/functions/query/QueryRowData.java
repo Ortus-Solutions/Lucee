@@ -38,15 +38,15 @@ public class QueryRowData extends BIF {
 
 		int row = Caster.toInteger(rowNumber);
 
-		if ( row < 1 || row > query.getRecordcount() )
-			throw new FunctionException( pc, QueryRowData.class.getSimpleName(), 2, "rowNumber", "The argument rowNumber [" + row + "] must be between 1 and the query's record count [" + query.getRecordcount() + "]" );
+		if (row < 1 || row > query.getRecordcount()) throw new FunctionException(pc, QueryRowData.class.getSimpleName(), 2, "rowNumber",
+				"The argument rowNumber [" + row + "] must be between 1 and the query's record count [" + query.getRecordcount() + "]");
 
 		Collection.Key[] colNames = query.getColumnNames();
 
 		Struct result = new StructImpl();
 
-		for (int col=0; col<colNames.length; col++)
-			result.setEL(colNames[ col ], query.getAt(colNames[ col ], row, NullSupportHelper.empty(pc)));
+		for (int col = 0; col < colNames.length; col++)
+			result.setEL(colNames[col], query.getAt(colNames[col], row, NullSupportHelper.empty(pc)));
 
 		return result;
 	}

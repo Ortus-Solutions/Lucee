@@ -20,6 +20,7 @@ package lucee.runtime.type.it;
 
 import java.util.Iterator;
 
+import lucee.runtime.PageContext;
 import lucee.runtime.config.NullSupportHelper;
 import lucee.runtime.exp.PageException;
 import lucee.runtime.exp.PageRuntimeException;
@@ -29,38 +30,40 @@ import lucee.runtime.type.Resetable;
 import lucee.runtime.type.Struct;
 import lucee.runtime.type.StructImpl;
 
-public class ForEachQueryIterator implements Iterator,Resetable {
+public class ForEachQueryIterator implements Iterator, Resetable {
 
 	private Query qry;
 	private int pid;
-	private int start,current=0;
+	private int start, current = 0;
 	private Key[] names;
+	private PageContext pcMayNull;
 
-
-	public ForEachQueryIterator(Query qry, int pid){
-		this.qry=qry;
-		this.pid=pid;
-		this.start=qry.getCurrentrow(pid);
+	public ForEachQueryIterator(PageContext pc, Query qry, int pid) {
+		this.pcMayNull = pc;
+		this.qry = qry;
+		this.pid = pid;
+		this.start = qry.getCurrentrow(pid);
 		this.names = qry.getColumnNames();
 	}
-	
+
 	@Override
 	public boolean hasNext() {
-		return current<qry.getRecordcount();
+		return current < qry.getRecordcount();
 	}
 
 	@Override
 	public Object next() {
 		try {
-			if(qry.go(++current,pid)) {
-				Struct sct=new StructImpl();
-				Object empty=NullSupportHelper.full()?null:"";
-				for(int i=0;i<names.length;i++){
-					sct.setEL(names[i], qry.get(names[i],empty));
+			if (qry.go(++current, pid)) {
+				Struct sct = new StructImpl();
+				Object empty = NullSupportHelper.full(pcMayNull) ? null : "";
+				for (int i = 0; i < names.length; i++) {
+					sct.setEL(names[i], qry.get(names[i], empty));
 				}
 				return sct;
 			}
-		} catch (PageException pe) {
+		}
+		catch (PageException pe) {
 			throw new PageRuntimeException(pe);
 		}
 		return null;
@@ -70,14 +73,15 @@ public class ForEachQueryIterator implements Iterator,Resetable {
 	public void remove() {
 		try {
 			qry.removeRow(current);
-		} catch (PageException pe) {
+		}
+		catch (PageException pe) {
 			throw new PageRuntimeException(pe);
 		}
 	}
 
 	@Override
 	public void reset() throws PageException {
-		qry.go(start,pid);
+		qry.go(start, pid);
 	}
 
 }

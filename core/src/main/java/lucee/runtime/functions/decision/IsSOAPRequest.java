@@ -19,17 +19,19 @@
 package lucee.runtime.functions.decision;
 
 import lucee.runtime.PageContext;
+import lucee.runtime.config.ConfigImpl;
+import lucee.runtime.engine.ThreadLocalPageContext;
+import lucee.runtime.exp.PageException;
 import lucee.runtime.ext.function.Function;
-import lucee.runtime.net.rpc.AxisUtil;
 
 /**
  * 
  */
 public final class IsSOAPRequest implements Function {
-	
+
 	private static final long serialVersionUID = 5616044662863702066L;
 
-	public static boolean call(PageContext pc) {
-		return AxisUtil.isSOAPRequest();
+	public static boolean call(PageContext pc) throws PageException {
+		return ((ConfigImpl) ThreadLocalPageContext.getConfig(pc)).getWSHandler().isSOAPRequest();
 	}
 }

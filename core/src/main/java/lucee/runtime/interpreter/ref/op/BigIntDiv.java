@@ -20,6 +20,7 @@ package lucee.runtime.interpreter.ref.op;
 
 import lucee.runtime.PageContext;
 import lucee.runtime.exp.PageException;
+import lucee.runtime.interpreter.InterpreterException;
 import lucee.runtime.interpreter.ref.Ref;
 
 /**
@@ -29,15 +30,17 @@ public final class BigIntDiv extends Big {
 
 	/**
 	 * constructor of the class
+	 * 
 	 * @param left
 	 * @param right
 	 */
-	public BigIntDiv(Ref left, Ref right) {
-		super(left,right);
+	public BigIntDiv(Ref left, Ref right, boolean limited) {
+		super(left, right, limited);
 	}
 
 	@Override
 	public Object getValue(PageContext pc) throws PageException {
+		if (limited) throw new InterpreterException("invalid syntax, math operations are not supported in a json string.");
 		return getLeft(pc).toBigInteger().divide(getRight(pc).toBigInteger()).toString();
 	}
 }

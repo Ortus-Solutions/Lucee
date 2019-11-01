@@ -29,6 +29,6 @@ public class SessionStartTime implements Function {
 	private static final long serialVersionUID = -3620067950402419075L;
 
 	public static DateTime call(PageContext pc) throws PageException {
-		return new DateTimeImpl(pc.sessionScope().getCreated(),false);
+		return new DateTimeImpl(pc.sessionScope().getCreated(), false);
 	}
 }

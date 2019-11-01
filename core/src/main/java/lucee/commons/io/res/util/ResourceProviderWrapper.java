@@ -26,14 +26,14 @@ import lucee.commons.io.res.ResourceProvider;
 import lucee.commons.io.res.ResourceProviderPro;
 import lucee.commons.io.res.Resources;
 
-public class ResourceProviderWrapper  implements ResourceProviderPro {
+public class ResourceProviderWrapper implements ResourceProviderPro {
 
 	private ResourceProvider provider;
 
-	public ResourceProviderWrapper(ResourceProvider provider){
-		this.provider=provider;
+	public ResourceProviderWrapper(ResourceProvider provider) {
+		this.provider = provider;
 	}
-	
+
 	@Override
 	public Map getArguments() {
 		return provider.getArguments();
@@ -88,7 +88,7 @@ public class ResourceProviderWrapper  implements ResourceProviderPro {
 	public void unlock(Resource res) {
 		provider.unlock(res);
 	}
-	
+
 	@Override
 	public char getSeparator() {
 		return ResourceUtil.getSeparator(provider);

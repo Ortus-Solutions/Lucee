@@ -30,10 +30,8 @@ import lucee.loader.engine.CFMLEngine;
 import lucee.runtime.config.ConfigWeb;
 
 /**
- * implements a JSP Factory, this class procduce JSP Compatible PageContext
- * Object
- * this object holds also the must interfaces to coldfusion specified
- * functionlity
+ * implements a JSP Factory, this class procduce JSP Compatible PageContext Object this object holds
+ * also the must interfaces to coldfusion specified functionality
  */
 public abstract class CFMLFactory extends JspFactory {
 
@@ -43,8 +41,7 @@ public abstract class CFMLFactory extends JspFactory {
 	public abstract void resetPageContext();
 
 	/**
-	 * similar to getPageContext Method but return the concret implementation of
-	 * the Lucee PageCOntext
+	 * similar to getPageContext Method but return the concrete implementation of the Lucee PageCOntext
 	 * and take the HTTP Version of the Servlet Objects
 	 * 
 	 * @param servlet
@@ -61,14 +58,11 @@ public abstract class CFMLFactory extends JspFactory {
 			boolean autoflush,boolean register)</code>
 	 */
 	@Deprecated
-	public abstract PageContext getLuceePageContext(HttpServlet servlet,
-			HttpServletRequest req, HttpServletResponse rsp,
-			String errorPageURL, boolean needsSession, int bufferSize,
+	public abstract PageContext getLuceePageContext(HttpServlet servlet, HttpServletRequest req, HttpServletResponse rsp, String errorPageURL, boolean needsSession, int bufferSize,
 			boolean autoflush);
 
 	/**
-	 * similar to getPageContext Method but return the concret implementation of
-	 * the Lucee PageCOntext
+	 * similar to getPageContext Method but return the concrete implementation of the Lucee PageCOntext
 	 * and take the HTTP Version of the Servlet Objects
 	 * 
 	 * @param servlet
@@ -79,40 +73,33 @@ public abstract class CFMLFactory extends JspFactory {
 	 * @param bufferSize
 	 * @param autoflush
 	 * @param register register the PageContext to the current thread
-	 * @param timeout timeout in ms, if the value is smaller than 1 it is
-	 *            ignored and the value comming from the context is used
+	 * @param timeout timeout in ms, if the value is smaller than 1 it is ignored and the value comming
+	 *            from the context is used
 	 * @return return the PageContext
 	 */
-	public abstract PageContext getLuceePageContext(HttpServlet servlet,
-			HttpServletRequest req, HttpServletResponse rsp,
-			String errorPageURL, boolean needsSession, int bufferSize,
-			boolean autoflush, boolean register, long timeout,
-			boolean register2RunningThreads, boolean ignoreScopes);
+	public abstract PageContext getLuceePageContext(HttpServlet servlet, HttpServletRequest req, HttpServletResponse rsp, String errorPageURL, boolean needsSession, int bufferSize,
+			boolean autoflush, boolean register, long timeout, boolean register2RunningThreads, boolean ignoreScopes);
 
 	/**
-	 * Similar to the releasePageContext Method, but take lucee PageContext as
-	 * entry
+	 * Similar to the releasePageContext Method, but take lucee PageContext as entry
 	 * 
 	 * @param pc
-	 * @deprecated use instead
-	 *             <code>releaseLuceePageContext(PageContext pc, boolean unregister)</code>
+	 * @deprecated use instead <code>releaseLuceePageContext(PageContext pc, boolean unregister)</code>
 	 */
 	@Deprecated
 	public abstract void releaseLuceePageContext(PageContext pc);
 
 	/**
-	 * Similar to the releasePageContext Method, but take lucee PageContext as
-	 * entry
+	 * Similar to the releasePageContext Method, but take lucee PageContext as entry
 	 * 
 	 * @param pc
 	 * @param unregister unregister from current thread
 	 */
-	public abstract void releaseLuceePageContext(PageContext pc,
-			boolean unregister);
+	public abstract void releaseLuceePageContext(PageContext pc, boolean unregister);
 
 	/**
-	 * check timeout of all running threads, downgrade also priority from all
-	 * thread run longer than 10 seconds
+	 * check timeout of all running threads, downgrade also priority from all thread run longer than 10
+	 * seconds
 	 */
 	public abstract void checkTimeout();
 
@@ -147,7 +134,8 @@ public abstract class CFMLFactory extends JspFactory {
 
 	public abstract CFMLEngine getEngine();
 
-	public abstract int toDialect(String ext);
+	public abstract int toDialect(String ext); // FUTURE deprecate
+	// public abstract int toDialect(String ext, int defaultValue);// FUTURE
 
 	public abstract Iterator<String> getCFMLExtensions();
 

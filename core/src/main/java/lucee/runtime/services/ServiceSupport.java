@@ -21,14 +21,14 @@ package lucee.runtime.services;
 import java.util.HashMap;
 import java.util.Map;
 
+import coldfusion.server.Service;
+import coldfusion.server.ServiceException;
+import coldfusion.server.ServiceMetaData;
 import lucee.runtime.PageContext;
 import lucee.runtime.config.ConfigImpl;
 import lucee.runtime.config.ConfigWebUtil;
 import lucee.runtime.engine.ThreadLocalPageContext;
 import lucee.runtime.exp.SecurityException;
-import coldfusion.server.Service;
-import coldfusion.server.ServiceException;
-import coldfusion.server.ServiceMetaData;
 
 public class ServiceSupport implements Service {
 
@@ -52,7 +52,9 @@ public class ServiceSupport implements Service {
 	}
 
 	@Override
-	public Object getProperty(String key) {return null;}
+	public Object getProperty(String key) {
+		return null;
+	}
 
 	@Override
 	public void setProperty(String key, Object value) {}
@@ -60,13 +62,14 @@ public class ServiceSupport implements Service {
 	@Override
 	public Map getResourceBundle() {
 		return new HashMap();
-	}	
-
-    protected void checkWriteAccess() throws SecurityException {
-    	ConfigWebUtil.checkGeneralWriteAccess(config(),null);
 	}
-    protected void checkReadAccess() throws SecurityException {
-    	ConfigWebUtil.checkGeneralReadAccess(config(),null);
+
+	protected void checkWriteAccess() throws SecurityException {
+		ConfigWebUtil.checkGeneralWriteAccess(config(), null);
+	}
+
+	protected void checkReadAccess() throws SecurityException {
+		ConfigWebUtil.checkGeneralReadAccess(config(), null);
 	}
 
 	protected ConfigImpl config() {

@@ -18,7 +18,6 @@
  **/
 package lucee.runtime.functions.video;
 
-
 import lucee.commons.lang.StringUtil;
 import lucee.runtime.PageContext;
 import lucee.runtime.config.ConfigWeb;
@@ -34,12 +33,11 @@ public class IsVideoFile {
 		try {
 			ConfigWeb config = pc.getConfig();
 			VideoExecuter ve = VideoUtilImpl.createVideoExecuter(config);
-			ve.info(config,new VideoInputImpl(Caster.toResource(pc,path, true)));
-		} 
+			ve.info(config, new VideoInputImpl(Caster.toResource(pc, path, true)));
+		}
 		catch (Exception e) {
-			
-			if(StringUtil.contains(e.getMessage(),"missing ffmpeg installation"))
-				throw Caster.toPageException(e);
+
+			if (StringUtil.contains(e.getMessage(), "missing ffmpeg installation")) throw Caster.toPageException(e);
 			return false;
 		}
 		return true;

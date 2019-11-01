@@ -28,18 +28,16 @@ import lucee.transformer.expression.literal.LitString;
 import lucee.transformer.library.function.FunctionLib;
 import lucee.transformer.library.tag.TagLibTag;
 
-
-
 public final class While extends EvaluatorSupport {
 	@Override
-	public void evaluate(Tag tag,TagLibTag tagLibTag,FunctionLib[] flibs) throws EvaluatorException {
-		TagWhile whil=(TagWhile) tag;
-		
+	public void evaluate(Tag tag, TagLibTag tagLibTag, FunctionLib[] flibs) throws EvaluatorException {
+		TagWhile whil = (TagWhile) tag;
+
 		// label
-		if(ASMUtil.isLiteralAttribute(tag, "label", ASMUtil.TYPE_STRING, false, true)) {
-			LitString ls=(LitString) tag.getFactory().toExprString(tag.getAttribute("label").getValue());
+		if (ASMUtil.isLiteralAttribute(tag, "label", ASMUtil.TYPE_STRING, false, true)) {
+			LitString ls = (LitString) tag.getFactory().toExprString(tag.getAttribute("label").getValue());
 			String l = ls.getString();
-			if(!StringUtil.isEmpty(l,true)) {
+			if (!StringUtil.isEmpty(l, true)) {
 				whil.setLabel(l.trim());
 				tag.removeAttribute("label");
 			}

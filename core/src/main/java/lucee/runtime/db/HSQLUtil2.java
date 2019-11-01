@@ -39,15 +39,15 @@ public class HSQLUtil2 {
 	}
 
 	public boolean isUnion() {
-		return selects.getSelects().length>1;
+		return selects.getSelects().length > 1;
 	}
 
 	public Set<String> getInvokedTables() {
-		HashSet<String> set=new HashSet<String>();
+		HashSet<String> set = new HashSet<String>();
 		Column[] tables = selects.getTables();
-		for(int i=0;i<tables.length;i++) {
+		for (int i = 0; i < tables.length; i++) {
 			set.add(tables[i].getFullName());
-		}		
+		}
 		return set;
 	}
 

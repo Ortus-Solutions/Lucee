@@ -18,23 +18,22 @@
  */
 package lucee.runtime.services;
 
-
 import java.util.Map;
 
+import coldfusion.sql.DataSourceDef;
 import lucee.runtime.db.ClassDefinition;
 import lucee.runtime.db.DataSource;
 import lucee.runtime.op.Caster;
 import lucee.runtime.type.Struct;
 import lucee.runtime.type.StructImpl;
 import lucee.runtime.type.util.KeyConstants;
-import coldfusion.sql.DataSourceDef;
 
 public class DatSourceDefImpl implements DataSourceDef {
 
 	private final DataSource ds;
 
 	public DatSourceDefImpl(DataSource ds) {
-		this.ds=ds;
+		this.ds = ds;
 	}
 
 	@Override
@@ -45,7 +44,7 @@ public class DatSourceDefImpl implements DataSourceDef {
 
 	@Override
 	public Struct getAllowedSQL() {
-		Struct allow=new StructImpl();
+		Struct allow = new StructImpl();
 		allow.setEL(KeyConstants._alter, Caster.toBoolean(ds.hasAllow(DataSource.ALLOW_ALTER)));
 		allow.setEL(KeyConstants._create, Caster.toBoolean(ds.hasAllow(DataSource.ALLOW_CREATE)));
 		allow.setEL(KeyConstants._delete, Caster.toBoolean(ds.hasAllow(DataSource.ALLOW_DELETE)));
@@ -86,33 +85,32 @@ public class DatSourceDefImpl implements DataSourceDef {
 
 	@Override
 	public Struct getExtraData() {
-		Struct rtn=new StructImpl();
-		Struct connprop=new StructImpl();
+		Struct rtn = new StructImpl();
+		Struct connprop = new StructImpl();
 		String[] names = ds.getCustomNames();
 		rtn.setEL("connectionprops", connprop);
-		for(int i=0;i<names.length;i++) {
+		for (int i = 0; i < names.length; i++) {
 			connprop.setEL(names[i], ds.getCustomValue(names[i]));
 		}
-		rtn.setEL("maxpooledstatements",new Double(1000) );
-		rtn.setEL("sid","");
+		rtn.setEL("maxpooledstatements", new Double(1000));
+		rtn.setEL("sid", "");
 		rtn.setEL("timestampasstring", Boolean.FALSE);
 		rtn.setEL("useTrustedConnection", Boolean.FALSE);
-		rtn.setEL("datasource",ds.getName() );
-		rtn.setEL("_port",new Double(ds.getPort()) );
-		rtn.setEL("port",new Double(ds.getPort()) );
-		rtn.setEL("_logintimeout",new Double(30) );
+		rtn.setEL("datasource", ds.getName());
+		rtn.setEL("_port", new Double(ds.getPort()));
+		rtn.setEL("port", new Double(ds.getPort()));
+		rtn.setEL("_logintimeout", new Double(30));
 		rtn.setEL("args", "");
 		rtn.setEL("databaseFile", "");
-		rtn.setEL("defaultpassword","" );
+		rtn.setEL("defaultpassword", "");
 		rtn.setEL("defaultusername", "");
-		rtn.setEL("host",ds.getHost() );
-		rtn.setEL("maxBufferSize",new Double(0) );
-		rtn.setEL("pagetimeout",new Double(0) );
-		rtn.setEL("selectMethod","direct" );
-		rtn.setEL("sendStringParamterAsUnicode",Boolean.TRUE );
+		rtn.setEL("host", ds.getHost());
+		rtn.setEL("maxBufferSize", new Double(0));
+		rtn.setEL("pagetimeout", new Double(0));
+		rtn.setEL("selectMethod", "direct");
+		rtn.setEL("sendStringParamterAsUnicode", Boolean.TRUE);
 		rtn.setEL("systemDatabaseFile", "");
-		
-		
+
 		return rtn;
 	}
 
@@ -498,7 +496,7 @@ public class DatSourceDefImpl implements DataSourceDef {
 	@Override
 	public void setClassDefinition(ClassDefinition cd) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 }

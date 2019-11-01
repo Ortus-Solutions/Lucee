@@ -25,6 +25,6 @@ public class CommandException extends IOException {
 	private static final long serialVersionUID = -6686645463334076703L;
 
 	public CommandException(String message) {
-		super(message!=null?message:"");
+		super(message != null ? message : "");
 	}
 }

@@ -22,6 +22,7 @@ import lucee.runtime.PageContext;
 import lucee.runtime.exp.FunctionException;
 import lucee.runtime.exp.PageException;
 import lucee.runtime.ext.function.BIF;
+import lucee.runtime.functions.closure.ClosureFunc;
 import lucee.runtime.functions.closure.Every;
 import lucee.runtime.op.Caster;
 import lucee.runtime.type.Array;
@@ -31,33 +32,31 @@ public class ArrayEvery extends BIF {
 
 	private static final long serialVersionUID = -7449844630816343951L;
 
-	public static boolean call(PageContext pc , Array array, UDF udf) throws PageException {
+	public static boolean call(PageContext pc, Array array, UDF udf) throws PageException {
 		return _call(pc, array, udf, false, 20);
 	}
-	public static boolean call(PageContext pc , Array array, UDF udf, boolean parallel) throws PageException {
+
+	public static boolean call(PageContext pc, Array array, UDF udf, boolean parallel) throws PageException {
 		return _call(pc, array, udf, parallel, 20);
 	}
 
-	public static boolean call(PageContext pc , Array array, UDF udf, boolean parallel, double maxThreads) throws PageException {
-		return _call(pc, array, udf, parallel, (int)maxThreads);
+	public static boolean call(PageContext pc, Array array, UDF udf, boolean parallel, double maxThreads) throws PageException {
+		return _call(pc, array, udf, parallel, (int) maxThreads);
 	}
-	private static boolean _call(PageContext pc , Array array, UDF udf, boolean parallel, int maxThreads) throws PageException {
-		return Every._call(pc, array, udf, parallel, maxThreads);
+
+	private static boolean _call(PageContext pc, Array array, UDF udf, boolean parallel, int maxThreads) throws PageException {
+		return Every._call(pc, array, udf, parallel, maxThreads, ClosureFunc.TYPE_ARRAY);
 	}
 
 	@Override
 	public Object invoke(PageContext pc, Object[] args) throws PageException {
-		
-		if(args.length==2)
-			return call(pc, Caster.toArray(args[0]), Caster.toFunction(args[1]));
-		if(args.length==3)
-			return call(pc, Caster.toArray(args[0]), Caster.toFunction(args[1]), Caster.toBooleanValue(args[2]));
-		if(args.length==4)
-			return call(pc, Caster.toArray(args[0]), Caster.toFunction(args[1]), Caster.toBooleanValue(args[2]), Caster.toDoubleValue(args[3]));
-		
+
+		if (args.length == 2) return call(pc, Caster.toArray(args[0]), Caster.toFunction(args[1]));
+		if (args.length == 3) return call(pc, Caster.toArray(args[0]), Caster.toFunction(args[1]), Caster.toBooleanValue(args[2]));
+		if (args.length == 4) return call(pc, Caster.toArray(args[0]), Caster.toFunction(args[1]), Caster.toBooleanValue(args[2]), Caster.toDoubleValue(args[3]));
+
 		throw new FunctionException(pc, "ArrayEvery", 2, 4, args.length);
-		
-		
+
 	}
 
 }

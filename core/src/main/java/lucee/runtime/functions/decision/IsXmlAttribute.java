@@ -18,13 +18,13 @@
  **/
 package lucee.runtime.functions.decision;
 
-import lucee.runtime.PageContext;
-import lucee.runtime.ext.function.Function;
-import lucee.runtime.text.xml.struct.XMLStruct;
-
 import org.w3c.dom.Attr;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+
+import lucee.runtime.PageContext;
+import lucee.runtime.ext.function.Function;
+import lucee.runtime.text.xml.struct.XMLStruct;
 
 /**
  * Check if a value is a XML Attribut (XML Attr Node)
@@ -32,10 +32,10 @@ import org.w3c.dom.NodeList;
 public final class IsXmlAttribute implements Function {
 
 	public static boolean call(PageContext pc, Object value) {
-	    
-	    if(value instanceof Attr)return true;
-	    else if(value instanceof NodeList) return ((NodeList)value).item(0).getNodeType()==Node.ATTRIBUTE_NODE;
-	    else if(value instanceof XMLStruct) return ((XMLStruct)value).getNodeType()==Node.ATTRIBUTE_NODE;
-	    return false;
+
+		if (value instanceof Attr) return true;
+		else if (value instanceof NodeList) return ((NodeList) value).item(0).getNodeType() == Node.ATTRIBUTE_NODE;
+		else if (value instanceof XMLStruct) return ((XMLStruct) value).getNodeType() == Node.ATTRIBUTE_NODE;
+		return false;
 	}
 }

@@ -24,193 +24,177 @@ import java.util.StringTokenizer;
 
 import lucee.commons.lang.StringUtil;
 
-
 /**
- * a WildcardPattern that accepts a comma- (or semi-colon-) separated value of patterns, e.g. "*.gif, *.jpg, *.jpeg, *.png"
- * and an optional isExclude boolean value which negates the results of the default implementation
+ * a WildcardPattern that accepts a comma- (or semi-colon-) separated value of patterns, e.g.
+ * "*.gif, *.jpg, *.jpeg, *.png" and an optional isExclude boolean value which negates the results
+ * of the default implementation
  * 
- * also, lines 31 - 35 allow to set isExclude to true by passing a pattern whose first character is an exclamation point '!'
+ * also, lines 31 - 35 allow to set isExclude to true by passing a pattern whose first character is
+ * an exclamation point '!'
  * 
  * @author Igal
  */
 public class WildcardPattern {
 
-    private final String pattern;
-    private final boolean isInclude;
-    
-    private final List<ParsedPattern> patterns;
-    
-    /**
-     * 
-     * @param pattern - the wildcard pattern, or a comma/semi-colon separated value of wildcard patterns
-     * @param isCaseSensitive - if true, does a case-sensitive matching
-     * @param isExclude - if true, the filter becomes an Exclude filter so that only items that do not match the pattern are accepted
-     */
-    public WildcardPattern( String pattern, boolean isCaseSensitive, boolean isExclude, String delimiters ) {
+	private final String pattern;
+	private final boolean isInclude;
 
-    	if ( pattern.charAt( 0 ) == '!' ) {		// set isExclude to true if the first char of pattern is an exclamation point '!'
-    		
-    		pattern = pattern.substring( 1 );
-    		isExclude = true;
-    	}
-    	
-        this.pattern = pattern;
-        this.isInclude = !isExclude;
+	private final List<ParsedPattern> patterns;
 
-        StringTokenizer tokenizer = new StringTokenizer( pattern, !StringUtil.isEmpty(delimiters, true) ? delimiters : "|" );
-        
-        patterns = new ArrayList<ParsedPattern>();
-        
-        while ( tokenizer.hasMoreTokens() ) {
-            
-            String token = tokenizer.nextToken().trim();
-            
-            if ( !token.isEmpty() )
-                patterns.add( new ParsedPattern( token, isCaseSensitive ) );
-        }
-    }
-    
-    
-    /** calls this( pattern, isCaseSensitive, false, delimiters ); */
-    public WildcardPattern( String pattern, boolean isCaseSensitive, String delimiters ) {
-    
-        this( pattern, isCaseSensitive, false, delimiters );
-    }
-    
-    
-    public boolean isMatch( String input ) {
-        
-        for ( ParsedPattern pp : this.patterns ) {
+	/**
+	 * 
+	 * @param pattern - the wildcard pattern, or a comma/semi-colon separated value of wildcard patterns
+	 * @param isCaseSensitive - if true, does a case-sensitive matching
+	 * @param isExclude - if true, the filter becomes an Exclude filter so that only items that do not
+	 *            match the pattern are accepted
+	 */
+	public WildcardPattern(String pattern, boolean isCaseSensitive, boolean isExclude, String delimiters) {
 
-            if (pp.isMatch(input))
-                return isInclude;
-        }
-        
-        return !isInclude;
-    }
-    
-    
-    @Override
+		if (pattern.charAt(0) == '!') { // set isExclude to true if the first char of pattern is an exclamation point '!'
+
+			pattern = pattern.substring(1);
+			isExclude = true;
+		}
+
+		this.pattern = pattern;
+		this.isInclude = !isExclude;
+
+		StringTokenizer tokenizer = new StringTokenizer(pattern, !StringUtil.isEmpty(delimiters, true) ? delimiters : "|");
+
+		patterns = new ArrayList<ParsedPattern>();
+
+		while (tokenizer.hasMoreTokens()) {
+
+			String token = tokenizer.nextToken().trim();
+
+			if (!token.isEmpty()) patterns.add(new ParsedPattern(token, isCaseSensitive));
+		}
+	}
+
+	/** calls this( pattern, isCaseSensitive, false, delimiters ); */
+	public WildcardPattern(String pattern, boolean isCaseSensitive, String delimiters) {
+
+		this(pattern, isCaseSensitive, false, delimiters);
+	}
+
+	public boolean isMatch(String input) {
+
+		for (ParsedPattern pp: this.patterns) {
+
+			if (pp.isMatch(input)) return isInclude;
+		}
+
+		return !isInclude;
+	}
+
+	@Override
 	public String toString() {
-        
-        return "WildcardPattern: " + pattern;
-    }
 
-    public static class ParsedPattern {
+		return "WildcardPattern: " + pattern;
+	}
 
-        public final static String MATCH_ANY = "*";
-        public final static String MATCH_ONE = "?";
+	public static class ParsedPattern {
 
-	    private String[] parts;
-        private final boolean isCaseSensitive;
+		public final static String MATCH_ANY = "*";
+		public final static String MATCH_ONE = "?";
 
+		private String[] parts;
+		private final boolean isCaseSensitive;
 
-        public ParsedPattern( String pattern, boolean isCaseSensitive ) {
+		public ParsedPattern(String pattern, boolean isCaseSensitive) {
 
-            this.isCaseSensitive = isCaseSensitive;
+			this.isCaseSensitive = isCaseSensitive;
 
-            if (!isCaseSensitive)
-                pattern = pattern.toLowerCase();
+			if (!isCaseSensitive) pattern = pattern.toLowerCase();
 
-	        List<String> lsp = new ArrayList<String>();
+			List<String> lsp = new ArrayList<String>();
 
-            int len = pattern.length();
-            int subStart = 0;
+			int len = pattern.length();
+			int subStart = 0;
 
-            for (int i=subStart; i<len; i++) {
+			for (int i = subStart; i < len; i++) {
 
-                char c = pattern.charAt( i );
+				char c = pattern.charAt(i);
 
-                if (c == '*' || c == '?') {
+				if (c == '*' || c == '?') {
 
-                    if (i > subStart)
-                        lsp.add( pattern.substring( subStart, i ) );
+					if (i > subStart) lsp.add(pattern.substring(subStart, i));
 
-                    lsp.add(c == '*' ? MATCH_ANY : MATCH_ONE);
-                    subStart = i + 1;
-                }
-            }
+					lsp.add(c == '*' ? MATCH_ANY : MATCH_ONE);
+					subStart = i + 1;
+				}
+			}
 
-            if (len > subStart)
-                lsp.add(pattern.substring(subStart));
+			if (len > subStart) lsp.add(pattern.substring(subStart));
 
-	        this.parts = lsp.toArray(new String[ lsp.size()] );
-        }
+			this.parts = lsp.toArray(new String[lsp.size()]);
+		}
 
+		/** calls this( pattern, false, false ); */
+		public ParsedPattern(String pattern) {
 
-        /** calls this( pattern, false, false ); */
-        public ParsedPattern( String pattern ) {
+			this(pattern, false);
+		}
 
-            this( pattern, false );
-        }
+		/** tests if the input string matches the pattern */
+		public boolean isMatch(String input) {
 
+			if (!isCaseSensitive) input = input.toLowerCase();
 
-        /** tests if the input string matches the pattern */
-        public boolean isMatch( String input ) {
+			if (parts.length == 1) return (parts[0] == MATCH_ANY || parts[0].equals(input));
 
-            if ( !isCaseSensitive )
-                input = input.toLowerCase();
+			if (parts.length == 2) {
 
-	        if (parts.length == 1)
-		        return ( parts[0] == MATCH_ANY || parts[0].equals(input) );
+				if (parts[0] == MATCH_ANY) return input.endsWith(parts[1]);
 
-	        if (parts.length == 2) {
+				if (parts[parts.length - 1] == MATCH_ANY) return input.startsWith(parts[0]);
+			}
 
-				if (parts[0] == MATCH_ANY)
-					return input.endsWith( parts[1] );
+			int pos = 0;
+			int len = input.length();
 
-		        if (parts[ parts.length - 1 ] == MATCH_ANY)
-			        return input.startsWith( parts[0] );
-	        }
+			boolean doMatchAny = false;
 
-            int pos = 0;
-            int len = input.length();
+			for (String part: parts) {
 
-            boolean doMatchAny = false;
+				if (part == MATCH_ANY) {
 
-            for (String part : parts) {
+					doMatchAny = true;
+					continue;
+				}
 
-                if ( part == MATCH_ANY ) {
+				if (part == MATCH_ONE) {
 
-                    doMatchAny = true;
-                    continue;
-                }
+					doMatchAny = false;
+					pos++;
+					continue;
+				}
 
-                if ( part == MATCH_ONE ) {
+				int ix = input.indexOf(part, pos);
 
-                    doMatchAny = false;
-                    pos++;
-                    continue;
-                }
+				if (ix == -1) return false;
 
-                int ix = input.indexOf( part, pos );
+				if (!doMatchAny && ix != pos) return false;
 
-                if ( ix == -1 )
-                    return false;
+				pos = ix + part.length();
+				doMatchAny = false;
+			}
 
-                if ( !doMatchAny && ix != pos )
-                    return false;
+			if ((parts[parts.length - 1] != MATCH_ANY) && (len != pos)) // if pattern doesn't end with * then we shouldn't have any more characters in input
+				return false;
 
-                pos = ix + part.length();
-                doMatchAny = false;
-            }
+			return true;
+		}
 
-            if ( (parts[ parts.length - 1 ] != MATCH_ANY) && (len != pos) )        // if pattern doesn't end with * then we shouldn't have any more characters in input
-                return false;
+		@Override
+		public String toString() {
 
-            return true;
-        }
+			StringBuilder sb = new StringBuilder();
 
+			for (String s: parts)
+				sb.append(s);
 
-        @Override
-        public String toString() {
-
-            StringBuilder sb = new StringBuilder();
-
-            for (String s : parts)
-                sb.append( s );
-
-            return sb.toString();
-        }
-    }
+			return sb.toString();
+		}
+	}
 }

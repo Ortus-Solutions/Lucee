@@ -18,15 +18,14 @@
  **/
 package lucee.runtime.spooler;
 
-
-public class ExecutionPlanImpl  implements ExecutionPlan {
+public class ExecutionPlanImpl implements ExecutionPlan {
 
 	private int tries;
 	private int interval;
 
 	public ExecutionPlanImpl(int tries, int interval) {
-		this.tries=tries;
-		this.interval=interval;
+		this.tries = tries;
+		this.interval = interval;
 	}
 
 	/**
@@ -44,7 +43,7 @@ public class ExecutionPlanImpl  implements ExecutionPlan {
 	public int getIntervall() {
 		return interval;
 	}
-	
+
 	@Override
 	public int getInterval() {
 		return interval;

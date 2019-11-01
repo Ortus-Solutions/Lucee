@@ -1,15 +1,3 @@
-<cfset stText.mail.LogFileDesc="Destination file where the log information get stored.">
-<cfset stText.mail.LogLevelDesc="Log level used for the log file.">
-<cfset stText.mail.SpoolEnabledDesc="If enabled the mails are sent in a background thread and the main request does not have to wait until the mails are sent.">
-<cfset stText.mail.maxThreads="Maximum concurrent threads">
-<cfset stText.mail.maxThreadsDesc="This setting can be changed on page ""Services/Taks"". Maximum number of threads that are executed at the same time to send the mails, fewer threads will take longer to send all the mail, more threads will add more load to the system.">
-<cfset stText.mail.TimeoutDesc="Time in seconds that the Task Manager waits to send a single mail, when the time is reached the Task Manager stops the thread and the mail gets moved to unsent folder, where the Task Manager will pick it up later to try to send it again.">
-<cfset stText.mail.seconds="Seconds">
-
-
-
-
-
 <!--- 
 Defaults --->
 <cfparam name="form.mainAction" default="none">
@@ -53,15 +41,13 @@ Defaults --->
 	function toTimeSpan(required string prefix){
 		local.days=toArrayFromForm(prefix&"_days");
 		local.hours=toArrayFromForm(prefix&"_hours");
-		local.minutes=data.ids=toArrayFromForm(prefix&"_minutes");
-		local.seconds=data.ids=toArrayFromForm(prefix&"_seconds");
+		local.minutes=toArrayFromForm(prefix&"_minutes");
+		local.seconds=toArrayFromForm(prefix&"_seconds");
 		local.rtn=[];
 		loop array=days index="local.i" item="local.day" {
 			rtn[i]=createTimeSpan(day,hours[i],minutes[i],seconds[i]);
 		}
-
 		return rtn;
-
 	}
 
 	function toTSStruct(seconds){
@@ -127,7 +113,7 @@ Defaults --->
 				<cfset data.ids=toArrayFromForm("id")>
 				<cfset data.idles=toTimeSpan("idle")>
 				<cfset data.lifes=toTimeSpan("life")>
-
+				
 				<cfloop index="idx" from="1" to="#arrayLen(data.hosts)#">
 					<cfif isDefined("data.rows[#idx#]") and data.hosts[idx] NEQ "">
 						<cfparam name="data.ports[idx]" default="25">
@@ -157,6 +143,7 @@ Defaults --->
 			<cfelseif form.subAction EQ "#stText.Buttons.Delete#">
 				<cfset data.rows=toArrayFromForm("row")>
 				<cfset data.hosts=toArrayFromForm("hostname")>
+				<cfset data.usernames=toArrayFromForm("username")>
 				<!---  @todo
 				<cflock type="exclusive" scope="application" timeout="5"></cflock> --->
 				<cfset len=arrayLen(data.hosts)>
@@ -167,7 +154,9 @@ Defaults --->
 							type="#request.adminType#"
 							password="#session["password"&request.adminType]#"
 							
+							id="#isDefined("data.ids[#idx#]")?data.ids[idx]:''#"
 							hostname="#data.hosts[idx]#"
+							username="#data.usernames[idx]#"
 							remoteClients="#request.getRemoteClients()#">
 					</cfif>
 				</cfloop>
@@ -195,14 +184,36 @@ Defaults --->
 								<cfset stVeritfyMessages[data.hosts[idx]].message = cfcatch.message>
 							</cfcatch>
 						</cftry>
+						<cfloop list="#request.adminType=='server'?'global':'global,local'#" index="contextType">
+							<cfset stVeritfyMessages[data.hosts[idx]].contextType = contextType>
+						</cfloop>
 					</cfif>
 				</cfloop>
 			</cfif>
+		</cfcase>
+		<cfcase value="Send test mail">
+			<cftry>
+				<cfset data = queryRowData(ms,url.row)>
+				<!--- <cfdump var="#data#" /><cfabort /> --->
+				<cfmail from="#data.username#" to="#form.toMail#" subject="Test email from Lucee" server="#data.hostname#" username="#data.username#" password="#data.password#" port="#data.port#" usetls="#data.tls#" usessl="#data.ssl#">
+					Hi this is a test email from your lucee server instance.
+				</cfmail>
+				<cfset stVeritfyMessages[data.hostname].Label = "OK">
+				<cfset stVeritfyMessages[data.hostname].contextType = (request.adminType=='server'?'global':'global,local')>
+				<cfset stVeritfyMessages[data.hostname].message = "Test mail has been sent successfully using [ #data.hostname# ].">
+				<cfset doNotRedirect = true>
+				<cfcatch type="any">
+					<cfset stVeritfyMessages[data.hostname].Label = "Error">
+					<cfset stVeritfyMessages[data.hostname].message = cfcatch.message>
+					<cfset stVeritfyMessages[data.hostname].contextType = (request.adminType=='server'?'global':'global,local')>
+				</cfcatch>
+			</cftry>
 		</cfcase>
 	</cfswitch>
 	<cfcatch>
 		<cfset error.message=cfcatch.message>
 		<cfset error.detail=cfcatch.Detail>
+		<cfset error.cfcatch=cfcatch>
 	</cfcatch>
 </cftry>
 
@@ -219,6 +230,8 @@ Defaults --->
 
 <cfif url.action2 EQ "edit">
 	<cfinclude template="services.mail.edit.cfm">
+<cfelseif url.action2 EQ "sendTestmail">
+	<cfinclude template="services.mail.sendTestmail.cfm">
 <cfelse>
 	<cfinclude template="services.mail.list.cfm">
 </cfif>

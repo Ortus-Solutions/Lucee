@@ -25,6 +25,8 @@ import java.security.NoSuchAlgorithmException;
 
 import javax.servlet.ServletContext;
 
+import org.osgi.framework.Bundle;
+
 import lucee.commons.digest.Hash;
 import lucee.commons.digest.HashUtil;
 import lucee.commons.io.log.Log;
@@ -33,8 +35,6 @@ import lucee.runtime.PageContext;
 import lucee.runtime.exp.PageException;
 import lucee.runtime.type.Query;
 import lucee.runtime.type.Struct;
-
-import org.osgi.framework.Bundle;
 
 public class SystemUtilImpl implements SystemUtil {
 
@@ -107,7 +107,8 @@ public class SystemUtilImpl implements SystemUtil {
 	public String hashMd5(String str) throws IOException {
 		try {
 			return Hash.md5(str);
-		} catch (NoSuchAlgorithmException e) {
+		}
+		catch (NoSuchAlgorithmException e) {
 			throw new IOException(e);
 		}
 	}
@@ -213,13 +214,14 @@ public class SystemUtilImpl implements SystemUtil {
 	}
 
 	@Override
-	public void stop(PageContext pc, Throwable t,Log log) {
-		lucee.commons.io.SystemUtil.stop(pc, t,log);
+	public void stop(PageContext pc, Throwable t, Log log) {
+		// FUTURE remove argument Throwable t
+		lucee.commons.io.SystemUtil.stop(pc, true);
 	}
 
 	@Override
 	public String getMacAddress() {
-		return lucee.commons.io.SystemUtil.getMacAddress();
+		return lucee.commons.io.SystemUtil.getMacAddress(null);
 	}
 
 	@Override
@@ -229,7 +231,7 @@ public class SystemUtilImpl implements SystemUtil {
 
 	@Override
 	public void addLibraryPath(Resource res) {
-		lucee.commons.io.SystemUtil.addLibraryPathIfNoExist(res,null);
+		lucee.commons.io.SystemUtil.addLibraryPathIfNoExist(res, null);
 	}
 
 }

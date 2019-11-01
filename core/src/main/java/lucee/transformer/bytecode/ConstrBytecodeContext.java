@@ -20,41 +20,36 @@ package lucee.transformer.bytecode;
 import java.util.ArrayList;
 import java.util.List;
 
-import lucee.runtime.PageSource;
-import lucee.transformer.bytecode.statement.udf.Function;
-import lucee.transformer.expression.literal.LitString;
-
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.commons.GeneratorAdapter;
 import org.objectweb.asm.commons.Method;
 
+import lucee.runtime.PageSource;
+import lucee.transformer.bytecode.statement.udf.Function;
+import lucee.transformer.expression.literal.LitString;
+
 public class ConstrBytecodeContext extends BytecodeContext {
 
-	private List<Data> properties=new ArrayList<Data>(); 
+	private List<Data> properties = new ArrayList<Data>();
 
-	public ConstrBytecodeContext(PageSource ps, 
-			Page page, List<LitString> keys,
-			ClassWriter classWriter, String className,
-			GeneratorAdapter adapter, Method method, boolean writeLog,
-			boolean suppressWSbeforeArg, boolean output, boolean returnValue) {
-		super(ps, null, page, keys, classWriter, className, adapter,
-				method, writeLog, suppressWSbeforeArg,output,returnValue);
+	public ConstrBytecodeContext(PageSource ps, Page page, List<LitString> keys, ClassWriter classWriter, String className, GeneratorAdapter adapter, Method method,
+			boolean writeLog, boolean suppressWSbeforeArg, boolean output, boolean returnValue) {
+		super(ps, null, page, keys, classWriter, className, adapter, method, writeLog, suppressWSbeforeArg, output, returnValue);
 	}
- 
+
 	public void addUDFProperty(Function function, int arrayIndex, int valueIndex, int type) {
-		properties.add(new Data(function,arrayIndex,valueIndex,type));
+		properties.add(new Data(function, arrayIndex, valueIndex, type));
 	}
-	
+
 	public List<Data> getUDFProperties() {
 		return properties;
 	}
 
-	
-	/*cga.visitVarInsn(ALOAD, 0);
-	cga.visitFieldInsn(GETFIELD, bc.getClassName(), "udfs", Types.UDF_PROPERTIES_ARRAY.toString());
-	cga.push(arrayIndex);
-	createUDFProperties(constr,valueIndex,type);
-	cga.visitInsn(AASTORE);*/
+	/*
+	 * cga.visitVarInsn(ALOAD, 0); cga.visitFieldInsn(GETFIELD, bc.getClassName(), "udfs",
+	 * Types.UDF_PROPERTIES_ARRAY.toString()); cga.push(arrayIndex);
+	 * createUDFProperties(constr,valueIndex,type); cga.visitInsn(AASTORE);
+	 */
 
 	public static class Data {
 
@@ -64,12 +59,12 @@ public class ConstrBytecodeContext extends BytecodeContext {
 		public final int type;
 
 		public Data(Function function, int arrayIndex, int valueIndex, int type) {
-			this.function=function;
-			this.arrayIndex=arrayIndex;
-			this.valueIndex=valueIndex;
-			this.type=type;
+			this.function = function;
+			this.arrayIndex = arrayIndex;
+			this.valueIndex = valueIndex;
+			this.type = type;
 		}
-		
+
 	}
 
 }

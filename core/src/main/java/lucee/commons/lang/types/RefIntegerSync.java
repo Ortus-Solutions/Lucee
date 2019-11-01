@@ -1,5 +1,6 @@
 /**
  *
+ * Copyright (c) 2016, Lucee Assosication Switzerland
  * Copyright (c) 2014, the Railo Company Ltd. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or
@@ -18,41 +19,146 @@
  **/
 package lucee.commons.lang.types;
 
+import java.util.Date;
+
+import lucee.runtime.exp.PageException;
+import lucee.runtime.op.Castable;
+import lucee.runtime.op.Caster;
+import lucee.runtime.op.Operator;
+import lucee.runtime.type.dt.DateTime;
+
 /**
  * Integer Type that can be modified
  */
-public final class RefIntegerSync extends RefIntegerImpl {
+public class RefIntegerSync implements RefInteger, Castable {
 
-    /**
-     * @param value
-     */
-    public RefIntegerSync(int value) {
-        super(value);
-    }
-    
-    /**
-     * @param value
-     */
-    @Override
+	private int value;
+
+	/**
+	 * @param value
+	 */
+	public RefIntegerSync(int value) {
+		this.value = value;
+	}
+
+	public RefIntegerSync() {}
+
+	/**
+	 * @param value
+	 */
+	@Override
 	public synchronized void setValue(int value) {
-    	super.setValue(value);
-    }
-    
-    /**
-     * operation plus
-     * @param value
-     */
-    @Override
+		this.value = value;
+	}
+
+	/**
+	 * operation plus
+	 * 
+	 * @param value
+	 */
+	@Override
 	public synchronized void plus(int value) {
-    	super.plus(value);
-    }
-    
-    /**
-     * operation minus
-     * @param value
-     */
-    @Override
+		this.value += value;
+	}
+
+	/**
+	 * operation minus
+	 * 
+	 * @param value
+	 */
+	@Override
 	public synchronized void minus(int value) {
-        super.minus(value);
-    }
+		this.value -= value;
+	}
+
+	/**
+	 * @return returns value as integer
+	 */
+	@Override
+	public synchronized Integer toInteger() {
+		return Integer.valueOf(value);
+	}
+
+	/**
+	 * @return returns value as integer
+	 */
+	@Override
+	public synchronized Double toDouble() {
+		return new Double(value);
+	}
+
+	@Override
+	public synchronized double toDoubleValue() {
+		return value;
+	}
+
+	@Override
+	public synchronized int toInt() {
+		return value;
+	}
+
+	@Override
+	public synchronized String toString() {
+		return String.valueOf(value);
+	}
+
+	@Override
+	public Boolean castToBoolean(Boolean defaultValue) {
+		return Caster.toBoolean(value);
+	}
+
+	@Override
+	public boolean castToBooleanValue() {
+		return Caster.toBooleanValue(value);
+	}
+
+	@Override
+	public DateTime castToDateTime() throws PageException {
+		return Caster.toDatetime(value, null);
+	}
+
+	@Override
+	public DateTime castToDateTime(DateTime defaultValue) {
+		return Caster.toDate(value, false, null, defaultValue);
+	}
+
+	@Override
+	public double castToDoubleValue() throws PageException {
+		return Caster.toDoubleValue(value);
+	}
+
+	@Override
+	public double castToDoubleValue(double defaultValue) {
+		return Caster.toDoubleValue(value);
+	}
+
+	@Override
+	public String castToString() throws PageException {
+		return toString();
+	}
+
+	@Override
+	public String castToString(String defaultValue) {
+		return toString();
+	}
+
+	@Override
+	public int compareTo(String other) throws PageException {
+		return Operator.compare(castToString(), other);
+	}
+
+	@Override
+	public int compareTo(boolean other) throws PageException {
+		return Operator.compare(castToBooleanValue(), other);
+	}
+
+	@Override
+	public int compareTo(double other) throws PageException {
+		return Operator.compare(castToDoubleValue(), other);
+	}
+
+	@Override
+	public int compareTo(DateTime other) throws PageException {
+		return Operator.compare((Date) castToDateTime(), (Date) other);
+	}
 }

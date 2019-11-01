@@ -42,40 +42,38 @@ public final class GetTagList implements Function {
 	public static lucee.runtime.type.Struct call(PageContext pc) throws PageException {
 		return _call(pc, pc.getCurrentTemplateDialect());
 	}
-	
+
 	public static lucee.runtime.type.Struct call(PageContext pc, String strDialect) throws PageException {
-		int dialect=ConfigWebUtil.toDialect(strDialect,-1);
-		if(dialect==-1) throw new FunctionException(pc, "GetTagList", 1, "dialect","invalid dialect ["+strDialect+"] defintion");
-		
+		int dialect = ConfigWebUtil.toDialect(strDialect, -1);
+		if (dialect == -1) throw new FunctionException(pc, "GetTagList", 1, "dialect", "invalid dialect [" + strDialect + "] definition");
+
 		return _call(pc, dialect);
 	}
-	
-	private synchronized static lucee.runtime.type.Struct _call(PageContext pc, int dialect) throws PageException {
-		Struct sct=new StructImpl();
-			//synchronized(sct) {
-				//hasSet=true;
-				TagLib[] tlds;
-				TagLibTag tag;
-				tlds = ((ConfigImpl)pc.getConfig()).getTLDs(dialect);
-				
-				for(int i=0;i<tlds.length;i++) {
-				    String ns = tlds[i].getNameSpaceAndSeparator();
-				    
-				    
-					Map<String, TagLibTag> tags = tlds[i].getTags();
-					Iterator<String> it = tags.keySet().iterator();
-					Struct inner=new StructImpl();
-                    sct.set(ns,inner);
-					while(it.hasNext()){
-						Object n=it.next();
-						tag = tlds[i].getTag(n.toString());
-						if(tag.getStatus()!=TagLib.STATUS_HIDDEN && tag.getStatus()!=TagLib.STATUS_UNIMPLEMENTED)
-							inner.set(n.toString(),"");
-					}
-					
-				}
-			//}
-		//}
+
+	private static lucee.runtime.type.Struct _call(PageContext pc, int dialect) throws PageException {
+		Struct sct = new StructImpl();
+		// synchronized(sct) {
+		// hasSet=true;
+		TagLib[] tlds;
+		TagLibTag tag;
+		tlds = ((ConfigImpl) pc.getConfig()).getTLDs(dialect);
+
+		for (int i = 0; i < tlds.length; i++) {
+			String ns = tlds[i].getNameSpaceAndSeparator();
+
+			Map<String, TagLibTag> tags = tlds[i].getTags();
+			Iterator<String> it = tags.keySet().iterator();
+			Struct inner = new StructImpl();
+			sct.set(ns, inner);
+			while (it.hasNext()) {
+				Object n = it.next();
+				tag = tlds[i].getTag(n.toString());
+				if (tag.getStatus() != TagLib.STATUS_HIDDEN && tag.getStatus() != TagLib.STATUS_UNIMPLEMENTED) inner.set(n.toString(), "");
+			}
+
+		}
+		// }
+		// }
 		return sct;
 	}
 }

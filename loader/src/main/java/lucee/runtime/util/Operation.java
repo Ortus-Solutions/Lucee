@@ -264,8 +264,7 @@ public interface Operation {
 	public int compare(Date left, Date right);
 
 	/**
-	 * Method to compare to different values, return true of objects are same
-	 * otherwise false
+	 * Method to compare to different values, return true of objects are same otherwise false
 	 * 
 	 * @param left left value to compare
 	 * @param right right value to compare
@@ -273,15 +272,11 @@ public interface Operation {
 	 * @return is same or not
 	 * @throws PageException
 	 */
-	public boolean equals(Object left, Object right, boolean caseSensitive)
-			throws PageException;
+	public boolean equals(Object left, Object right, boolean caseSensitive) throws PageException;
 
-	public boolean equalsComplexEL(Object left, Object right,
-			boolean caseSensitive, boolean checkOnlyPublicAppearance);
+	public boolean equalsComplexEL(Object left, Object right, boolean caseSensitive, boolean checkOnlyPublicAppearance);
 
-	public boolean equalsComplex(Object left, Object right,
-			boolean caseSensitive, boolean checkOnlyPublicAppearance)
-			throws PageException;
+	public boolean equalsComplex(Object left, Object right, boolean caseSensitive, boolean checkOnlyPublicAppearance) throws PageException;
 
 	/**
 	 * check if left is inside right
@@ -294,9 +289,8 @@ public interface Operation {
 	public boolean ct(Object left, Object right) throws PageException;
 
 	/**
-	 * Equivalence: Return True if both operands are True or both are False. The
-	 * EQV operator is the opposite of the XOR operator. For example, True EQV
-	 * True is True, but True EQV False is False.
+	 * Equivalence: Return True if both operands are True or both are False. The EQV operator is the
+	 * opposite of the XOR operator. For example, True EQV True is True, but True EQV False is False.
 	 * 
 	 * @param left value to check
 	 * @param right value to check
@@ -306,10 +300,8 @@ public interface Operation {
 	public boolean eqv(Object left, Object right) throws PageException;
 
 	/**
-	 * Implication: The statement A IMP B is the equivalent of the logical
-	 * statement
-	 * "If A Then B." A IMP B is False only if A is True and B is False. It is
-	 * True in all other cases.
+	 * Implication: The statement A IMP B is the equivalent of the logical statement "If A Then B." A
+	 * IMP B is False only if A is True and B is False. It is True in all other cases.
 	 * 
 	 * @param left value to check
 	 * @param right value to check
@@ -333,7 +325,7 @@ public interface Operation {
 	 * 
 	 * @param left value to get exponent from
 	 * @param right exponent count
-	 * @return return expoinended value
+	 * @return return exponent value
 	 * @throws PageException
 	 */
 	public double exponent(Object left, Object right) throws PageException;
@@ -343,7 +335,7 @@ public interface Operation {
 	 * 
 	 * @param left
 	 * @param right
-	 * @return concated String
+	 * @return concatenated String
 	 */
 	public String concat(String left, String right);
 
@@ -352,7 +344,7 @@ public interface Operation {
 	 * 
 	 * @param left
 	 * @param right
-	 * @return result of the opertions
+	 * @return result of the operations
 	 */
 	public double plus(double left, double right);
 
@@ -361,7 +353,7 @@ public interface Operation {
 	 * 
 	 * @param left
 	 * @param right
-	 * @return result of the opertions
+	 * @return result of the operations
 	 */
 	public double minus(double left, double right);
 
@@ -370,7 +362,7 @@ public interface Operation {
 	 * 
 	 * @param left
 	 * @param right
-	 * @return result of the opertions
+	 * @return result of the operations
 	 */
 	public double modulus(double left, double right);
 
@@ -379,7 +371,7 @@ public interface Operation {
 	 * 
 	 * @param left
 	 * @param right
-	 * @return result of the opertions
+	 * @return result of the operations
 	 */
 	public double divide(double left, double right);
 
@@ -388,7 +380,7 @@ public interface Operation {
 	 * 
 	 * @param left
 	 * @param right
-	 * @return result of the opertions
+	 * @return result of the operations
 	 */
 	public double multiply(double left, double right);
 

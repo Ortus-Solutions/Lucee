@@ -28,14 +28,13 @@ import lucee.runtime.type.scope.ScopeContext;
 import lucee.runtime.type.scope.Server;
 
 public class GlobalBinding implements Bindings {
-	
+
 	private final Server server;
-	
+
 	public GlobalBinding(PageContext pc) {
-		this.server=ScopeContext.getServerScope(pc);
+		this.server = ScopeContext.getServerScope(pc, true);
 	}
-	
-	
+
 	@Override
 	public int size() {
 		return server.size();

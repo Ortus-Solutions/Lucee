@@ -27,37 +27,34 @@ import lucee.runtime.type.Collection;
 public interface ListUtil {
 
 	/**
-	 * casts a list to Array object, the list can be have quoted (",') arguments
-	 * and delimter in this arguments are ignored. quotes are not removed
-	 * example:
-	 * listWithQuotesToArray("aab,a'a,b',a\"a,b\"",",","\"'") will be translated
-	 * to ["aab","a'a,b'","a\"a,b\""]
+	 * casts a list to Array object, the list can be have quoted (",') arguments and delimiter in this
+	 * arguments are ignored. quotes are not removed example:
+	 * listWithQuotesToArray("aab,a'a,b',a\"a,b\"",",","\"'") will be translated to
+	 * ["aab","a'a,b'","a\"a,b\""]
 	 * 
 	 * @param list list to cast
-	 * @param delimiter delimter of the list
+	 * @param delimiter delimiter of the list
 	 * @param quotes quotes of the list
 	 * @return Array Object
 	 */
-	public Array listWithQuotesToArray(String list, String delimiter,
-			String quotes);
+	public Array listWithQuotesToArray(String list, String delimiter, String quotes);
 
 	/**
 	 * casts a list to Array object
 	 * 
 	 * @param list list to cast
-	 * @param delimiter delimter of the list
+	 * @param delimiter delimiter of the list
 	 * @return Array Object
 	 */
 	public Array toArray(String list, String delimiter);
 
-	public Array toArray(String list, String delimiter,
-			boolean includeEmptyFields, boolean multiCharDelim);
+	public Array toArray(String list, String delimiter, boolean includeEmptyFields, boolean multiCharDelim);
 
 	/**
 	 * casts a list to Array object remove Empty Elements
 	 * 
 	 * @param list list to cast
-	 * @param delimiter delimter of the list
+	 * @param delimiter delimiter of the list
 	 * @return Array Object
 	 */
 	public Array toArrayRemoveEmpty(String list, String delimiter);
@@ -65,27 +62,25 @@ public interface ListUtil {
 	public List<String> toListRemoveEmpty(String list, char delimiter);
 
 	/**
-	 * casts a list to Array object, remove all empty items at start and end of
-	 * the list
+	 * casts a list to Array object, remove all empty items at start and end of the list
 	 * 
 	 * @param list list to cast
-	 * @param delimiter delimter of the list
+	 * @param delimiter delimiter of the list
 	 * @return Array Object
 	 */
 	public Array toArrayTrim(String list, String delimiter);
 
 	/**
-	 * casts a list to Array object, remove all empty items at start and end of
-	 * the list and store count to info
+	 * casts a list to Array object, remove all empty items at start and end of the list and store count
+	 * to info
 	 * 
 	 * @param list list to cast
 	 * @param pos
-	 * @param delimiter delimter of the list
+	 * @param delimiter delimiter of the list
 	 * @return Array Object
 	 * @throws PageException
 	 */
-	public String insertAt(String list, int pos, String value,
-			String delimiter, boolean ignoreEmpty) throws PageException;
+	public String insertAt(String list, int pos, String value, String delimiter, boolean ignoreEmpty) throws PageException;
 
 	/**
 	 * finds a value inside a list, do not ignore case
@@ -106,8 +101,7 @@ public interface ListUtil {
 	 * @param trim trim the list or not
 	 * @return position in list (0-n) or -1
 	 */
-	public int findNoCase(String list, String value, String delimiter,
-			boolean trim);
+	public int findNoCase(String list, String value, String delimiter, boolean trim);
 
 	public int findForSwitch(String list, String value, String delimiter);
 
@@ -174,27 +168,24 @@ public interface ListUtil {
 	 * returns if a value of the list contains given value, ignore case
 	 * 
 	 * @param list list to search in
-	 * @param value value to serach
+	 * @param value value to search
 	 * @param delimiter delimiter of the list
 	 * @return position in list or 0
 	 */
-	public int containsNoCase(String list, String value, String delimiter,
-			boolean includeEmptyFields, boolean multiCharacterDelimiter);
+	public int containsNoCase(String list, String value, String delimiter, boolean includeEmptyFields, boolean multiCharacterDelimiter);
 
 	/**
 	 * returns if a value of the list contains given value, case sensitive
 	 * 
 	 * @param list list to search in
-	 * @param value value to serach
+	 * @param value value to search
 	 * @param delimiter delimiter of the list
 	 * @return position in list or 0
 	 */
-	public int contains(String list, String value, String delimiter,
-			boolean includeEmptyFields, boolean multiCharacterDelimiter);
+	public int contains(String list, String value, String delimiter, boolean includeEmptyFields, boolean multiCharacterDelimiter);
 
 	/**
-	 * convert a string array to string list, removes empty values at begin and
-	 * end of the list
+	 * convert a string array to string list, removes empty values at begin and end of the list
 	 * 
 	 * @param array array to convert
 	 * @param delimiter delimiter for the new list
@@ -223,8 +214,7 @@ public interface ListUtil {
 	 */
 	public String toList(Array array, String delimiter) throws PageException;
 
-	public String toList(java.util.List<?> list, String delimiter)
-			throws PageException;
+	public String toList(java.util.List<?> list, String delimiter) throws PageException;
 
 	/**
 	 * input is already a String List, so no casting necessary
@@ -236,8 +226,7 @@ public interface ListUtil {
 	public String toListEL(java.util.List<String> list, String delimiter);
 
 	/**
-	 * trims a string array, removes all empty array positions at the start and
-	 * the end of the array
+	 * trims a string array, removes all empty array positions at the start and the end of the array
 	 * 
 	 * @param array array to remove elements
 	 * @return cleared array
@@ -249,12 +238,11 @@ public interface ListUtil {
 	 * 
 	 * @param list list to trim
 	 * @param delimiter delimiter of the list
-	 * @param multiCharacterDelimiter is a delimeter with multiple character
-	 *            handled as ne character or as many
-	 * @return trimed list
+	 * @param multiCharacterDelimiter is a delimeter with multiple character handled as ne character or
+	 *            as many
+	 * @return trimmed list
 	 */
-	public String trim(String list, String delimiter,
-			boolean multiCharacterDelimiter);
+	public String trim(String list, String delimiter, boolean multiCharacterDelimiter);
 
 	/**
 	 * sorts a string list
@@ -266,8 +254,7 @@ public interface ListUtil {
 	 * @return sorted list
 	 * @throws PageException
 	 */
-	public String sortIgnoreEmpty(String list, String sortType,
-			String sortOrder, String delimiter) throws PageException;
+	public String sortIgnoreEmpty(String list, String sortType, String sortOrder, String delimiter) throws PageException;
 
 	/**
 	 * sorts a string list
@@ -279,8 +266,7 @@ public interface ListUtil {
 	 * @return sorted list
 	 * @throws PageException
 	 */
-	public String sort(String list, String sortType, String sortOrder,
-			String delimiter) throws PageException;
+	public String sort(String list, String sortType, String sortOrder, String delimiter) throws PageException;
 
 	/**
 	 * cast a Object Array to a String Array
@@ -336,12 +322,11 @@ public interface ListUtil {
 	 * gets a value from list
 	 * 
 	 * @param list list to cast
-	 * @param delimiter delimter of the list
+	 * @param delimiter delimiter of the list
 	 * @param position
 	 * @return Array Object
 	 */
-	public String getAt(String list, String delimiter, int position,
-			boolean ignoreEmpty, String defaultValue);
+	public String getAt(String list, String delimiter, int position, boolean ignoreEmpty, String defaultValue);
 
 	public String[] toStringArray(String list, String delimiter);
 
@@ -366,13 +351,11 @@ public interface ListUtil {
 
 	public Set<String> toSet(String[] arr);
 
-	public String first(String list, String delimiters, boolean ignoreEmpty,
-			int count);
+	public String first(String list, String delimiters, boolean ignoreEmpty, int count);
 
 	public String first(String list, String delimiters, boolean ignoreEmpty);
 
-	public String rest(String list, String delimiters, boolean ignoreEmpty,
-			int offset);
+	public String rest(String list, String delimiters, boolean ignoreEmpty, int offset);
 
 	public String rest(String list, String delimiters, boolean ignoreEmpty);
 
@@ -384,8 +367,7 @@ public interface ListUtil {
 	 * @param ignoreEmpty
 	 * @return
 	 */
-	public int getDelimIndex(String list, int itemPos, char[] delims,
-			boolean ignoreEmpty);
+	public int getDelimIndex(String list, int itemPos, char[] delims, boolean ignoreEmpty);
 
 	public List<String> toList(Set<String> set);
 

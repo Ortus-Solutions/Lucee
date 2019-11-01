@@ -1,114 +1,162 @@
-/**
- *
- * Copyright (c) 2014, the Railo Company Ltd. All rights reserved.
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either 
- * version 2.1 of the License, or (at your option) any later version.
- * 
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- * 
- * You should have received a copy of the GNU Lesser General Public 
- * License along with this library.  If not, see <http://www.gnu.org/licenses/>.
- * 
- **/
 package lucee.runtime.type.query;
 
-import java.util.Iterator;
-
+import lucee.commons.lang.FormatUtil;
+import lucee.commons.lang.StringUtil;
+import lucee.runtime.PageContext;
+import lucee.runtime.db.SQL;
+import lucee.runtime.dump.DumpData;
+import lucee.runtime.dump.DumpProperties;
+import lucee.runtime.dump.DumpTable;
 import lucee.runtime.exp.PageException;
+import lucee.runtime.op.Caster;
 import lucee.runtime.type.Collection;
-import lucee.runtime.type.Query;
-import lucee.runtime.type.util.StructSupport;
-import lucee.runtime.type.util.StructUtil;
+import lucee.runtime.type.Struct;
+import lucee.runtime.type.StructImpl;
 
-public class QueryStruct extends StructSupport {
+public class QueryStruct extends StructImpl implements QueryResult {
 
-	private Query qry;
-	private int row;
+	private static final long serialVersionUID = -2123873025169506446L;
 
-	public QueryStruct(Query qry, int row) {
-		this.qry=qry;
-		this.row=row;
+	private final SQL sql;
+	private long executionTime;
+	private final String template;
+	private final String name;
+
+	private String cacheType;
+	private int updateCount;
+	private Key[] columnNames;
+
+	public QueryStruct(String name, SQL sql, String template) {
+		super(Struct.TYPE_LINKED);
+		this.name = name;
+		this.sql = sql;
+		this.template = template;
 	}
 
 	@Override
-	public void clear() {
-		// TODO Auto-generated method stub
+	public DumpData toDumpData(PageContext pageContext, int maxlevel, DumpProperties dp) {
+		DumpTable dt = (DumpTable) super.toDumpData(pageContext, maxlevel, dp);
 
-	}
+		StringBuilder comment = new StringBuilder();
 
-	@Override
-	public Object remove(Key key) throws PageException {
-		// TODO Auto-generated method stub
-		return null;
-	}
+		// table.appendRow(1, new SimpleDumpData("SQL"), new SimpleDumpData(sql.toString()));
+		String template = getTemplate();
+		if (!StringUtil.isEmpty(template)) comment.append("Template: ").append(template).append("\n");
 
-	@Override
-	public Object removeEL(Key key) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+		int top = dp.getMaxlevel();
 
-	@Override
-	public Object set(Key key, Object value) throws PageException {
-		// TODO Auto-generated method stub
-		return null;
-	}
+		comment.append("Execution Time: ").append(Caster.toString(FormatUtil.formatNSAsMSDouble(getExecutionTime()))).append(" ms \n");
+		comment.append("Record Count: ").append(Caster.toString(size()));
+		if (size() > top) comment.append(" (showing top ").append(Caster.toString(top)).append(")");
+		comment.append("\n");
+		comment.append("Cached: ").append(isCached() ? "Yes\n" : "No\n");
+		if (isCached()) {
+			String ct = getCacheType();
+			comment.append("Cache Type: ").append(ct).append("\n");
+		}
 
-	@Override
-	public Object setEL(Key key, Object value) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+		SQL sql = getSql();
+		if (sql != null) comment.append("SQL: ").append("\n").append(StringUtil.suppressWhiteSpace(sql.toString().trim())).append("\n");
 
-	@Override
-	public int size() {
-		return qry.keys().length;
-	}
+		dt.setTitle("Struct (from Query)");
+		if (dp.getMetainfo()) dt.setComment(comment.toString());
+		return dt;
 
-	@Override
-	public Key[] keys() {
-		return qry.keys();
-	}
-
-	@Override
-	public Object get(Key key) throws PageException {
-		return qry.getAt(key, row);
-	}
-
-	@Override
-	public Object get(Key key, Object defaultValue) {
-		return qry.getAt(key, row,defaultValue);
 	}
 
 	@Override
 	public Collection duplicate(boolean deepCopy) {
-		return StructUtil.duplicate(this, deepCopy);
+		QueryStruct qa = new QueryStruct(name, sql, template);
+		qa.cacheType = cacheType;
+		qa.columnNames = columnNames;
+		qa.executionTime = executionTime;
+		qa.updateCount = updateCount;
+		copy(this, qa, deepCopy);
+		return qa;
+	}
+
+	public SQL getSql() {
+		return sql;
+	}
+
+	public void setCacheType(String cacheType) {
+		this.cacheType = cacheType;
+	}
+
+	public String getCacheType() {
+		return cacheType;
 	}
 
 	@Override
-	public boolean containsKey(Key key) {
-		return qry.containsKey(key);
+	public boolean isCached() {
+		return cacheType != null;
+	}
+
+	public long getExecutionTime() {
+		return executionTime;
+	}
+
+	public void setExecutionTime(long executionTime) {
+		this.executionTime = executionTime;
+	}
+
+	public String getTemplate() {
+		return template;
+	}
+
+	public String getName() {
+		return name;
 	}
 
 	@Override
-	public Iterator<Key> keyIterator() {
-		return qry.keyIterator();
+	public int getRecordcount() {
+		return size();
 	}
 
 	@Override
-	public Iterator<Object> valueIterator() {
-		return null;//new QueryValueIterator(qry, row);
+	public int getColumncount() {
+		return columnNames == null ? 0 : columnNames.length;
 	}
 
 	@Override
-	public Iterator<Entry<Key, Object>> entryIterator() {
-		return null;//new QueryEntryItrator(qry, row);
+	public int getUpdateCount() {
+		return updateCount;
 	}
 
+	@Override
+	public void setUpdateCount(int updateCount) {
+		this.updateCount = updateCount;
+	}
+
+	@Override
+	public Key[] getColumnNames() {
+		return columnNames;
+	}
+
+	@Override
+	public void setColumnNames(Key[] columnNames) throws PageException {
+		this.columnNames = columnNames;
+	}
+
+	public static QueryStruct toQueryStruct(lucee.runtime.type.Query q, Key columnName) throws PageException {
+		QueryStruct qs = new QueryStruct(q.getName(), q.getSql(), q.getTemplate());
+		qs.setCacheType(q.getCacheType());
+		qs.setColumnNames(q.getColumnNames());
+		qs.setExecutionTime(q.getExecutionTime());
+		qs.setUpdateCount(q.getUpdateCount());
+
+		int rows = q.getRecordcount();
+		if (rows == 0) return qs;
+		Key[] columns = q.getColumnNames();
+
+		Struct tmp;
+		for (int r = 1; r <= rows; r++) {
+			tmp = new StructImpl();
+			qs.set(Caster.toKey(q.getAt(columnName, r)), tmp);
+			for (Key c: columns) {
+				tmp.setEL(c, q.getAt(c, r, null));
+			}
+		}
+		return qs;
+	}
 }

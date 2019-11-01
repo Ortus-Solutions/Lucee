@@ -36,8 +36,7 @@ public interface Array extends Collection, Cloneable, Objects {
 	public int getDimension();
 
 	/**
-	 * return object a given position, key can only be a integer from 1 to array
-	 * len
+	 * return object a given position, key can only be a integer from 1 to array len
 	 * 
 	 * @param key key as integer
 	 * @return value at key position
@@ -45,8 +44,7 @@ public interface Array extends Collection, Cloneable, Objects {
 	public Object get(int key, Object defaultValue);
 
 	/**
-	 * return object a given position, key can only be a integer from 1 to array
-	 * len
+	 * return object a given position, key can only be a integer from 1 to array len
 	 * 
 	 * @param key key as integer
 	 * @return value at key position
@@ -127,17 +125,17 @@ public interface Array extends Collection, Cloneable, Objects {
 	@Deprecated
 	public void sort(String sortType, String sortOrder) throws PageException;
 
-	public void sortIt(@SuppressWarnings("rawtypes") Comparator comp);// this name was choosen to avoid conflict with java.util.List
+	public void sortIt(@SuppressWarnings("rawtypes") Comparator comp);// this name was chosen to avoid conflict with java.util.List
 
 	/**
-	 * @return return arra as native (Java) Object Array
+	 * @return return array as native (Java) Object Array
 	 */
 	public Object[] toArray();
 
 	/**
 	 * @return return array as ArrayList
 	 */
-	//public ArrayList toArrayList();
+	// public ArrayList toArrayList();
 
 	@SuppressWarnings("rawtypes")
 	public List toList();
@@ -146,7 +144,7 @@ public interface Array extends Collection, Cloneable, Objects {
 	 * removes a value ad defined key
 	 * 
 	 * @param key key to remove
-	 * @return retuns if value is removed or not
+	 * @return returns if value is removed or not
 	 * @throws PageException
 	 */
 	public Object removeE(int key) throws PageException;
@@ -155,7 +153,7 @@ public interface Array extends Collection, Cloneable, Objects {
 	 * removes a value ad defined key
 	 * 
 	 * @param key key to remove
-	 * @return retuns if value is removed or not
+	 * @return returns if value is removed or not
 	 */
 	public Object removeEL(int key);
 

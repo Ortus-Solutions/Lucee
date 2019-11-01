@@ -40,18 +40,17 @@ import lucee.runtime.type.it.StringIterator;
 import lucee.runtime.type.it.ValueIterator;
 import lucee.runtime.type.util.StructSupport;
 
-public final class ObjectStruct extends StructSupport implements Struct,Objects {
-
+public final class ObjectStruct extends StructSupport implements Struct, Objects {
 
 	private JavaObject jo;
 
 	public ObjectStruct(Object o) {
-		if(o instanceof JavaObject) this.jo=(JavaObject) o;
-		else this.jo=new JavaObject(ThreadLocalPageContext.get().getVariableUtil(),o);
+		if (o instanceof JavaObject) this.jo = (JavaObject) o;
+		else this.jo = new JavaObject(ThreadLocalPageContext.get().getVariableUtil(), o);
 	}
 
 	public ObjectStruct(JavaObject jo) {
-		this.jo=jo;
+		this.jo = jo;
 	}
 
 	@Override
@@ -87,22 +86,26 @@ public final class ObjectStruct extends StructSupport implements Struct,Objects 
 	public Object setEL(PageContext pc, Key propertyName, Object value) {
 		return jo.setEL(pc, propertyName, value);
 	}
-	
+
 	@Override
 	public void clear() {
-		//throw new PageRuntimeException(new ExpressionException("can't clear fields from object ["+objects.getClazz().getName()+"]"));
+		// throw new PageRuntimeException(new ExpressionException("can't clear fields from object
+		// ["+objects.getClazz().getName()+"]"));
 	}
 
 	@Override
 	public Collection duplicate(boolean deepCopy) {
-		throw new PageRuntimeException(new ExpressionException("can't clone object of type ["+jo.getClazz().getName()+"]"));
-		//return null;
+		throw new PageRuntimeException(new ExpressionException("can't clone object of type [" + jo.getClazz().getName() + "]"));
+		// return null;
 	}
 
-	
+	@Override
+	public final boolean containsKey(Key key) {
+		return Reflector.hasPropertyIgnoreCase(jo.getClazz(), key.getString());
+	}
 
 	@Override
-	public boolean containsKey(Key key) {
+	public final boolean containsKey(PageContext pc, Key key) {
 		return Reflector.hasPropertyIgnoreCase(jo.getClazz(), key.getString());
 	}
 
@@ -113,22 +116,22 @@ public final class ObjectStruct extends StructSupport implements Struct,Objects 
 
 	@Override
 	public Object get(Key key, Object defaultValue) {
-		return jo.get(ThreadLocalPageContext.get(), key,defaultValue);
+		return jo.get(ThreadLocalPageContext.get(), key, defaultValue);
 	}
 
 	@Override
 	public Key[] keys() {
 		String[] strKeys = Reflector.getPropertyKeys(jo.getClazz());
-		Key[] keys=new Key[strKeys.length];
-		for(int i=0;i<strKeys.length;i++) {
-			keys[i]=KeyImpl.init(strKeys[i]);
+		Key[] keys = new Key[strKeys.length];
+		for (int i = 0; i < strKeys.length; i++) {
+			keys[i] = KeyImpl.init(strKeys[i]);
 		}
 		return keys;
 	}
 
 	@Override
 	public Object remove(Key key) throws PageException {
-		throw new ExpressionException("can't remove field ["+key.getString()+"] from object ["+jo.getClazz().getName()+"]");
+		throw new ExpressionException("can't remove field [" + key.getString() + "] from object [" + jo.getClazz().getName() + "]");
 	}
 
 	@Override
@@ -153,64 +156,64 @@ public final class ObjectStruct extends StructSupport implements Struct,Objects 
 
 	@Override
 	public DumpData toDumpData(PageContext pageContext, int maxlevel, DumpProperties dp) {
-		return jo.toDumpData(pageContext, maxlevel,dp);
+		return jo.toDumpData(pageContext, maxlevel, dp);
 	}
 
 	@Override
 	public Iterator<Collection.Key> keyIterator() {
 		return new KeyIterator(keys());
 	}
-    
-    @Override
+
+	@Override
 	public Iterator<String> keysAsStringIterator() {
-    	return new StringIterator(keys());
-    }
-	
+		return new StringIterator(keys());
+	}
+
 	@Override
 	public Iterator<Entry<Key, Object>> entryIterator() {
-		return new EntryIterator(this,keys());
+		return new EntryIterator(this, keys());
 	}
-	
+
 	@Override
 	public Iterator<Object> valueIterator() {
-		return new ValueIterator(this,keys());
+		return new ValueIterator(this, keys());
 	}
 
 	@Override
 	public boolean castToBooleanValue() throws PageException {
 		return jo.castToBooleanValue();
 	}
-    
-    @Override
-    public Boolean castToBoolean(Boolean defaultValue) {
-        return jo.castToBoolean(defaultValue);
-    }
+
+	@Override
+	public Boolean castToBoolean(Boolean defaultValue) {
+		return jo.castToBoolean(defaultValue);
+	}
 
 	@Override
 	public DateTime castToDateTime() throws PageException {
 		return jo.castToDateTime();
 	}
-    
-    @Override
-    public DateTime castToDateTime(DateTime defaultValue) {
-        return jo.castToDateTime(defaultValue);
-    }
+
+	@Override
+	public DateTime castToDateTime(DateTime defaultValue) {
+		return jo.castToDateTime(defaultValue);
+	}
 
 	@Override
 	public double castToDoubleValue() throws PageException {
 		return jo.castToDoubleValue();
 	}
-    
-    @Override
-    public double castToDoubleValue(double defaultValue) {
-        return jo.castToDoubleValue(defaultValue);
-    }
+
+	@Override
+	public double castToDoubleValue(double defaultValue) {
+		return jo.castToDoubleValue(defaultValue);
+	}
 
 	@Override
 	public String castToString() throws PageException {
 		return jo.castToString();
 	}
-	
+
 	@Override
 	public String castToString(String defaultValue) {
 		return jo.castToString(defaultValue);
@@ -234,5 +237,10 @@ public final class ObjectStruct extends StructSupport implements Struct,Objects 
 	@Override
 	public int compareTo(DateTime dt) throws PageException {
 		return jo.compareTo(dt);
+	}
+
+	@Override
+	public int getType() {
+		return Struct.TYPE_REGULAR;
 	}
 }

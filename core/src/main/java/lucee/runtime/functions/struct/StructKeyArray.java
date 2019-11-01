@@ -22,6 +22,7 @@
 package lucee.runtime.functions.struct;
 
 import lucee.runtime.PageContext;
+import lucee.runtime.exp.FunctionException;
 import lucee.runtime.exp.PageException;
 import lucee.runtime.ext.function.BIF;
 import lucee.runtime.op.Caster;
@@ -33,12 +34,13 @@ public final class StructKeyArray extends BIF {
 
 	private static final long serialVersionUID = -3177185567576262172L;
 
-	public static Array call(PageContext pc , lucee.runtime.type.Struct struct) {
+	public static Array call(PageContext pc, lucee.runtime.type.Struct struct) {
 		return KeyImpl.toArray(CollectionUtil.keys(struct));
 	}
 
 	@Override
 	public Object invoke(PageContext pc, Object[] args) throws PageException {
-		return call(pc,Caster.toStruct(args[0]));
+		if (args.length == 1) return call(pc, Caster.toStruct(args[0]));
+		throw new FunctionException(pc, "StructKeyArray", 1, 1, args.length);
 	}
 }

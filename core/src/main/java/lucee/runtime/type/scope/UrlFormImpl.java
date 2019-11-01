@@ -23,6 +23,8 @@ import java.util.Iterator;
 
 import javax.servlet.ServletInputStream;
 
+import org.apache.commons.fileupload.disk.DiskFileItem;
+
 import lucee.runtime.PageContext;
 import lucee.runtime.dump.DumpData;
 import lucee.runtime.dump.DumpProperties;
@@ -33,8 +35,6 @@ import lucee.runtime.type.Collection;
 import lucee.runtime.type.dt.DateTime;
 import lucee.runtime.type.util.StructSupport;
 
-import org.apache.commons.fileupload.disk.DiskFileItem;
-
 public final class UrlFormImpl extends StructSupport implements URLForm {
 
 	private static final long serialVersionUID = -5709431392572723178L;
@@ -44,28 +44,28 @@ public final class UrlFormImpl extends StructSupport implements URLForm {
 	private boolean isInit;
 
 	public UrlFormImpl(FormImpl form, URLImpl url) {
-		this.form=form;
-		this.url=url;
+		this.form = form;
+		this.url = url;
 	}
-	
+
 	@Override
 	public void initialize(PageContext pc) {
-		if(isInit) return;
-		isInit=true;
+		if (isInit) return;
+		isInit = true;
 		form.initialize(pc);
 		url.initialize(pc);
-		form.addRaw(pc.getApplicationContext(),url.getRaw());
+		form.addRaw(pc.getApplicationContext(), url.getRaw());
 	}
-	
+
 	@Override
 	public void reinitialize(ApplicationContext ac) {
 		form.reinitialize(ac);
 		url.reinitialize(ac);
 	}
-	
+
 	@Override
 	public void release(PageContext pc) {
-		isInit=false;
+		isInit = false;
 		form.release(pc);
 		url.release(pc);
 	}
@@ -76,8 +76,8 @@ public final class UrlFormImpl extends StructSupport implements URLForm {
 	}
 
 	@Override
-	public void setEncoding(ApplicationContext ac, String encoding)throws UnsupportedEncodingException {
-		form.setEncoding(ac,encoding);
+	public void setEncoding(ApplicationContext ac, String encoding) throws UnsupportedEncodingException {
+		form.setEncoding(ac, encoding);
 	}
 
 	@Override
@@ -102,35 +102,50 @@ public final class UrlFormImpl extends StructSupport implements URLForm {
 	}
 
 	@Override
-	public boolean containsKey(Collection.Key key) {
+	public final boolean containsKey(Collection.Key key) {
 		return form.containsKey(key);
 	}
 
 	@Override
-	public Object get(Collection.Key key) throws PageException {
+	public final boolean containsKey(PageContext pc, Collection.Key key) {
+		return form.containsKey(pc, key);
+	}
+
+	@Override
+	public final Object get(Collection.Key key) throws PageException {
 		return form.get(key);
 	}
 
 	@Override
-	public Object get(Collection.Key key, Object defaultValue) {
+	public final Object get(PageContext pc, Collection.Key key) throws PageException {
+		return form.get(pc, key);
+	}
+
+	@Override
+	public final Object get(Collection.Key key, Object defaultValue) {
 		return form.get(key, defaultValue);
+	}
+
+	@Override
+	public final Object get(PageContext pc, Collection.Key key, Object defaultValue) {
+		return form.get(pc, key, defaultValue);
 	}
 
 	@Override
 	public Iterator<Collection.Key> keyIterator() {
 		return form.keyIterator();
 	}
-    
-    @Override
+
+	@Override
 	public Iterator<String> keysAsStringIterator() {
-    	return form.keysAsStringIterator();
-    }
-	
+		return form.keysAsStringIterator();
+	}
+
 	@Override
 	public Iterator<Entry<Key, Object>> entryIterator() {
 		return form.entryIterator();
 	}
-	
+
 	@Override
 	public Iterator<Object> valueIterator() {
 		return form.valueIterator();
@@ -168,49 +183,48 @@ public final class UrlFormImpl extends StructSupport implements URLForm {
 
 	@Override
 	public DumpData toDumpData(PageContext pageContext, int maxlevel, DumpProperties dp) {
-		return form.toDumpData(pageContext, maxlevel,dp);
+		return form.toDumpData(pageContext, maxlevel, dp);
 	}
 
 	@Override
 	public boolean castToBooleanValue() throws PageException {
 		return form.castToBooleanValue();
 	}
-    
-    @Override
-    public Boolean castToBoolean(Boolean defaultValue) {
-        return form.castToBoolean(defaultValue);
-    }
+
+	@Override
+	public Boolean castToBoolean(Boolean defaultValue) {
+		return form.castToBoolean(defaultValue);
+	}
 
 	@Override
 	public DateTime castToDateTime() throws PageException {
 		return form.castToDateTime();
 	}
-    
-    @Override
-    public DateTime castToDateTime(DateTime defaultValue) {
-        return form.castToDateTime(defaultValue);
-    }
+
+	@Override
+	public DateTime castToDateTime(DateTime defaultValue) {
+		return form.castToDateTime(defaultValue);
+	}
 
 	@Override
 	public double castToDoubleValue() throws PageException {
 		return form.castToDoubleValue();
 	}
-    
-    @Override
-    public double castToDoubleValue(double defaultValue) {
-        return form.castToDoubleValue(defaultValue);
-    }
+
+	@Override
+	public double castToDoubleValue(double defaultValue) {
+		return form.castToDoubleValue(defaultValue);
+	}
 
 	@Override
 	public String castToString() throws PageException {
 		return form.castToString();
 	}
-	
+
 	@Override
 	public String castToString(String defaultValue) {
 		return form.castToString(defaultValue);
 	}
-
 
 	@Override
 	public int compareTo(boolean b) throws PageException {
@@ -243,12 +257,12 @@ public final class UrlFormImpl extends StructSupport implements URLForm {
 
 	@Override
 	public Collection duplicate(boolean deepCopy) {
-		return (Collection) Duplicator.duplicate(form,deepCopy);
+		return (Collection) Duplicator.duplicate(form, deepCopy);
 	}
-	
+
 	@Override
-	public void setScriptProtecting(ApplicationContext ac,boolean b) {
-		form.setScriptProtecting(ac,b);
+	public void setScriptProtecting(ApplicationContext ac, boolean b) {
+		form.setScriptProtecting(ac, b);
 	}
 
 	@Override

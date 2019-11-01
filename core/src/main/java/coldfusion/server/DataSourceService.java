@@ -21,50 +21,40 @@ package coldfusion.server;
 import java.io.IOException;
 import java.sql.SQLException;
 
+import coldfusion.sql.DataSource;
 import lucee.runtime.exp.SecurityException;
 import lucee.runtime.type.Array;
 import lucee.runtime.type.Struct;
-import coldfusion.sql.DataSource;
-
 
 public interface DataSourceService extends Service {
-	
+
 	/*
-	TODO impl
-	public abstract Query executeQuery(Connection arg0, String arg1,
-			ParameterList arg2, Integer arg3, Integer arg4, Integer arg5,
-			int[] arg6, int arg7, int arg8, boolean arg9, boolean arg10)
-			throws SQLException;
-
-	public abstract Query executeQuery(Connection arg0, String arg1,
-			ParameterList arg2, Integer arg3, Integer arg4, Integer arg5,
-			int[] arg6, String arg7) throws SQLException;
-
-	public abstract Query executeQuery(Connection arg0, String arg1,
-			ParameterList arg2, Integer arg3, Integer arg4, Integer arg5,
-			int[] arg6, DataSourceDef arg7) throws SQLException;
-
-	public abstract Query executeQuery(Connection arg0, String arg1,
-			ParameterList arg2, Integer arg3, Integer arg4, Integer arg5,
-			int[] arg6, Object arg7) throws SQLException;
-
-	public abstract Query executeCall(Connection arg0, String arg1,
-			ParameterList arg2, int[] arg3, Integer arg4, Integer arg5,
-			int[] arg6, int arg7, int arg8, boolean arg9, boolean arg10)
-			throws SQLException;
-
-	public abstract Query executeCall(Connection arg0, String arg1,
-			ParameterList arg2, int[] arg3, Integer arg4, Integer arg5,
-			int[] arg6, String arg7) throws SQLException;
-
-	public abstract Query executeCall(Connection arg0, String arg1,
-			ParameterList arg2, int[] arg3, Integer arg4, Integer arg5,
-			int[] arg6, DataSourceDef arg7) throws SQLException;
-
-	public abstract Query executeCall(Connection arg0, String arg1,
-			ParameterList arg2, int[] arg3, Integer arg4, Integer arg5,
-			int[] arg6, Object arg7) throws SQLException;
-*/
+	 * TODO impl public abstract Query executeQuery(Connection arg0, String arg1, ParameterList arg2,
+	 * Integer arg3, Integer arg4, Integer arg5, int[] arg6, int arg7, int arg8, boolean arg9, boolean
+	 * arg10) throws SQLException;
+	 * 
+	 * public abstract Query executeQuery(Connection arg0, String arg1, ParameterList arg2, Integer
+	 * arg3, Integer arg4, Integer arg5, int[] arg6, String arg7) throws SQLException;
+	 * 
+	 * public abstract Query executeQuery(Connection arg0, String arg1, ParameterList arg2, Integer
+	 * arg3, Integer arg4, Integer arg5, int[] arg6, DataSourceDef arg7) throws SQLException;
+	 * 
+	 * public abstract Query executeQuery(Connection arg0, String arg1, ParameterList arg2, Integer
+	 * arg3, Integer arg4, Integer arg5, int[] arg6, Object arg7) throws SQLException;
+	 * 
+	 * public abstract Query executeCall(Connection arg0, String arg1, ParameterList arg2, int[] arg3,
+	 * Integer arg4, Integer arg5, int[] arg6, int arg7, int arg8, boolean arg9, boolean arg10) throws
+	 * SQLException;
+	 * 
+	 * public abstract Query executeCall(Connection arg0, String arg1, ParameterList arg2, int[] arg3,
+	 * Integer arg4, Integer arg5, int[] arg6, String arg7) throws SQLException;
+	 * 
+	 * public abstract Query executeCall(Connection arg0, String arg1, ParameterList arg2, int[] arg3,
+	 * Integer arg4, Integer arg5, int[] arg6, DataSourceDef arg7) throws SQLException;
+	 * 
+	 * public abstract Query executeCall(Connection arg0, String arg1, ParameterList arg2, int[] arg3,
+	 * Integer arg4, Integer arg5, int[] arg6, Object arg7) throws SQLException;
+	 */
 	public abstract Struct getDatasources() throws SecurityException;
 
 	public abstract Struct getDrivers() throws ServiceException, SecurityException;

@@ -24,7 +24,7 @@ import lucee.transformer.bytecode.BytecodeContext;
 public abstract class OnFinally {
 
 	public final void writeOut(BytecodeContext bc) throws TransformerException {
-		try{
+		try {
 			bc.finallyPush(this);
 			_writeOut(bc);
 		}
@@ -32,5 +32,6 @@ public abstract class OnFinally {
 			bc.finallyPop();
 		}
 	}
+
 	public abstract void _writeOut(BytecodeContext bc) throws TransformerException;
 }

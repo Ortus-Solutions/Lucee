@@ -23,16 +23,16 @@ import lucee.transformer.Position;
 
 public class TagImport extends TagBaseNoFinal {
 
-
 	private String path;
 
 	/**
 	 * Constructor of the class
+	 * 
 	 * @param startLine
 	 * @param endLine
 	 */
-	public TagImport(Factory f, Position start,Position end) {
-		super(f,start, end);
+	public TagImport(Factory f, Position start, Position end) {
+		super(f, start, end);
 	}
 
 	/**
@@ -48,6 +48,5 @@ public class TagImport extends TagBaseNoFinal {
 	public void setPath(String path) {
 		this.path = path;
 	}
-
 
 }

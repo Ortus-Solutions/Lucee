@@ -33,15 +33,14 @@ import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 import java.util.zip.ZipEntry;
 
-import lucee.commons.io.log.Log;
-import lucee.loader.engine.CFMLEngineFactory;
-import lucee.loader.engine.CFMLEngineFactorySupport;
-import lucee.loader.util.Util;
-
 import org.apache.felix.framework.Felix;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
+
+import lucee.loader.engine.CFMLEngineFactory;
+import lucee.loader.engine.CFMLEngineFactorySupport;
+import lucee.loader.util.Util;
 
 public class BundleLoader {
 
@@ -57,16 +56,16 @@ public class BundleLoader {
 	 * @throws IOException
 	 * @throws BundleException
 	 */
-	public static BundleCollection loadBundles(final CFMLEngineFactory engFac,
-			final File cacheRootDir, final File jarDirectory, final File rc,
-			final BundleCollection old) throws IOException, BundleException {
+	public static BundleCollection loadBundles(final CFMLEngineFactory engFac, final File cacheRootDir, final File jarDirectory, final File rc, final BundleCollection old)
+			throws IOException, BundleException {
+		// if (rc.getName().toLowerCase().toLowerCase().indexOf("ehcache") != -1)
+		// System. err.println(rc.getName());
+
 		final JarFile jf = new JarFile(rc);// TODO this should work in any case, but we should still improve this code
 		try {
 			// Manifest
 			final Manifest mani = jf.getManifest();
-			if (mani == null)
-				throw new IOException("lucee core [" + rc
-						+ "] is invalid, there is no META-INF/MANIFEST.MF File");
+			if (mani == null) throw new IOException("lucee core [" + rc + "] is invalid, there is no META-INF/MANIFEST.MF File");
 			final Attributes attrs = mani.getMainAttributes();
 
 			// default properties
@@ -75,110 +74,40 @@ public class BundleLoader {
 			// Get data from Manifest and default.properties
 
 			// Lucee Core Version
-			//String rcv = unwrap(defProp.getProperty("lucee.core.version"));
-			//if(Util.isEmpty(rcv)) throw new IOException("lucee core ["+rc+"] is invalid, no core version is defined in the {Lucee-Core}/default.properties File");
-			//int version = CFMLEngineFactory.toInVersion(rcv);
+			// String rcv = unwrap(defProp.getProperty("lucee.core.version"));
+			// if(Util.isEmpty(rcv)) throw new IOException("lucee core ["+rc+"] is invalid, no core version is
+			// defined in the {Lucee-Core}/default.properties File");
+			// int version = CFMLEngineFactory.toInVersion(rcv);
 
 			// read the config from default.properties
 			final Map<String, Object> config = new HashMap<String, Object>();
 			{
-				final Iterator<Entry<Object, Object>> it = defProp.entrySet()
-						.iterator();
+				final Iterator<Entry<Object, Object>> it = defProp.entrySet().iterator();
 				Entry<Object, Object> e;
 				String k;
 				while (it.hasNext()) {
 					e = it.next();
 					k = (String) e.getKey();
-					if (!k.startsWith("org.") && !k.startsWith("felix."))
-						continue;
-					config.put(
-							k,
-							CFMLEngineFactorySupport.removeQuotes(
-									(String) e.getValue(), true));
+					if (!k.startsWith("org.") && !k.startsWith("felix.")) continue;
+					config.put(k, CFMLEngineFactorySupport.removeQuotes((String) e.getValue(), true));
 				}
 			}
-
-			/* / org.osgi.framework.storage.clean
-			String storageClean = unwrap(defProp
-					.getProperty("org.osgi.framework.storage.clean"));
-			if (Util.isEmpty(storageClean))
-				storageClean = Constants.FRAMEWORK_STORAGE_CLEAN_ONFIRSTINIT;
-			engFac.log(Logger.LOG_INFO, "org.osgi.framework.storage.clean:"
-					+ storageClean);*/
-
-			/* / org.osgi.framework.bootdelegation
-			String bootDelegation = unwrap(defProp.getProperty("org.osgi.framework.bootdelegation"));
-			if (Util.isEmpty(bootDelegation))
-				throw new IOException(
-						"[org.osgi.framework.bootdelegation] setting is necessary in file {Lucee-Core}/default.properties");
-			engFac.log(Logger.LOG_INFO, "org.osgi.framework.bootdelegation:"
-					+ bootDelegation);*/
-
-			/* / org.osgi.framework.system.packages
-			String systemPackages = unwrap(defProp.getProperty("org.osgi.framework.system.packages"));
-			engFac.log(Logger.LOG_INFO, "org.osgi.framework.system.packages:"
-					+ systemPackages);*/
-
-			/*/ org.osgi.framework.bundle.parent
-			String parentClassLoader = unwrap(defProp
-					.getProperty("org.osgi.framework.bundle.parent"));
-			if (Util.isEmpty(parentClassLoader))
-				parentClassLoader = Constants.FRAMEWORK_BUNDLE_PARENT_FRAMEWORK;
-			else
-				parentClassLoader = BundleUtil
-						.toFrameworkBundleParent(parentClassLoader);
-			engFac.log(Logger.LOG_INFO, "org.osgi.framework.bundle.parent:"
-					+ parentClassLoader);
-			*/
-
-			/*/ felix.log.level
-			int logLevel = 1; // 1 = error, 2 = warning, 3 = information, and 4 = debug
-			String strLogLevel = unwrap(defProp.getProperty("felix.log.level"));
-			if (!Util.isEmpty(strLogLevel)) {
-				if ("warn".equalsIgnoreCase(strLogLevel)
-						|| "warning".equalsIgnoreCase(strLogLevel))
-					logLevel = 2;
-				else if ("info".equalsIgnoreCase(strLogLevel)
-						|| "information".equalsIgnoreCase(strLogLevel))
-					logLevel = 3;
-				else if ("debug".equalsIgnoreCase(strLogLevel))
-					logLevel = 4;
-			}
-			engFac.log(Logger.LOG_INFO,
-					"felix.log.level (1 = error, 2 = warning, 3 = information, and 4 = debug):"
-							+ logLevel);
-			*/
-			// 
-			/*
-			 if (old != null) {
-				bc = old.getBundleContext();
-				removeBundles(old);
-				//clearCacheDirectory(felix-cache);
-			} else {
-				bc = engFac.getFelix(cacheRootDir, storageClean, bootDelegation,
-						parentClassLoader, logLevel, null).getBundleContext();
-			}
-			 */
 
 			// close all bundles
 			Felix felix;
 			if (old != null) {
 				removeBundlesEL(old);
 				felix = old.felix;
-				felix.stop();// stops all active bundles
+				// stops felix (wait for it)
+				BundleUtil.stop(felix, false);
 				felix = engFac.getFelix(cacheRootDir, config);
-				//felix.start();
-			} else
-				felix = engFac.getFelix(cacheRootDir, config);
+			}
+			else felix = engFac.getFelix(cacheRootDir, config);
 			final BundleContext bc = felix.getBundleContext();
 
 			// get bundle needed for that core
 			final String rb = attrs.getValue("Require-Bundle");
-			if (Util.isEmpty(rb))
-				throw new IOException(
-						"lucee core ["
-								+ rc
-								+ "] is invalid, no Require-Bundle defintion found in the META-INF/MANIFEST.MF File");
+			if (Util.isEmpty(rb)) throw new IOException("lucee core [" + rc + "] is invalid, no Require-Bundle definition found in the META-INF/MANIFEST.MF File");
 
 			// get fragments needed for that core (Lucee specific Key)
 			final String rbf = attrs.getValue("Require-Bundle-Fragment");
@@ -188,28 +117,28 @@ public class BundleLoader {
 			final Map<String, String> requiredBundleFragments = readRequireBundle(rbf); // Require-Bundle-Fragment
 			final Map<String, File> availableBundles = loadAvailableBundles(jarDirectory);
 
+			// deploys bundled bundles to bundle directory
+			// deployBundledBundles(jarDirectory, availableBundles);
+
 			// Add Required Bundles
 			Entry<String, String> e;
 			File f;
 			String id;
 			final List<Bundle> bundles = new ArrayList<Bundle>();
-			Iterator<Entry<String, String>> it = requiredBundles.entrySet()
-					.iterator();
+			Iterator<Entry<String, String>> it = requiredBundles.entrySet().iterator();
 			while (it.hasNext()) {
 				e = it.next();
 				id = e.getKey() + "|" + e.getValue();
 				f = availableBundles.get(id);
-				//StringBuilder sb=new StringBuilder();
+				// StringBuilder sb=new StringBuilder();
 				if (f == null) {
-					/*sb.append(id+"\n");
-					Iterator<String> _it = availableBundles.keySet().iterator();
-					while(_it.hasNext()){
-						sb.append("- "+_it.next()+"\n");
-					}
-					throw new RuntimeException(sb.toString());*/
+					/*
+					 * sb.append(id+"\n"); Iterator<String> _it = availableBundles.keySet().iterator();
+					 * while(_it.hasNext()){ sb.append("- "+_it.next()+"\n"); } throw new
+					 * RuntimeException(sb.toString());
+					 */
 				}
-				if (f == null)
-					f = engFac.downloadBundle(e.getKey(), e.getValue(), null);
+				if (f == null) f = engFac.downloadBundle(e.getKey(), e.getValue(), null);
 				bundles.add(BundleUtil.addBundle(engFac, bc, f, null));
 			}
 
@@ -221,14 +150,13 @@ public class BundleLoader {
 				id = e.getKey() + "|" + e.getValue();
 				f = availableBundles.get(id);
 
-				if (f == null)
-					f = engFac.downloadBundle(e.getKey(), e.getValue(), null); // if identification is not defined, it is loaded from the CFMLEngine
+				if (f == null) f = engFac.downloadBundle(e.getKey(), e.getValue(), null); // if identification is not defined, it is loaded from the CFMLEngine
 				fragments.add(BundleUtil.addBundle(engFac, bc, f, null));
 			}
 
 			// Add Lucee core Bundle
 			Bundle bundle;
-			//bundles.add(bundle = BundleUtil.addBundle(engFac, bc, rc,null));
+			// bundles.add(bundle = BundleUtil.addBundle(engFac, bc, rc,null));
 			bundle = BundleUtil.addBundle(engFac, bc, rc, null);
 
 			// Start the bundles
@@ -236,66 +164,58 @@ public class BundleLoader {
 			BundleUtil.start(engFac, bundle);
 
 			return new BundleCollection(felix, bundle, bundles);
-		} finally {
-			if (jf != null)
-				try {
-					jf.close();
-				} catch (final IOException ioe) {
-				}
+		}
+		finally {
+			if (jf != null) try {
+				jf.close();
+			}
+			catch (final IOException ioe) {}
 		}
 	}
 
-	private static Map<String, File> loadAvailableBundles(
-			final File jarDirectory) {
+	private static Map<String, File> loadAvailableBundles(final File jarDirectory) {
 		final Map<String, File> rtn = new HashMap<String, File>();
 		final File[] jars = jarDirectory.listFiles();
-		JarFile jf = null;
-		String symbolicName, version;
-		Attributes attrs;
-		for (int i = 0; i < jars.length; i++) {
-			if (!jars[i].isFile() || !jars[i].getName().endsWith(".jar"))
-				continue;
+		if (jars != null) for (int i = 0; i < jars.length; i++) {
+			if (!jars[i].isFile() || !jars[i].getName().endsWith(".jar")) continue;
 			try {
-				jf = new JarFile(jars[i]);
-				attrs = jf.getManifest().getMainAttributes();
-				symbolicName = attrs.getValue("Bundle-SymbolicName");
-				version = attrs.getValue("Bundle-Version");
-				if (Util.isEmpty(symbolicName))
-					throw new IOException(
-							"OSGi bundle ["
-									+ jars[i]
-									+ "] is invalid, {Lucee-Core}META-INF/MANIFEST.MF does not contain a \"Bundle-SymbolicName\"");
-				if (Util.isEmpty(version))
-					throw new IOException(
-							"OSGi bundle ["
-									+ jars[i]
-									+ "] is invalid, {Lucee-Core}META-INF/MANIFEST.MF does not contain a \"Bundle-Version\"");
-
-				rtn.put(symbolicName + "|" + version, jars[i]);
-			} catch (final Throwable t) {
-			} finally {
-				if (jf != null)
-					try {
-						jf.close();
-					} catch (final IOException e) {
-					}
+				rtn.put(loadBundleInfo(jars[i]), jars[i]);
+			}
+			catch (final IOException ioe) {
+				ioe.printStackTrace();
 			}
 		}
 		return rtn;
-
 	}
 
-	private static Map<String, String> readRequireBundle(final String rb)
-			throws IOException {
+	public static String loadBundleInfo(final File jar) throws IOException {
+		JarFile jf = new JarFile(jar);
+		try {
+			Attributes attrs = jf.getManifest().getMainAttributes();
+			String symbolicName = attrs.getValue("Bundle-SymbolicName");
+			String version = attrs.getValue("Bundle-Version");
+			if (Util.isEmpty(symbolicName))
+				throw new IOException("OSGi bundle [" + jar + "] is invalid, {Lucee-Core}META-INF/MANIFEST.MF does not contain a \"Bundle-SymbolicName\"");
+			if (Util.isEmpty(version)) throw new IOException("OSGi bundle [" + jar + "] is invalid, {Lucee-Core}META-INF/MANIFEST.MF does not contain a \"Bundle-Version\"");
+
+			return symbolicName + "|" + version;
+		}
+		finally {
+			Util.closeEL(jf);
+		}
+	}
+
+	private static Map<String, String> readRequireBundle(final String rb) throws IOException {
 		final HashMap<String, String> rtn = new HashMap<String, String>();
+		if (Util.isEmpty(rb)) return rtn;
+
 		final StringTokenizer st = new StringTokenizer(rb, ",");
 		StringTokenizer stl;
 		String line, jarName, jarVersion = null, token;
 		int index;
 		while (st.hasMoreTokens()) {
 			line = st.nextToken().trim();
-			if (Util.isEmpty(line))
-				continue;
+			if (Util.isEmpty(line)) continue;
 
 			stl = new StringTokenizer(line, ";");
 
@@ -304,106 +224,119 @@ public class BundleLoader {
 
 			while (stl.hasMoreTokens()) {
 				token = stl.nextToken().trim();
-				if (token.startsWith("bundle-version")
-						&& (index = token.indexOf('=')) != -1)
-					jarVersion = token.substring(index + 1).trim();
+				if (token.startsWith("bundle-version") && (index = token.indexOf('=')) != -1) jarVersion = token.substring(index + 1).trim();
 			}
-			if (jarVersion == null)
-				throw new IOException(
-						"missing \"bundle-version\" info in the following \"Require-Bundle\" record: \""
-								+ jarName + "\"");
+			if (jarVersion == null) throw new IOException("missing \"bundle-version\" info in the following \"Require-Bundle\" record: \"" + jarName + "\"");
 			rtn.put(jarName, jarVersion);
 		}
 		return rtn;
 	}
 
-	/*private static String unwrap(String str) {
-		return str == null ? null : CFMLEngineFactory.removeQuotes(str, true);
-	}*/
+	/*
+	 * private static String unwrap(String str) { return str == null ? null :
+	 * CFMLEngineFactory.removeQuotes(str, true); }
+	 */
 
-	public static Properties loadDefaultProperties(final JarFile jf)
-			throws IOException {
+	public static Properties loadDefaultProperties(final JarFile jf) throws IOException {
 		final ZipEntry ze = jf.getEntry("default.properties");
-		if (ze == null)
-			throw new IOException(
-					"the Lucee core has no default.properties file!");
+		if (ze == null) throw new IOException("the Lucee core has no default.properties file!");
 
 		final Properties prop = new Properties();
 		InputStream is = null;
 		try {
 			is = jf.getInputStream(ze);
 			prop.load(is);
-		} finally {
+		}
+		finally {
 			CFMLEngineFactorySupport.closeEL(is);
 		}
 		return prop;
 	}
 
-	public static void removeBundles(final BundleContext bc)
-			throws BundleException {
+	public static void removeBundles(final BundleContext bc) throws BundleException {
 		final Bundle[] bundles = bc.getBundles();
-		for (final Bundle bundle : bundles)
+		for (final Bundle bundle: bundles)
 			removeBundle(bundle);
 	}
 
-	public static void removeBundles(final BundleCollection bc)
-			throws BundleException {
-		final Bundle[] bundles = bc.getBundleContext().getBundles();
+	public static void removeBundles(final BundleCollection bc) throws BundleException {
+		BundleContext bcc = bc.getBundleContext();
+		final Bundle[] bundles = bcc == null ? new Bundle[0] : bcc.getBundles();
 
-		for (final Bundle bundle : bundles)
-			if (!BundleUtil.isSystemBundle(bundle))
-				removeBundle(bundle);
+		// stop
+		for (final Bundle bundle: bundles) {
+			if (!BundleUtil.isSystemBundle(bundle)) {
+				stopBundle(bundle);
+			}
+		}
+		// uninstall
+		for (final Bundle bundle: bundles) {
+			if (!BundleUtil.isSystemBundle(bundle)) {
+				uninstallBundle(bundle);
+			}
+		}
 	}
 
 	public static void removeBundlesEL(final BundleCollection bc) {
-		final Bundle[] bundles = bc.getBundleContext().getBundles();
+		BundleContext bcc = bc.getBundleContext();
+		final Bundle[] bundles = bcc == null ? new Bundle[0] : bcc.getBundles();
 
-		for (final Bundle bundle : bundles)
-			if (!BundleUtil.isSystemBundle(bundle))
+		for (final Bundle bundle: bundles) {
+			if (!BundleUtil.isSystemBundle(bundle)) {
 				try {
-					removeBundle(bundle);
-				} catch (final BundleException e) {
-					// TODO remove 
+					stopBundle(bundle);
+				}
+				catch (final BundleException e) {
 					e.printStackTrace();
 				}
+			}
+		}
+		for (final Bundle bundle: bundles) {
+			if (!BundleUtil.isSystemBundle(bundle)) {
+				try {
+					uninstallBundle(bundle);
+				}
+				catch (final BundleException e) {
+					e.printStackTrace();
+				}
+			}
+		}
 	}
 
 	public static void removeBundle(final Bundle bundle) throws BundleException {
-		if (bundle == null)
-			return;
+		stopBundle(bundle);
+		uninstallBundle(bundle);
+	}
 
-		// wait for starting
+	public static void uninstallBundle(final Bundle bundle) throws BundleException {
+		if (bundle == null) return;
+
+		if (bundle.getState() == Bundle.ACTIVE || bundle.getState() == Bundle.STARTING || bundle.getState() == Bundle.STOPPING) stopBundle(bundle);
+
+		if (bundle.getState() != Bundle.UNINSTALLED) {
+			bundle.uninstall();
+		}
+	}
+
+	public static void stopBundle(final Bundle bundle) throws BundleException {
+		if (bundle == null) return;
+
+		// wait for starting/stopping
 		int sleept = 0;
-		while (bundle.getState() == Bundle.STARTING) {
+		while (bundle.getState() == Bundle.STOPPING || bundle.getState() == Bundle.STARTING) {
 			try {
 				Thread.sleep(10);
-			} catch (final InterruptedException e) {
+			}
+			catch (final InterruptedException e) {
 				break;
 			}
 			sleept += 10;
-			if (sleept > 3000)
-				break; // only wait for 3 seconds
+			if (sleept > 5000) break; // only wait for 5 seconds
 		}
 
 		// force stopping (even when still starting)
-		if (bundle.getState() == Bundle.ACTIVE
-				|| bundle.getState() == Bundle.STARTING)
-			bundle.stop();
+		if (bundle.getState() == Bundle.ACTIVE || bundle.getState() == Bundle.STARTING) BundleUtil.stop(bundle, false);
 
-		// wait for stopping
-		sleept = 0;
-		while (bundle.getState() == Bundle.STOPPING) {
-			try {
-				Thread.sleep(10);
-			} catch (final InterruptedException e) {
-				break;
-			}
-			sleept += 10;
-			if (sleept > 3000)
-				break; // only wait for 3 seconds
-		}
-
-		if (bundle.getState() != Bundle.UNINSTALLED)
-			bundle.uninstall();
 	}
+
 }

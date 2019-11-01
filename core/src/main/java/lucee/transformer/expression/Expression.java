@@ -23,39 +23,37 @@ import lucee.transformer.Factory;
 import lucee.transformer.Position;
 import lucee.transformer.TransformerException;
 
-import org.objectweb.asm.Type;
-
-
 /**
  * A Expression (Operation, Literal aso.)
  */
 public interface Expression {
 
-    /**
-     * Field <code>MODE_REF</code>
-     */
-    public static final int MODE_REF=0;
-    /**
-     * Field <code>MODE_VALUE</code>
-     */
-    public static final int MODE_VALUE=1;
-    
-    /**
-     * write out the stament to adapter
-     * @param adapter
-     * @param mode 
-     * @return return Type of expression
-     * @throws TemplateException
-     */
-    public Type writeOut(Context bc, int mode) throws TransformerException;
+	/**
+	 * Field <code>MODE_REF</code>
+	 */
+	public static final int MODE_REF = 0;
+	/**
+	 * Field <code>MODE_VALUE</code>
+	 */
+	public static final int MODE_VALUE = 1;
 
-    public Position getStart();
+	/**
+	 * write out the stament to adapter
+	 * 
+	 * @param adapter
+	 * @param mode
+	 * @return return Type of expression
+	 * @throws TemplateException
+	 */
+	public Class<?> writeOut(Context bc, int mode) throws TransformerException;
 
-    public Position getEnd();
+	public Position getStart();
 
-    public void setStart(Position start);
+	public Position getEnd();
 
-    public void setEnd(Position end);
-    
+	public void setStart(Position start);
+
+	public void setEnd(Position end);
+
 	public Factory getFactory();
 }

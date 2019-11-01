@@ -27,7 +27,7 @@ import lucee.runtime.ext.function.Function;
 
 public final class GetTemplatePath implements Function {
 	public static Object call(PageContext pc) throws PageException {
-		
-        return pc.getTemplatePath();
+
+		return pc.getTemplatePath();
 	}
 }

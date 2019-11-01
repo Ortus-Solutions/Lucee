@@ -30,15 +30,13 @@ public final class RequestDispatcherDummy implements RequestDispatcher {
 	public RequestDispatcherDummy(HttpServletRequestDummy dummy) {}
 
 	@Override
-	public void forward(ServletRequest arg0, ServletResponse arg1)
-			throws ServletException, IOException {
+	public void forward(ServletRequest arg0, ServletResponse arg1) throws ServletException, IOException {
 		throw new ServletException("operation not supported");
 		// TODO impl
 	}
 
 	@Override
-	public void include(ServletRequest arg0, ServletResponse arg1)
-			throws ServletException, IOException {
+	public void include(ServletRequest arg0, ServletResponse arg1) throws ServletException, IOException {
 		throw new ServletException("operation not supported");
 		// TODO impl
 	}

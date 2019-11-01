@@ -3,7 +3,7 @@
 	<div class="pageintro">
 		#stText.debug.settingDesc#
 	</div>
-	<cfform onerror="customError" action="#request.self#?action=#url.action#" method="post" name="debug_settings">
+	<cfformClassic onerror="customError" action="#request.self#?action=#url.action#" method="post" name="debug_settings">
 		<table class="maintbl">
 			<tbody>
 				<tr>
@@ -42,11 +42,11 @@
 				</tr>
 			</tfoot>
 		</table>
-	</cfform>
+	</cfformClassic>
 	
 	<cfif isWeb>
 		<!---<h2>#stText.debug.filterTitle#</h2>
-		<cfform onerror="customError" action="#request.self#?action=#url.action#" method="post" name="debug_settings">
+		<cfformClassic onerror="customError" action="#request.self#?action=#url.action#" method="post" name="debug_settings">
 		<table class="tbl" width="740">
 		<tr>
 			<th scope="row">#stText.debug.minExeTime#</th>
@@ -72,13 +72,13 @@
 				<input type="reset" class="reset" name="cancel" value="#stText.Buttons.Cancel#">
 			</td>
 		</tr>
-		</cfform>
+		</cfformClassic>
 		</table>
 		<br /><br />--->
 	
 		<h2>#stText.debug.outputTitle#</h2>
 		<div class="itemintro">#stText.debug.outputDesc#</div>
-		<cfform onerror="customError" action="#request.self#?action=#url.action#" method="post" name="debug_settings">
+		<cfformClassic onerror="customError" action="#request.self#?action=#url.action#" method="post" name="debug_settings">
 			<table class="maintbl">
 				<thead>
 					<tr>
@@ -111,12 +111,12 @@
 				</tfoot>
 				<cfif not arrayIsEmpty(logs)>
 					<tbody>
-						<cfloop from="1" to="#arrayLen(logs)#" index="i">
+						<cfloop from="#arrayLen(logs)#" to="1" index="i" step="-1">
 							<cfset el=logs[i]>
 							<cfset _total=0><cfloop query="el.pages"><cfset _total+=el.pages.total></cfloop>
 							<cfset _query=0><cfloop query="el.pages"><cfset _query+=el.pages.query></cfloop>
 							<cfset _app=0><cfloop query="el.pages"><cfset _app+=el.pages.app></cfloop>	
-							<cfset _path=el.cgi.SCRIPT_NAME& (len(el.cgi.QUERY_STRING)?"?"& el.cgi.QUERY_STRING:"")>
+							<cfset _path=el.scope.cgi.SCRIPT_NAME& (len(el.scope.cgi.QUERY_STRING)?"?"& el.scope.cgi.QUERY_STRING:"")>
 							<cfif 
 								doFilter(session.debugFilter.path,_path,false) and 
 								doFilterMin(session.debugFilter.query,_query) and 
@@ -134,6 +134,6 @@
 					</tbody>
 				</cfif>
 			</table>
-		</cfform>
+		</cfformClassic>
 	</cfif>
 </cfoutput>

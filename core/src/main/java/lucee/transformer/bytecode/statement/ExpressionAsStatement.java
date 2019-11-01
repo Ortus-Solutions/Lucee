@@ -18,28 +18,29 @@
  **/
 package lucee.transformer.bytecode.statement;
 
+import org.objectweb.asm.Type;
+import org.objectweb.asm.commons.GeneratorAdapter;
+
 import lucee.transformer.TransformerException;
 import lucee.transformer.bytecode.BytecodeContext;
+import lucee.transformer.bytecode.expression.ExpressionBase;
 import lucee.transformer.bytecode.util.ASMUtil;
 import lucee.transformer.bytecode.util.Types;
 import lucee.transformer.expression.Expression;
 import lucee.transformer.expression.literal.Literal;
 
-import org.objectweb.asm.Type;
-import org.objectweb.asm.commons.GeneratorAdapter;
-
 public final class ExpressionAsStatement extends StatementBaseNoFinal {
 
-	private Expression expr;
-
+	private ExpressionBase expr;
 
 	/**
 	 * Constructor of the class
+	 * 
 	 * @param expr
 	 */
 	public ExpressionAsStatement(Expression expr) {
-		super(expr.getFactory(),expr.getStart(),expr.getEnd());
-		this.expr=expr;
+		super(expr.getFactory(), expr.getStart(), expr.getEnd());
+		this.expr = (ExpressionBase) expr;
 	}
 
 	/**
@@ -49,22 +50,22 @@ public final class ExpressionAsStatement extends StatementBaseNoFinal {
 	@Override
 	public void _writeOut(BytecodeContext bc) throws TransformerException {
 		GeneratorAdapter adapter = bc.getAdapter();
-		int rtn=bc.getReturn();
+		int rtn = bc.getReturn();
 		// set rtn
-		if(rtn>-1) {
-			Type type = expr.writeOut(bc, Expression.MODE_REF);
+		if (rtn > -1) {
+			Type type = expr.writeOutAsType(bc, Expression.MODE_REF);
 			bc.getAdapter().storeLocal(rtn);
 		}
 		else {
-			if(!(expr instanceof Literal)) {
-				Type type = expr.writeOut(bc, Expression.MODE_VALUE);
-				if(!type.equals(Types.VOID)){
+			if (!(expr instanceof Literal)) {
+				Type type = expr.writeOutAsType(bc, Expression.MODE_VALUE);
+				if (!type.equals(Types.VOID)) {
 					ASMUtil.pop(adapter, type);
 				}
 			}
 		}
 	}
-	
+
 	/**
 	 * @return the expr
 	 */

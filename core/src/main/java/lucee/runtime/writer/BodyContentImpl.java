@@ -28,33 +28,34 @@ import javax.servlet.jsp.tagext.BodyContent;
 
 import lucee.commons.lang.CharBuffer;
 
-
 /**
  * implementation of the BodyContent
  */
 public class BodyContentImpl extends BodyContent {
-	
-	CharBuffer charBuffer=new CharBuffer(128);
+
+	CharBuffer charBuffer = new CharBuffer(128);
 	JspWriter enclosingWriter;
 
 	/**
 	 * default constructor
+	 * 
 	 * @param jspWriter
 	 */
 	public BodyContentImpl(JspWriter jspWriter) {
 		super(jspWriter);
-		enclosingWriter=jspWriter;
-		
+		enclosingWriter = jspWriter;
+
 	}
 
 	/**
 	 * initialize the BodyContent with the enclosing jsp writer
+	 * 
 	 * @param jspWriter
 	 */
 	public void init(JspWriter jspWriter) {
-		enclosingWriter=jspWriter;
+		enclosingWriter = jspWriter;
 		clearBuffer();
-		
+
 	}
 
 	/**
@@ -94,7 +95,7 @@ public class BodyContentImpl extends BodyContent {
 	 */
 	@Override
 	public void print(boolean arg) {
-		print(arg?"true":"false");
+		print(arg ? "true" : "false");
 	}
 
 	/**
@@ -157,7 +158,7 @@ public class BodyContentImpl extends BodyContent {
 	 * @see javax.servlet.jsp.JspWriter#print(java.lang.Object)
 	 */
 	@Override
-	public void print(Object arg) {		
+	public void print(Object arg) {
 		charBuffer.append(String.valueOf(arg));
 	}
 
@@ -251,13 +252,13 @@ public class BodyContentImpl extends BodyContent {
 	}
 
 	/**
-	 * @throws IOException 
+	 * @throws IOException
 	 * @see javax.servlet.jsp.JspWriter#clear()
 	 */
 	@Override
 	public void clear() throws IOException {
 		charBuffer.clear();
-        enclosingWriter.clear();
+		enclosingWriter.clear();
 	}
 
 	/**
@@ -267,7 +268,7 @@ public class BodyContentImpl extends BodyContent {
 	public void clearBuffer() {
 		charBuffer.clear();
 	}
-	
+
 	/**
 	 * @see java.io.Writer#flush()
 	 */
@@ -291,7 +292,7 @@ public class BodyContentImpl extends BodyContent {
 	 */
 	@Override
 	public int getRemaining() {
-		return bufferSize-charBuffer.size();
+		return bufferSize - charBuffer.size();
 	}
 
 	/**
@@ -299,7 +300,7 @@ public class BodyContentImpl extends BodyContent {
 	 */
 	@Override
 	public void write(char[] cbuf, int off, int len) {
-		charBuffer.append(cbuf,off,len);
+		charBuffer.append(cbuf, off, len);
 	}
 
 	/**
@@ -323,7 +324,7 @@ public class BodyContentImpl extends BodyContent {
 	 */
 	@Override
 	public void write(String str, int off, int len) {
-		charBuffer.append(str,off,len);
+		charBuffer.append(str, off, len);
 	}
 
 	/**
@@ -360,6 +361,7 @@ public class BodyContentImpl extends BodyContent {
 
 	/**
 	 * returns the inner char buffer
+	 * 
 	 * @return intern CharBuffer
 	 */
 	public CharBuffer getCharBuffer() {
@@ -368,10 +370,11 @@ public class BodyContentImpl extends BodyContent {
 
 	/**
 	 * sets the inner Charbuffer
+	 * 
 	 * @param charBuffer
 	 */
 	public void setCharBuffer(CharBuffer charBuffer) {
-		this.charBuffer=charBuffer;
+		this.charBuffer = charBuffer;
 	}
 
 	/**
@@ -416,8 +419,5 @@ public class BodyContentImpl extends BodyContent {
 		write(c);
 		return this;
 	}
-	
 
-
-	
 }

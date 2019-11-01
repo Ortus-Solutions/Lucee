@@ -26,7 +26,7 @@ public class MetaDataSoftReference<T> extends SoftReference<T> {
 
 	public MetaDataSoftReference(T referent, long creationTime) {
 		super(referent);
-		this.creationTime=creationTime;
+		this.creationTime = creationTime;
 	}
 
 }

@@ -82,7 +82,7 @@ public interface Decision {
 	public boolean isUUID(String str);
 
 	/**
-	 * tests if value is a Boolean (Numbers are not acctepeted)
+	 * tests if value is a Boolean (Numbers are not accepted)
 	 * 
 	 * @param value value to test
 	 * @return is value boolean
@@ -233,8 +233,8 @@ public interface Decision {
 	/**
 	 * 
 	 * @param str
-	 * @return return if a String is "Empty", that means NULL or String with
-	 *         length 0 (whitespaces will not counted)
+	 * @return return if a String is "Empty", that means NULL or String with length 0 (whitespaces will
+	 *         not counted)
 	 */
 	public boolean isEmpty(String str);
 
@@ -242,8 +242,8 @@ public interface Decision {
 	 * 
 	 * @param str
 	 * @param trim
-	 * @return return if a String is "Empty", that means NULL or String with
-	 *         length 0 (whitespaces will not counted)
+	 * @return return if a String is "Empty", that means NULL or String with length 0 (whitespaces will
+	 *         not counted)
 	 */
 	public boolean isEmpty(String str, boolean trim);
 
@@ -259,8 +259,7 @@ public interface Decision {
 	 */
 	public boolean isValid(double dbl);
 
-	public boolean isCastableTo(String type, Object o, boolean alsoAlias,
-			boolean alsoPattern, int maxlength);
+	public boolean isCastableTo(String type, Object o, boolean alsoAlias, boolean alsoPattern, int maxlength);
 
 	public boolean isCastableToArray(Object o);
 
@@ -275,15 +274,19 @@ public interface Decision {
 	public boolean isCastableToString(Object o);
 
 	public boolean isCastableToStruct(Object o);
-	
+
 	public boolean isClosure(Object o);
+
 	public boolean isLambda(Object o);
+
 	public boolean isFunction(Object o);
-	
+
 	public boolean isCreditCard(Object o);
+
 	public boolean isEmpty(Object o);
+
 	public boolean isGUid(Object o);
-	
+
 	/**
 	 * 
 	 * @param type
@@ -291,6 +294,6 @@ public interface Decision {
 	 * @return
 	 * @throws PageException when type is unknown
 	 */
-	public boolean is(String type,Object o) throws PageException;
+	public boolean is(String type, Object o) throws PageException;
 
 }

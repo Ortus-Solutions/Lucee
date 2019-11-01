@@ -92,25 +92,18 @@ public interface Scope extends Struct {
 	public static final int SCOPE_COUNT = 16;
 
 	/**
-	 * return if the scope is Initialiesd
+	 * return if the scope is Initialized
 	 * 
 	 * @return scope is init
 	 */
 	public boolean isInitalized();
 
 	/**
-	 * Initalize Scope
+	 * Initialize Scope
 	 * 
 	 * @param pc Page Context
 	 */
 	public void initialize(PageContext pc);
-
-	/**
-	 * release scope for reuse
-	 * 
-	 * @deprecated use instead <code>release(PageContext)</code>
-	 */
-	//public void release();
 
 	/**
 	 * release scope for reuse

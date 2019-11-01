@@ -32,8 +32,7 @@ public class MainEntryPoint {
 		System.out.println(libDir);
 
 		// Fix for tomcat
-		if (libDir.getName().equals(".") || libDir.getName().equals(".."))
-			libDir = libDir.getParentFile();
+		if (libDir.getName().equals(".") || libDir.getName().equals("..")) libDir = libDir.getParentFile();
 
 		File[] children = libDir.listFiles(new ExtFilter());
 		if (children.length < 2) {
@@ -52,15 +51,14 @@ public class MainEntryPoint {
 		try {
 			cl = new URLClassLoader(urls, ClassLoader.getSystemClassLoader());
 			final Class<?> cli = cl.loadClass("lucee.cli.CLI");
-			final Method main = cli.getMethod("main",
-					new Class[] { String[].class });
+			final Method main = cli.getMethod("main", new Class[] { String[].class });
 			main.invoke(null, new Object[] { args });
-		} finally {
-			if (cl != null)
-				try {
-					cl.close();
-				} catch (final IOException ioe) {
-				}
+		}
+		finally {
+			if (cl != null) try {
+				cl.close();
+			}
+			catch (final IOException ioe) {}
 		}
 	}
 

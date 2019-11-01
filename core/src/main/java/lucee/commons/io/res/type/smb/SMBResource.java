@@ -26,6 +26,9 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Random;
 
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
+
 import jcifs.smb.NtlmPasswordAuthentication;
 import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
@@ -37,18 +40,14 @@ import lucee.commons.io.res.util.ResourceOutputStream;
 import lucee.commons.io.res.util.ResourceSupport;
 import lucee.commons.io.res.util.ResourceUtil;
 
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.StringUtils;
-
-public class SMBResource extends ResourceSupport implements Resource{
+public class SMBResource extends ResourceSupport implements Resource {
 
 	private SMBResourceProvider provider;
 	private String path;
 	private NtlmPasswordAuthentication auth;
 	private SmbFile _smbFile;
 	private SmbFile _smbDir;
-	
-	
+
 	private SMBResource(SMBResourceProvider provider) {
 		this.provider = provider;
 	}
@@ -57,12 +56,12 @@ public class SMBResource extends ResourceSupport implements Resource{
 		this(provider);
 		_init(_stripAuth(path), _extractAuth(path));
 	}
-	
+
 	public SMBResource(SMBResourceProvider provider, String path, NtlmPasswordAuthentication auth) {
 		this(provider);
 		_init(path, auth);
 	}
-	
+
 	public SMBResource(SMBResourceProvider provider, String parent, String child) {
 		this(provider);
 		_init(ResourceUtil.merge(_stripAuth(parent), child), _extractAuth(parent));
@@ -71,24 +70,24 @@ public class SMBResource extends ResourceSupport implements Resource{
 	public SMBResource(SMBResourceProvider provider, String parent, String child, NtlmPasswordAuthentication auth) {
 		this(provider);
 		_init(ResourceUtil.merge(_stripAuth(parent), child), auth);
-		
+
 	}
-	
-	private void _init (String path, NtlmPasswordAuthentication auth ) {
-		//String[] pathName=ResourceUtil.translatePathName(path);
+
+	private void _init(String path, NtlmPasswordAuthentication auth) {
+		// String[] pathName=ResourceUtil.translatePathName(path);
 		this.path = _stripScheme(path);
 		this.auth = auth;
-		
+
 	}
-	
+
 	private String _stripScheme(String path) {
 		return path.replace(_scheme(), "/");
 	}
-	
-	private String _userInfo (String path) {
-		
+
+	private String _userInfo(String path) {
+
 		try {
-			//use http scheme just so we can parse the url and get the user info out
+			// use http scheme just so we can parse the url and get the user info out
 			String schemeless = _stripScheme(path);
 			schemeless = schemeless.replaceFirst("^/", "");
 			String result = new URL("http://".concat(schemeless)).getUserInfo();
@@ -98,80 +97,80 @@ public class SMBResource extends ResourceSupport implements Resource{
 			return "";
 		}
 	}
-	
-	
-	private static String _userInfo (NtlmPasswordAuthentication auth,boolean addAtSign) {
+
+	private static String _userInfo(NtlmPasswordAuthentication auth, boolean addAtSign) {
 		String result = "";
-		if( auth != null) {
-			if( !StringUtils.isEmpty( auth.getDomain() ) ) {
+		if (auth != null) {
+			if (!StringUtils.isEmpty(auth.getDomain())) {
 				result += auth.getDomain() + ";";
 			}
-			if( !StringUtils.isEmpty( auth.getUsername() ) ) {
+			if (!StringUtils.isEmpty(auth.getUsername())) {
 				result += auth.getUsername() + ":";
 			}
-			if( !StringUtils.isEmpty( auth.getPassword() ) ) {
+			if (!StringUtils.isEmpty(auth.getPassword())) {
 				result += auth.getPassword();
 			}
-			if( addAtSign && !StringUtils.isEmpty( result ) ) {
+			if (addAtSign && !StringUtils.isEmpty(result)) {
 				result += "@";
 			}
 		}
 		return result;
 	}
-	
+
 	private NtlmPasswordAuthentication _extractAuth(String path) {
-		return new NtlmPasswordAuthentication( _userInfo(path) );
+		return new NtlmPasswordAuthentication(_userInfo(path));
 	}
-	
+
 	private String _stripAuth(String path) {
-		return _calculatePath(path).replaceFirst(_scheme().concat("[^/]*@"),"");
+		return _calculatePath(path).replaceFirst(_scheme().concat("[^/]*@"), "");
 	}
-	
+
 	private SmbFile _file() {
 		return _file(false);
 	}
-	
-	private SmbFile _file( boolean expectDirectory ) {
+
+	private SmbFile _file(boolean expectDirectory) {
 		String _path = _calculatePath(getInnerPath());
 		SmbFile result;
-		if(expectDirectory) {
-			if(!_path.endsWith("/")) _path += "/";
-			if(_smbDir == null) {
-				_smbDir = provider.getFile(_path,auth);
+		if (expectDirectory) {
+			if (!_path.endsWith("/")) _path += "/";
+			if (_smbDir == null) {
+				_smbDir = provider.getFile(_path, auth);
 			}
 			result = _smbDir;
-		} else {
-			if(_smbFile == null) {
-				_smbFile = provider.getFile(_path,auth);
+		}
+		else {
+			if (_smbFile == null) {
+				_smbFile = provider.getFile(_path, auth);
 			}
 			result = _smbFile;
 		}
 		return result;
 	}
-	
+
 	private String _calculatePath(String path) {
-		return _calculatePath(path,null);
+		return _calculatePath(path, null);
 	}
-	
+
 	private String _calculatePath(String path, NtlmPasswordAuthentication auth) {
-		
-		if ( !path.startsWith( _scheme() ) ) {
-			if(path.startsWith("/") || path.startsWith("\\")) {
+
+		if (!path.startsWith(_scheme())) {
+			if (path.startsWith("/") || path.startsWith("\\")) {
 				path = path.substring(1);
 			}
 			if (auth != null) {
-				path = SMBResourceProvider.encryptUserInfo(_userInfo(auth,false)).concat("@").concat(path);
+				path = SMBResourceProvider.encryptUserInfo(_userInfo(auth, false)).concat("@").concat(path);
 			}
-			path = _scheme().concat( path );
+			path = _scheme().concat(path);
 		}
 		return path;
 	}
-	
+
 	private String _scheme() {
 		return provider.getScheme().concat("://");
-		
+
 	}
-	
+
 	@Override
 	public boolean isReadable() {
 		SmbFile file = _file();
@@ -186,23 +185,24 @@ public class SMBResource extends ResourceSupport implements Resource{
 	@Override
 	public boolean isWriteable() {
 		SmbFile file = _file();
-		if(file == null) return false;
+		if (file == null) return false;
 		try {
-			if(file.canWrite()) return true;
+			if (file.canWrite()) return true;
 		}
 		catch (SmbException e1) {
 			return false;
 		}
-		
+
 		try {
 			if (file.getType() == SmbFile.TYPE_SHARE) {
-				// canWrite() doesn't work on shares. always returns false even if you can truly write, test this by opening a file on the share
-				
-				SmbFile testFile = _getTempFile(file,auth);
+				// canWrite() doesn't work on shares. always returns false even if you can truly write, test this by
+				// opening a file on the share
+
+				SmbFile testFile = _getTempFile(file, auth);
 				if (testFile == null) return false;
 				if (testFile.canWrite()) return true;
-				
-				OutputStream os=null;
+
+				OutputStream os = null;
 				try {
 					os = testFile.getOutputStream();
 				}
@@ -214,7 +214,7 @@ public class SMBResource extends ResourceSupport implements Resource{
 					testFile.delete();
 				}
 				return true;
-				
+
 			}
 			return file.canWrite();
 		}
@@ -226,31 +226,33 @@ public class SMBResource extends ResourceSupport implements Resource{
 	private SmbFile _getTempFile(SmbFile directory, NtlmPasswordAuthentication auth) throws SmbException {
 		if (!directory.isDirectory()) return null;
 		Random r = new Random();
-		
+
 		SmbFile result = provider.getFile(directory.getCanonicalPath() + "/write-test-file.unknown." + r.nextInt(), auth);
-		if (result.exists()) return _getTempFile(directory,auth); //try again
+		if (result.exists()) return _getTempFile(directory, auth); // try again
 		return result;
 	}
-	
+
 	@Override
 	public void remove(boolean alsoRemoveChildren) throws IOException {
-		if(alsoRemoveChildren)ResourceUtil.removeChildren(this);
-		
+		if (alsoRemoveChildren) ResourceUtil.removeChildren(this);
+
 		_delete();
 	}
 
-	private void _delete() throws IOException{
+	private void _delete() throws IOException {
 		provider.lock(this);
 		try {
 			SmbFile file = _file();
-			if (file == null) throw new IOException("Can't delete [" + getPath() + "], SMB path is invalid or inaccessable");
+			if (file == null) throw new IOException("Can't delete [" + getPath() + "], SMB path is invalid or inaccessible");
 			if (file.isDirectory()) {
 				file = _file(true);
 			}
 			file.delete();
-		} catch (SmbException e) {
+		}
+		catch (SmbException e) {
 			throw new IOException(e);// for cfcatch type="java.io.IOException"
-		} finally {
+		}
+		finally {
 			provider.unlock(this);
 		}
 	}
@@ -269,44 +271,44 @@ public class SMBResource extends ResourceSupport implements Resource{
 	@Override
 	public String getName() {
 		SmbFile file = _file();
-		if(file == null)
-			return "";
-		return file.getName().replaceFirst("/$", ""); //remote trailing slash for directories
+		if (file == null) return "";
+		return file.getName().replaceFirst("/$", ""); // remote trailing slash for directories
 	}
 
 	@Override
 	public String getParent() {
-		// SmbFile's getParent function seems to return just smb:// no matter what, implement custom getParent Function()
+		// SmbFile's getParent function seems to return just smb:// no matter what, implement custom
+		// getParent Function()
 		String path = getPath().replaceFirst("[\\\\/]+$", "");
-		
-		int location = Math.max(path.lastIndexOf('/'),path.lastIndexOf('\\'));
+
+		int location = Math.max(path.lastIndexOf('/'), path.lastIndexOf('\\'));
 		if (location == -1 || location == 0) return "";
-		return path.substring(0,location);
+		return path.substring(0, location);
 	}
 
 	@Override
 	public Resource getParentResource() {
 		String p = getParent();
-		if(p==null) return null;
-		return new SMBResource(provider,_stripAuth(p),auth);
+		if (p == null) return null;
+		return new SMBResource(provider, _stripAuth(p), auth);
 	}
 
 	@Override
 	public Resource getRealResource(String realpath) {
-		realpath=ResourceUtil.merge(getInnerPath() +"/", realpath);
-		
-		if(realpath.startsWith("../"))return null;
-		return new SMBResource( provider, _calculatePath(realpath,auth), auth );
+		realpath = ResourceUtil.merge(getInnerPath() + "/", realpath);
+
+		if (realpath.startsWith("../")) return null;
+		return new SMBResource(provider, _calculatePath(realpath, auth), auth);
 	}
 
 	private String getInnerPath() {
-		if(path==null) return "/";
+		if (path == null) return "/";
 		return path;
 	}
-	
+
 	@Override
 	public String getPath() {
-		return _calculatePath(path,auth);
+		return _calculatePath(path, auth);
 	}
 
 	@Override
@@ -350,7 +352,7 @@ public class SMBResource extends ResourceSupport implements Resource{
 	public boolean isSystem() {
 		return _isFlagSet(_file(), SmbFile.ATTR_SYSTEM);
 	}
-	
+
 	private boolean _isFlagSet(SmbFile file, int flag) {
 		if (file == null) return false;
 		try {
@@ -388,27 +390,26 @@ public class SMBResource extends ResourceSupport implements Resource{
 
 	@Override
 	public Resource[] listResources() {
-		if(isFile()) return null;
+		if (isFile()) return null;
 		try {
 			SmbFile dir = _file(true);
 			SmbFile[] files = dir.listFiles();
-			
+
 			Resource[] result = new Resource[files.length];
-			for(int i = 0; i < files.length ; i++) {
+			for (int i = 0; i < files.length; i++) {
 				SmbFile file = files[i];
-				result[i] = new SMBResource(provider,file.getCanonicalPath(),auth);
+				result[i] = new SMBResource(provider, file.getCanonicalPath(), auth);
 			}
 			return result;
 		}
 		catch (SmbException e) {
 			return new Resource[0];
 		}
-		
-		
+
 	}
 
 	@Override
-	public boolean setLastModified(long time){
+	public boolean setLastModified(long time) {
 		SmbFile file = _file();
 		if (file == null) return false;
 		try {
@@ -420,7 +421,8 @@ public class SMBResource extends ResourceSupport implements Resource{
 		}
 		catch (IOException e) {
 			return false;
-		} finally {
+		}
+		finally {
 			provider.unlock(this);
 		}
 		return true;
@@ -429,9 +431,9 @@ public class SMBResource extends ResourceSupport implements Resource{
 	@Override
 	public boolean setWritable(boolean writable) {
 		SmbFile file = _file();
-		if( file == null) return false;
+		if (file == null) return false;
 		try {
-			setAttribute((short)SmbFile.ATTR_READONLY, !writable);
+			setAttribute((short) SmbFile.ATTR_READONLY, !writable);
 		}
 		catch (IOException e1) {
 			return false;
@@ -448,38 +450,41 @@ public class SMBResource extends ResourceSupport implements Resource{
 	@Override
 	public void createFile(boolean createParentWhenNotExists) throws IOException {
 		try {
-			
+
 			ResourceUtil.checkCreateFileOK(this, createParentWhenNotExists);
-			//client.unregisterFTPFile(this);
+			// client.unregisterFTPFile(this);
 			IOUtil.copy(new ByteArrayInputStream(new byte[0]), getOutputStream(), true, true);
-		} catch (SmbException e) {
+		}
+		catch (SmbException e) {
 			throw new IOException(e); // for cfcatch type="java.io.IOException"
 		}
-	
+
 	}
 
 	@Override
 	public void createDirectory(boolean createParentWhenNotExists) throws IOException {
-		SmbFile file= _file(true);
+		SmbFile file = _file(true);
 		if (file == null) throw new IOException("SMBFile is inaccessible");
 		ResourceUtil.checkCreateDirectoryOK(this, createParentWhenNotExists);
 		try {
 			provider.lock(this);
 			file.mkdir();
-		} catch (SmbException e) {
+		}
+		catch (SmbException e) {
 			throw new IOException(e); // for cfcatch type="java.io.IOException"
 		}
 		finally {
 			provider.unlock(this);
 		}
-		
+
 	}
 
 	@Override
 	public InputStream getInputStream() throws IOException {
 		try {
 			return _file().getInputStream();
-		} catch (SmbException e) {
+		}
+		catch (SmbException e) {
 			throw new IOException(e);// for cfcatch type="java.io.IOException"
 		}
 	}
@@ -489,9 +494,9 @@ public class SMBResource extends ResourceSupport implements Resource{
 		ResourceUtil.checkGetOutputStreamOK(this);
 		try {
 			provider.lock(this);
-			SmbFile file =_file();
+			SmbFile file = _file();
 			OutputStream os = new SmbFileOutputStream(file, append);
-			return IOUtil.toBufferedOutputStream(new ResourceOutputStream(this,os));
+			return IOUtil.toBufferedOutputStream(new ResourceOutputStream(this, os));
 		}
 		catch (IOException e) {
 			provider.unlock(this);
@@ -516,17 +521,17 @@ public class SMBResource extends ResourceSupport implements Resource{
 
 	@Override
 	public void setHidden(boolean value) throws IOException {
-		setAttribute((short)SmbFile.ATTR_SYSTEM, value);
+		setAttribute((short) SmbFile.ATTR_SYSTEM, value);
 	}
 
 	@Override
 	public void setSystem(boolean value) throws IOException {
-		setAttribute((short)SmbFile.ATTR_SYSTEM, value);
+		setAttribute((short) SmbFile.ATTR_SYSTEM, value);
 	}
 
 	@Override
 	public void setArchive(boolean value) throws IOException {
-		setAttribute((short)SmbFile.ATTR_ARCHIVE, value);
+		setAttribute((short) SmbFile.ATTR_ARCHIVE, value);
 	}
 
 	@Override
@@ -539,32 +544,37 @@ public class SMBResource extends ResourceSupport implements Resource{
 			int atts = file.getAttributes();
 			if (value) {
 				atts = atts | newAttribute;
-			} else {
+			}
+			else {
 				atts = atts & (~newAttribute);
 			}
 			file.setAttributes(atts);
-		} catch (SmbException e) {
+		}
+		catch (SmbException e) {
 			throw new IOException(e); // for cfcatch type="java.io.IOException"
-		} finally {
+		}
+		finally {
 			provider.unlock(this);
-		}	
+		}
 	}
 
 	@Override
 	public void moveTo(Resource dest) throws IOException {
 		try {
-			if(dest instanceof SMBResource) {
-				SMBResource destination = (SMBResource)dest;
+			if (dest instanceof SMBResource) {
+				SMBResource destination = (SMBResource) dest;
 				SmbFile file = _file();
 				file.renameTo(destination._file());
-			} else {
-				ResourceUtil.moveTo(this, dest,false);
 			}
-		} catch (SmbException e) {
+			else {
+				ResourceUtil.moveTo(this, dest, false);
+			}
+		}
+		catch (SmbException e) {
 			throw new IOException(e); // for cfcatch type="java.io.IOException"
 		}
 	}
-	
+
 	@Override
 	public boolean getAttribute(short attribute) {
 		try {
@@ -574,25 +584,25 @@ public class SMBResource extends ResourceSupport implements Resource{
 		catch (SmbException e) {
 			return false;
 		}
-		
+
 	}
-	
+
 	public SmbFile getSmbFile() {
 		return _file();
 	}
-	
+
 	private int _lookupAttribute(short attribute) {
 		int result = attribute;
 		switch (attribute) {
-			case Resource.ATTRIBUTE_ARCHIVE:
-				result = SmbFile.ATTR_ARCHIVE;
-				break;
-			case Resource.ATTRIBUTE_SYSTEM:
-				result = SmbFile.ATTR_SYSTEM;
-				break;
-			case Resource.ATTRIBUTE_HIDDEN:
-				result = SmbFile.ATTR_HIDDEN;
-				break;
+		case Resource.ATTRIBUTE_ARCHIVE:
+			result = SmbFile.ATTR_ARCHIVE;
+			break;
+		case Resource.ATTRIBUTE_SYSTEM:
+			result = SmbFile.ATTR_SYSTEM;
+			break;
+		case Resource.ATTRIBUTE_HIDDEN:
+			result = SmbFile.ATTR_HIDDEN;
+			break;
 		}
 		return result;
 	}

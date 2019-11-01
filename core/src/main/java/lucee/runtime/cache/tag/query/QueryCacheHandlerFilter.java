@@ -22,32 +22,30 @@ import lucee.commons.io.res.util.WildCardFilter;
 import lucee.runtime.cache.tag.CacheHandlerFilter;
 import lucee.runtime.type.Query;
 
-import org.apache.oro.text.regex.MalformedPatternException;
-
 public class QueryCacheHandlerFilter implements CacheHandlerFilter {
-	
+
 	private WildCardFilter filter;
 
-	public QueryCacheHandlerFilter(String wildcard, boolean ignoreCase)throws MalformedPatternException {
-		filter=new WildCardFilter(wildcard,ignoreCase);
+	public QueryCacheHandlerFilter(String wildcard, boolean ignoreCase) {
+		filter = new WildCardFilter(wildcard, ignoreCase);
 	}
 
 	@Override
 	public boolean accept(Object obj) {
 		Query qry;
-		if(!(obj instanceof Query)) {
-			if(obj instanceof QueryCacheItem) {
-				qry=((QueryCacheItem)obj).getQuery();
+		if (!(obj instanceof Query)) {
+			if (obj instanceof QueryCacheItem) {
+				qry = ((QueryCacheItem) obj).getQuery();
 			}
 			else return false;
 		}
-		else qry=(Query) obj;
-		
+		else qry = (Query) obj;
+
 		String sql = qry.getSql().toString();
-		StringBuilder sb=new StringBuilder();
+		StringBuilder sb = new StringBuilder();
 		char[] text = sql.toCharArray();
-		for(int i=0;i<text.length;i++) {
-			if(text[i]=='\n' || text[i]=='\r') {
+		for (int i = 0; i < text.length; i++) {
+			if (text[i] == '\n' || text[i] == '\r') {
 				sb.append(' ');
 			}
 			else sb.append(text[i]);

@@ -32,16 +32,17 @@ public final class IsUserInAnyRole implements Function {
 	public static boolean call(PageContext pc) throws PageException {
 		return call(pc, null);
 	}
+
 	public static boolean call(PageContext pc, String strRoles) throws PageException {
-		if(StringUtil.isEmpty(strRoles)){
+		if (StringUtil.isEmpty(strRoles)) {
 			Credential ru = pc.getRemoteUser();
-			if(ru==null) return false;
-		    return ru.getRoles().length>0;
+			if (ru == null) return false;
+			return ru.getRoles().length > 0;
 		}
-		
+
 		String[] roles = ListUtil.trimItems(ListUtil.listToStringArray(strRoles, ','));
-		for(int i=0;i<roles.length;i++) {
-			if(IsUserInRole.call(pc, roles[i])) return true;
+		for (int i = 0; i < roles.length; i++) {
+			if (IsUserInRole.call(pc, roles[i])) return true;
 		}
 		return false;
 	}

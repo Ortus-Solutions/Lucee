@@ -28,7 +28,6 @@ public interface VerityService extends Service {
 
 	public abstract Map getCollectionInfo(String arg0);
 
-	public abstract void registerCollection(String arg0, String arg1,
-			String arg2);
+	public abstract void registerCollection(String arg0, String arg1, String arg2);
 
 }

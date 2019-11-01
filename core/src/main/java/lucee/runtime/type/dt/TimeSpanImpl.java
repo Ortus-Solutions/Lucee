@@ -18,6 +18,8 @@
  **/
 package lucee.runtime.type.dt;
 
+import java.io.Serializable;
+
 import lucee.runtime.PageContext;
 import lucee.runtime.dump.DumpData;
 import lucee.runtime.dump.DumpProperties;
@@ -27,103 +29,87 @@ import lucee.runtime.exp.ExpressionException;
 import lucee.runtime.exp.PageException;
 import lucee.runtime.op.Caster;
 import lucee.runtime.op.Operator;
+import lucee.runtime.op.date.DateCaster;
 
 /**
  * TimeSpan Object, represent a timespan
  */
-public final class TimeSpanImpl implements TimeSpan {
+public final class TimeSpanImpl implements TimeSpan, Serializable {
 
 	private double value;
 	private long valueMillis;
-	
-	private int day;
+
+	private long day;
 	private int hour;
 	private int minute;
 	private int second;
 	private int milli;
-	
 
-	public static TimeSpan fromDays(double value){
-		return new TimeSpanImpl(value);
-	}
-	public static TimeSpan fromMillis(long value){
+	public static TimeSpan fromDays(double value) {
 		return new TimeSpanImpl(value);
 	}
 
-    private TimeSpanImpl(double valueDays) {
-    	this((long)(valueDays*86400000D));
-    }
-	
-    private TimeSpanImpl(long valueMillis) {
-    	value=valueMillis/86400000D;
-    	long tmp=valueMillis;
-    	day=(int) (valueMillis/86400000L);
-		tmp-=day*86400000;
-		hour=(int) (tmp/3600000);
-		tmp-=hour*3600000;
-		minute=(int) (tmp/60000);
-		tmp-=minute*60000;
-		second=(int) (tmp/1000);
-		tmp-=second*1000;
-		milli=(int) tmp;
-		
-		this.valueMillis=valueMillis;
-		/*day=(int)value;
-		double diff=value-day;
-		diff*=24;
-		hour=(int)diff;
-		diff=diff-hour;
-		diff*=60;
-		minute=(int)diff;
-		diff=diff-minute;
-		diff*=60;
-		second=(int)diff;
-		this.value=value;
-		milli=(int)(valueMillis-((second+(minute*60L)+(hour*3600L)+(day*3600L*24L))*1000));
-		*/
-		//print.out("a("+hashCode()+"):"+day+":"+hour+":"+minute+":"+second+"+"+milli);
-		
-		
-		//total=(second+(minute*60L)+(hour*3600L)+(day*3600L*24L))*1000;
-		//total=(second+(minute*60L)+(hour*3600L)+(day*3600L*24L))*1000;
-		
-    }
-		
+	public static TimeSpan fromMillis(long value) {
+		return new TimeSpanImpl(value);
+	}
+
+	private TimeSpanImpl(double valueDays) {
+		this((long) (valueDays * 86400000D));
+	}
+
+	private TimeSpanImpl(long valueMillis) {
+
+		this.valueMillis = valueMillis;
+		value = valueMillis / 86400000D;
+		long tmp = valueMillis;
+		day = valueMillis / 86400000L;
+		tmp -= day * 86400000L;
+		hour = (int) (tmp / 3600000L);
+		tmp -= hour * 3600000L;
+		minute = (int) (tmp / 60000L);
+		tmp -= minute * 60000L;
+		second = (int) (tmp / 1000L);
+		tmp -= second * 1000L;
+		milli = (int) tmp;
+	}
+
 	/**
 	 * constructor of the timespan class
+	 * 
 	 * @param day
 	 * @param hour
 	 * @param minute
 	 * @param second
 	 */
 	public TimeSpanImpl(int day, int hour, int minute, int second) {
-		
-		this.day=day;
-		this.hour=hour;
-		this.minute=minute;
-		this.second=second;
-		value=day+(((double)hour)/24)+(((double)minute)/24/60)+(((double)second)/24/60/60);
-		valueMillis=(second+(minute*60L)+(hour*3600L)+(day*3600L*24L))*1000;
+
+		this.day = day;
+		this.hour = hour;
+		this.minute = minute;
+		this.second = second;
+		value = day + (((double) hour) / 24) + (((double) minute) / 24 / 60) + (((double) second) / 24 / 60 / 60);
+		valueMillis = (second + (minute * 60L) + (hour * 3600L) + (day * 3600L * 24L)) * 1000;
 	}
-	
+
 	/**
 	 * constructor of the timespan class
+	 * 
 	 * @param day
 	 * @param hour
 	 * @param minute
 	 * @param second
 	 */
 	public TimeSpanImpl(int day, int hour, int minute, int second, int millisecond) {
-		this.day=day;
-		this.hour=hour;
-		this.minute=minute;
-		this.second=second;
-		this.milli=millisecond;
-		value=day+(((double)hour)/24)+(((double)minute)/24/60)+(((double)second)/24/60/60)+(((double)millisecond)/24/60/60/1000);
-		valueMillis=((second+(minute*60L)+(hour*3600L)+(day*3600L*24L))*1000)+millisecond;
+		this.day = day;
+		this.hour = hour;
+		this.minute = minute;
+		this.second = second;
+		this.milli = millisecond;
+		value = day + (((double) hour) / 24) + (((double) minute) / 24 / 60) + (((double) second) / 24 / 60 / 60) + (((double) millisecond) / 24 / 60 / 60 / 1000);
+		valueMillis = ((second + (minute * 60L) + (hour * 3600L) + (day * 3600L * 24L)) * 1000) + millisecond;
 	}
-	
-    @Override
+
+	@Override
 	public String castToString() {
 		return Caster.toString(value);
 	}
@@ -134,44 +120,43 @@ public final class TimeSpanImpl implements TimeSpan {
 	}
 
 	@Override
-	public boolean castToBooleanValue() throws ExpressionException {
-		throw new ExpressionException("can't cast Timespan to boolean");
+	public boolean castToBooleanValue() {
+		return value != 0;
 	}
-    
-    @Override
-    public Boolean castToBoolean(Boolean defaultValue) {
-        return defaultValue;
-    }
+
+	@Override
+	public Boolean castToBoolean(Boolean defaultValue) {
+		return value != 0;
+	}
 
 	@Override
 	public double castToDoubleValue() {
 		return value;
 	}
-    
-    @Override
-    public double castToDoubleValue(double defaultValue) {
-        return value;
-    }
+
+	@Override
+	public double castToDoubleValue(double defaultValue) {
+		return value;
+	}
 
 	@Override
 	public DateTime castToDateTime() throws ExpressionException {
-		throw new ExpressionException("can't cast Timespan to date");
+		return DateCaster.toDateSimple(value, null);
 	}
-    
-    @Override
-    public DateTime castToDateTime(DateTime defaultValue) {
-        return defaultValue;
-    }
 
+	@Override
+	public DateTime castToDateTime(DateTime defaultValue) {
+		return DateCaster.toDateSimple(value, null);
+	}
 
 	@Override
 	public int compareTo(boolean b) {
-		return Operator.compare(value, b?1D:0D);
+		return Operator.compare(castToBooleanValue(), b);
 	}
 
 	@Override
 	public int compareTo(DateTime dt) throws PageException {
-		return Operator.compare(value, dt.castToDoubleValue());
+		return Operator.compare((java.util.Date) castToDateTime(), (java.util.Date) dt);
 	}
 
 	@Override
@@ -186,55 +171,62 @@ public final class TimeSpanImpl implements TimeSpan {
 
 	@Override
 	public DumpData toDumpData(PageContext pageContext, int maxlevel, DumpProperties dp) {
-		DumpTable table=new DumpTable("timespan","#ff9900","#ffcc00","#000000");
-		if(milli>0)table.appendRow(1, new SimpleDumpData("Timespan"), new SimpleDumpData("createTimeSpan("+day+","+hour+","+minute+","+second+","+milli+")"));
-		else table.appendRow(1, new SimpleDumpData("Timespan"), new SimpleDumpData("createTimeSpan("+day+","+hour+","+minute+","+second+")"));
-		
-		
-		
+		DumpTable table = new DumpTable("timespan", "#ff9900", "#ffcc00", "#000000");
+		if (milli > 0)
+			table.appendRow(1, new SimpleDumpData("Timespan"), new SimpleDumpData("createTimeSpan(" + day + "," + hour + "," + minute + "," + second + "," + milli + ")"));
+		else table.appendRow(1, new SimpleDumpData("Timespan"), new SimpleDumpData("createTimeSpan(" + day + "," + hour + "," + minute + "," + second + ")"));
+
 		return table;
 	}
+
 	@Override
 	public long getMillis() {
 		return valueMillis;
 	}
+
 	public long getMilli() {
 		return milli;
 	}
-	
+
 	@Override
 	public long getSeconds() {
-		return valueMillis/1000;
-	}
-	
-	@Override
-	public String toString() {
-		if(milli>0)
-			return "createTimeSpan("+day+","+hour+","+minute+","+second+","+milli+")";
-		return "createTimeSpan("+day+","+hour+","+minute+","+second+")";
+		return valueMillis / 1000;
 	}
 
-    @Override
-    public int getDay() {
-        return day;
-    }
-    @Override
-    public int getHour() {
-        return hour;
-    }
-    @Override
-    public int getMinute() {
-        return minute;
-    }
-    @Override
-    public int getSecond() {
-        return second;
-    }
+	@Override
+	public String toString() {
+		if (milli > 0) return "createTimeSpan(" + day + "," + hour + "," + minute + "," + second + "," + milli + ")";
+		return "createTimeSpan(" + day + "," + hour + "," + minute + "," + second + ")";
+	}
+
+	@Override
+	public int getDay() {
+		return Integer.MAX_VALUE > day ? (int) day : Integer.MAX_VALUE;
+	}
+
+	public long getDayAsLong() {
+		return day;
+	}
+
+	@Override
+	public int getHour() {
+		return hour;
+	}
+
+	@Override
+	public int getMinute() {
+		return minute;
+	}
+
+	@Override
+	public int getSecond() {
+		return second;
+	}
 
 	@Override
 	public boolean equals(Object obj) {
-		if(this==obj) return true;
-		if(!(obj instanceof TimeSpan)) return false;
-		return getMillis()==((TimeSpan)obj).getMillis();
+		if (this == obj) return true;
+		if (!(obj instanceof TimeSpan)) return false;
+		return getMillis() == ((TimeSpan) obj).getMillis();
 	}
 }

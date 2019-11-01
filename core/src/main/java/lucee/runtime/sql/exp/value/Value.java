@@ -23,6 +23,7 @@ import lucee.runtime.sql.exp.Expression;
 public interface Value extends Expression {
 
 	public String getString();
+
 	public Object getValue();
-	//public void setValue(String value);
+	// public void setValue(String value);
 }

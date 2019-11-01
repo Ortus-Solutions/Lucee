@@ -26,54 +26,44 @@ import lucee.runtime.config.ConfigImpl;
 import lucee.runtime.config.ConfigWebImpl;
 import lucee.runtime.exp.PageException;
 import lucee.runtime.type.Query;
-import lucee.runtime.type.QueryImpl;
 import lucee.runtime.type.Struct;
 import lucee.runtime.type.StructImpl;
 import lucee.runtime.type.util.KeyConstants;
 
 public class DebuggerUtil {
 
-	
-	public Struct pointOutClosuresInPersistentScopes(PageContext pc){
-		Struct sct=new StructImpl();
-		Set<Object> done=new HashSet<Object>();
-		//Application Scope
+	public Struct pointOutClosuresInPersistentScopes(PageContext pc) {
+		Struct sct = new StructImpl();
+		Set<Object> done = new HashSet<Object>();
+		// Application Scope
 		try {
-			sct.set(
-					KeyConstants._application, 
-					_pointOutClosuresInPersistentScopes(pc,pc.applicationScope(),done));
-		} 
+			sct.set(KeyConstants._application, _pointOutClosuresInPersistentScopes(pc, pc.applicationScope(), done));
+		}
 		catch (PageException e) {}
-		
-		//Session Scope
+
+		// Session Scope
 		try {
-			sct.set(
-					KeyConstants._application, 
-					_pointOutClosuresInPersistentScopes(pc,pc.sessionScope(),done));
-		} 
+			sct.set(KeyConstants._application, _pointOutClosuresInPersistentScopes(pc, pc.sessionScope(), done));
+		}
 		catch (PageException e) {}
-		
-		//Server Scope
+
+		// Server Scope
 		try {
-			sct.set(
-					KeyConstants._application, 
-					_pointOutClosuresInPersistentScopes(pc,pc.serverScope(),done));
-		} 
+			sct.set(KeyConstants._application, _pointOutClosuresInPersistentScopes(pc, pc.serverScope(), done));
+		}
 		catch (PageException e) {}
-		
-		
-		
+
 		return null;
 	}
 
 	private Struct _pointOutClosuresInPersistentScopes(PageContext pc, Struct sct, Set<Object> done) {
-		
+
 		return null;
 	}
-	
+
 	public static boolean debugQueryUsage(PageContext pageContext, Query query) {
-		if(pageContext.getConfig().debug() && query instanceof QueryImpl) {
-			if(((ConfigWebImpl)pageContext.getConfig()).hasDebugOptions(ConfigImpl.DEBUG_QUERY_USAGE)){
+		if (pageContext.getConfig().debug() && query instanceof Query) {
+			if (((ConfigWebImpl) pageContext.getConfig()).hasDebugOptions(ConfigImpl.DEBUG_QUERY_USAGE)) {
 				query.enableShowQueryUsage();
 				return true;
 			}

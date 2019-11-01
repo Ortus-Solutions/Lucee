@@ -234,7 +234,7 @@ public class ListUtilImpl implements ListUtil {
 
 	@Override
 	public String first(String list, String delimiters, boolean ignoreEmpty, int count) {
-		return lucee.runtime.type.util.ListUtil.first(list, delimiters, ignoreEmpty,count);
+		return lucee.runtime.type.util.ListUtil.first(list, delimiters, ignoreEmpty, count);
 	}
 
 	@Override
@@ -254,7 +254,7 @@ public class ListUtilImpl implements ListUtil {
 
 	@Override
 	public int getDelimIndex(String list, int itemPos, char[] delims, boolean ignoreEmpty) {
-		return lucee.runtime.type.util.ListUtil.getDelimIndex(list, itemPos, delims, ignoreEmpty);
+		return lucee.runtime.type.util.ListUtil.getDelimIndex(new StringBuilder(list), itemPos, delims, ignoreEmpty);
 	}
 
 	@Override
@@ -266,5 +266,5 @@ public class ListUtilImpl implements ListUtil {
 	public List<String> toList(String[] arr) {
 		return lucee.runtime.type.util.ListUtil.arrayToList(arr);
 	}
-	
+
 }

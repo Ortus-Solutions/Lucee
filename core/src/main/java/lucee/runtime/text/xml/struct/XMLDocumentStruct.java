@@ -20,11 +20,6 @@ package lucee.runtime.text.xml.struct;
 
 import java.lang.reflect.Method;
 
-import lucee.runtime.exp.PageRuntimeException;
-import lucee.runtime.op.Caster;
-import lucee.runtime.type.Collection;
-import lucee.runtime.type.util.ArrayUtil;
-
 import org.w3c.dom.Attr;
 import org.w3c.dom.CDATASection;
 import org.w3c.dom.Comment;
@@ -41,6 +36,10 @@ import org.w3c.dom.NodeList;
 import org.w3c.dom.ProcessingInstruction;
 import org.w3c.dom.Text;
 
+import lucee.runtime.exp.PageRuntimeException;
+import lucee.runtime.op.Caster;
+import lucee.runtime.type.Collection;
+import lucee.runtime.type.util.ArrayUtil;
 
 /**
  * 
@@ -55,8 +54,8 @@ public final class XMLDocumentStruct extends XMLNodeStruct implements Document {
 	 */
 	protected XMLDocumentStruct(Document doc, boolean caseSensitive) {
 		super(doc, caseSensitive);
-		this.doc=doc;
-		
+		this.doc = doc;
+
 	}
 
 	@Override
@@ -111,7 +110,7 @@ public final class XMLDocumentStruct extends XMLNodeStruct implements Document {
 
 	@Override
 	public Node importNode(Node importedNode, boolean deep) throws DOMException {
-		return doc.importNode(importedNode,deep);
+		return doc.importNode(importedNode, deep);
 	}
 
 	@Override
@@ -126,31 +125,31 @@ public final class XMLDocumentStruct extends XMLNodeStruct implements Document {
 
 	@Override
 	public Attr createAttributeNS(String namespaceURI, String qualifiedName) throws DOMException {
-		return doc.createAttributeNS(namespaceURI,qualifiedName);
+		return doc.createAttributeNS(namespaceURI, qualifiedName);
 	}
 
 	@Override
 	public Element createElementNS(String namespaceURI, String qualifiedName) throws DOMException {
-		return doc.createElementNS(namespaceURI,qualifiedName);
+		return doc.createElementNS(namespaceURI, qualifiedName);
 	}
 
 	@Override
 	public NodeList getElementsByTagNameNS(String namespaceURI, String localName) {
-		return doc.getElementsByTagNameNS(namespaceURI,localName);
+		return doc.getElementsByTagNameNS(namespaceURI, localName);
 	}
 
 	@Override
 	public ProcessingInstruction createProcessingInstruction(String target, String data) throws DOMException {
-		return doc.createProcessingInstruction(target,data);
+		return doc.createProcessingInstruction(target, data);
 	}
 
 	// used only with java 7, do not set @Override
 	public Node adoptNode(Node arg0) throws DOMException {
-    	// dynamic load to support jre 1.4 and 1.5
+		// dynamic load to support jre 1.4 and 1.5
 		try {
-			Method m = doc.getClass().getMethod("adoptNode", new Class[]{arg0.getClass()});
-			return Caster.toNode(m.invoke(doc, new Object[]{arg0}));
-		} 
+			Method m = doc.getClass().getMethod("adoptNode", new Class[] { arg0.getClass() });
+			return Caster.toNode(m.invoke(doc, new Object[] { arg0 }));
+		}
 		catch (Exception e) {
 			throw new PageRuntimeException(Caster.toPageException(e));
 		}
@@ -158,11 +157,11 @@ public final class XMLDocumentStruct extends XMLNodeStruct implements Document {
 
 	// used only with java 7, do not set @Override
 	public String getDocumentURI() {
-    	// dynamic load to support jre 1.4 and 1.5
+		// dynamic load to support jre 1.4 and 1.5
 		try {
-			Method m = doc.getClass().getMethod("getDocumentURI", new Class[]{});
+			Method m = doc.getClass().getMethod("getDocumentURI", new Class[] {});
 			return Caster.toString(m.invoke(doc, ArrayUtil.OBJECT_EMPTY));
-		} 
+		}
 		catch (Exception e) {
 			throw new PageRuntimeException(Caster.toPageException(e));
 		}
@@ -170,11 +169,11 @@ public final class XMLDocumentStruct extends XMLNodeStruct implements Document {
 
 	// used only with java 7, do not set @Override
 	public DOMConfiguration getDomConfig() {
-    	// dynamic load to support jre 1.4 and 1.5
+		// dynamic load to support jre 1.4 and 1.5
 		try {
-			Method m = doc.getClass().getMethod("getDomConfig", new Class[]{});
+			Method m = doc.getClass().getMethod("getDomConfig", new Class[] {});
 			return (DOMConfiguration) m.invoke(doc, ArrayUtil.OBJECT_EMPTY);
-		} 
+		}
 		catch (Exception e) {
 			throw new PageRuntimeException(Caster.toPageException(e));
 		}
@@ -182,11 +181,11 @@ public final class XMLDocumentStruct extends XMLNodeStruct implements Document {
 
 	// used only with java 7, do not set @Override
 	public String getInputEncoding() {
-    	// dynamic load to support jre 1.4 and 1.5
+		// dynamic load to support jre 1.4 and 1.5
 		try {
-			Method m = doc.getClass().getMethod("getInputEncoding", new Class[]{});
+			Method m = doc.getClass().getMethod("getInputEncoding", new Class[] {});
 			return Caster.toString(m.invoke(doc, ArrayUtil.OBJECT_EMPTY));
-		} 
+		}
 		catch (Exception e) {
 			throw new PageRuntimeException(Caster.toPageException(e));
 		}
@@ -194,11 +193,11 @@ public final class XMLDocumentStruct extends XMLNodeStruct implements Document {
 
 	// used only with java 7, do not set @Override
 	public boolean getStrictErrorChecking() {
-    	// dynamic load to support jre 1.4 and 1.5
+		// dynamic load to support jre 1.4 and 1.5
 		try {
-			Method m = doc.getClass().getMethod("getStrictErrorChecking", new Class[]{});
+			Method m = doc.getClass().getMethod("getStrictErrorChecking", new Class[] {});
 			return Caster.toBooleanValue(m.invoke(doc, ArrayUtil.OBJECT_EMPTY));
-		} 
+		}
 		catch (Exception e) {
 			throw new PageRuntimeException(Caster.toPageException(e));
 		}
@@ -206,11 +205,11 @@ public final class XMLDocumentStruct extends XMLNodeStruct implements Document {
 
 	// used only with java 7, do not set @Override
 	public String getXmlEncoding() {
-    	// dynamic load to support jre 1.4 and 1.5
+		// dynamic load to support jre 1.4 and 1.5
 		try {
-			Method m = doc.getClass().getMethod("getXmlEncoding", new Class[]{});
+			Method m = doc.getClass().getMethod("getXmlEncoding", new Class[] {});
 			return Caster.toString(m.invoke(doc, ArrayUtil.OBJECT_EMPTY));
-		} 
+		}
 		catch (Exception e) {
 			throw new PageRuntimeException(Caster.toPageException(e));
 		}
@@ -218,11 +217,11 @@ public final class XMLDocumentStruct extends XMLNodeStruct implements Document {
 
 	// used only with java 7, do not set @Override
 	public boolean getXmlStandalone() {
-    	// dynamic load to support jre 1.4 and 1.5
+		// dynamic load to support jre 1.4 and 1.5
 		try {
-			Method m = doc.getClass().getMethod("getXmlStandalone", new Class[]{});
+			Method m = doc.getClass().getMethod("getXmlStandalone", new Class[] {});
 			return Caster.toBooleanValue(m.invoke(doc, ArrayUtil.OBJECT_EMPTY));
-		} 
+		}
 		catch (Exception e) {
 			throw new PageRuntimeException(Caster.toPageException(e));
 		}
@@ -230,11 +229,11 @@ public final class XMLDocumentStruct extends XMLNodeStruct implements Document {
 
 	// used only with java 7, do not set @Override
 	public String getXmlVersion() {
-    	// dynamic load to support jre 1.4 and 1.5
+		// dynamic load to support jre 1.4 and 1.5
 		try {
-			Method m = doc.getClass().getMethod("getXmlVersion", new Class[]{});
+			Method m = doc.getClass().getMethod("getXmlVersion", new Class[] {});
 			return Caster.toString(m.invoke(doc, ArrayUtil.OBJECT_EMPTY));
-		} 
+		}
 		catch (Exception e) {
 			throw new PageRuntimeException(Caster.toPageException(e));
 		}
@@ -242,11 +241,11 @@ public final class XMLDocumentStruct extends XMLNodeStruct implements Document {
 
 	// used only with java 7, do not set @Override
 	public void normalizeDocument() {
-    	// dynamic load to support jre 1.4 and 1.5
+		// dynamic load to support jre 1.4 and 1.5
 		try {
-			Method m = doc.getClass().getMethod("normalizeDocument", new Class[]{});
+			Method m = doc.getClass().getMethod("normalizeDocument", new Class[] {});
 			m.invoke(doc, ArrayUtil.OBJECT_EMPTY);
-		} 
+		}
 		catch (Exception e) {
 			throw new PageRuntimeException(Caster.toPageException(e));
 		}
@@ -254,11 +253,11 @@ public final class XMLDocumentStruct extends XMLNodeStruct implements Document {
 
 	// used only with java 7, do not set @Override
 	public Node renameNode(Node arg0, String arg1, String arg2) throws DOMException {
-    	// dynamic load to support jre 1.4 and 1.5
+		// dynamic load to support jre 1.4 and 1.5
 		try {
-			Method m = doc.getClass().getMethod("renameNode", new Class[]{arg0.getClass(),arg1.getClass(),arg2.getClass()});
-			return Caster.toNode(m.invoke(doc, new Object[]{arg0,arg1,arg2}));
-		} 
+			Method m = doc.getClass().getMethod("renameNode", new Class[] { arg0.getClass(), arg1.getClass(), arg2.getClass() });
+			return Caster.toNode(m.invoke(doc, new Object[] { arg0, arg1, arg2 }));
+		}
 		catch (Exception e) {
 			throw new PageRuntimeException(Caster.toPageException(e));
 		}
@@ -266,63 +265,62 @@ public final class XMLDocumentStruct extends XMLNodeStruct implements Document {
 
 	// used only with java 7, do not set @Override
 	public void setDocumentURI(String arg0) {
-    	// dynamic load to support jre 1.4 and 1.5
+		// dynamic load to support jre 1.4 and 1.5
 		try {
-			Method m = doc.getClass().getMethod("setDocumentURI", new Class[]{arg0.getClass()});
-			m.invoke(doc, new Object[]{arg0});
-		} 
+			Method m = doc.getClass().getMethod("setDocumentURI", new Class[] { arg0.getClass() });
+			m.invoke(doc, new Object[] { arg0 });
+		}
 		catch (Exception e) {
 			throw new PageRuntimeException(Caster.toPageException(e));
 		}
-		
+
 	}
 
 	// used only with java 7, do not set @Override
 	public void setStrictErrorChecking(boolean arg0) {
-    	// dynamic load to support jre 1.4 and 1.5
+		// dynamic load to support jre 1.4 and 1.5
 		try {
-			Method m = doc.getClass().getMethod("setStrictErrorChecking", new Class[]{boolean.class});
-			m.invoke(doc, new Object[]{Caster.toBoolean(arg0)});
-		} 
+			Method m = doc.getClass().getMethod("setStrictErrorChecking", new Class[] { boolean.class });
+			m.invoke(doc, new Object[] { Caster.toBoolean(arg0) });
+		}
 		catch (Exception e) {
 			throw new PageRuntimeException(Caster.toPageException(e));
 		}
-		
+
 	}
 
 	// used only with java 7, do not set @Override
 	public void setXmlStandalone(boolean arg0) throws DOMException {
-    	// dynamic load to support jre 1.4 and 1.5
+		// dynamic load to support jre 1.4 and 1.5
 		try {
-			Method m = doc.getClass().getMethod("setXmlStandalone", new Class[]{boolean.class});
-			m.invoke(doc, new Object[]{Caster.toBoolean(arg0)});
-		} 
+			Method m = doc.getClass().getMethod("setXmlStandalone", new Class[] { boolean.class });
+			m.invoke(doc, new Object[] { Caster.toBoolean(arg0) });
+		}
 		catch (Exception e) {
 			throw new PageRuntimeException(Caster.toPageException(e));
 		}
-		
+
 	}
 
 	// used only with java 7, do not set @Override
 	public void setXmlVersion(String arg0) throws DOMException {
-    	// dynamic load to support jre 1.4 and 1.5
+		// dynamic load to support jre 1.4 and 1.5
 		try {
-			Method m = doc.getClass().getMethod("setXmlVersion", new Class[]{arg0.getClass()});
-			m.invoke(doc, new Object[]{arg0});
-		} 
+			Method m = doc.getClass().getMethod("setXmlVersion", new Class[] { arg0.getClass() });
+			m.invoke(doc, new Object[] { arg0 });
+		}
 		catch (Exception e) {
 			throw new PageRuntimeException(Caster.toPageException(e));
 		}
 	}
-	
+
 	@Override
 	public Collection duplicate(boolean deepCopy) {
-		return new XMLDocumentStruct((Document)doc.cloneNode(deepCopy),caseSensitive);
+		return new XMLDocumentStruct((Document) doc.cloneNode(deepCopy), caseSensitive);
 	}
-	
 
 	@Override
 	public Node cloneNode(boolean deep) {
-		return new XMLDocumentStruct((Document)doc.cloneNode(deep),caseSensitive);
+		return new XMLDocumentStruct((Document) doc.cloneNode(deep), caseSensitive);
 	}
 }

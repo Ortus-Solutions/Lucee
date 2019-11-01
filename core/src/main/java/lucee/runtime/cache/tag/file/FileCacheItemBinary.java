@@ -22,18 +22,17 @@ import java.io.IOException;
 import lucee.commons.digest.HashUtil;
 import lucee.commons.digest.MD5;
 import lucee.runtime.coder.Base64Coder;
+import lucee.runtime.type.Duplicable;
 
-public class FileCacheItemBinary extends FileCacheItem {
+public class FileCacheItemBinary extends FileCacheItem implements Duplicable {
 
 	private static final long serialVersionUID = -7426486016811317332L;
 	public final byte[] data;
 
-	public FileCacheItemBinary(String path,byte[] data,long executionTimeNS) {
-		super(path,executionTimeNS);
+	public FileCacheItemBinary(String path, byte[] data, long executionTimeNS) {
+		super(path, executionTimeNS);
 		this.data = data;
 	}
-	
-
 
 	@Override
 	public String toString() {
@@ -44,7 +43,8 @@ public class FileCacheItemBinary extends FileCacheItem {
 	public String getHashFromValue() {
 		try {
 			return MD5.getDigestAsString(data);
-		} catch (IOException e) {
+		}
+		catch (IOException e) {
 			return Long.toString(HashUtil.create64BitHash(toString()));
 		}
 	}
@@ -57,5 +57,17 @@ public class FileCacheItemBinary extends FileCacheItem {
 	@Override
 	public byte[] getData() {
 		return data;
+	}
+
+	@Override
+	public Object duplicate(boolean deepCopy) {
+		if (data != null) {
+			byte[] tmp = new byte[data.length];
+			for (int i = 0; i < data.length; i++) {
+				tmp[i] = data[i];
+			}
+			return new FileCacheItemBinary(path, tmp, getExecutionTime());
+		}
+		return new FileCacheItemBinary(path, data, getExecutionTime());
 	}
 }

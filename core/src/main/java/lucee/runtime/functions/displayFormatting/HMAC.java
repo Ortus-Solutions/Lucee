@@ -28,7 +28,6 @@ import lucee.commons.digest.MD5;
 import lucee.commons.io.CharsetUtil;
 import lucee.commons.lang.StringUtil;
 import lucee.runtime.PageContext;
-import lucee.runtime.PageContextImpl;
 import lucee.runtime.exp.PageException;
 import lucee.runtime.ext.function.Function;
 import lucee.runtime.op.Caster;
@@ -38,47 +37,45 @@ public class HMAC implements Function {
 
 	private static final long serialVersionUID = -1999122154087043893L;
 
-	public static String call(PageContext pc,Object oMessage, Object oKey) throws PageException {
+	public static String call(PageContext pc, Object oMessage, Object oKey) throws PageException {
 		return call(pc, oMessage, oKey, null, null);
 	}
-	
-	public static String call(PageContext pc,Object oMessage, Object oKey, String algorithm) throws PageException {
+
+	public static String call(PageContext pc, Object oMessage, Object oKey, String algorithm) throws PageException {
 		return call(pc, oMessage, oKey, algorithm, null);
 	}
-	
-	public static String call(PageContext pc,Object oMessage, Object oKey, String algorithm, String charset) throws PageException {
+
+	public static String call(PageContext pc, Object oMessage, Object oKey, String algorithm, String charset) throws PageException {
 		// charset
 		Charset cs;
-        if(StringUtil.isEmpty(charset,true))
-            cs=((PageContextImpl)pc).getWebCharset();
-        else
-        	cs = CharsetUtil.toCharset(charset);
+		if (StringUtil.isEmpty(charset, true)) cs = pc.getWebCharset();
+		else cs = CharsetUtil.toCharset(charset);
 
-        // message
-		byte[] msg=toBinary(oMessage,cs);
-		
-        // message
-		byte[] key=toBinary(oKey,cs);
-		
+		// message
+		byte[] msg = toBinary(oMessage, cs);
+
+		// message
+		byte[] key = toBinary(oKey, cs);
+
 		// algorithm
-        if(StringUtil.isEmpty(algorithm,true)) algorithm = "HmacMD5";
-        
-        SecretKey sk = new SecretKeySpec(key, algorithm);
-	    try {
-            Mac mac = Mac.getInstance(algorithm);
-            mac.init(sk);
-            mac.reset();
-            mac.update(msg);
-            msg = mac.doFinal();
-            return MD5.stringify(msg).toUpperCase();
-        }
-        catch(Exception e) {
-            throw Caster.toPageException(e);
-        }
+		if (StringUtil.isEmpty(algorithm, true)) algorithm = "HmacMD5";
+
+		SecretKey sk = new SecretKeySpec(key, algorithm);
+		try {
+			Mac mac = Mac.getInstance(algorithm);
+			mac.init(sk);
+			mac.reset();
+			mac.update(msg);
+			msg = mac.doFinal();
+			return MD5.stringify(msg).toUpperCase();
+		}
+		catch (Exception e) {
+			throw Caster.toPageException(e);
+		}
 	}
-	
+
 	private static byte[] toBinary(Object obj, Charset cs) throws PageException {
-		if(Decision.isBinary(obj)){
+		if (Decision.isBinary(obj)) {
 			return Caster.toBinary(obj);
 		}
 		return Caster.toString(obj).getBytes(cs);

@@ -23,8 +23,9 @@ import lucee.transformer.bytecode.statement.IFunction;
 public interface Root {
 
 	public int[] addFunction(IFunction function);
-	
-	
+
 	public byte[] execute(String className) throws TransformerException;
+
+	public String registerJavaFunctionName(String functionName);
 
 }

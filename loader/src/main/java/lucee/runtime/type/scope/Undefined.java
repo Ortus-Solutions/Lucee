@@ -64,7 +64,7 @@ public interface Undefined extends Scope {
 	public abstract void setFunctionScopes(Local local, Argument argument);
 
 	/**
-	 * @return returns actuell collection stack
+	 * @return returns current collection stack
 	 */
 	public abstract QueryStack getQueryStack();
 
@@ -93,8 +93,7 @@ public interface Undefined extends Scope {
 	 * @param key
 	 * @return return matched value
 	 * @throws PageException
-	 * @deprecated use instead
-	 *             <code>{@link #getCollection(lucee.runtime.type.Collection.Key)}</code>
+	 * @deprecated use instead <code>{@link #getCollection(lucee.runtime.type.Collection.Key)}</code>
 	 */
 	@Deprecated
 	public abstract Object getCollection(String key) throws PageException;
@@ -108,8 +107,7 @@ public interface Undefined extends Scope {
 	 * @return return matched value
 	 * @throws PageException
 	 */
-	public abstract Object getCollection(Collection.Key key)
-			throws PageException;
+	public abstract Object getCollection(Collection.Key key) throws PageException;
 
 	/**
 	 * gets a key from all cascaded scopes, but not from variables scope
@@ -121,7 +119,7 @@ public interface Undefined extends Scope {
 	 */
 	@Deprecated
 	public abstract Object getCascading(Collection.Key key);
-	
+
 	/**
 	 * gets a key from all cascaded scopes, but not from variables scope
 	 * 
@@ -129,8 +127,7 @@ public interface Undefined extends Scope {
 	 * @return matching value or null
 	 */
 	public Object getCascading(Collection.Key key, Object defaultValue);
-	
-	
+
 	/**
 	 * change the variable scope
 	 * 

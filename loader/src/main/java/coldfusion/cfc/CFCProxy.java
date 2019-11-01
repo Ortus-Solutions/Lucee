@@ -56,8 +56,7 @@ public class CFCProxy {
 		this(path, null, true);
 	}
 
-	public CFCProxy(final String path, final boolean invokeDirectly)
-			throws Throwable {
+	public CFCProxy(final String path, final boolean invokeDirectly) throws Throwable {
 		this(path, null, invokeDirectly);
 	}
 
@@ -65,8 +64,7 @@ public class CFCProxy {
 		this(path, initialThis, true);
 	}
 
-	public CFCProxy(final String path, final Map initialThis,
-			final boolean invokeDirectly) throws Throwable {
+	public CFCProxy(final String path, final Map initialThis, final boolean invokeDirectly) throws Throwable {
 		engine = CFMLEngineFactory.getInstance();
 		caster = engine.getCastUtil();
 		creator = engine.getCreationUtil();
@@ -77,21 +75,17 @@ public class CFCProxy {
 	}
 
 	private void initCFC(PageContext pc) {
-		if (cfc == null && (invokeDirectly || pc != null))
-			try {
-				if (pc == null)
-					pc = engine.getThreadPageContext();
-				cfc = engine.getCreationUtil()
-						.createComponentFromPath(pc, path);
-			} catch (final PageException pe) {
-			}
+		if (cfc == null && (invokeDirectly || pc != null)) try {
+			if (pc == null) pc = engine.getThreadPageContext();
+			cfc = engine.getCreationUtil().createComponentFromPath(pc, path);
+		}
+		catch (final PageException pe) {}
 	}
 
 	@SuppressWarnings("rawtypes")
 	public void setThisScope(final Map data) {
 		if (data != null) {
-			if (thisData == null)
-				this.thisData = new HashMap();
+			if (thisData == null) this.thisData = new HashMap();
 
 			final Iterator<Entry> it = data.entrySet().iterator();
 			Entry entry;
@@ -105,8 +99,7 @@ public class CFCProxy {
 	@SuppressWarnings("rawtypes")
 	public Map getThisScope() {
 		initCFC(null);
-		if (cfc == null)
-			return null;
+		if (cfc == null) return null;
 
 		final Struct rtn = creator.createStruct();
 		final Iterator<Entry<Key, Object>> it = cfc.entryIterator();
@@ -118,27 +111,19 @@ public class CFCProxy {
 		return rtn;
 	}
 
-	public final Object invoke(final String methodName, final Object args[])
-			throws Throwable {
-		if (invokeDirectly)
-			return _invoke(methodName, args);
+	public final Object invoke(final String methodName, final Object args[]) throws Throwable {
+		if (invokeDirectly) return _invoke(methodName, args);
 		return _invoke(methodName, args, null, null, null);
 	}
 
-	public final Object invoke(final String methodName, final Object args[],
-			final HttpServletRequest request, final HttpServletResponse response)
-			throws Throwable {
-		if (invokeDirectly)
-			return _invoke(methodName, args);
+	public final Object invoke(final String methodName, final Object args[], final HttpServletRequest request, final HttpServletResponse response) throws Throwable {
+		if (invokeDirectly) return _invoke(methodName, args);
 		return _invoke(methodName, args, request, response, null);
 	}
 
-	public final Object invoke(final String methodName, final Object args[],
-			final HttpServletRequest request,
-			final HttpServletResponse response, final OutputStream out)
+	public final Object invoke(final String methodName, final Object args[], final HttpServletRequest request, final HttpServletResponse response, final OutputStream out)
 			throws Throwable {
-		if (invokeDirectly)
-			return _invoke(methodName, args);
+		if (invokeDirectly) return _invoke(methodName, args);
 		return _invoke(methodName, args, request, response, out);
 	}
 
@@ -146,45 +131,39 @@ public class CFCProxy {
 		return false;
 	}
 
-	private Object _invoke(final String methodName, final Object[] args)
-			throws PageException {
+	private Object _invoke(final String methodName, final Object[] args) throws PageException {
 		final CFMLEngine engine = CFMLEngineFactory.getInstance();
 		final PageContext pc = engine.getThreadPageContext();
 		initCFC(pc);
 		return cfc.call(pc, methodName, args);
 	}
 
-	private Object _invoke(final String methodName, final Object[] args,
-			HttpServletRequest req, HttpServletResponse rsp, OutputStream out)
-			throws PageException {
+	private Object _invoke(final String methodName, final Object[] args, HttpServletRequest req, HttpServletResponse rsp, OutputStream out) throws PageException {
 		final CFMLEngine engine = CFMLEngineFactory.getInstance();
 		final Creation creator = engine.getCreationUtil();
 		final PageContext originalPC = engine.getThreadPageContext();
 
 		// no OutputStream
-		if (out == null)
-			out = DevNullOutputStream.DEV_NULL_OUTPUT_STREAM;
+		if (out == null) out = DevNullOutputStream.DEV_NULL_OUTPUT_STREAM;
 
 		// no Request
 		if (req == null)
 			// TODO new File
-			req = creator.createHttpServletRequest(new File("."), "Lucee", "/",
-					"", null, null, null, null, null);
+			req = creator.createHttpServletRequest(new File("."), "Lucee", "/", "", null, null, null, null, null);
 		// noRespone
-		if (rsp == null)
-			rsp = creator.createHttpServletResponse(out);
+		if (rsp == null) rsp = creator.createHttpServletResponse(out);
 
 		final PageContext pc = creator.createPageContext(req, rsp, out);
 		try {
 			engine.registerThreadPageContext(pc);
 			initCFC(pc);
 			return cfc.call(pc, methodName, args);
-		} finally {
-			if (autoFlush)
-				try {
-					pc.getRootWriter().flush();
-				} catch (final Throwable t) {
-				}
+		}
+		finally {
+			if (autoFlush) try {
+				pc.getRootWriter().flush();
+			}
+			catch (final Throwable t) {}
 			engine.registerThreadPageContext(originalPC);
 		}
 	}
@@ -200,7 +179,7 @@ public class CFCProxy {
 	}
 
 	public void setApplicationExecution(final boolean doApp) {
-		//executeApplication = doApp;
+		// executeApplication = doApp;
 	}
 
 }
@@ -214,42 +193,36 @@ final class DevNullOutputStream extends OutputStream implements Serializable {
 	/**
 	 * Constructor of the class
 	 */
-	private DevNullOutputStream() {
-	}
+	private DevNullOutputStream() {}
 
 	/**
 	 * @see java.io.OutputStream#close()
 	 */
 	@Override
-	public void close() {
-	}
+	public void close() {}
 
 	/**
 	 * @see java.io.OutputStream#flush()
 	 */
 	@Override
-	public void flush() {
-	}
+	public void flush() {}
 
 	/**
 	 * @see java.io.OutputStream#write(byte[], int, int)
 	 */
 	@Override
-	public void write(final byte[] b, final int off, final int len) {
-	}
+	public void write(final byte[] b, final int off, final int len) {}
 
 	/**
 	 * @see java.io.OutputStream#write(byte[])
 	 */
 	@Override
-	public void write(final byte[] b) {
-	}
+	public void write(final byte[] b) {}
 
 	/**
 	 * @see java.io.OutputStream#write(int)
 	 */
 	@Override
-	public void write(final int b) {
-	}
+	public void write(final int b) {}
 
 }

@@ -33,31 +33,26 @@ public final class TagOutput extends TagGroup {
 	public static final int TYPE_GROUP = 1;
 	public static final int TYPE_INNER_GROUP = 2;
 	public static final int TYPE_INNER_QUERY = 3;
-	public static final int TYPE_NORMAL= 4;
-	
-	
-	private int type;
-	
+	public static final int TYPE_NORMAL = 4;
 
-	public TagOutput(Factory f, Position start,Position end) {
-		super(f,start,end);
+	private int type;
+
+	public TagOutput(Factory f, Position start, Position end) {
+		super(f, start, end);
 	}
 
-
 	public static TagOutput getParentTagOutputQuery(Statement stat) throws TransformerException {
-		Statement parent=stat.getParent();
-		if(parent==null) throw new TransformerException("there is no parent output with query",null);
-		else if(parent instanceof TagOutput) {
-			if(((TagOutput)parent).hasQuery())
-				return ((TagOutput)parent);
+		Statement parent = stat.getParent();
+		if (parent == null) throw new TransformerException("there is no parent output with query", null);
+		else if (parent instanceof TagOutput) {
+			if (((TagOutput) parent).hasQuery()) return ((TagOutput) parent);
 		}
 		return getParentTagOutputQuery(parent);
 	}
 
 	public void setType(int type) {
-		this.type=type;
+		this.type = type;
 	}
-
 
 	/**
 	 *
@@ -66,62 +61,53 @@ public final class TagOutput extends TagGroup {
 	@Override
 	public void _writeOut(BytecodeContext bc) throws TransformerException {
 		boolean old;
-		switch(type) {
+		switch (type) {
 		case TYPE_GROUP:
 			old = bc.changeDoSubFunctions(false);
-			TagGroupUtil.writeOutTypeGroup(this,bc);
+			TagGroupUtil.writeOutTypeGroup(this, bc);
 			bc.changeDoSubFunctions(old);
-		break;
+			break;
 		case TYPE_INNER_GROUP:
 			old = bc.changeDoSubFunctions(false);
-			TagGroupUtil.writeOutTypeInnerGroup(this,bc);
+			TagGroupUtil.writeOutTypeInnerGroup(this, bc);
 			bc.changeDoSubFunctions(old);
-		break;
+			break;
 		case TYPE_INNER_QUERY:
 			old = bc.changeDoSubFunctions(false);
-			TagGroupUtil.writeOutTypeInnerQuery(this,bc);
+			TagGroupUtil.writeOutTypeInnerQuery(this, bc);
 			bc.changeDoSubFunctions(old);
-		break;
+			break;
 		case TYPE_NORMAL:
 			writeOutTypeNormal(bc);
-		break;
+			break;
 		case TYPE_QUERY:
 			old = bc.changeDoSubFunctions(false);
-			TagGroupUtil.writeOutTypeQuery(this,bc);
+			TagGroupUtil.writeOutTypeQuery(this, bc);
 			bc.changeDoSubFunctions(old);
-		break;
-		
+			break;
+
 		default:
-			throw new TransformerException("invalid type",getStart());
+			throw new TransformerException("invalid type", getStart());
 		}
 	}
 
-
-	
-	
-
-
-	
-
-
 	/**
 	 * write out normal query
+	 * 
 	 * @param adapter
 	 * @throws TemplateException
 	 */
 	private void writeOutTypeNormal(BytecodeContext bc) throws TransformerException {
-		ParseBodyVisitor pbv=new ParseBodyVisitor();
+		ParseBodyVisitor pbv = new ParseBodyVisitor();
 		pbv.visitBegin(bc);
-			getBody().writeOut(bc);
+		getBody().writeOut(bc);
 		pbv.visitEnd(bc);
 	}
-
 
 	@Override
 	public short getType() {
 		return TAG_OUTPUT;
 	}
-
 
 	@Override
 	public FlowControlFinal getFlowControlFinal() {

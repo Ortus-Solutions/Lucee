@@ -23,33 +23,28 @@ import java.io.Serializable;
 import lucee.commons.digest.HashUtil;
 import lucee.runtime.cache.tag.CacheItem;
 import lucee.runtime.cache.tag.udf.UDFArgConverter;
+import lucee.runtime.type.Duplicable;
 import lucee.runtime.type.Struct;
 
-public class StoredProcCacheItem implements CacheItem, Serializable {
+public class StoredProcCacheItem implements CacheItem, Serializable, Duplicable {
 
 	private static final long serialVersionUID = 7327671003736543783L;
 
-
-	private Struct sct;
-
-
-	private String procedure;
-
-
-	private long executionTime;
-
+	private final Struct sct;
+	private final String procedure;
+	private final long executionTime;
 
 	public StoredProcCacheItem(Struct sct, String procedure, long executionTime) {
-		this.sct=sct;
-		this.procedure=procedure;
-		this.executionTime=executionTime;
+		this.sct = sct;
+		this.procedure = procedure;
+		this.executionTime = executionTime;
 	}
 
 	@Override
 	public String getHashFromValue() {
 		return Long.toString(HashUtil.create64BitHash(UDFArgConverter.serialize(sct)));
 	}
-	
+
 	@Override
 	public String getName() {
 		return procedure;
@@ -59,12 +54,12 @@ public class StoredProcCacheItem implements CacheItem, Serializable {
 	public long getPayload() {
 		return sct.size();
 	}
-	
+
 	@Override
 	public String getMeta() {
 		return "";
 	}
-	
+
 	@Override
 	public long getExecutionTime() {
 		return executionTime;
@@ -74,4 +69,8 @@ public class StoredProcCacheItem implements CacheItem, Serializable {
 		return sct;
 	}
 
+	@Override
+	public Object duplicate(boolean deepCopy) {
+		return new StoredProcCacheItem((Struct) sct.duplicate(true), procedure, executionTime);
+	}
 }

@@ -18,15 +18,15 @@
  **/
 package lucee.transformer.bytecode.visitor;
 
-import lucee.transformer.bytecode.BytecodeContext;
-
 import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.commons.GeneratorAdapter;
 
+import lucee.transformer.bytecode.BytecodeContext;
+
 // TODO testen wurde noch nicht getestet
 
-public final class DoWhileVisitor implements LoopVisitor{
+public final class DoWhileVisitor implements LoopVisitor {
 
 	private Label begin;
 	private Label end;
@@ -35,11 +35,10 @@ public final class DoWhileVisitor implements LoopVisitor{
 	public void visitBeginBody(GeneratorAdapter mv) {
 		end = new Label();
 		beforeEnd = new Label();
-		
-		begin=new Label();
+
+		begin = new Label();
 		mv.visitLabel(begin);
 	}
-	
 
 	public void visitEndBodyBeginExpr(GeneratorAdapter mv) {
 		mv.visitLabel(beforeEnd);
@@ -66,7 +65,6 @@ public final class DoWhileVisitor implements LoopVisitor{
 		return beforeEnd;
 	}
 
-
 	/**
 	 *
 	 * @see lucee.transformer.bytecode.visitor.LoopVisitor#visitContinue(org.objectweb.asm.commons.GeneratorAdapter)
@@ -75,7 +73,7 @@ public final class DoWhileVisitor implements LoopVisitor{
 	public void visitContinue(BytecodeContext bc) {
 		bc.getAdapter().visitJumpInsn(Opcodes.GOTO, getContinueLabel());
 	}
-	
+
 	/**
 	 *
 	 * @see lucee.transformer.bytecode.visitor.LoopVisitor#visitBreak(org.objectweb.asm.commons.GeneratorAdapter)

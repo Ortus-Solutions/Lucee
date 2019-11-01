@@ -20,9 +20,10 @@ package lucee.commons.lang.lock;
 
 public final class NullKeyLockListener implements KeyLockListener {
 
-	private final static NullKeyLockListener my=new NullKeyLockListener();
+	private final static NullKeyLockListener my = new NullKeyLockListener();
+
 	private NullKeyLockListener() {}
-	
+
 	public static KeyLockListener getInstance() {
 		return my;
 	}
@@ -32,6 +33,5 @@ public final class NullKeyLockListener implements KeyLockListener {
 
 	@Override
 	public void onStart(String key, boolean isFirst) {}
-	
 
 }

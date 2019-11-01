@@ -28,16 +28,17 @@ public final class FileNameFilterWrapper implements FileNameResourceFilter {
 	private final FilenameFilter filter;
 
 	public FileNameFilterWrapper(FilenameFilter filter) {
-		this.filter=filter;
-	}
-	@Override
-	public boolean accept(Resource dir,String name) {
-		if(dir instanceof File) return accept(((File)dir),name);
-		return accept(FileWrapper.toFile(dir),name);
+		this.filter = filter;
 	}
 
 	@Override
-	public boolean accept(File dir,String name) {
-		return filter.accept(dir,name);
+	public boolean accept(Resource dir, String name) {
+		if (dir instanceof File) return accept(((File) dir), name);
+		return accept(FileWrapper.toFile(dir), name);
+	}
+
+	@Override
+	public boolean accept(File dir, String name) {
+		return filter.accept(dir, name);
 	}
 }

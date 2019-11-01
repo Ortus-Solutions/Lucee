@@ -45,10 +45,10 @@ public interface HTTPUtil {
 	 */
 	public static final int STATUS_OK = 200;
 
-	//private static final String NO_MIMETYPE="Unable to determine MIME type of file.";
+	// private static final String NO_MIMETYPE="Unable to determine MIME type of file.";
 
 	/**
-	 * make a http requst to given url
+	 * make a http request to given url
 	 * 
 	 * @param url
 	 * @param username
@@ -63,38 +63,28 @@ public interface HTTPUtil {
 	 * @return resulting inputstream
 	 * @throws IOException
 	 */
-	public HTTPResponse get(URL url, String username, String password,
-			int timeout, String charset, String useragent, String proxyserver,
-			int proxyport, String proxyuser, String proxypassword,
-			Header[] headers) throws IOException;
+	public HTTPResponse get(URL url, String username, String password, int timeout, String charset, String useragent, String proxyserver, int proxyport, String proxyuser,
+			String proxypassword, Header[] headers) throws IOException;
 
 	/**
 	 * 
 	 * @deprecated use instead
-	 * @see #put(URL, String, String, int, String, String, String, String, int, String, String, Header[], Object)
+	 * @see #put(URL, String, String, int, String, String, String, String, int, String, String,
+	 *      Header[], Object)
 	 */
-	public HTTPResponse put(URL url, String username, String password,
-			int timeout, String charset, String useragent, String proxyserver,
-			int proxyport, String proxyuser, String proxypassword,
-			Header[] headers, Object body) throws IOException;
-	
-	public HTTPResponse put(URL url, String username, String password,
-			int timeout, String mimetype, String charset, String useragent, String proxyserver,
-			int proxyport, String proxyuser, String proxypassword,
-			Header[] headers, Object body) throws IOException ;
+	@Deprecated
+	public HTTPResponse put(URL url, String username, String password, int timeout, String charset, String useragent, String proxyserver, int proxyport, String proxyuser,
+			String proxypassword, Header[] headers, Object body) throws IOException;
 
-	public HTTPResponse delete(URL url, String username, String password,
-			int timeout, String charset, String useragent, String proxyserver,
-			int proxyport, String proxyuser, String proxypassword,
-			Header[] headers) throws IOException;
+	public HTTPResponse put(URL url, String username, String password, int timeout, String mimetype, String charset, String useragent, String proxyserver, int proxyport,
+			String proxyuser, String proxypassword, Header[] headers, Object body) throws IOException;
 
-	public HTTPResponse head(URL url, String username, String password,
-			int timeout, String charset, String useragent, String proxyserver,
-			int proxyport, String proxyuser, String proxypassword,
-			Header[] headers) throws IOException;
-	
-	
-	
+	public HTTPResponse delete(URL url, String username, String password, int timeout, String charset, String useragent, String proxyserver, int proxyport, String proxyuser,
+			String proxypassword, Header[] headers) throws IOException;
+
+	public HTTPResponse head(URL url, String username, String password, int timeout, String charset, String useragent, String proxyserver, int proxyport, String proxyuser,
+			String proxypassword, Header[] headers) throws IOException;
+
 	/**
 	 * cast a string to a url
 	 * 
@@ -102,11 +92,12 @@ public interface HTTPUtil {
 	 * @param port
 	 * @return url from string
 	 * @throws MalformedURLException
-	 * @deprecated use instead 
+	 * @deprecated use instead
 	 * @see #toURL(String, int, boolean)
 	 * 
 	 */
-	public URL toURL(String strUrl, int port) throws MalformedURLException; // FUTURE deprecated use method <code>toURL(String strUrl, int port, boolean encodeIfNecessary)</code> instead
+	@Deprecated
+	public URL toURL(String strUrl, int port) throws MalformedURLException;
 
 	/**
 	 * 
@@ -139,8 +130,7 @@ public interface HTTPUtil {
 	 * @return encoded String
 	 * @throws UnsupportedEncodingException
 	 */
-	public String encode(String str, String charset)
-			throws UnsupportedEncodingException;
+	public String encode(String str, String charset) throws UnsupportedEncodingException;
 
 	/**
 	 * translate a url encoded string to a regular string
@@ -150,15 +140,15 @@ public interface HTTPUtil {
 	 * @return raw string
 	 * @throws UnsupportedEncodingException
 	 */
-	public String decode(String str, String charset)
-			throws UnsupportedEncodingException;
+	public String decode(String str, String charset) throws UnsupportedEncodingException;
 
 	/**
-	 * remove port information if the port is the default port for this protocol
-	 * (http=80,https=443)
+	 * remove port information if the port is the default port for this protocol (http=80,https=443)
 	 * 
 	 * @param url
 	 * @return
 	 */
 	public URL removeUnecessaryPort(URL url);
+
+	Header createHeader(String name, String value);
 }

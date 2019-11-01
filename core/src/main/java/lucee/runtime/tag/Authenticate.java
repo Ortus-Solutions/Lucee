@@ -22,18 +22,19 @@ import lucee.runtime.exp.ExpressionException;
 import lucee.runtime.ext.tag.TagImpl;
 
 /**
-* Authenticates a user, setting a security context for the application. 
-* 			For more information, see the descriptions of IsAuthenticated and AuthenticatedContext.
-*
-*
-*
-**/
+ * Authenticates a user, setting a security context for the application. For more information, see
+ * the descriptions of IsAuthenticated and AuthenticatedContext.
+ *
+ *
+ *
+ **/
 public final class Authenticate extends TagImpl {
 
 	/**
-	* constructor for the tag class
+	 * constructor for the tag class
+	 * 
 	 * @throws ExpressionException
-	**/
+	 **/
 	public Authenticate() throws ExpressionException {
 		throw new ExpressionException("tag cfauthenticate is deprecated");
 	}

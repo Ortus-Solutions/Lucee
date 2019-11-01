@@ -29,6 +29,7 @@ import lucee.runtime.type.dt.DateTimeImpl;
 
 /**
  * Implements the CFML Function now
+ * 
  * @deprecated removed with no replacement
  */
 @Deprecated
@@ -36,16 +37,16 @@ public final class NowServer implements Function {
 	/**
 	 * @param pc
 	 * @return server time
-	 * @throws ExpressionException 
+	 * @throws ExpressionException
 	 */
-	public static DateTime call(PageContext pc ) throws ExpressionException {
-		DeprecatedUtil.function(pc,"nowServer");
+	public static DateTime call(PageContext pc) throws ExpressionException {
+		DeprecatedUtil.function(pc, "nowServer");
 		long now = System.currentTimeMillis();
 		int lucee = pc.getTimeZone().getOffset(now);
 		int server = TimeZone.getDefault().getOffset(now);
-		
-		return new DateTimeImpl(pc,now-(lucee-server),false);
-		
+
+		return new DateTimeImpl(pc, now - (lucee - server), false);
+
 	}
-	
+
 }

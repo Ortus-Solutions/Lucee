@@ -18,23 +18,23 @@
  */
 package lucee.runtime.op;
 
-
-
 import java.io.File;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import javax.servlet.ServletConfig;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import lucee.cli.servlet.ServletConfigImpl;
+import lucee.cli.servlet.ServletContextImpl;
 import lucee.commons.date.DateTimeUtil;
-import lucee.commons.io.IOUtil;
 import lucee.commons.io.res.Resource;
 import lucee.commons.io.res.util.ResourceUtil;
 import lucee.commons.lang.Pair;
@@ -44,8 +44,11 @@ import lucee.commons.lang.types.RefDouble;
 import lucee.commons.lang.types.RefDoubleImpl;
 import lucee.commons.lang.types.RefInteger;
 import lucee.commons.lang.types.RefIntegerImpl;
+import lucee.commons.lang.types.RefIntegerSync;
 import lucee.commons.lang.types.RefLong;
 import lucee.commons.lang.types.RefLongImpl;
+import lucee.commons.lang.types.RefString;
+import lucee.commons.lang.types.RefStringImpl;
 import lucee.commons.lock.KeyLock;
 import lucee.commons.lock.KeyLockImpl;
 import lucee.loader.engine.CFMLEngine;
@@ -77,7 +80,6 @@ import lucee.runtime.net.http.HttpServletResponseDummy;
 import lucee.runtime.spooler.ExecutionPlan;
 import lucee.runtime.spooler.SpoolerTask;
 import lucee.runtime.spooler.remote.RemoteClientTask;
-import lucee.runtime.text.xml.XMLUtil;
 import lucee.runtime.type.Array;
 import lucee.runtime.type.ArrayImpl;
 import lucee.runtime.type.CastableStruct;
@@ -98,163 +100,120 @@ import lucee.runtime.type.dt.TimeSpan;
 import lucee.runtime.type.dt.TimeSpanImpl;
 import lucee.runtime.type.scope.ClusterEntry;
 import lucee.runtime.type.scope.ClusterEntryImpl;
+import lucee.runtime.type.util.ArrayUtil;
 import lucee.runtime.type.util.ListUtil;
 import lucee.runtime.util.Creation;
-
-import org.w3c.dom.Document;
-import org.xml.sax.InputSource;
 
 /**
  * implemention of the ctration object
  */
-public final class CreationImpl implements Creation,Serializable {
+public final class CreationImpl implements Creation, Serializable {
 
-    private static CreationImpl singelton;
+	private static CreationImpl singelton;
 
-    private CreationImpl(CFMLEngine engine) {
-    	// !!! do not store engine Object, the engine is not serializable
+	private CreationImpl(CFMLEngine engine) {
+		// !!! do not store engine Object, the engine is not serializable
 	}
 
 	/**
-     * @return singleton instance
-     */
-    public static Creation getInstance(CFMLEngine engine) { 
-        if(singelton==null)singelton=new CreationImpl(engine);
-        return singelton;
-    }
-
-    @Override
-    public Array createArray() {
-        return new ArrayImpl();
-    }
+	 * @return singleton instance
+	 */
+	public static Creation getInstance(CFMLEngine engine) {
+		if (singelton == null) singelton = new CreationImpl(engine);
+		return singelton;
+	}
 
 	@Override
-	public Array createArray(String list, String delimiter,boolean removeEmptyItem, boolean trim) {
-		if(removeEmptyItem)return ListUtil.listToArrayRemoveEmpty(list, delimiter);
-		if(trim)return ListUtil.listToArrayTrim(list, delimiter);
+	public Array createArray() {
+		return new ArrayImpl();
+	}
+
+	@Override
+	public Array createArray(String list, String delimiter, boolean removeEmptyItem, boolean trim) {
+		if (removeEmptyItem) return ListUtil.listToArrayRemoveEmpty(list, delimiter);
+		if (trim) return ListUtil.listToArrayTrim(list, delimiter);
 		return ListUtil.listToArray(list, delimiter);
 	}
-	
-    @Override
-    public Array createArray(int dimension) throws PageException {
-        return new ArrayImpl(dimension);
-    }
 
-    @Override
-    public Struct createStruct() {
-        return new StructImpl();
-    }
-
-    @Override
-    public Struct createStruct(int type) {
-        return new StructImpl(type);
-    }
-
-    @Override
-    public Struct createStruct(String type) throws ApplicationException {
-    	return new StructImpl(StructNew.toType(type));
-    }
-
-    @Override
-    public Query createQuery(String[] columns, int rows, String name) {
-        return new QueryImpl(columns,rows,name);
-    }
-
-    @Override
-    public Query createQuery(Collection.Key[] columns, int rows, String name) throws DatabaseException {
-        return new QueryImpl(columns,rows,name);
-    }
-
-    @Override
-    public Query createQuery(String[] columns, String[] types, int rows, String name) throws DatabaseException {
-        return new QueryImpl(columns,types,rows,name);
-    }
-
-    @Override
-    public Query createQuery(Collection.Key[] columns, String[] types, int rows, String name) throws DatabaseException {
-        return new QueryImpl(columns,types,rows,name);
-    }
-    
-    @Override
-	public Query createQuery(DatasourceConnection dc, SQL sql, int maxrow, int fetchsize, int timeout, String name) throws PageException {
-		return new QueryImpl(ThreadLocalPageContext.get(),dc,sql,maxrow,fetchsize,TimeSpanImpl.fromMillis(timeout*1000),name);
+	@Override
+	public Array createArray(int dimension) throws PageException {
+		return ArrayUtil.getInstance(dimension);
 	}
-    
-    @Override
-    public DateTime createDateTime(long time) {
-        return new DateTimeImpl(time,false);
-    }
 
-    @Override
-    public TimeSpan createTimeSpan(int day,int hour,int minute,int second) {
-        return new TimeSpanImpl(day,hour,minute,second);
-    }
+	@Override
+	public Struct createStruct() {
+		return new StructImpl();
+	}
 
-    @Override
-    public Date createDate(long time) {
-        return new DateImpl(time);
-    }
+	@Override
+	public Struct createStruct(int type) {
+		return new StructImpl(type);
+	}
 
-    @Override
-    public Time createTime(long time) {
-        return new TimeImpl(time,false);
-    }
+	@Override
+	public Struct createStruct(String type) throws ApplicationException {
+		return new StructImpl(StructNew.toType(type));
+	}
 
-    @Override
-    public DateTime createDateTime(int year, int month, int day, int hour, int minute, int second, int millis) throws ExpressionException {
-        return DateTimeUtil.getInstance().toDateTime(ThreadLocalPageContext.getTimeZone(),year,month,day,hour,minute,second,millis);
-    }
+	@Override
+	public Query createQuery(String[] columns, int rows, String name) {
+		return new QueryImpl(columns, rows, name);
+	}
 
-    @Override
-    public Date createDate(int year, int month, int day) throws ExpressionException {
-        return new DateImpl(DateTimeUtil.getInstance().toDateTime(null,year,month,day, 0, 0, 0,0));
-    }
+	@Override
+	public Query createQuery(Collection.Key[] columns, int rows, String name) throws DatabaseException {
+		return new QueryImpl(columns, rows, name);
+	}
 
-    @Override
-    public Time createTime(int hour, int minute, int second, int millis) {
-        return new TimeImpl(
-        		DateTimeUtil.getInstance().toTime(null,1899,12,30,hour,minute,second,millis,0),false);
-    }
+	@Override
+	public Query createQuery(String[] columns, String[] types, int rows, String name) throws DatabaseException {
+		return new QueryImpl(columns, types, rows, name);
+	}
 
-    @Override
-    public Document createDocument() throws PageException {
-        try {
-            return XMLUtil.newDocument();
-        } catch (Exception e) {
-            throw Caster.toPageException(e);
-        }
-    }
+	@Override
+	public Query createQuery(Collection.Key[] columns, String[] types, int rows, String name) throws DatabaseException {
+		return new QueryImpl(columns, types, rows, name);
+	}
 
-    @Override
-    public Document createDocument(Resource res, boolean isHTML) throws PageException {
-        InputStream is=null;
-    	try {
-            return XMLUtil.parse(new InputSource(is=res.getInputStream()),null,isHTML);
-        } catch (Exception e) {
-            throw Caster.toPageException(e);
-        }
-        finally {
-        	IOUtil.closeEL(is);
-        }
-    }
+	@Override
+	public Query createQuery(DatasourceConnection dc, SQL sql, int maxrow, int fetchsize, int timeout, String name) throws PageException {
+		return new QueryImpl(ThreadLocalPageContext.get(), dc, sql, maxrow, fetchsize, TimeSpanImpl.fromMillis(timeout * 1000), name);
+	}
 
-    @Override
-    public Document createDocument(String xml, boolean isHTML) throws PageException {
-        try {
-            return XMLUtil.parse(XMLUtil.toInputSource(null, xml),null,isHTML);
-        } catch (Exception e) {
-            throw Caster.toPageException(e);
-        }
-    }
+	@Override
+	public DateTime createDateTime(long time) {
+		return new DateTimeImpl(time, false);
+	}
 
-    @Override
-    public Document createDocument(InputStream is, boolean isHTML) throws PageException {
-        try {
-            return XMLUtil.parse(new InputSource(is),null,isHTML);
-        } catch (Exception e) {
-            throw Caster.toPageException(e);
-        }
-    }
+	@Override
+	public TimeSpan createTimeSpan(int day, int hour, int minute, int second) {
+		return new TimeSpanImpl(day, hour, minute, second);
+	}
+
+	@Override
+	public Date createDate(long time) {
+		return new DateImpl(time);
+	}
+
+	@Override
+	public Time createTime(long time) {
+		return new TimeImpl(time, false);
+	}
+
+	@Override
+	public DateTime createDateTime(int year, int month, int day, int hour, int minute, int second, int millis) throws ExpressionException {
+		return DateTimeUtil.getInstance().toDateTime(ThreadLocalPageContext.getTimeZone(), year, month, day, hour, minute, second, millis);
+	}
+
+	@Override
+	public Date createDate(int year, int month, int day) throws ExpressionException {
+		return new DateImpl(DateTimeUtil.getInstance().toDateTime(null, year, month, day, 0, 0, 0, 0));
+	}
+
+	@Override
+	public Time createTime(int hour, int minute, int second, int millis) {
+		return new TimeImpl(DateTimeUtil.getInstance().toTime(null, 1899, 12, 30, hour, minute, second, millis, 0), false);
+	}
 
 	@Override
 	public Key createKey(String key) {
@@ -262,63 +221,75 @@ public final class CreationImpl implements Creation,Serializable {
 	}
 
 	@Override
-	public SpoolerTask createRemoteClientTask(ExecutionPlan[] plans,RemoteClient remoteClient,Struct attrColl,String callerId, String type) {
-		return new RemoteClientTask(plans,remoteClient,attrColl,callerId, type);
+	public SpoolerTask createRemoteClientTask(ExecutionPlan[] plans, RemoteClient remoteClient, Struct attrColl, String callerId, String type) {
+		return new RemoteClientTask(plans, remoteClient, attrColl, callerId, type);
 	}
 
 	@Override
-	public ClusterEntry createClusterEntry(Key key,Serializable value, int offset) {
-		return new ClusterEntryImpl(key,value,offset);
+	public ClusterEntry createClusterEntry(Key key, Serializable value, int offset) {
+		return new ClusterEntryImpl(key, value, offset);
 	}
 
 	@Override
 	public Resource createResource(String path, boolean existing) throws PageException {
-		if(existing)return ResourceUtil.toResourceExisting(ThreadLocalPageContext.get(), path);
+		if (existing) return ResourceUtil.toResourceExisting(ThreadLocalPageContext.get(), path);
 		return ResourceUtil.toResourceNotExisting(ThreadLocalPageContext.get(), path);
 	}
 
 	@Override
-	public HttpServletRequest createHttpServletRequest(File contextRoot,String serverName, String scriptName,String queryString, 
-			Cookie[] cookies, Map<String,Object> headers, Map<String, String> parameters, Map<String,Object> attributes, HttpSession session) {
+	public HttpServletRequest createHttpServletRequest(File contextRoot, String serverName, String scriptName, String queryString, Cookie[] cookies, Map<String, Object> headers,
+			Map<String, String> parameters, Map<String, Object> attributes, HttpSession session) {
 
 		// header
-		Pair<String,Object>[] _headers=new Pair[headers.size()];
+		Pair<String, Object>[] _headers = new Pair[headers.size()];
 		{
-			int index=0;
+			int index = 0;
 			Iterator<Entry<String, Object>> it = headers.entrySet().iterator();
 			Entry<String, Object> entry;
-			while(it.hasNext()){
+			while (it.hasNext()) {
 				entry = it.next();
-				_headers[index++]=new Pair<String,Object>(entry.getKey(), entry.getValue());
+				_headers[index++] = new Pair<String, Object>(entry.getKey(), entry.getValue());
 			}
 		}
 		// parameters
-		Pair<String,Object>[] _parameters=new Pair[headers.size()];
+		Pair<String, Object>[] _parameters = new Pair[headers.size()];
 		{
-			int index=0;
+			int index = 0;
 			Iterator<Entry<String, String>> it = parameters.entrySet().iterator();
 			Entry<String, String> entry;
-			while(it.hasNext()){
+			while (it.hasNext()) {
 				entry = it.next();
-				_parameters[index++]=new Pair<String,Object>(entry.getKey(), entry.getValue());
+				_parameters[index++] = new Pair<String, Object>(entry.getKey(), entry.getValue());
 			}
 		}
-		
-		return new HttpServletRequestDummy(ResourceUtil.toResource(contextRoot), serverName, scriptName, queryString, cookies,
-				_headers, _parameters, Caster.toStruct(attributes,null), session);
+
+		return new HttpServletRequestDummy(ResourceUtil.toResource(contextRoot), serverName, scriptName, queryString, cookies, _headers, _parameters,
+				Caster.toStruct(attributes, null), session, null);
 	}
 
 	@Override
 	public HttpServletResponse createHttpServletResponse(OutputStream io) {
-		return new HttpServletResponseDummy(io);
+		return new HttpServletResponseDummy(io); // do not change, flex extension is depending on this
+	}
+
+	// FUTURE add to interface
+	public ServletConfig createServletConfig(File root, Map<String, Object> attributes, Map<String, String> params) {
+		final String servletName = "";
+		if (attributes == null) attributes = new HashMap<String, Object>();
+		if (params == null) params = new HashMap<String, String>();
+		if (root == null) root = new File("."); // working directory that the java command was called from
+
+		final ServletContextImpl servletContext = new ServletContextImpl(root, attributes, params, 1, 0);
+		final ServletConfigImpl servletConfig = new ServletConfigImpl(servletContext, servletName);
+		return servletConfig;
 	}
 
 	@Override
 	public PageContext createPageContext(HttpServletRequest req, HttpServletResponse rsp, OutputStream out) {
 		Config config = ThreadLocalPageContext.getConfig();
-		if(!(config instanceof ConfigWeb)) throw new RuntimeException("need a web context to create a PageContext");
-		CFMLFactory factory = ((ConfigWeb)config).getFactory();
-		
+		if (!(config instanceof ConfigWeb)) throw new RuntimeException("need a web context to create a PageContext");
+		CFMLFactory factory = ((ConfigWeb) config).getFactory();
+
 		return (PageContext) factory.getPageContext(factory.getServlet(), req, rsp, null, false, -1, false);
 	}
 
@@ -328,21 +299,17 @@ public final class CreationImpl implements Creation,Serializable {
 	}
 
 	@Override
-	public Component createComponentFromPath(PageContext pc, String path) throws PageException {	
-		path=path.trim();
-		String pathContracted=ContractPath.call(pc, path);
-    	
-		if(Constants.isComponentExtension(ResourceUtil.getExtension(pathContracted, "")))
-			pathContracted=ResourceUtil.removeExtension(pathContracted, pathContracted);
-		
-    	pathContracted=pathContracted
-			.replace(File.pathSeparatorChar, '.')
-			.replace('/', '.')
-			.replace('\\', '.');
-    	
-    	while(pathContracted.toLowerCase().startsWith("."))
-			pathContracted=pathContracted.substring(1);
-    	
+	public Component createComponentFromPath(PageContext pc, String path) throws PageException {
+		path = path.trim();
+		String pathContracted = ContractPath.call(pc, path);
+
+		if (Constants.isComponentExtension(ResourceUtil.getExtension(pathContracted, ""))) pathContracted = ResourceUtil.removeExtension(pathContracted, pathContracted);
+
+		pathContracted = pathContracted.replace(File.pathSeparatorChar, '.').replace('/', '.').replace('\\', '.');
+
+		while (pathContracted.toLowerCase().startsWith("."))
+			pathContracted = pathContracted.substring(1);
+
 		return createComponentFromName(pc, pathContracted);
 	}
 
@@ -356,6 +323,11 @@ public final class CreationImpl implements Creation,Serializable {
 		return new RefIntegerImpl(i);
 	}
 
+	// FUTURE add this and more to interface
+	public RefInteger createRefInteger(int i, boolean _syncronized) {
+		return _syncronized ? new RefIntegerSync(i) : new RefIntegerImpl(i);
+	}
+
 	@Override
 	public RefLong createRefLong(long l) {
 		return new RefLongImpl(l);
@@ -364,6 +336,11 @@ public final class CreationImpl implements Creation,Serializable {
 	@Override
 	public RefDouble createRefDouble(long d) {
 		return new RefDoubleImpl(d);
+	}
+
+	@Override
+	public RefString createRefString(String value) {
+		return new RefStringImpl(value);
 	}
 
 	@Override
@@ -385,10 +362,10 @@ public final class CreationImpl implements Creation,Serializable {
 	}
 
 	@Override
-	public Mapping createMapping(Config config, String virtual, String strPhysical,String strArchive, short inspect, 
-			boolean physicalFirst, boolean hidden, boolean readonly,boolean topLevel, boolean appMapping,
-			boolean ignoreVirtual,ApplicationListener appListener,int listenerMode,int listenerType) {
-		return new MappingImpl(config, virtual, strPhysical, strArchive, inspect, physicalFirst, hidden, readonly, topLevel, appMapping, ignoreVirtual, appListener,listenerMode,listenerType);
+	public Mapping createMapping(Config config, String virtual, String strPhysical, String strArchive, short inspect, boolean physicalFirst, boolean hidden, boolean readonly,
+			boolean topLevel, boolean appMapping, boolean ignoreVirtual, ApplicationListener appListener, int listenerMode, int listenerType) {
+		return new MappingImpl(config, virtual, strPhysical, strArchive, inspect, physicalFirst, hidden, readonly, topLevel, appMapping, ignoreVirtual, appListener, listenerMode,
+				listenerType);
 	}
 
 	@Override
@@ -398,7 +375,7 @@ public final class CreationImpl implements Creation,Serializable {
 
 	@Override
 	public Struct createCastableStruct(Object value, int type) {
-		return new CastableStruct(value,type);
+		return new CastableStruct(value, type);
 	}
 
 	@Override
@@ -411,6 +388,5 @@ public final class CreationImpl implements Creation,Serializable {
 		// TODO Auto-generated method stub
 		return new KeyLockImpl<K>();
 	}
-
 
 }

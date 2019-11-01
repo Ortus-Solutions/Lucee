@@ -26,7 +26,7 @@ public class ChildrenFilter implements CacheKeyFilter {
 	private String path;
 
 	public ChildrenFilter(String path) {
-		this.path=(StringUtil.endsWith(path, '/'))?path+":":path+"/:";
+		this.path = (StringUtil.endsWith(path, '/')) ? path + ":" : path + "/:";
 	}
 
 	@Override
@@ -36,7 +36,7 @@ public class ChildrenFilter implements CacheKeyFilter {
 
 	@Override
 	public String toPattern() {
-		return path+"*";
+		return path + "*";
 	}
 
 }

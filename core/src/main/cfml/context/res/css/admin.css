@@ -13,11 +13,14 @@ html, body {
 body {
 	min-width:600px;
 	background-color:#3399cc;
+	background-image: url('../img/bg_web-{appendix}.gif.cfm');
+	background-repeat: no-repeat;
 	margin:0;
 	padding:0;
 }
 body.server {
 	background-color:#bf4f36;
+	background-image: url('../img/bg_server-{appendix}.gif.cfm');
 }
 body, td, th {
 	font-family:Arial, Helvetica, sans-serif;
@@ -54,6 +57,9 @@ a {
 	text-decoration:underline
 }
 
+tr > th > a {
+    color: #ffffff !important;
+}
 
 .admin-server a {
 	color:#bf4f36;
@@ -126,12 +132,6 @@ body.full td#logotd {
 #logo h2 {
 	display:none;
 }
-/*body.server #logo a {
-	background-image:url(../img/server-railo.png.cfm);
-}
-body.server.full #logo a {
-	background-image:url(../img/server-railo-small.png.cfm);
-}*/
 
 #layouttbl td#tabstd {
 	vertical-align: bottom;
@@ -158,7 +158,7 @@ td#logintd {
 	background-color: #efede5;
 	border-radius: 7px;
 	margin: 0px;
-	
+
 }
 
 #login {
@@ -183,13 +183,13 @@ td#logintd {
 	margin: 10px 0 0 8px;
 	width: 120px;
 	height: 22px;
-	border-color:#333; 
-	color:#333; 
+	border-color:#333;
+	color:#333;
 }
 
 
-.admin-web #navsearch  		{ background-color: #3399cc; } 
-.admin-server #navsearch  		{ background-color: #bf4f36; } 
+.admin-web #navsearch  		{ background-color: #3399cc; }
+.admin-server #navsearch  		{ background-color: #bf4f36; }
 
 
 #contenttd {
@@ -218,11 +218,16 @@ td#logintd {
 #copyright a {
 	color:#efede5;
 }
+.linkContext a {
+	color:#efede5;
+	text-decoration:none;
+
+}
 #copyrighttd {
-	
+
 }
 
-/* page title */	
+/* page title */
 #layouttbl {
 	font-size : 8pt;
 	/*height:29px;
@@ -250,23 +255,30 @@ td#logintd {
 	float:right;
 	margin: 1px;
 	text-align:left;
+	border-radius: 10px 10px 0 0;
 }
-#favorites:hover, #favorites:hover ul {
+#favorites:hover, #favorites:hover ul, #favorites:focus, #favorites:focus ul {
 	display: block;
-	background-color: #952574;/* ABC */
+	background-color: #3fa1d2;
 }
+.admin-server #favorites:hover, .admin-server #favorites:focus {
+	background-color: #C25201;
+}
+
 #favorites ul {
 	display: none;
-	border:1px solid #ccc;
 	width:200px;
 	position: absolute;
 	z-index: 2;
-	background-color: #333;
-	margin: 0px 75px 0 -101px;
-	padding: 0px;
+	margin: 0 0 0 -181px;
+	padding: 0;
 	text-align: left;
-	border-radius: 5px;
+	background-color: #3fa1d2;
+	border-radius: 10px 0 10px 10px;
 	overflow: hidden;
+}
+.admin-server #favorites ul {
+	background-color: #C25201;
 }
 #favorites li {
 	list-style: none;
@@ -281,29 +293,42 @@ td#logintd {
 	padding: 5px;
 }
 #favorites li.favorite a {
-	/*background-image: url( '../img/admin_sprite.png.cfm' ); background-repeat: no-repeat; 
-	background-position: -145px -53px;*/
-	padding: 10px 5px 10px 22px;
+	position: relative;
+	padding: 10px 5px 10px 28px;
 	display: block;
+	color: #fff;
 }
 #favorites li.favorite a:hover {
-	background-color: #ccc;
+	background-color: #69b6dc;
+}
+.server #favorites li.favorite a:hover {
+	background-color: #bf4f36;
+}
+#favorites li.favorite a:before {
+	position: absolute;
+	width: 19px;
+	height: 19px;
+	display: inline-block;
+	content: " ";
+	left:5px;
+	top:8px;
+	background-image: url('../img/admin_sprite-{appendix}.png.cfm');
+	background-repeat: no-repeat;
+	background-position: -105px -20px;
+}
+.server #favorites li.favorite a:before {
+	background-position: -125px -20px;
 }
 #favorites > a {
-	width: 19px; height: 19px; 
-	display:block;  
-}
-#favorites > a.favorite_inactive {
+	width: 19px; height: 19px;
+	display:block;
 }
 
-
-
-/* resizewin */
-.admin-server #favorites a  { background-position: -125px -20px;} 
+.admin-server #favorites a  { background-position: -125px -20px;}
 .admin-web  #favorites a  { background-position: -105px -20px;}
 
-.admin-server #favorites a.favorite_inactive  { background-position: -125px 0px;} 
-.admin-web  #favorites a.favorite_inactive  { background-position: -105px 0px;} 
+.admin-server #favorites a.favorite_inactive  { background-position: -125px 0px;}
+.admin-web  #favorites a.favorite_inactive  { background-position: -105px 0px;}
 
 
 #logouts {
@@ -313,12 +338,12 @@ td#logintd {
 }
 
 #logouts > a {
-	width: 19px; height: 19px; 
-	display:block;  
+	width: 19px; height: 19px;
+	display:block;
 }
 
-.admin-server #logouts a  { background-position: -125px -60px;} 
-.admin-web  #logouts a  { background-position: -125px -40px;} 
+.admin-server #logouts a  { background-position: -125px -60px;}
+.admin-web  #logouts a  { background-position: -125px -40px;}
 
 
 
@@ -326,9 +351,8 @@ td#logintd {
 div.pageintro {
 	margin: 0 0 20px 0;
 }
-/* intro text for a section (i.e. under an h2; above a table) */	
-.itemintro {
-	font-style:italic;
+/* intro text for a section (i.e. under an h2; above a table) */
+.itemintro {	
 	margin: -3px 0 10px 0;
 }
 
@@ -396,11 +420,9 @@ td.fieldPadded {
 
 /* display boxes etc. */
 .commentError{font-size : 10px;color:#bf4f36;text-decoration:none;}
-.comment{
-	font-size:11px;
-	color:#999;
-	text-decoration:none;
-	font-style: italic;
+.comment{	
+	font-size:11px;color:#999;font-style: italic;
+	text-decoration:none;	
 	padding: 1px 0px;
 	/* PK: when using mouseover helptexts, this padding might be better:
 	 * padding:2px 0 5px 0;
@@ -437,13 +459,13 @@ h3 + .comment {
 	color:#3c3e40;
 }
 
-div.error, div.warning, div.message {
+div.error, div.warning, div.warningops, div.message {
 	border:1px solid red;
 	padding:5px;
 	margin:10px 0px;
 	color:red;
 }
-div.warning {
+div.warning, div.warningops {
 	border-color: #FC6;
 	color:#000;
 }
@@ -458,50 +480,29 @@ div.ok {
 
 
 
-.coding-tip-trigger-server { 
-	cursor: pointer; 
+
+.coding-tip-trigger {
+	cursor: pointer;
 	color: #9c0000;
 }
 
-.coding-tip-trigger-web { 
-	cursor: pointer; 
-	color: #3399cc;
-}
-
-.coding-tip-server { 
-
-	display: none; 
+.coding-tip {
+	display: none;
 	box-sizing: border-box;
+	margin: 0.25em;
+	padding: 0.5em;
+	border: 0px;
+	border-radius: 0.5em;
+	max-width: 680px;
 	background-color: #bf4f36;
 	color: #efede5;
-	margin: 0.25em;
-	padding: 0.5em;
-	border: 0px;
-	border-radius: 0.5em;
-	max-width: 680px;
 }
 
-.coding-tip-web { 
-
-	display: none; 
-	box-sizing: border-box;
-	background-color: #3399cc;
-	color: #efede5;
-	margin: 0.25em;
-	padding: 0.5em;
-	border: 0px;
-	border-radius: 0.5em;
-	max-width: 680px;
-}
-
-.coding-tip-server.expanded { 
-	display: block;
-}
-.coding-tip-web.expanded { 
+.coding-tip.expanded {
 	display: block;
 }
 
-.coding-tip-server code ,.coding-tip-web code {
+.coding-tip code {
 
 	white-space: pre-wrap;
 	tab-size: 4;
@@ -512,6 +513,15 @@ div.ok {
 	display: block;
 	cursor: pointer;
 }
+
+.admin-web .coding-tip-trigger {
+	color: #3399cc;
+}
+
+.admin-web .coding-tip {
+	background-color: #3399cc;
+}
+
 
 
 /* unorganized */
@@ -540,7 +550,7 @@ td.tabtop {border-style:solid;border-color:#dcdad3;border-width:0px 0px 1px 0px 
 
 
 input {
-	
+
 	background-color:#fff;
 	padding:3px 2px 3px 3px;
 	margin:3px 1px 3px 1px;
@@ -548,7 +558,7 @@ input {
 	border:1px solid;
 	border-color: #e2e0da;
 	height:19;
-	
+
 }
 
 
@@ -616,7 +626,7 @@ input,select,textarea {
 }
 .bs {
 	margin-left: -5px;
-} 
+}
 
 .button:hover:enabled,.reset:hover:enabled {
 	color:#efede5;
@@ -653,24 +663,24 @@ a.edit {
 
 
 .btn-search {
-
 	height:19px;
 	width:19px;
 	display: inline-block;
 	outline: none;
 	text-decoration: none;
-	padding:5px;
+	padding-bottom: 5px !important;
 	margin-left:0;
 	background-color:#333;
 	border-width:0;
 }
 
+.admin-web .btn-search  		{ background-position: -125px -80px; margin-left: -8% !important;}
+.admin-server .btn-search  		{ background-position: -125px -100px; margin-left: -8% !important;}
 
-.admin-web .btn-search  		{ background-position: -125px -80px; } 
-.admin-server .btn-search  		{ background-position: -125px -100px; } 
-
-
-
+.tt-hint{ width: 88% ;}
+.tt-input {
+   width: 89%;
+}
 .btn-mini span {
 	display:none;
 }
@@ -729,7 +739,7 @@ label:hover {
 }
 
 .checkbox:checked:after {
-	
+
 	content: ' ';
 	width: 8px;
 	height: 8px;
@@ -810,10 +820,10 @@ label:hover {
 }
 #menu li a:hover, #menu li.collapsed a:hover {
 	color:#efede5;
-	
+
 }
 #menu > li a {
-	
+
 }
 #menu > li a:hover {
 }
@@ -919,7 +929,7 @@ div.percentagebar span {
 	-moz-border-radius: 5px;
 	border-radius: 5px;
 	margin:2px 4px 2px 2px;
-	
+
 }
 .filterform ul {
 	list-style:none;
@@ -972,7 +982,7 @@ tbody#extproviderlist td {
 	text-decoration:none !important;
 	border: 1px solid #dcdad3;
 	background-color:#fff;
-	
+
 
 	-webkit-border-radius: 5px;
 	-moz-border-radius: 5px;
@@ -1054,7 +1064,39 @@ tbody#extproviderlist td {
 	background-color:#bf4f36;
 }
 
-
+.fLeft{
+	position: relative;
+	float: left;
+	width:33%;
+}
+.smBtn {
+    background: #333 none repeat scroll 0 0;
+    border-radius: 5px;
+    border-width: 0;
+    color: #efede5;
+    display: inline-block;
+    font-size: 11px;
+    font-weight: bold;
+    outline: medium none;
+    overflow: visible;
+    padding: 3px 5px;
+    text-align: center;
+    text-decoration: none;
+    width: auto;
+}
+.pdTop{
+  	padding-top: 3%;
+}
+.fs {
+    font-size: 13px !important;
+}
+.alertMsg{
+	color: black;
+    font-size: 11px;
+    font-weight: bold;
+    margin: 5px 0 ;
+    padding: 5px;
+}
 
 
 /* install extension*/
@@ -1137,21 +1179,41 @@ div.tooltip {
 	position: fixed;
 	width: 100%;
 	height: 100%;
-	z-index: 99;	
+	z-index: 99;
 }
 .tooltip form {
-	margin: 10px 10px 10px 10px;	
+	margin: 10px 10px 10px 10px;
 }
 .tooltip table {
 	color: #efede5;
-	width: 100%;	
+	width: 100%;
 }
 .tooltip table tr td:first-child {
-	font-weight: bold;	
+	font-weight: bold;
 }
 .tooltip table td {
 	padding: 5px 3px;
 }
+
+	div.whitePanel {
+		padding : 2%;
+	    border: 1px solid #fff;
+	    margin-left: 3% ;
+	}
+	.maintbl.alignLeft{ 
+	    margin-left: 3% ;
+	}
+	.bl.alignLeft {
+	    margin-left: 3% ;
+	}
+	.leftSpace{
+		padding-left: 3%;
+	}
+	.topBottomSpace{
+		padding-bottom: 3%;
+	   	padding-top: 2%;
+	}
+
 
 /* css for tag, object, and function documentation */
 .syntaxTag, .syntaxFunc{color:#993300;}
@@ -1184,7 +1246,7 @@ body 	{ margin: 0; padding: 0; }
 .clearfix 	{ *zoom: 1; /** IE 6/7 fix */ }
 
 .pos-l		{ position: absolute; left: 0; }
-.pos-r		{ position: absolute; right: 0; }			
+.pos-r		{ position: absolute; right: 0; }
 .pos-b		{ position: absolute; bottom: 0; }
 
 
@@ -1202,8 +1264,17 @@ body.full #logo { display: block; position: absolute; top: 0px; left: 0; width: 
 
 #admin-tabs	a 	{ display: block; width: 60px; height: 33px; float: left; }
 
-.sprite,#sprite			{ background-image: url( '../img/admin_sprite.png.cfm' ); background-repeat: no-repeat; }
-			
+.mail-icon,#mail-icon  {
+	background-image: url( '../img/mail-icon.jpg.cfm' );
+	background-repeat: no-repeat;
+	width : 16px;
+	height: 16px;
+	vertical-align: middle;
+	display: inline-block;
+	border-radius: 3px;
+}
+
+.sprite,#sprite			{ background-image: url( '../img/admin_sprite-{appendix}.png.cfm' ); background-repeat: no-repeat; }
 
 #resizewin 		{ display:block; width:19px; height:19px; text-indent: -9999px; }
 
@@ -1212,7 +1283,7 @@ body.full #logo { display: block; position: absolute; top: 0px; left: 0; width: 
 /** server-specific values */
 .-admin-server #header				{ background-color: #F33; }
 
-/*.admin-server #logo 				{ background-position: -22px -69px; }*/			
+/*.admin-server #logo 				{ background-position: -22px -69px; }*/
 .admin-server #admin-tabs .server 	{ background-position: 0px -88px; }
 .admin-server #admin-tabs .web 		{ background-position: -63px -88px; }
 .admin-web #admin-tabs .server 		{ background-position: 0px -54px; }
@@ -1225,11 +1296,14 @@ body.full #logo { display: block; position: absolute; top: 0px; left: 0; width: 
 /*.admin-web #logo					{ background-position: 0px 0; }*/
 
 /* resizewin */
-.admin-web #resizewin  		{ background-position: -85px 0px; } 
-.admin-server #resizewin  		{ background-position: -85px -20px; } 
+.admin-web #resizewin  		{ background-position: -85px 0px; }
+.admin-server #resizewin  		{ background-position: -85px -20px; }
 
 
-.icon		{ background-image: url( '../img/admin-sprite.png.cfm' ); margin: 3px; width: 9px; height: 9px; cursor: pointer; }
+.icon		{ background-image: url( '../img/admin-sprite-{appendix}.png.cfm' ); margin: 3px; width: 9px; height: 9px; cursor: pointer; }
+/* edit */
+.admin-web .edit  		{ background-position: -145px 0px; }
+.admin-server .edit  		{ background-position: -145px -16px; }
 
 .plus		{ background-position: -144px -43px; }
 .minus		{ background-position: -144px -33px; }

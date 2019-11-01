@@ -18,8 +18,6 @@
  **/
 package lucee.runtime.net.smtp;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.io.Serializable;
 import java.net.URL;
 
@@ -29,8 +27,6 @@ import lucee.commons.lang.StringUtil;
 import lucee.runtime.type.util.ListUtil;
 
 public class Attachment implements Serializable {
-	
-
 
 	private String absolutePath;
 	private URL url;
@@ -40,41 +36,28 @@ public class Attachment implements Serializable {
 	private String fileName;
 	private boolean removeAfterSend;
 
-	public Attachment(Resource resource, String type, String disposition,String contentID, boolean removeAfterSend) {
-		this.absolutePath=resource.getAbsolutePath();// do not store resource, this is pehrhaps not serialiable
-		this.fileName=resource.getName();
-		this.removeAfterSend=removeAfterSend;
-		this.disposition=disposition;
-		this.contentID=contentID;
-		
+	public Attachment(Resource resource, String fileName, String type, String disposition, String contentID, boolean removeAfterSend) {
+		this.absolutePath = resource.getAbsolutePath();// do not store resource, this is pehrhaps not serialiable
+		this.fileName = StringUtil.isEmpty(fileName, true) ? resource.getName() : fileName.trim();
+		this.removeAfterSend = removeAfterSend;
+		this.disposition = disposition;
+		this.contentID = contentID;
+
 		// type
-		this.type=type;
-		if(StringUtil.isEmpty(type)) {
-			InputStream is=null;
-			try {
-				type = IOUtil.getMimeType(is=resource.getInputStream(),null);
-			} 
-			catch (IOException e) {}
-			finally {
-				IOUtil.closeEL(is);
-			}
+		this.type = type;
+		if (StringUtil.isEmpty(type)) {
+			type = IOUtil.getMimeType(resource, null);
 		}
 	}
-	
+
 	public Attachment(URL url) {
-		this.url=url;
-		
+		this.url = url;
+
 		// filename
-		this. fileName=ListUtil.last(url.toExternalForm(), '/');
-		if(StringUtil.isEmpty(this.fileName))this.fileName = "url.txt";
-		
-		try {
-			type = IOUtil.getMimeType(url.openStream(), null);
-		} catch (IOException e) {}	
-		
+		this.fileName = ListUtil.last(url.toExternalForm(), '/');
+		if (StringUtil.isEmpty(this.fileName)) this.fileName = "url.txt";
+		type = IOUtil.getMimeType(url, null);
 	}
-	
-	
 
 	/**
 	 * @return the url
@@ -82,6 +65,7 @@ public class Attachment implements Serializable {
 	public URL getURL() {
 		return url;
 	}
+
 	/**
 	 * @return the fileName
 	 */
@@ -95,18 +79,17 @@ public class Attachment implements Serializable {
 	public void setFileName(String fileName) {
 		this.fileName = fileName;
 	}
-	
-	/* *
-	 * @return the resource
-	 * /
-	public Resource getResourcex() {
-		return resource;
-	}*/
-	
-	public String getAbsolutePath(){
+
+	/*
+	 * *
+	 * 
+	 * @return the resource / public Resource getResourcex() { return resource; }
+	 */
+
+	public String getAbsolutePath() {
 		return absolutePath;
 	}
-	
+
 	/**
 	 * @return the removeAfterSend
 	 */
@@ -121,7 +104,7 @@ public class Attachment implements Serializable {
 		this.removeAfterSend = removeAfterSend;
 	}
 
-	//resource.getAbsolutePath()
+	// resource.getAbsolutePath()
 	/**
 	 * @return the type
 	 */

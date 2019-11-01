@@ -18,7 +18,6 @@
  **/
 package lucee.runtime.rest;
 
-
 import java.util.List;
 
 import lucee.commons.lang.mimetype.MimeType;
@@ -36,15 +35,15 @@ public class Result {
 	private final MimeType contentType;
 	private final boolean hasFormatExtension;
 
-	public Result(Source source, Struct variables, String[] path,  Struct matrix,int format,boolean hasFormatExtension,List<MimeType> accept,MimeType contentType) {
-		this.source=source;
-		this.variables=variables;
-		this.path=path;
-		this.format=format;
-		this.matrix=matrix;
-		this.hasFormatExtension=hasFormatExtension;
-		this.accept=accept;
-		this.contentType=contentType;
+	public Result(Source source, Struct variables, String[] path, Struct matrix, int format, boolean hasFormatExtension, List<MimeType> accept, MimeType contentType) {
+		this.source = source;
+		this.variables = variables;
+		this.path = path;
+		this.format = format;
+		this.matrix = matrix;
+		this.hasFormatExtension = hasFormatExtension;
+		this.accept = accept;
+		this.contentType = contentType;
 	}
 
 	/**
@@ -65,7 +64,7 @@ public class Result {
 	 * @return the accept
 	 */
 	public MimeType getContentType() {
-		return contentType==null?MimeType.ALL:contentType;
+		return contentType == null ? MimeType.ALL : contentType;
 	}
 
 	/**
@@ -104,8 +103,9 @@ public class Result {
 	}
 
 	public void setCustomResponse(Struct rsp) {
-		this.rsp=rsp;
+		this.rsp = rsp;
 	}
+
 	public Struct getCustomResponse() {
 		return rsp;
 	}

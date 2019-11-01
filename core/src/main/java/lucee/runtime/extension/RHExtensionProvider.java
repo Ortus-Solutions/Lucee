@@ -28,23 +28,22 @@ public class RHExtensionProvider {
 	private final boolean readonly;
 
 	public RHExtensionProvider(String strUrl, boolean readonly) throws MalformedURLException {
-		this.url=HTTPUtil.toURL(strUrl, true);
-		this.readonly=readonly;
+		this.url = HTTPUtil.toURL(strUrl, true);
+		this.readonly = readonly;
 	}
 
 	public RHExtensionProvider(URL url, boolean readonly) {
-		this.url=url;
-		this.readonly=readonly;
+		this.url = url;
+		this.readonly = readonly;
 	}
-	
-	public URL getURL(){
+
+	public URL getURL() {
 		return url;
 	}
 
 	public boolean isReadonly() {
 		return readonly;
 	}
-	
 
 	@Override
 	public String toString() {

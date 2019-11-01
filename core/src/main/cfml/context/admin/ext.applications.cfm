@@ -1,12 +1,5 @@
 <cfinclude template="ext.functions.cfm">
 
-<cfset stText.ext.free="Free">
-<cfset stText.ext.price="Price">
-<cfset stText.Buttons.installTrial="Install Trial">
-<cfset stText.Buttons.installFull="Install Full Version">
-<cfset stText.Buttons.updateTrial="Update as Trial">
-<cfset stText.Buttons.updateFull="Update as Full Version">
-
 <cfparam name="inc" default="">
 <cfparam name="url.action2" default="list">
 <cfparam name="form.mainAction" default="none">
@@ -22,28 +15,47 @@
 	<cfset session.extFilter2.provider="">
 </cfif>
 
-<cfadmin 
+<cfadmin
 	action="getRHExtensionProviders"
 	type="#request.adminType#"
 	password="#session["password"&request.adminType]#"
 	returnVariable="providers">
 <cfset providerURLs=queryColumnData(providers,"url")>
 <cfset request.providers=providers>
-    
 
-<cfadmin 
+
+<cfadmin
     action="getRHExtensions"
     type="#request.adminType#"
     password="#session["password"&request.adminType]#"
     returnVariable="extensions">
 
 
+<cfif request.adminType=="web">
+	<cfadmin
+	    action="getRHServerExtensions"
+	    type="#request.adminType#"
+	    password="#session["password"&request.adminType]#"
+	    returnVariable="serverExtensions">
+</cfif>
+
 <cfparam name="error" default="#struct(message:"",detail:"")#">
 
 
 <!--- Action --->
 <cftry>
+<cfscript>
+	if(form.mainAction == "none"){
+		loop array=form.keyArray() item="k" {
+			if(left(k,11)=="mainAction_") {
+				form['mainAction']=form[k];
+				type=mid(k,11);
+				form['version']=form['version'];
+			}
+		}
+	}
 
+</cfscript>
 	<cfswitch expression="#form.mainAction#">
 	<!--- Filter --->
 		<cfcase value="#stText.Buttons.filter#">
@@ -61,57 +73,49 @@
                 <cfset session.extFilter2.provider=trim(form.providerFilter2)>
             </cfif>
 		</cfcase>
-        <cfcase value="#stText.Buttons.install#,#stText.Buttons.installFull#">
-        	<cfadmin 
+		<cfcase value="#stText.Buttons.install#">
+        	<cfadmin
 			    action="updateRHExtension"
 			    type="#request.adminType#"
 			    password="#session["password"&request.adminType]#"
-			    source="#downloadFull(form.provider,form.id)#">
+			    source="#downloadFull(form.provider,form.id,form.version)#">
 		</cfcase>
-        <cfcase value="#stText.Buttons.update#,#stText.Buttons.updateFull#">
-			<cfadmin 
+		<cfcase value="#stText.Buttons.upDown#">
+			<cfadmin
 			    action="updateRHExtension"
 			    type="#request.adminType#"
 			    password="#session["password"&request.adminType]#"
-			    source="#downloadFull(form.provider,form.id)#">
-		</cfcase>
-        <cfcase value="#stText.Buttons.installTrial#">
-        	<cfadmin 
-			    action="updateRHExtension"
-			    type="#request.adminType#"
-			    password="#session["password"&request.adminType]#"
-			    source="#downloadTrial(form.provider,form.id)#">
-		</cfcase>
-        <cfcase value="#stText.Buttons.updateTrial#">
-        	<cfadmin 
-			    action="updateRHExtension"
-			    type="#request.adminType#"
-			    password="#session["password"&request.adminType]#"
-			    source="#downloadTrial(form.provider,form.id)#">
+			    source="#downloadFull(form.provider,form.id,form.version)#">
 		</cfcase>
         <cfcase value="#stText.Buttons.uninstall#">
-        	<cfadmin 
+        	<cfadmin
 			    action="removeRHExtension"
 			    type="#request.adminType#"
 			    password="#session["password"&request.adminType]#"
 			    id="#form.id#">
 		</cfcase>
 	</cfswitch>
+
+
+
+
 <cfsavecontent variable="inc"><cfinclude template="#url.action#.#url.action2#.cfm"/></cfsavecontent>
-	<cfcatch><cfrethrow>
+	<cfcatch>
 		<cfset error.message=cfcatch.message>
 		<cfset error.detail=cfcatch.Detail>
+		<cfset error.exception = cfcatch>
+		<cfset error.cfcatch=cfcatch>
 	</cfcatch>
 </cftry>
 
-<!--- 
+<!---
 Error Output --->
 <cfset printError(error)>
 
-<!--- 
+<!---
 Redirtect to entry --->
 <cfif cgi.request_method EQ "POST" and error.message EQ "">
-	<cflocation url="#request.self#?action=#url.action#" addtoken="no">
+	<cflocation url="#request.self#?action=#url.action#&reinit=true" addtoken="no">
 </cfif>
 
 <cfoutput>#inc#</cfoutput>

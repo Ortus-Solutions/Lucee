@@ -63,6 +63,7 @@ Defaults --->
 		<cfcatch>
 			<cfset error.message=cfcatch.message>
 			<cfset error.detail=cfcatch.Detail>
+			<cfset error.cfcatch=cfcatch>
 		</cfcatch>
 	</cftry>
 </cfif>
@@ -84,7 +85,7 @@ Defaults --->
 	<div class="pageintro">
 		#stText.setting[request.adminType]#
 	</div>
-	<cfform onerror="customError" action="#request.self#?action=#url.action#" method="post">
+	<cfformClassic onerror="customError" action="#request.self#?action=#url.action#" method="post">
 		<table class="maintbl">
 			<tbody>
 				<!--- Suppress Whitespace --->
@@ -147,7 +148,7 @@ Defaults --->
 					</td>
 				</tr>
 
-				
+<!---				
 			</tbody>
 		</table>
 
@@ -156,7 +157,7 @@ Defaults --->
 		
 		<table class="maintbl">
 			<tbody>
-
+--->
 				<!--- Buffer Output --->
 				<tr>
 					<th scope="row">#stText.setting.bufferOutput#</th>
@@ -192,5 +193,5 @@ Defaults --->
 				</tfoot>
 			</cfif>
 		</table>
-	</cfform>
+	</cfformClassic>
 </cfoutput>

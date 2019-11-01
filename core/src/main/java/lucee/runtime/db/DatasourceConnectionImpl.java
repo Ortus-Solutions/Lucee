@@ -37,6 +37,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.Executor;
 
+import lucee.commons.lang.ExceptionUtil;
 import lucee.commons.lang.StringUtil;
 import lucee.runtime.config.Config;
 import lucee.runtime.config.ConfigImpl;
@@ -47,69 +48,67 @@ import lucee.runtime.spooler.Task;
 /**
  * wrap for datasorce and connection from it
  */
-public final class DatasourceConnectionImpl implements DatasourceConnection,Task {
-    
-    //private static final int MAX_PS = 100;
+public final class DatasourceConnectionImpl implements DatasourceConnectionPro, Task {
+
+	// private static final int MAX_PS = 100;
 	private Connection connection;
-    private DataSource datasource;
-    private long time;
+	private DataSource datasource;
+	private long time;
 	private final long start;
 	private String username;
 	private String password;
-	private int transactionIsolationLevel=-1;
-	private int requestId=-1;
+	private int transactionIsolationLevel = -1;
+	private int requestId = -1;
 	private Boolean supportsGetGeneratedKeys;
 
-    /**
-     * @param connection
-     * @param datasource
-     * @param pass  
-     * @param user 
-     */
-    public DatasourceConnectionImpl(Connection connection, DataSource datasource, String username, String password) {
-        this.connection = connection;
-        this.datasource = datasource;
-        this.time=this.start=System.currentTimeMillis();
-        this.username = username;
-        this.password = password;
-        
-        if(username==null) {
-        	this.username=datasource.getUsername();
-        	this.password=datasource.getPassword();
-        }
-        if(this.password==null)this.password="";
-		
-    }
-    
-    @Override
-    public Connection getConnection() {
-        return connection;
-    }
+	/**
+	 * @param connection
+	 * @param datasource
+	 * @param pass
+	 * @param user
+	 */
+	public DatasourceConnectionImpl(Connection connection, DataSource datasource, String username, String password) {
+		this.connection = connection;
+		this.datasource = datasource;
+		this.time = this.start = System.currentTimeMillis();
+		this.username = username;
+		this.password = password;
 
-    @Override
-    public DataSource getDatasource() {
-        return datasource;
-    }
+		if (username == null) {
+			this.username = datasource.getUsername();
+			this.password = datasource.getPassword();
+		}
+		if (this.password == null) this.password = "";
+	}
 
-    @Override
-    public boolean isTimeout() {
-        int timeout=datasource.getConnectionTimeout();
-        if(timeout <= 0) return false;
-        timeout*=60000;      
-        return (time+timeout)<System.currentTimeMillis();
-    }
-    
-    @Override
-    public boolean isLifecycleTimeout() {
-        int timeout=datasource.getConnectionTimeout()*5;// fo3 the moment simply 5 times the idle timeout
-        if(timeout <= 0) return false;
-        timeout*=60000;      
-        return (start+timeout)<System.currentTimeMillis();
-    }
+	@Override
+	public Connection getConnection() {
+		return connection;
+	}
 
+	@Override
+	public DataSource getDatasource() {
+		return datasource;
+	}
+
+	@Override
+	public boolean isTimeout() {
+		int timeout = datasource.getConnectionTimeout();
+		if (timeout <= 0) return false;
+		timeout *= 60000;
+		return (time + timeout) < System.currentTimeMillis();
+	}
+
+	@Override
+	public boolean isLifecycleTimeout() {
+		int timeout = datasource.getConnectionTimeout() * 5;// fo3 the moment simply 5 times the idle timeout
+		if (timeout <= 0) return false;
+		timeout *= 60000;
+		return (start + timeout) < System.currentTimeMillis();
+	}
 
 	public DatasourceConnection using() {
-		time=System.currentTimeMillis();
+		time = System.currentTimeMillis();
 		return this;
 	}
 
@@ -131,28 +130,24 @@ public final class DatasourceConnectionImpl implements DatasourceConnection,Task
 
 	@Override
 	public boolean equals(Object obj) {
-		if(this==obj) return true;
-		
-		if(!(obj instanceof DatasourceConnectionImpl)) return false;
+		if (this == obj) return true;
 		return equals(this, (DatasourceConnection) obj);
-		
-		
-		/*if(!(obj instanceof DatasourceConnectionImpl)) return false;
-		DatasourceConnectionImpl other=(DatasourceConnectionImpl) obj;
-		
-		if(!datasource.equals(other.datasource)) return false;
-		//print.out(username+".equals("+other.username+") && "+password+".equals("+other.password+")");
-		return username.equals(other.username) && password.equals(other.password);*/
 	}
-	
-	public static boolean equals(DatasourceConnection left,DatasourceConnection right) {
-		if(!left.getDatasource().equals(right.getDatasource())) return false;
-		return StringUtil.emptyIfNull(left.getUsername()).equals(StringUtil.emptyIfNull(right.getUsername())) 
+
+	public static boolean equals(DatasourceConnection left, DatasourceConnection right) {
+		if (!left.getDatasource().equals(right.getDatasource())) return false;
+		return StringUtil.emptyIfNull(left.getUsername()).equals(StringUtil.emptyIfNull(right.getUsername()))
 				&& StringUtil.emptyIfNull(left.getPassword()).equals(StringUtil.emptyIfNull(right.getPassword()));
-		
 	}
-	
-	
+
+	public static boolean equals(DatasourceConnection dc, DataSource ds, String user, String pass) {
+		if (StringUtil.isEmpty(user)) {
+			user = ds.getUsername();
+			pass = ds.getPassword();
+		}
+		if (!dc.getDatasource().equals(ds)) return false;
+		return StringUtil.emptyIfNull(dc.getUsername()).equals(StringUtil.emptyIfNull(user)) && StringUtil.emptyIfNull(dc.getPassword()).equals(StringUtil.emptyIfNull(pass));
+	}
 
 	/**
 	 * @return the transactionIsolationLevel
@@ -161,97 +156,78 @@ public final class DatasourceConnectionImpl implements DatasourceConnection,Task
 		return transactionIsolationLevel;
 	}
 
-	
 	public int getRequestId() {
 		return requestId;
 	}
+
 	public void setRequestId(int requestId) {
-		this.requestId=requestId;
+		this.requestId = requestId;
 	}
 
 	@Override
 	public boolean supportsGetGeneratedKeys() {
-		if(supportsGetGeneratedKeys==null){
+		if (supportsGetGeneratedKeys == null) {
 			try {
-				supportsGetGeneratedKeys=Caster.toBoolean(getConnection().getMetaData().supportsGetGeneratedKeys());
-			} catch (Throwable t) {
+				supportsGetGeneratedKeys = Caster.toBoolean(getConnection().getMetaData().supportsGetGeneratedKeys());
+			}
+			catch (Throwable t) {
+				ExceptionUtil.rethrowIfNecessary(t);
 				return false;
 			}
 		}
 		return supportsGetGeneratedKeys.booleanValue();
 	}
-	
-	//private Map<String,PreparedStatement> preparedStatements=new HashMap<String, PreparedStatement>();
-	
-	@Override
-	public PreparedStatement getPreparedStatement(SQL sql, boolean createGeneratedKeys,boolean allowCaching) throws SQLException {
-		if(createGeneratedKeys)	return getConnection().prepareStatement(sql.getSQLString(),Statement.RETURN_GENERATED_KEYS);
-		return getConnection().prepareStatement(sql.getSQLString());
-	}
-	
-	
-	/*public PreparedStatement getPreparedStatement(SQL sql, boolean createGeneratedKeys,boolean allowCaching) throws SQLException {
-		// create key
-		String strSQL=sql.getSQLString();
-		String key=strSQL.trim()+":"+createGeneratedKeys;
-		try {
-			key = MD5.getDigestAsString(key);
-		} catch (IOException e) {}
-		PreparedStatement ps = allowCaching?preparedStatements.get(key):null;
-		if(ps!=null) {
-			if(DataSourceUtil.isClosed(ps,true)) 
-				preparedStatements.remove(key);
-			else return ps;
-		}
-		
-		
-		if(createGeneratedKeys)	ps= getConnection().prepareStatement(strSQL,Statement.RETURN_GENERATED_KEYS);
-		else ps=getConnection().prepareStatement(strSQL);
-		if(preparedStatements.size()>MAX_PS)
-			closePreparedStatements((preparedStatements.size()-MAX_PS)+1);
-		if(allowCaching)preparedStatements.put(key,ps);
-		return ps;
-	}*/
-	
-	
+
+	// private Map<String,PreparedStatement> preparedStatements=new HashMap<String,
+	// PreparedStatement>();
 
 	@Override
-	public PreparedStatement getPreparedStatement(SQL sql, int resultSetType,int resultSetConcurrency) throws SQLException {
-		return getConnection().prepareStatement(sql.getSQLString(),resultSetType,resultSetConcurrency);
+	public PreparedStatement getPreparedStatement(SQL sql, boolean createGeneratedKeys, boolean allowCaching) throws SQLException {
+		if (createGeneratedKeys) return getConnection().prepareStatement(sql.getSQLString(), Statement.RETURN_GENERATED_KEYS);
+		return getConnection().prepareStatement(sql.getSQLString());
 	}
-	
+
 	/*
-	 
-	public PreparedStatement getPreparedStatement(SQL sql, int resultSetType,int resultSetConcurrency) throws SQLException {
-		boolean allowCaching=false;
-		// create key
-		String strSQL=sql.getSQLString();
-		String key=strSQL.trim()+":"+resultSetType+":"+resultSetConcurrency;
-		try {
-			key = MD5.getDigestAsString(key);
-		} catch (IOException e) {}
-		PreparedStatement ps = allowCaching?preparedStatements.get(key):null;
-		if(ps!=null) {
-			if(DataSourceUtil.isClosed(ps,true)) 
-				preparedStatements.remove(key);
-			else return ps;
-		}
-		
-		ps=getConnection().prepareStatement(strSQL,resultSetType,resultSetConcurrency);
-		if(preparedStatements.size()>MAX_PS)
-			closePreparedStatements((preparedStatements.size()-MAX_PS)+1);
-		if(allowCaching)preparedStatements.put(key,ps);
-		return ps;
+	 * public PreparedStatement getPreparedStatement(SQL sql, boolean createGeneratedKeys,boolean
+	 * allowCaching) throws SQLException { // create key String strSQL=sql.getSQLString(); String
+	 * key=strSQL.trim()+":"+createGeneratedKeys; try { key = MD5.getDigestAsString(key); } catch
+	 * (IOException e) {} PreparedStatement ps = allowCaching?preparedStatements.get(key):null;
+	 * if(ps!=null) { if(DataSourceUtil.isClosed(ps,true)) preparedStatements.remove(key); else return
+	 * ps; }
+	 * 
+	 * 
+	 * if(createGeneratedKeys) ps=
+	 * getConnection().prepareStatement(strSQL,Statement.RETURN_GENERATED_KEYS); else
+	 * ps=getConnection().prepareStatement(strSQL); if(preparedStatements.size()>MAX_PS)
+	 * closePreparedStatements((preparedStatements.size()-MAX_PS)+1);
+	 * if(allowCaching)preparedStatements.put(key,ps); return ps; }
+	 */
+
+	@Override
+	public PreparedStatement getPreparedStatement(SQL sql, int resultSetType, int resultSetConcurrency) throws SQLException {
+		return getConnection().prepareStatement(sql.getSQLString(), resultSetType, resultSetConcurrency);
 	}
+
+	/*
+	 * 
+	 * public PreparedStatement getPreparedStatement(SQL sql, int resultSetType,int
+	 * resultSetConcurrency) throws SQLException { boolean allowCaching=false; // create key String
+	 * strSQL=sql.getSQLString(); String key=strSQL.trim()+":"+resultSetType+":"+resultSetConcurrency;
+	 * try { key = MD5.getDigestAsString(key); } catch (IOException e) {} PreparedStatement ps =
+	 * allowCaching?preparedStatements.get(key):null; if(ps!=null) {
+	 * if(DataSourceUtil.isClosed(ps,true)) preparedStatements.remove(key); else return ps; }
+	 * 
+	 * ps=getConnection().prepareStatement(strSQL,resultSetType,resultSetConcurrency);
+	 * if(preparedStatements.size()>MAX_PS)
+	 * closePreparedStatements((preparedStatements.size()-MAX_PS)+1);
+	 * if(allowCaching)preparedStatements.put(key,ps); return ps; }
 	 */
 
 	@Override
 	public Object execute(Config config) throws PageException {
-		((ConfigImpl)config).getDatasourceConnectionPool().releaseDatasourceConnection(this);
+		((ConfigImpl) config).getDatasourceConnectionPool().releaseDatasourceConnection(this);
 		return null;
 	}
-
-
 
 	@Override
 	public Statement createStatement() throws SQLException {
@@ -279,7 +255,7 @@ public final class DatasourceConnectionImpl implements DatasourceConnection,Task
 	}
 
 	@Override
-	public CallableStatement prepareCall(String sql, int resultSetType,int resultSetConcurrency, int resultSetHoldability) throws SQLException {
+	public CallableStatement prepareCall(String sql, int resultSetType, int resultSetConcurrency, int resultSetHoldability) throws SQLException {
 		return connection.prepareCall(sql, resultSetType, resultSetConcurrency, resultSetHoldability);
 	}
 
@@ -312,9 +288,7 @@ public final class DatasourceConnectionImpl implements DatasourceConnection,Task
 	public PreparedStatement prepareStatement(String sql, int resultSetType, int resultSetConcurrency, int resultSetHoldability) throws SQLException {
 		return connection.prepareStatement(sql, resultSetType, resultSetConcurrency, resultSetHoldability);
 	}
-	
-	
-	
+
 	@Override
 	public boolean isWrapperFor(Class<?> iface) throws SQLException {
 		return connection.isWrapperFor(iface);
@@ -524,5 +498,10 @@ public final class DatasourceConnectionImpl implements DatasourceConnection,Task
 	public int getNetworkTimeout() throws SQLException {
 		return connection.getNetworkTimeout();
 	}
-	
+
+	@Override
+	public boolean isAutoCommit() throws SQLException {
+		return connection.getAutoCommit();
+	}
+
 }

@@ -25,11 +25,11 @@ public final class WDDXEntityResolver implements EntityResolver {
 	/**
 	 * constant for the DTD File for WDDX
 	 */
-	public final static String WDDX=	"/lucee/runtime/converter/wddx.dtd";
-		
+	public final static String WDDX = "/lucee/runtime/converter/wddx.dtd";
+
 	@Override
 	public InputSource resolveEntity(String publicId, String systemId) {
-		return new InputSource( getClass().getResourceAsStream(WDDX) );
+		return new InputSource(getClass().getResourceAsStream(WDDX));
 	}
 
- }
+}

@@ -19,18 +19,28 @@
 package lucee.runtime.functions.cache;
 
 import lucee.runtime.PageContext;
+import lucee.runtime.exp.FunctionException;
 import lucee.runtime.exp.PageException;
-import lucee.runtime.ext.function.Function;
+import lucee.runtime.ext.function.BIF;
+import lucee.runtime.op.Caster;
 
-public class CacheRemoveAll implements Function {
+public class CacheRemoveAll extends BIF {
 
 	private static final long serialVersionUID = -3444983104369826751L;
-	
+
 	public static double call(PageContext pc) throws PageException {
 		return CacheClear.call(pc);
-		
+
 	}
+
 	public static double call(PageContext pc, String cacheName) throws PageException {
-		return CacheClear.call(pc,null,cacheName);
+		return CacheClear.call(pc, null, cacheName);
+	}
+
+	@Override
+	public Object invoke(PageContext pc, Object[] args) throws PageException {
+		if (args.length == 0) return call(pc);
+		if (args.length == 1) return call(pc, Caster.toString(args[0]));
+		throw new FunctionException(pc, "CacheRemoveAll", 0, 1, args.length);
 	}
 }

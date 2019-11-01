@@ -28,7 +28,7 @@ public interface RegistryService extends Service {
 
 	public abstract Object get(String arg0, String arg1, String arg2);
 
-	//public abstract void delete(String arg0, String arg1) throws RegistryException;
+	// public abstract void delete(String arg0, String arg1) throws RegistryException;
 
 	public abstract void flush();
 

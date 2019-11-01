@@ -37,26 +37,26 @@ import lucee.runtime.functions.system.ContractPath;
 
 public class ResourceUtilImpl implements lucee.runtime.util.ResourceUtil {
 
-	private ResourceUtilImpl(){}
-	private static ResourceUtilImpl impl=new ResourceUtilImpl();
-	
+	private ResourceUtilImpl() {}
+
+	private static ResourceUtilImpl impl = new ResourceUtilImpl();
 
 	public static ResourceUtilImpl getInstance() {
 		return impl;
 	}
-	
+
 	@Override
 	public void checkCopyToOK(Resource source, Resource target) throws IOException {
 		ResourceUtil.checkCopyToOK(source, target);
 	}
 
 	@Override
-	public void checkCreateDirectoryOK(Resource resource,boolean createParentWhenNotExists) throws IOException {
+	public void checkCreateDirectoryOK(Resource resource, boolean createParentWhenNotExists) throws IOException {
 		ResourceUtil.checkCreateDirectoryOK(resource, createParentWhenNotExists);
 	}
 
 	@Override
-	public void checkCreateFileOK(Resource resource,boolean createParentWhenNotExists) throws IOException {
+	public void checkCreateFileOK(Resource resource, boolean createParentWhenNotExists) throws IOException {
 		ResourceUtil.checkCreateFileOK(resource, createParentWhenNotExists);
 	}
 
@@ -71,7 +71,7 @@ public class ResourceUtilImpl implements lucee.runtime.util.ResourceUtil {
 	}
 
 	@Override
-	public void checkMoveToOK(Resource source, Resource target)throws IOException {
+	public void checkMoveToOK(Resource source, Resource target) throws IOException {
 		ResourceUtil.checkMoveToOK(source, target);
 	}
 
@@ -87,7 +87,7 @@ public class ResourceUtilImpl implements lucee.runtime.util.ResourceUtil {
 
 	@Override
 	public void copyRecursive(Resource src, Resource trg, ResourceFilter filter) throws IOException {
-		ResourceUtil.copyRecursive(src, trg,filter);
+		ResourceUtil.copyRecursive(src, trg, filter);
 	}
 
 	@Override
@@ -97,22 +97,22 @@ public class ResourceUtilImpl implements lucee.runtime.util.ResourceUtil {
 
 	@Override
 	public String getExtension(Resource res) {
-		return ResourceUtil.getExtension(res,null);
+		return ResourceUtil.getExtension(res, null);
 	}
 
 	@Override
 	public String getExtension(Resource res, String defaultValue) {
-		return ResourceUtil.getExtension(res,defaultValue);
+		return ResourceUtil.getExtension(res, defaultValue);
 	}
 
 	@Override
 	public String getExtension(String strFile) {
-		return ResourceUtil.getExtension(strFile,null);
+		return ResourceUtil.getExtension(strFile, null);
 	}
 
 	@Override
 	public String getExtension(String strFile, String defaultValue) {
-		return ResourceUtil.getExtension(strFile,defaultValue);
+		return ResourceUtil.getExtension(strFile, defaultValue);
 	}
 
 	@Override
@@ -142,7 +142,7 @@ public class ResourceUtilImpl implements lucee.runtime.util.ResourceUtil {
 
 	@Override
 	public boolean isEmptyDirectory(Resource res) {
-		return ResourceUtil.isEmptyDirectory(res,null);
+		return ResourceUtil.isEmptyDirectory(res, null);
 	}
 
 	@Override
@@ -157,7 +157,7 @@ public class ResourceUtilImpl implements lucee.runtime.util.ResourceUtil {
 
 	@Override
 	public void moveTo(Resource src, Resource dest) throws IOException {
-		ResourceUtil.moveTo(src, dest,true);
+		ResourceUtil.moveTo(src, dest, true);
 	}
 
 	@Override
@@ -166,7 +166,7 @@ public class ResourceUtilImpl implements lucee.runtime.util.ResourceUtil {
 	}
 
 	@Override
-	public void removeChildren(Resource res, ResourceNameFilter filter)throws IOException {
+	public void removeChildren(Resource res, ResourceNameFilter filter) throws IOException {
 		ResourceUtil.removeChildren(res, filter);
 	}
 
@@ -191,7 +191,7 @@ public class ResourceUtilImpl implements lucee.runtime.util.ResourceUtil {
 	}
 
 	@Override
-	public Resource toResourceExistingParent(PageContext pc, String destination)throws PageException {
+	public Resource toResourceExistingParent(PageContext pc, String destination) throws PageException {
 		return ResourceUtil.toResourceExistingParent(pc, destination);
 	}
 
@@ -201,7 +201,7 @@ public class ResourceUtilImpl implements lucee.runtime.util.ResourceUtil {
 	}
 
 	@Override
-	public String translatePath(String path, boolean slashAdBegin,boolean slashAddEnd) {
+	public String translatePath(String path, boolean slashAdBegin, boolean slashAddEnd) {
 		return ResourceUtil.translatePath(path, slashAdBegin, slashAddEnd);
 	}
 
@@ -234,12 +234,12 @@ public class ResourceUtilImpl implements lucee.runtime.util.ResourceUtil {
 	public Resource getSystemDirectory() {
 		return SystemUtil.getSystemDirectory();
 	}
-	
+
 	@Override
 	public Resource getTempDirectory() {
 		return SystemUtil.getTempDirectory();
 	}
-	
+
 	@Override
 	public String parsePlaceHolder(String path) {
 		return SystemUtil.parsePlaceHolder(path);
@@ -247,12 +247,12 @@ public class ResourceUtilImpl implements lucee.runtime.util.ResourceUtil {
 
 	@Override
 	public ResourceFilter getExtensionResourceFilter(String extension, boolean allowDir) {
-		return new ExtensionResourceFilter(extension,allowDir);
+		return new ExtensionResourceFilter(extension, allowDir);
 	}
 
 	@Override
 	public ResourceFilter getExtensionResourceFilter(String[] extensions, boolean allowDir) {
-		return new ExtensionResourceFilter(extensions,allowDir);
+		return new ExtensionResourceFilter(extensions, allowDir);
 	}
 
 	@Override
@@ -260,9 +260,12 @@ public class ResourceUtilImpl implements lucee.runtime.util.ResourceUtil {
 		return ResourceUtil.getContentType(res);
 	}
 
+	public lucee.commons.io.res.ContentType getContentType(Resource res, lucee.commons.io.res.ContentType defaultValue) {
+		return ResourceUtil.getContentType(res, defaultValue);
+	}
+
 	@Override
-	public Resource toResourceExistingParent(PageContext pc,
-			String destination, boolean allowRealpath) throws PageException {
+	public Resource toResourceExistingParent(PageContext pc, String destination, boolean allowRealpath) throws PageException {
 		return ResourceUtil.toResourceExistingParent(pc, destination, allowRealpath);
 	}
 
@@ -403,7 +406,7 @@ public class ResourceUtilImpl implements lucee.runtime.util.ResourceUtil {
 
 	@Override
 	public void removeEmptyFolders(Resource dir) throws IOException {
-		ResourceUtil.removeEmptyFolders(dir,null);
+		ResourceUtil.removeEmptyFolders(dir, null);
 	}
 
 	@Override

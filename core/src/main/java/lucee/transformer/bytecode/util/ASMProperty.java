@@ -18,12 +18,12 @@
  **/
 package lucee.transformer.bytecode.util;
 
-import lucee.runtime.exp.PageException;
-
 import org.objectweb.asm.Type;
 
+import lucee.runtime.exp.PageException;
+
 public interface ASMProperty {
-	
+
 	/**
 	 * @return the name
 	 */
@@ -33,11 +33,9 @@ public interface ASMProperty {
 	 * @return the type
 	 */
 	public Type getASMType() throws PageException;
-	
-
 
 	/**
 	 * @return the clazz
 	 */
-	public Class getClazz() ;
+	public Class getClazz();
 }

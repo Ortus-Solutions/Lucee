@@ -38,9 +38,9 @@ public interface DebugEntryTemplatePart extends DebugEntry {
 	public int getEndPosition();
 
 	public int getStartLine();
-	
+
 	public int getEndLine();
-	
+
 	public String getSnippet();
-	
+
 }

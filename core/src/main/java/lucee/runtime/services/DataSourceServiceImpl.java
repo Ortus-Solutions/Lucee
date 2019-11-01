@@ -21,6 +21,9 @@ package lucee.runtime.services;
 import java.io.IOException;
 import java.sql.SQLException;
 
+import coldfusion.server.DataSourceService;
+import coldfusion.server.ServiceException;
+import coldfusion.sql.DataSource;
 import lucee.commons.io.res.Resource;
 import lucee.commons.io.res.filter.ExtensionResourceFilter;
 import lucee.commons.io.res.util.ResourceUtil;
@@ -40,41 +43,36 @@ import lucee.runtime.type.ArrayImpl;
 import lucee.runtime.type.Struct;
 import lucee.runtime.type.StructImpl;
 import lucee.runtime.type.util.KeyConstants;
-import coldfusion.server.DataSourceService;
-import coldfusion.server.ServiceException;
-import coldfusion.sql.DataSource;
 
 public class DataSourceServiceImpl extends ServiceSupport implements DataSourceService {
 
-	private Number maxQueryCount=new Double(500);
-	
-
+	private Number maxQueryCount = new Double(500);
 
 	@Override
 	public Struct getDefaults() {
-		Struct sct=new StructImpl();
-		sct.setEL("alter",Boolean.TRUE);
-		sct.setEL("blob_buffer",new Double(64000));
-		sct.setEL("buffer",new Double(64000));
-		sct.setEL("create",Boolean.TRUE);
-		sct.setEL("delete",Boolean.TRUE);
-		sct.setEL("disable",Boolean.FALSE);
-		sct.setEL("disable_blob",Boolean.TRUE);
-		sct.setEL("disable_clob",Boolean.TRUE);
-		sct.setEL("drop",Boolean.TRUE);
-		sct.setEL("grant",Boolean.TRUE);
-		sct.setEL("insert",Boolean.TRUE);
-		sct.setEL("pooling",Boolean.TRUE);
-		sct.setEL("revoke",Boolean.TRUE);
-		sct.setEL("select",Boolean.TRUE);
-		sct.setEL("storedproc",Boolean.TRUE);
-		sct.setEL("update",Boolean.TRUE);
-		sct.setEL("",Boolean.TRUE);
-		sct.setEL("",Boolean.TRUE);
-		sct.setEL("",Boolean.TRUE);
-		sct.setEL("interval",new Double(420));
-		sct.setEL("login_timeout",new Double(30));
-		sct.setEL("timeout",new Double(1200));
+		Struct sct = new StructImpl();
+		sct.setEL("alter", Boolean.TRUE);
+		sct.setEL("blob_buffer", new Double(64000));
+		sct.setEL("buffer", new Double(64000));
+		sct.setEL("create", Boolean.TRUE);
+		sct.setEL("delete", Boolean.TRUE);
+		sct.setEL("disable", Boolean.FALSE);
+		sct.setEL("disable_blob", Boolean.TRUE);
+		sct.setEL("disable_clob", Boolean.TRUE);
+		sct.setEL("drop", Boolean.TRUE);
+		sct.setEL("grant", Boolean.TRUE);
+		sct.setEL("insert", Boolean.TRUE);
+		sct.setEL("pooling", Boolean.TRUE);
+		sct.setEL("revoke", Boolean.TRUE);
+		sct.setEL("select", Boolean.TRUE);
+		sct.setEL("storedproc", Boolean.TRUE);
+		sct.setEL("update", Boolean.TRUE);
+		sct.setEL("", Boolean.TRUE);
+		sct.setEL("", Boolean.TRUE);
+		sct.setEL("", Boolean.TRUE);
+		sct.setEL("interval", new Double(420));
+		sct.setEL("login_timeout", new Double(30));
+		sct.setEL("timeout", new Double(1200));
 
 		return sct;
 	}
@@ -86,19 +84,19 @@ public class DataSourceServiceImpl extends ServiceSupport implements DataSourceS
 
 	@Override
 	public void setMaxQueryCount(Number maxQueryCount) {
-		this.maxQueryCount=maxQueryCount;
+		this.maxQueryCount = maxQueryCount;
 	}
 
 	@Override
 	public String encryptPassword(String pass) {
 		throw new PageRuntimeException(new ServiceException("method [encryptPassword] is not supported for datasource service"));
-		//return pass;
+		// return pass;
 	}
 
 	@Override
 	public String getDbdir() {
 		Resource db = config().getConfigDir().getRealResource("db");
-		if(!db.exists())db.createNewFile();
+		if (!db.exists()) db.createNewFile();
 		return db.getPath();
 	}
 
@@ -115,71 +113,68 @@ public class DataSourceServiceImpl extends ServiceSupport implements DataSourceS
 	@Override
 	public void purgeQueryCache() throws IOException {
 		PageContext pc = pc();
-		if(pc!=null)
-			try {
-				pc.getConfig().getCacheHandlerCollection(Config.CACHE_TYPE_QUERY,null).clean(pc);
-			}
-			catch (PageException e) {
-				throw ExceptionUtil.toIOException(e);
-			}
-		//if(pc!=null)pc.getQueryCache().clearUnused(pc);
+		if (pc != null) try {
+			pc.getConfig().getCacheHandlerCollection(Config.CACHE_TYPE_QUERY, null).clean(pc);
+		}
+		catch (PageException e) {
+			throw ExceptionUtil.toIOException(e);
+		}
+		// if(pc!=null)pc.getQueryCache().clearUnused(pc);
 
 	}
 
 	@Override
-	public boolean disableConnection(String name) {return false;}
+	public boolean disableConnection(String name) {
+		return false;
+	}
 
 	@Override
-	public boolean isJadoZoomLoaded() {return false;}
-
-
+	public boolean isJadoZoomLoaded() {
+		return false;
+	}
 
 	@Override
 	public Struct getDrivers() throws ServiceException, SecurityException {
 		checkReadAccess();
-		Struct rtn=new StructImpl();
+		Struct rtn = new StructImpl();
 		Struct driver;
-		
+
 		try {
-			Resource luceeContext = ResourceUtil.toResourceExisting(pc() ,"/lucee/admin/dbdriver/");
+			Resource luceeContext = ResourceUtil.toResourceExisting(pc(), "/lucee/admin/dbdriver/");
 			Resource[] children = luceeContext.listResources(new ExtensionResourceFilter(Constants.getComponentExtensions()));
-	    	 
-	    	String name;
-	    	for(int i=0;i<children.length;i++) {
-	    		driver=new StructImpl();
-	    		name=ListFirst.call(pc(),children[i].getName(),".");
-	    		driver.setEL(KeyConstants._name,name);
-	    		driver.setEL("handler",children[i].getName());
-	    		rtn.setEL(name,driver);
-	    	}
-		
-		
-		} catch (ExpressionException e) {
+
+			String name;
+			for (int i = 0; i < children.length; i++) {
+				driver = new StructImpl();
+				name = ListFirst.call(pc(), children[i].getName(), ".", false, 1);
+				driver.setEL(KeyConstants._name, name);
+				driver.setEL("handler", children[i].getName());
+				rtn.setEL(name, driver);
+			}
+		}
+		catch (ExpressionException e) {
 			throw new ServiceException(e.getMessage());
 		}
-    	
-    	
-		
 		return rtn;
 	}
-	
+
 	@Override
 	public Struct getDatasources() throws SecurityException {// MUST muss struct of struct zurueckgeben!!!
 		checkReadAccess();
 		lucee.runtime.db.DataSource[] sources = config().getDataSources();
-		Struct rtn=new StructImpl();
-		for(int i=0;i<sources.length;i++) {
-			rtn.setEL(sources[i].getName(),new DataSourceImpl(sources[i]));
+		Struct rtn = new StructImpl();
+		for (int i = 0; i < sources.length; i++) {
+			rtn.setEL(sources[i].getName(), new DataSourceImpl(sources[i]));
 		}
 		return rtn;
 	}
-	
+
 	@Override
 	public Array getNames() throws SecurityException {
 		checkReadAccess();
 		lucee.runtime.db.DataSource[] sources = config().getDataSources();
-		Array names=new ArrayImpl();
-		for(int i=0;i<sources.length;i++) {
+		Array names = new ArrayImpl();
+		for (int i = 0; i < sources.length; i++) {
 			names.appendEL(sources[i].getName());
 		}
 		return names;
@@ -189,14 +184,13 @@ public class DataSourceServiceImpl extends ServiceSupport implements DataSourceS
 	public void removeDatasource(String name) throws SQLException, SecurityException {
 		checkWriteAccess();
 		try {
-			XMLConfigAdmin admin = XMLConfigAdmin.newInstance(config(),null);
+			XMLConfigAdmin admin = XMLConfigAdmin.newInstance(config(), null);
 			admin.removeDataSource(name);
-		} catch (Exception e) {
+		}
+		catch (Exception e) {
 			// ignoriert wenn die db nicht existiert
 		}
 	}
-
-
 
 	@Override
 	public boolean verifyDatasource(String name) throws SQLException, SecurityException {
@@ -204,14 +198,15 @@ public class DataSourceServiceImpl extends ServiceSupport implements DataSourceS
 		lucee.runtime.db.DataSource d = _getDatasource(name);
 		PageContext pc = pc();
 		DataSourceManager manager = pc.getDataSourceManager();
-    	try {
-			manager.releaseConnection(pc,manager.getConnection(pc,name, d.getUsername(), d.getPassword()));
+		try {
+			manager.releaseConnection(pc, manager.getConnection(pc, name, d.getUsername(), d.getPassword()));
 			return true;
-		} catch (PageException e) {
+		}
+		catch (PageException e) {
 			return false;
 		}
 	}
-	
+
 	@Override
 	public DataSource getDatasource(String name) throws SQLException, SecurityException {
 		return new DataSourceImpl(_getDatasource(name));
@@ -219,11 +214,11 @@ public class DataSourceServiceImpl extends ServiceSupport implements DataSourceS
 
 	private lucee.runtime.db.DataSource _getDatasource(String name) throws SQLException, SecurityException {
 		checkReadAccess();
-		name=name.trim();
+		name = name.trim();
 		lucee.runtime.db.DataSource[] sources = config().getDataSources();
-		for(int i=0;i<sources.length;i++) {
-			if(sources[i].getName().equalsIgnoreCase(name))return sources[i];
+		for (int i = 0; i < sources.length; i++) {
+			if (sources[i].getName().equalsIgnoreCase(name)) return sources[i];
 		}
-		throw new SQLException("no datasource with name ["+name+"] found");
+		throw new SQLException("no datasource with name [" + name + "] found");
 	}
 }

@@ -34,12 +34,12 @@ public class LiteralArray extends BIF {
 	 * @return
 	 * @throws ExpressionException
 	 */
-	public static Array call(PageContext pc , Object[] objArr) {
+	public static Array call(PageContext pc, Object[] objArr) {
 		return Array_.call(pc, objArr);
 	}
-	
+
 	@Override
 	public Object invoke(PageContext pc, Object[] args) throws PageException {
-		return call(pc,(Object[])args[0]);
+		return call(pc, (Object[]) args[0]);
 	}
 }

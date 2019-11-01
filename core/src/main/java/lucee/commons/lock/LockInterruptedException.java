@@ -27,7 +27,7 @@ public class LockInterruptedException extends NativeException {
 
 	public LockInterruptedException(InterruptedException e) {
 		super(e);
-		this.e=e;
+		this.e = e;
 	}
 
 	public InterruptedException getLockInterruptedException() {

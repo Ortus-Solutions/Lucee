@@ -19,15 +19,13 @@ package lucee.transformer.expression.var;
 
 import lucee.transformer.Context;
 import lucee.transformer.TransformerException;
+import lucee.transformer.bytecode.expression.var.Assign;
 import lucee.transformer.expression.Expression;
 import lucee.transformer.expression.Invoker;
 
-import org.objectweb.asm.Type;
-
 public interface Variable extends Expression, Invoker {
-	
+
 	public int getScope();
-	
 
 	/**
 	 * @return the first member or null if there no member
@@ -38,23 +36,31 @@ public interface Variable extends Expression, Invoker {
 	 * @return the first member or null if there no member
 	 */
 	public Member getLastMember();
-	
+
 	public void ignoredFirstMember(boolean b);
+
 	public boolean ignoredFirstMember();
-	
+
 	public void fromHash(boolean fromHash);
+
 	public boolean fromHash();
-	
+
 	public Expression getDefaultValue();
+
 	public void setDefaultValue(Expression defaultValue);
-	
+
 	public Boolean getAsCollection();
+
 	public void setAsCollection(Boolean asCollection);
 
 	public int getCount();
-	public Type writeOutCollection(Context c, int mode) throws TransformerException;
 
+	public Class<?> writeOutCollection(Context c, int mode) throws TransformerException;
 
 	Member removeMember(int index);
-	 
+
+	public void assign(Assign assign);
+
+	public Assign assign();
+
 }

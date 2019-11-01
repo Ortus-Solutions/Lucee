@@ -30,12 +30,12 @@ public final class IsQuery extends BIF {
 
 	private static final long serialVersionUID = -3645047640224276123L;
 
-	public static boolean call(PageContext pc , Object object) {
+	public static boolean call(PageContext pc, Object object) {
 		return object instanceof Query;
 	}
-	
+
 	@Override
 	public Object invoke(PageContext pc, Object[] args) throws PageException {
-		return call(pc,args[0]);
+		return call(pc, args[0]);
 	}
 }

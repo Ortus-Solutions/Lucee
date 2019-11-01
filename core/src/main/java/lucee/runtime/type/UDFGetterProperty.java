@@ -29,43 +29,43 @@ import lucee.runtime.type.Collection.Key;
 public final class UDFGetterProperty extends UDFGSProperty {
 
 	private static final FunctionArgument[] EMPTY = new FunctionArgument[0];
-	
+
 	private final Property prop;
-	//private ComponentScope scope;
+	// private ComponentScope scope;
 	private final Key propName;
 
-	public UDFGetterProperty(Component component,Property prop)  {
-		super(component,"get"+StringUtil.ucFirst(prop.getName()),EMPTY,CFTypes.TYPE_STRING);
-		this.prop=prop;
-		this.propName=KeyImpl.getInstance(prop.getName());
-		
-	} 
+	public UDFGetterProperty(Component component, Property prop) {
+		super(component, "get" + StringUtil.ucFirst(prop.getName()), EMPTY, CFTypes.TYPE_STRING);
+		this.prop = prop;
+		this.propName = KeyImpl.getInstance(prop.getName());
+
+	}
 
 	@Override
 	public UDF duplicate() {
-		return new UDFGetterProperty(component,prop);
-	}
-	
-	@Override
-	public Object call(PageContext pageContext, Object[] args,boolean doIncludePath) throws PageException {
-		return component.getComponentScope().get(pageContext, propName,null);
+		return new UDFGetterProperty(srcComponent, prop);
 	}
 
 	@Override
-	public Object callWithNamedValues(PageContext pageContext, Struct values,boolean doIncludePath) throws PageException {
-		return component.getComponentScope().get(pageContext,propName,null);
+	public Object _call(PageContext pageContext, Object[] args, boolean doIncludePath) throws PageException {
+		return getComponent(pageContext).getComponentScope().get(pageContext, propName, null);
+	}
+
+	@Override
+	public Object _callWithNamedValues(PageContext pageContext, Struct values, boolean doIncludePath) throws PageException {
+		return getComponent(pageContext).getComponentScope().get(pageContext, propName, null);
 	}
 
 	@Override
 	public Object implementation(PageContext pageContext) throws Throwable {
-		return component.getComponentScope().get(pageContext,propName,null);
+		return getComponent(pageContext).getComponentScope().get(pageContext, propName, null);
 	}
-	
+
 	@Override
 	public Object getDefaultValue(PageContext pc, int index) throws PageException {
 		return null;
 	}
-	
+
 	@Override
 	public Object getDefaultValue(PageContext pc, int index, Object defaultValue) throws PageException {
 		return defaultValue;
@@ -75,6 +75,5 @@ public final class UDFGetterProperty extends UDFGSProperty {
 	public String getReturnTypeAsString() {
 		return prop.getType();
 	}
-
 
 }

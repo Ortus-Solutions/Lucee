@@ -22,24 +22,26 @@ import lucee.transformer.bytecode.statement.tag.Tag;
 import lucee.transformer.bytecode.util.ASMUtil;
 import lucee.transformer.library.tag.TagLibTag;
 
-
 /**
  * checks the if a child tag is inside his parent
  */
-public abstract class ChildEvaluator extends EvaluatorSupport {
+public class ChildEvaluator extends EvaluatorSupport {
 
-	@Override
-	public void evaluate(Tag tag,TagLibTag libTag) throws EvaluatorException { 
-	
-	// check parent
-		String ns=libTag.getTagLib().getNameSpaceAndSeparator();
-		String name=ns+getParentName();
-		
-		if(!ASMUtil.hasAncestorTag(tag,name))
-			throw new EvaluatorException("Wrong Context, tag "+libTag.getFullName()+" must be inside a "+name+" tag");
-		
+	private final String parentName;
+
+	public ChildEvaluator(String parentName) {
+		this.parentName = parentName;
 	}
 
-	protected abstract String getParentName();
+	@Override
+	public void evaluate(Tag tag, TagLibTag libTag) throws EvaluatorException {
+
+		// check parent
+		String ns = libTag.getTagLib().getNameSpaceAndSeparator();
+		String name = ns + parentName;
+
+		if (!ASMUtil.hasAncestorTag(tag, name)) throw new EvaluatorException("Wrong Context, tag [" + libTag.getFullName() + "] must be inside a [" + name + "] tag");
+
+	}
 
 }

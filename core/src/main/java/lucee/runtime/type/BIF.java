@@ -44,7 +44,6 @@ import lucee.runtime.interpreter.ref.cast.Casting;
 import lucee.runtime.interpreter.ref.func.BIFCall;
 import lucee.runtime.interpreter.ref.literal.LFunctionValue;
 import lucee.runtime.interpreter.ref.literal.LString;
-import lucee.runtime.listener.ApplicationContextSupport;
 import lucee.runtime.type.Collection.Key;
 import lucee.runtime.type.util.ArrayUtil;
 import lucee.runtime.type.util.CollectionUtil;
@@ -54,65 +53,57 @@ import lucee.transformer.library.function.FunctionLibFunction;
 import lucee.transformer.library.function.FunctionLibFunctionArg;
 
 public class BIF extends MemberSupport implements UDFPlus {
-	
+
 	private final FunctionLibFunction flf;
-	private short rtnType=CFTypes.TYPE_UNKNOW;
+	private short rtnType = CFTypes.TYPE_UNKNOW;
 	private Component owner;
 	private final ConfigImpl ci;
 	private FunctionArgument[] args;
 	private String id;
 
-	public BIF(PageContext pc,String name) throws ApplicationException{
+	public BIF(PageContext pc, String name) throws ApplicationException {
 		super(Component.ACCESS_PUBLIC);
-		ci=(ConfigImpl) pc.getConfig();
+		ci = (ConfigImpl) pc.getConfig();
 		FunctionLib fl = ci.getCombinedFLDs(pc.getCurrentTemplateDialect());
 		flf = fl.getFunction(name);
-		
+
 		// BIF not found
-		if(flf==null) {
+		if (flf == null) {
 			Key[] keys = CollectionUtil.toKeys(fl.getFunctions().keySet());
-			throw new ApplicationException(ExceptionUtil.similarKeyMessage(keys, name, "build in function", "build in functions",null, false));
+			throw new ApplicationException(ExceptionUtil.similarKeyMessage(keys, name, "build in function", "build in functions", null, false));
 		}
 		try {
-			this.id=Hash.md5(name);
+			this.id = Hash.md5(name);
 		}
 		catch (NoSuchAlgorithmException e) {
-			this.id=name;
+			this.id = name;
 		}
 	}
-	
+
 	public BIF(Config config, FunctionLibFunction flf) {
 		super(Component.ACCESS_PUBLIC);
-		ci=(ConfigImpl) config;
-		this.flf=flf;
+		ci = (ConfigImpl) config;
+		this.flf = flf;
 	}
 
 	@Override
 	public FunctionArgument[] getFunctionArguments() {
-		if(args==null) {
+		if (args == null) {
 			ArrayList<FunctionLibFunctionArg> src = flf.getArg();
 			args = new FunctionArgument[src.size()];
-			
+
 			String def;
-			int index=-1;
+			int index = -1;
 			FunctionLibFunctionArg arg;
 			Iterator<FunctionLibFunctionArg> it = src.iterator();
-			while(it.hasNext()){
+			while (it.hasNext()) {
 				arg = it.next();
 				def = arg.getDefaultValue();
-				args[++index]=new FunctionArgumentImpl(
-						KeyImpl.init(arg.getName())
-						, arg.getTypeAsString()
-						, arg.getType()
-						, arg.getRequired()
-						, def==null?FunctionArgument.DEFAULT_TYPE_NULL:FunctionArgument.DEFAULT_TYPE_LITERAL
-						, true
-						, arg.getName()
-						, arg.getDescription()
-						, null);
+				args[++index] = new FunctionArgumentImpl(KeyImpl.init(arg.getName()), arg.getTypeAsString(), arg.getType(), arg.getRequired(),
+						def == null ? FunctionArgument.DEFAULT_TYPE_NULL : FunctionArgument.DEFAULT_TYPE_LITERAL, true, arg.getName(), arg.getDescription(), null);
 			}
 		}
-		
+
 		return args;
 	}
 
@@ -123,53 +114,52 @@ public class BIF extends MemberSupport implements UDFPlus {
 		FunctionLibFunctionArg arg;
 		Object val;
 
-		List<Ref> refs=new ArrayList<Ref>();
-		while(it.hasNext()){
-			arg=it.next();
-			
+		List<Ref> refs = new ArrayList<Ref>();
+		while (it.hasNext()) {
+			arg = it.next();
+
 			// match by name
-			val = values.get(arg.getName(),null);
-			
-			//match by alias
-			if(val==null) {
-				String alias=arg.getAlias();
-				if(!StringUtil.isEmpty(alias,true)) {
-					String[] aliases = lucee.runtime.type.util.ListUtil.trimItems(lucee.runtime.type.util.ListUtil.listToStringArray(alias,','));
-					for(int x=0;x<aliases.length;x++){
-						val = values.get(aliases[x],null);
-						if(val!=null) break;
+			val = values.get(arg.getName(), null);
+
+			// match by alias
+			if (val == null) {
+				String alias = arg.getAlias();
+				if (!StringUtil.isEmpty(alias, true)) {
+					String[] aliases = lucee.runtime.type.util.ListUtil.trimItems(lucee.runtime.type.util.ListUtil.listToStringArray(alias, ','));
+					for (int x = 0; x < aliases.length; x++) {
+						val = values.get(aliases[x], null);
+						if (val != null) break;
 					}
 				}
 			}
-			
-			if(val==null) {
-				if(arg.getRequired()) {
+
+			if (val == null) {
+				if (arg.getRequired()) {
 					String[] names = flf.getMemberNames();
-					String n=ArrayUtil.isEmpty(names)?"":names[0];
-					throw new ExpressionException("missing required argument ["+arg.getName()+"] for build in function call ["+n+"]");
+					String n = ArrayUtil.isEmpty(names) ? "" : names[0];
+					throw new ExpressionException("missing required argument [" + arg.getName() + "] for build in function call [" + n + "]");
 				}
 			}
-			else{
-				refs.add(new Casting(arg.getTypeAsString(),arg.getType(),new LFunctionValue(new LString(arg.getName()),val)));
+			else {
+				refs.add(new Casting(arg.getTypeAsString(), arg.getType(), new LFunctionValue(new LString(arg.getName()), val)));
 			}
 		}
-		
-		BIFCall call=new BIFCall(flf, refs.toArray(new Ref[refs.size()]));
+
+		BIFCall call = new BIFCall(flf, refs.toArray(new Ref[refs.size()]));
 		return call.getValue(pageContext);
 	}
-
 
 	@Override
 	public Object call(PageContext pageContext, Object[] args, boolean doIncludePath) throws PageException {
 		ArrayList<FunctionLibFunctionArg> flfas = flf.getArg();
 		FunctionLibFunctionArg flfa;
-		List<Ref> refs=new ArrayList<Ref>();
-		for(int i=0;i<args.length;i++){
-			if(i>=flfas.size()) throw new ApplicationException("too many Attributes in function call ["+flf.getName()+"]");
-			flfa=flfas.get(i);
-			refs.add(new Casting(flfa.getTypeAsString(),flfa.getType(),args[i]));
+		List<Ref> refs = new ArrayList<Ref>();
+		for (int i = 0; i < args.length; i++) {
+			if (i >= flfas.size()) throw new ApplicationException("too many Attributes in function call [" + flf.getName() + "]");
+			flfa = flfas.get(i);
+			refs.add(new Casting(flfa.getTypeAsString(), flfa.getType(), args[i]));
 		}
-		BIFCall call=new BIFCall(flf, refs.toArray(new Ref[refs.size()]));
+		BIFCall call = new BIFCall(flf, refs.toArray(new Ref[refs.size()]));
 		return call.getValue(pageContext);
 	}
 
@@ -182,17 +172,11 @@ public class BIF extends MemberSupport implements UDFPlus {
 	public Object call(PageContext pageContext, Key calledName, Object[] args, boolean doIncludePath) throws PageException {
 		return call(pageContext, args, doIncludePath);
 	}
-	
-
-
-
-
-
 
 	@Override
 	public DumpData toDumpData(PageContext pageContext, int maxlevel, DumpProperties dp) {
-		DumpTable dt= (DumpTable) UDFUtil.toDumpData(pageContext, maxlevel, dp,this,UDFUtil.TYPE_BIF);
-		//dt.setTitle(title);
+		DumpTable dt = (DumpTable) UDFUtil.toDumpData(pageContext, maxlevel, dp, this, UDFUtil.TYPE_BIF);
+		// dt.setTitle(title);
 		return dt;
 	}
 
@@ -228,8 +212,7 @@ public class BIF extends MemberSupport implements UDFPlus {
 
 	@Override
 	public int getReturnType() {
-		if(rtnType==CFTypes.TYPE_UNKNOW)
-			rtnType=CFTypes.toShort(flf.getReturnTypeAsString(), false, CFTypes.TYPE_UNKNOW);
+		if (rtnType == CFTypes.TYPE_UNKNOW) rtnType = CFTypes.toShort(flf.getReturnTypeAsString(), false, CFTypes.TYPE_UNKNOW);
 		return rtnType;
 	}
 
@@ -240,7 +223,7 @@ public class BIF extends MemberSupport implements UDFPlus {
 
 	@Override
 	public void setOwnerComponent(Component owner) {
-		this.owner=owner;
+		this.owner = owner;
 	}
 
 	@Override
@@ -257,14 +240,12 @@ public class BIF extends MemberSupport implements UDFPlus {
 	public String getReturnTypeAsString() {
 		return flf.getReturnTypeAsString();
 	}
-	
-
 
 	@Override
 	public Object getValue() {
 		return this;
 	}
-	
+
 	@Override
 	public boolean getOutput() {
 		return false;
@@ -285,22 +266,21 @@ public class BIF extends MemberSupport implements UDFPlus {
 		return null;
 	}
 
-	/*@Override
-	public PageSource getPageSource() {
-		return null;
-	}*/
+	/*
+	 * @Override public PageSource getPageSource() { return null; }
+	 */
 
 	@Override
 	public boolean equals(Object other) {
-		if(!(other instanceof UDF)) return false;
+		if (!(other instanceof UDF)) return false;
 		return UDFImpl.equals(this, (UDF) other);
-    }
-	
+	}
+
 	@Override
 	public String id() {
 		return id;
 	}
-	
+
 	@Override
 	public String getSource() {
 		return "";
@@ -316,8 +296,6 @@ public class BIF extends MemberSupport implements UDFPlus {
 		return null;
 	}
 
-	
-	
 	// MUST
 	@Override
 	public Struct getMetaData(PageContext pc) throws PageException {
@@ -341,6 +319,5 @@ public class BIF extends MemberSupport implements UDFPlus {
 	public boolean getBufferOutput(PageContext pc) {
 		return pc.getApplicationContext().getBufferOutput();
 	}
-
 
 }

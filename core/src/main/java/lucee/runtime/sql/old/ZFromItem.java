@@ -19,26 +19,20 @@
 
 package lucee.runtime.sql.old;
 
-
 // Referenced classes of package Zql:
 //            ZAliasedName
 
-public final class ZFromItem extends ZAliasedName
-{
+public final class ZFromItem extends ZAliasedName {
 
-    private String fullName;
+	private String fullName;
 
+	public ZFromItem() {}
 
-	public ZFromItem()
-    {
-    }
+	public ZFromItem(String s) {
+		super(s, ZAliasedName.FORM_TABLE);
+		fullName = s;
+	}
 
-    public ZFromItem(String s)	{
-        super(s, ZAliasedName.FORM_TABLE);
-        fullName=s;
-    }
-    
-    
 	/**
 	 * @return
 	 */

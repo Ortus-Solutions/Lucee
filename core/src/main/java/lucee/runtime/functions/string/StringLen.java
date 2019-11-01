@@ -31,14 +31,13 @@ public final class StringLen extends BIF {
 
 	private static final long serialVersionUID = -9040645233901974147L;
 
-	public static double call(PageContext pc , String string) {
+	public static double call(PageContext pc, String string) {
 		return string.length();
 	}
 
-    @Override
+	@Override
 	public Object invoke(PageContext pc, Object[] args) throws PageException {
-		if(args.length==1)
-			return call(pc, Caster.toString(args[0]));
+		if (args.length == 1) return call(pc, Caster.toString(args[0]));
 
 		throw new FunctionException(pc, "StringLen", 1, 1, args.length);
 	}

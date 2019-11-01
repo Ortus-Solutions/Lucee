@@ -27,9 +27,9 @@ import java.util.TimeZone;
 public class ArrayCast implements Cast {
 
 	@Override
-	public Object toCFType(TimeZone tz,int type, ResultSet rst, int columnIndex) throws SQLException, IOException {
+	public Object toCFType(TimeZone tz, ResultSet rst, int columnIndex) throws SQLException, IOException {
 		Array arr = rst.getArray(columnIndex);
-		if(arr==null) return null;
+		if (arr == null) return null;
 		return arr.getArray();
 	}
 

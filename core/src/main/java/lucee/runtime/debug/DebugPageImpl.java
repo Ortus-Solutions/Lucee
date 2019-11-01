@@ -29,8 +29,8 @@ import lucee.runtime.dump.SimpleDumpData;
 /**
  *
  *
- * To change the template for this generated type comment go to
- * Window - Preferences - Java - Code Generation - Code and Comments
+ * To change the template for this generated type comment go to Window - Preferences - Java - Code
+ * Generation - Code and Comments
  */
 public final class DebugPageImpl implements Dumpable, DebugPage {
 
@@ -41,33 +41,32 @@ public final class DebugPageImpl implements Dumpable, DebugPage {
 	private int max;
 	private int all;
 	private long time;
-	
-	//private long time;
+
+	// private long time;
 
 	/**
 	 * @param file
 	 */
 	public DebugPageImpl(Resource file) {
-		this.file=file;
+		this.file = file;
 	}
 
 	@Override
 	public void set(long t) {
-		this.time=t;
-		if(count==0) {
-			min=(int) time;
-			max=(int) time;
+		this.time = t;
+		if (count == 0) {
+			min = (int) time;
+			max = (int) time;
 		}
 		else {
-			if(min>time)min=(int) time;
-			if(max<time)max=(int) time;
+			if (min > time) min = (int) time;
+			if (max < time) max = (int) time;
 		}
-		all+=time;
-		
+		all += time;
+
 		count++;
 	}
-	
-	
+
 	@Override
 	public int getMinimalExecutionTime() {
 		return min;
@@ -77,17 +76,17 @@ public final class DebugPageImpl implements Dumpable, DebugPage {
 	public int getMaximalExecutionTime() {
 		return max;
 	}
-	
+
 	@Override
 	public int getAverageExecutionTime() {
-		return all/count;
+		return all / count;
 	}
-	
+
 	@Override
 	public int getCount() {
 		return count;
 	}
-	
+
 	@Override
 	public Resource getFile() {
 		return file;
@@ -95,7 +94,7 @@ public final class DebugPageImpl implements Dumpable, DebugPage {
 
 	@Override
 	public DumpData toDumpData(PageContext pageContext, int maxlevel, DumpProperties dp) {
-		DumpTable table=new DumpTable("#cccc66","#cccc99","#000000");
+		DumpTable table = new DumpTable("#cccc66", "#cccc99", "#000000");
 		table.setTitle(file.getAbsolutePath());
 		table.appendRow(1, new SimpleDumpData("min (ms)"), new SimpleDumpData(min));
 		table.appendRow(1, new SimpleDumpData("avg (ms)"), new SimpleDumpData(getAverageExecutionTime()));
@@ -103,5 +102,5 @@ public final class DebugPageImpl implements Dumpable, DebugPage {
 		table.appendRow(1, new SimpleDumpData("total (ms)"), new SimpleDumpData(all));
 		return table;
 	}
-	
+
 }

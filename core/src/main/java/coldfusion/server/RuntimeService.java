@@ -58,8 +58,7 @@ public interface RuntimeService extends Service {
 
 	public abstract File resolveTemplateName(String arg0, String arg1);
 
-	public abstract String getFullTagName(ServletContext arg0, String arg1)
-			throws IOException;
+	public abstract String getFullTagName(ServletContext arg0, String arg1) throws IOException;
 
 	public abstract File resolveTemplatePath(String arg0);
 
@@ -137,8 +136,7 @@ public interface RuntimeService extends Service {
 
 	public abstract boolean isEnabledFlexDataServices();
 
-	public abstract void setEnableFlexDataServices(boolean arg0)
-			throws ServiceException;
+	public abstract void setEnableFlexDataServices(boolean arg0) throws ServiceException;
 
 	public abstract String getFlexAssemblerIPList();
 

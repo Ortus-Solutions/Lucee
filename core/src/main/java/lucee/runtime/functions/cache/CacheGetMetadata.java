@@ -23,9 +23,11 @@ import java.io.IOException;
 import lucee.commons.io.cache.Cache;
 import lucee.commons.io.cache.CacheEntry;
 import lucee.runtime.PageContext;
+import lucee.runtime.cache.CacheUtil;
 import lucee.runtime.config.Config;
+import lucee.runtime.exp.FunctionException;
 import lucee.runtime.exp.PageException;
-import lucee.runtime.ext.function.Function;
+import lucee.runtime.ext.function.BIF;
 import lucee.runtime.op.Caster;
 import lucee.runtime.type.Collection;
 import lucee.runtime.type.KeyImpl;
@@ -36,10 +38,10 @@ import lucee.runtime.type.util.KeyConstants;
 /**
  * 
  */
-public final class CacheGetMetadata implements Function {
-	
+public final class CacheGetMetadata extends BIF {
+
 	private static final long serialVersionUID = -470089623854482521L;
-	
+
 	private static final Collection.Key CACHE_HITCOUNT = KeyImpl.intern("cache_hitcount");
 	private static final Collection.Key CACHE_MISSCOUNT = KeyImpl.intern("cache_misscount");
 	private static final Collection.Key CACHE_CUSTOM = KeyImpl.intern("cache_custom");
@@ -49,20 +51,20 @@ public final class CacheGetMetadata implements Function {
 	private static final Collection.Key LAST_UPDATED = KeyImpl.intern("lastupdated");
 
 	public static Struct call(PageContext pc, String id) throws PageException {
-		return call(pc, id,null);
+		return call(pc, id, null);
 	}
-	
+
 	public static Struct call(PageContext pc, String id, String cacheName) throws PageException {
 		try {
-			Cache cache = Util.getCache(pc,cacheName,Config.CACHE_TYPE_OBJECT);
-			CacheEntry entry = cache.getCacheEntry(Util.key(id));
-			
-			Struct info=new StructImpl();
+			Cache cache = CacheUtil.getCache(pc, cacheName, Config.CACHE_TYPE_OBJECT);
+			CacheEntry entry = cache.getCacheEntry(CacheUtil.key(id));
+
+			Struct info = new StructImpl();
 			info.set(CACHE_HITCOUNT, new Double(cache.hitCount()));
 			info.set(CACHE_MISSCOUNT, new Double(cache.missCount()));
 			info.set(CACHE_CUSTOM, cache.getCustomInfo());
 			info.set(KeyConstants._custom, entry.getCustomInfo());
-			
+
 			info.set(CREATED_TIME, entry.created());
 			info.set(KeyConstants._hitcount, new Double(entry.hitCount()));
 			info.set(IDLE_TIME, new Double(entry.idleTimeSpan()));
@@ -71,8 +73,16 @@ public final class CacheGetMetadata implements Function {
 			info.set(KeyConstants._size, new Double(entry.size()));
 			info.set(KeyConstants._timespan, new Double(entry.liveTimeSpan()));
 			return info;
-		} catch (IOException e) {
+		}
+		catch (IOException e) {
 			throw Caster.toPageException(e);
 		}
+	}
+
+	@Override
+	public Object invoke(PageContext pc, Object[] args) throws PageException {
+		if (args.length == 1) return call(pc, Caster.toString(args[0]));
+		if (args.length == 2) return call(pc, Caster.toString(args[0]), Caster.toString(args[1]));
+		throw new FunctionException(pc, "CacheGetMetadata", 1, 2, args.length);
 	}
 }

@@ -22,51 +22,50 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class SimpleLock<L> implements Lock {
-	
+
 	private ReentrantLock lock;
 	private L label;
-	
+
 	public SimpleLock(L label) {
-		this.lock=new ReentrantLock(true);
-		this.label=label;
+		this.lock = new ReentrantLock(true);
+		this.label = label;
 	}
 
 	@Override
 	public void lock(long timeout) throws LockException {
-		if(timeout<=0) throw new LockException("timeout must be a postive number");
-		long initialTimeout=timeout;
-		long start=System.currentTimeMillis();
-		do{
+		if (timeout <= 0) throw new LockException("timeout must be a positive number");
+		long initialTimeout = timeout;
+		long start = System.currentTimeMillis();
+		do {
 			try {
-				if(!lock.tryLock(timeout, TimeUnit.MILLISECONDS)){
+				if (!lock.tryLock(timeout, TimeUnit.MILLISECONDS)) {
 					throw new LockException(initialTimeout);
 				}
 				break; // exit loop
 			}
 			catch (InterruptedException e) {
-				timeout-=System.currentTimeMillis()-start;
+				timeout -= System.currentTimeMillis() - start;
 			}
-			if(timeout<=0) {
+			if (timeout <= 0) {
 				// Lucee was not able to aquire lock in time
 				throw new LockException(initialTimeout);
 			}
 		}
-		while(true);
-		
+		while (true);
+
 	}
 
 	@Override
-	public void unlock()	{
+	public void unlock() {
 		lock.unlock();
 	}
 
 	@Override
-	public int getQueueLength()	{
+	public int getQueueLength() {
 		return lock.getQueueLength();
 	}
-    
 
-	public L getLabel(){
+	public L getLabel() {
 		return label;
 	}
 }

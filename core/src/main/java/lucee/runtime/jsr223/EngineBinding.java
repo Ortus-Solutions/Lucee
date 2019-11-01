@@ -26,11 +26,11 @@ import javax.script.Bindings;
 import lucee.runtime.PageContext;
 
 public class EngineBinding implements Bindings {
-	
+
 	private PageContext pc;
 
-	public EngineBinding(PageContext pc){
-		this.pc=pc;
+	public EngineBinding(PageContext pc) {
+		this.pc = pc;
 	}
 
 	@Override

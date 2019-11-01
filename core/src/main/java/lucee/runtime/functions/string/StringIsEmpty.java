@@ -32,7 +32,7 @@ public class StringIsEmpty extends BIF {
 
 	private static final long serialVersionUID = -85767818984230151L;
 
-	public static boolean call(PageContext pc , String value) {
+	public static boolean call(PageContext pc, String value) {
 
 		return StringUtil.isEmpty(value);
 	}
@@ -40,8 +40,7 @@ public class StringIsEmpty extends BIF {
 	@Override
 	public Object invoke(PageContext pc, Object[] args) throws PageException {
 
-		if (args.length != 1)
-			throw new FunctionException(pc, "IsEmpty", 1, 1, args.length);
+		if (args.length != 1) throw new FunctionException(pc, "IsEmpty", 1, 1, args.length);
 
 		return call(pc, Caster.toString(args[0]));
 	}

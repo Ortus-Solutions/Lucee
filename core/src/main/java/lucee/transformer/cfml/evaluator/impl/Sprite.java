@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 
 import lucee.commons.digest.HashUtil;
+import lucee.commons.lang.ExceptionUtil;
 import lucee.commons.lang.IDGenerator;
 import lucee.runtime.exp.PageRuntimeException;
 import lucee.runtime.op.Caster;
@@ -38,86 +39,64 @@ import lucee.transformer.library.function.FunctionLib;
 import lucee.transformer.library.tag.TagLibTag;
 import lucee.transformer.util.SourceCode;
 
-
 public final class Sprite extends EvaluatorSupport {
-	
-	//private static final Expression DELIMITER = LitString.toExprString(",");
-	private static Map<String,Previous> sprites=new HashMap<String,Previous>(); 
-	
+
+	// private static final Expression DELIMITER = LitString.toExprString(",");
+	private static Map<String, Previous> sprites = new HashMap<String, Previous>();
+
 	@Override
-	public void evaluate(Tag tag,TagLibTag tagLibTag,FunctionLib[] flibs) throws EvaluatorException {
-        String id="sprite_"+IDGenerator.intId();
-        try {
+	public void evaluate(Tag tag, TagLibTag tagLibTag, FunctionLib[] flibs) throws EvaluatorException {
+		String id = "sprite_" + IDGenerator.intId();
+		try {
 			Page page = ASMUtil.getAncestorPage(tag);
-			
+
 			SourceCode sc = page.getSourceCode();
-			
-			String key=sc.id();
-			key=HashUtil.create64BitHashAsString(Thread.currentThread().getId()+":"+key);
-			
-			
-			
+
+			String key = sc.id();
+			key = HashUtil.create64BitHashAsString(Thread.currentThread().getId() + ":" + key);
+
 			Expression src = tag.getAttribute("src").getValue();
-			
-			
+
 			// get data from previous sprites
 			Previous previous = sprites.get(key);
-			if(previous!=null) {
+			if (previous != null) {
 				previous.tag.removeAttribute("_ids");
 				previous.tag.removeAttribute("_srcs");
-				previous.tag=tag;
+				previous.tag = tag;
 			}
 			else {
 				sprites.put(key, previous = new Previous(tag));
 			}
-			
-			previous.ids.add(id);
-			if(previous.src==null)previous.src=src;
-			else {
-				previous.src=tag.getFactory().opString(previous.src,tag.getFactory().createLitString(","));
-				previous.src=tag.getFactory().opString(previous.src,src);
-			}
-			
-			
-			
-			tag.addAttribute(
-					new Attribute(
-							false,
-							"_id",
-							tag.getFactory().createLitString(id),
-							"string"
-					));
-			tag.addAttribute(
-					new Attribute(
-							false,
-							"_ids",
-							tag.getFactory().createLitString(lucee.runtime.type.util.ListUtil.listToList(previous.ids, ",")),
-							"string"
-					));
 
-			tag.addAttribute(
-					new Attribute(
-							false,
-							"_srcs",
-							previous.src,
-							"string"
-					));
-			
-		} 
-        catch (Throwable e) {// TODO handle Excpetion much more precise
+			previous.ids.add(id);
+			if (previous.src == null) previous.src = src;
+			else {
+				previous.src = tag.getFactory().opString(previous.src, tag.getFactory().createLitString(","));
+				previous.src = tag.getFactory().opString(previous.src, src);
+			}
+
+			tag.addAttribute(new Attribute(false, "_id", tag.getFactory().createLitString(id), "string"));
+			tag.addAttribute(new Attribute(false, "_ids", tag.getFactory().createLitString(lucee.runtime.type.util.ListUtil.listToList(previous.ids, ",")), "string"));
+
+			tag.addAttribute(new Attribute(false, "_srcs", previous.src, "string"));
+
+		}
+		catch (Throwable e) {// TODO handle Excpetion much more precise
+			ExceptionUtil.rethrowIfNecessary(e);
 			throw new PageRuntimeException(Caster.toPageException(e));
 		}
-		   
+
 	}
-	
+
 	private static class Previous {
 		public Previous(Tag tag) {
-			this.tag=tag;
+			this.tag = tag;
 		}
-		private List<String> ids=new ArrayList<String>();
-		private Expression src=null;
+
+		private List<String> ids = new ArrayList<String>();
+		private Expression src = null;
 		private Tag tag;
-		
+
 	}
-	
+
 }

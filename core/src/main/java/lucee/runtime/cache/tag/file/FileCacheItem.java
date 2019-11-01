@@ -30,19 +30,18 @@ import lucee.runtime.dump.SimpleDumpData;
 public abstract class FileCacheItem implements CacheItem, Serializable, Dumpable {
 
 	private static final long serialVersionUID = -8462614105941179140L;
-	
+
 	private final long executionTimeNS;
-	private final String path;
+	protected final String path;
 
-
-	public FileCacheItem(String path,long executionTimeNS) {
+	public FileCacheItem(String path, long executionTimeNS) {
 		this.path = path;
-		this.executionTimeNS=executionTimeNS;
+		this.executionTimeNS = executionTimeNS;
 	}
 
 	public static FileCacheItem getInstance(String path, Object data, long executionTimeNS) {
-		if(data instanceof byte[]) return new FileCacheItemBinary(path, (byte[])data, executionTimeNS);
-		return new FileCacheItemString(path, (String)data, executionTimeNS);
+		if (data instanceof byte[]) return new FileCacheItemBinary(path, (byte[]) data, executionTimeNS);
+		return new FileCacheItemString(path, (String) data, executionTimeNS);
 	}
 
 	@Override
@@ -69,6 +68,5 @@ public abstract class FileCacheItem implements CacheItem, Serializable, Dumpable
 	}
 
 	public abstract Object getData();
-
 
 }

@@ -35,27 +35,26 @@ import lucee.runtime.op.date.DateCaster;
 import lucee.runtime.type.Collection.Key;
 import lucee.runtime.type.dt.DateTime;
 
-public class KeyImpl implements Collection.Key,Castable,Comparable,Externalizable,WangJenkins {
+public class KeyImpl implements Collection.Key, Castable, Comparable, Externalizable, WangJenkins, CharSequence {
 
 	private static final long serialVersionUID = -8864844181140115609L; // do not change
 
-	
 	private static final long[] byteTable = createLookupTable();
 	private static final long HSTART = 0xBB40E64DA205B064L;
 	private static final long HMULT = 7664345821815920749L;
-	
-	//private boolean intern;
+
+	// private boolean intern;
 	private String key;
 	private transient String lcKey;
 	private transient String ucKey;
 	private transient int wjh;
-	private transient int sfm=-1;
+	private transient int sfm = -1;
 	private transient long h64;
-	
+
 	public KeyImpl() {
 		// DO NOT USE, JUST FOR UNSERIALIZE
 	}
-	
+
 	private static final long[] createLookupTable() {
 		long[] _byteTable = new long[256];
 		long h = 0x544B2FBACAAF1684L;
@@ -82,30 +81,30 @@ public class KeyImpl implements Collection.Key,Castable,Comparable,Externalizabl
 		}
 		return h;
 	}
-	
+
 	@Override
 	public int wangJenkinsHash() {
-		if(wjh==0) {
+		if (wjh == 0) {
 			int h = hashCode();
-			h += (h <<  15) ^ 0xffffcd7d;
-	        h ^= (h >>> 10);
-	        h += (h <<   3);
-	        h ^= (h >>>  6);
-	        h += (h <<   2) + (h << 14);
-	        wjh= h ^ (h >>> 16);
+			h += (h << 15) ^ 0xffffcd7d;
+			h ^= (h >>> 10);
+			h += (h << 3);
+			h ^= (h >>> 6);
+			h += (h << 2) + (h << 14);
+			wjh = h ^ (h >>> 16);
 		}
 		return wjh;
 	}
-	
+
 	public int slotForMap() {
-		if(sfm == -1) {
-	    	int h = 0;
-	        h ^= hashCode();
-	        h ^= (h >>> 20) ^ (h >>> 12);
-	        sfm = h ^ (h >>> 7) ^ (h >>> 4);
+		if (sfm == -1) {
+			int h = 0;
+			h ^= hashCode();
+			h ^= (h >>> 20) ^ (h >>> 12);
+			sfm = h ^ (h >>> 7) ^ (h >>> 4);
 		}
 		return sfm;
-    }
+	}
 
 	@Override
 	public void writeExternal(ObjectOutput out) throws IOException {
@@ -113,20 +112,21 @@ public class KeyImpl implements Collection.Key,Castable,Comparable,Externalizabl
 	}
 
 	@Override
-	public void readExternal(ObjectInput in) throws IOException,ClassNotFoundException {
-		key=(String) in.readObject();
-		ucKey=key.toUpperCase();
-		h64=createHash64(ucKey);	
+	public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+		key = (String) in.readObject();
+		ucKey = key.toUpperCase();
+		h64 = createHash64(ucKey);
 	}
 
 	public KeyImpl(String key) {
-		this.key=key;
-		this.ucKey=key.toUpperCase();
-		h64=createHash64(ucKey);
+		this.key = key;
+		this.ucKey = key.toUpperCase();
+		h64 = createHash64(ucKey);
 	}
 
 	/**
 	 * for dynamic loading of key objects
+	 * 
 	 * @param string
 	 * @return
 	 */
@@ -155,7 +155,7 @@ public class KeyImpl implements Collection.Key,Castable,Comparable,Externalizabl
 	public char lowerCharAt(int index) {
 		return getLowerString().charAt(index);
 	}
-	
+
 	@Override
 	public char upperCharAt(int index) {
 		return ucKey.charAt(index);
@@ -163,10 +163,10 @@ public class KeyImpl implements Collection.Key,Castable,Comparable,Externalizabl
 
 	@Override
 	public String getLowerString() {
-		if(lcKey==null)lcKey=StringUtil.toLowerCase(key);
+		if (lcKey == null) lcKey = StringUtil.toLowerCase(key);
 		return lcKey;
 	}
-	
+
 	@Override
 	public String getUpperString() {
 		return ucKey;
@@ -184,25 +184,24 @@ public class KeyImpl implements Collection.Key,Castable,Comparable,Externalizabl
 
 	@Override
 	public boolean equals(Object other) {
-		if(this==other) return true;
-		if(other instanceof KeyImpl)	{
-			return hash()==((KeyImpl)other).hash();
+		if (this == other) return true;
+		if (other instanceof KeyImpl) {
+			return hash() == ((KeyImpl) other).hash();
 		}
-		if(other instanceof String)	{
-			return key.equalsIgnoreCase((String)other);
+		if (other instanceof String) {
+			return key.equalsIgnoreCase((String) other);
 		}
-		if(other instanceof Key)	{
-			return ucKey.equalsIgnoreCase(((Key)other).getUpperString());
+		if (other instanceof Key) {
+			return ucKey.equalsIgnoreCase(((Key) other).getUpperString());
 		}
 		return false;
 	}
 
-
 	@Override
 	public boolean equalsIgnoreCase(Key other) {
-		if(this==other) return true;
-		if(other instanceof KeyImpl)	{
-			return h64==((KeyImpl)other).h64;//return lcKey.equals((((KeyImpl)other).lcKey));
+		if (this == other) return true;
+		if (other instanceof KeyImpl) {
+			return h64 == ((KeyImpl) other).h64;// return lcKey.equals((((KeyImpl)other).lcKey));
 		}
 		return ucKey.equalsIgnoreCase(other.getLowerString());
 	}
@@ -211,7 +210,7 @@ public class KeyImpl implements Collection.Key,Castable,Comparable,Externalizabl
 	public int hashCode() {
 		return ucKey.hashCode();
 	}
-	
+
 	@Override
 	public long hash() {
 		return h64;
@@ -221,31 +220,31 @@ public class KeyImpl implements Collection.Key,Castable,Comparable,Externalizabl
 	public boolean castToBooleanValue() throws PageException {
 		return Caster.toBooleanValue(key);
 	}
-    
-    @Override
-    public Boolean castToBoolean(Boolean defaultValue) {
-        return Caster.toBoolean(key,defaultValue);
-    }
+
+	@Override
+	public Boolean castToBoolean(Boolean defaultValue) {
+		return Caster.toBoolean(key, defaultValue);
+	}
 
 	@Override
 	public DateTime castToDateTime() throws PageException {
-		return Caster.toDatetime(key,null);
+		return Caster.toDatetime(key, null);
 	}
-    
-    @Override
-    public DateTime castToDateTime(DateTime defaultValue) {
-        return DateCaster.toDateAdvanced(key,DateCaster.CONVERTING_TYPE_OFFSET,null,defaultValue);
-    }
+
+	@Override
+	public DateTime castToDateTime(DateTime defaultValue) {
+		return DateCaster.toDateAdvanced(key, DateCaster.CONVERTING_TYPE_OFFSET, null, defaultValue);
+	}
 
 	@Override
 	public double castToDoubleValue() throws PageException {
 		return Caster.toDoubleValue(key);
 	}
-    
-    @Override
-    public double castToDoubleValue(double defaultValue) {
-    	return Caster.toDoubleValue(key,defaultValue);
-    }
+
+	@Override
+	public double castToDoubleValue(double defaultValue) {
+		return Caster.toDoubleValue(key, defaultValue);
+	}
 
 	@Override
 	public String castToString() throws PageException {
@@ -264,7 +263,7 @@ public class KeyImpl implements Collection.Key,Castable,Comparable,Externalizabl
 
 	@Override
 	public int compareTo(DateTime dt) throws PageException {
-		return Operator.compare(key, (Date)dt);
+		return Operator.compare(key, (Date) dt);
 	}
 
 	@Override
@@ -276,77 +275,77 @@ public class KeyImpl implements Collection.Key,Castable,Comparable,Externalizabl
 	public int compareTo(String str) throws PageException {
 		return Operator.compare(key, str);
 	}
-	
 
 	@Override
 	public int compareTo(Object o) {
 		try {
 			return Operator.compare(key, o);
-		} catch (PageException e) {
+		}
+		catch (PageException e) {
 			ClassCastException cce = new ClassCastException(e.getMessage());
 			cce.setStackTrace(e.getStackTrace());
 			throw cce;
-			
+
 		}
 	}
-	
 
 	public static Array toUpperCaseArray(Key[] keys) {
-		ArrayImpl arr=new ArrayImpl();
-		for(int i=0;i<keys.length;i++) {
-			arr._append(((KeyImpl)keys[i]).getUpperString());
+		ArrayImpl arr = new ArrayImpl();
+		for (int i = 0; i < keys.length; i++) {
+			arr.appendEL(((KeyImpl) keys[i]).getUpperString());
 		}
 		return arr;
 	}
+
 	public static Array toLowerCaseArray(Key[] keys) {
-		ArrayImpl arr=new ArrayImpl();
-		for(int i=0;i<keys.length;i++) {
-			arr._append(((KeyImpl)keys[i]).getLowerString());
+		ArrayImpl arr = new ArrayImpl();
+		for (int i = 0; i < keys.length; i++) {
+			arr.appendEL(((KeyImpl) keys[i]).getLowerString());
 		}
 		return arr;
 	}
-	
+
 	public static Array toArray(Key[] keys) {
-		ArrayImpl arr=new ArrayImpl();
-		for(int i=0;i<keys.length;i++) {
-			arr._append(((KeyImpl)keys[i]).getString());
+		ArrayImpl arr = new ArrayImpl();
+		for (int i = 0; i < keys.length; i++) {
+			arr.appendEL(((KeyImpl) keys[i]).getString());
 		}
 		return arr;
 	}
 
 	public static String toUpperCaseList(Key[] array, String delimiter) {
-		if(array.length==0) return "";
-		StringBuffer sb=new StringBuffer(((KeyImpl)array[0]).getUpperString());
-		
-		if(delimiter.length()==1) {
-			char c=delimiter.charAt(0);
-			for(int i=1;i<array.length;i++) {
+		if (array.length == 0) return "";
+		StringBuffer sb = new StringBuffer(((KeyImpl) array[0]).getUpperString());
+
+		if (delimiter.length() == 1) {
+			char c = delimiter.charAt(0);
+			for (int i = 1; i < array.length; i++) {
 				sb.append(c);
-				sb.append(((KeyImpl)array[i]).getUpperString());
+				sb.append(((KeyImpl) array[i]).getUpperString());
 			}
 		}
 		else {
-			for(int i=1;i<array.length;i++) {
+			for (int i = 1; i < array.length; i++) {
 				sb.append(delimiter);
-				sb.append(((KeyImpl)array[i]).getUpperString());
+				sb.append(((KeyImpl) array[i]).getUpperString());
 			}
 		}
 		return sb.toString();
 	}
 
 	public static String toList(Key[] array, String delimiter) {
-		if(array.length==0) return "";
-		StringBuilder sb=new StringBuilder(((KeyImpl)array[0]).getString());
-		
-		if(delimiter.length()==1) {
-			char c=delimiter.charAt(0);
-			for(int i=1;i<array.length;i++) {
+		if (array.length == 0) return "";
+		StringBuilder sb = new StringBuilder(((KeyImpl) array[0]).getString());
+
+		if (delimiter.length() == 1) {
+			char c = delimiter.charAt(0);
+			for (int i = 1; i < array.length; i++) {
 				sb.append(c);
 				sb.append((array[i]).getString());
 			}
 		}
 		else {
-			for(int i=1;i<array.length;i++) {
+			for (int i = 1; i < array.length; i++) {
 				sb.append(delimiter);
 				sb.append((array[i]).getString());
 			}
@@ -355,39 +354,39 @@ public class KeyImpl implements Collection.Key,Castable,Comparable,Externalizabl
 	}
 
 	public static String toLowerCaseList(Key[] array, String delimiter) {
-		if(array.length==0) return "";
-		StringBuffer sb=new StringBuffer(((KeyImpl)array[0]).getLowerString());
-		
-		if(delimiter.length()==1) {
-			char c=delimiter.charAt(0);
-			for(int i=1;i<array.length;i++) {
+		if (array.length == 0) return "";
+		StringBuffer sb = new StringBuffer(((KeyImpl) array[0]).getLowerString());
+
+		if (delimiter.length() == 1) {
+			char c = delimiter.charAt(0);
+			for (int i = 1; i < array.length; i++) {
 				sb.append(c);
-				sb.append(((KeyImpl)array[i]).getLowerString());
+				sb.append(((KeyImpl) array[i]).getLowerString());
 			}
 		}
 		else {
-			for(int i=1;i<array.length;i++) {
+			for (int i = 1; i < array.length; i++) {
 				sb.append(delimiter);
-				sb.append(((KeyImpl)array[i]).getLowerString());
+				sb.append(((KeyImpl) array[i]).getLowerString());
 			}
 		}
 		return sb.toString();
 	}
 
 	public static Collection.Key toKey(Object obj, Collection.Key defaultValue) {
-		if(obj instanceof Collection.Key) return (Collection.Key) obj;
-		String str = Caster.toString(obj,null);
-		if(str==null) return defaultValue;
+		if (obj instanceof Collection.Key) return (Collection.Key) obj;
+		String str = Caster.toString(obj, null);
+		if (str == null) return defaultValue;
 		return init(str);
 	}
 
 	public static Collection.Key toKey(Object obj) throws CasterException {
-		if(obj instanceof Collection.Key) return (Collection.Key) obj;
-		String str = Caster.toString(obj,null);
-		if(str==null) throw new CasterException(obj,Collection.Key.class);
+		if (obj instanceof Collection.Key) return (Collection.Key) obj;
+		String str = Caster.toString(obj, null);
+		if (str == null) throw new CasterException(obj, Collection.Key.class);
 		return init(str);
 	}
-	
+
 	public static Collection.Key toKey(int i) {
 		return init(Caster.toString(i));
 	}
@@ -397,14 +396,18 @@ public class KeyImpl implements Collection.Key,Castable,Comparable,Externalizabl
 		return key.length();
 	}
 
-
 	public static Key[] toKeyArray(String[] arr) {
-		if(arr==null) return null;
-		
-		Key[] keys=new Key[arr.length];
-		for(int i=0;i<keys.length;i++){
-			keys[i]=init(arr[i]);
+		if (arr == null) return null;
+
+		Key[] keys = new Key[arr.length];
+		for (int i = 0; i < keys.length; i++) {
+			keys[i] = init(arr[i]);
 		}
 		return keys;
-	}	  
+	}
+
+	@Override
+	public CharSequence subSequence(int start, int end) {
+		return getString().subSequence(start, end);
+	}
 }

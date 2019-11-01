@@ -18,7 +18,6 @@
  **/
 package lucee.transformer.cfml.attributes.impl;
 
-import lucee.transformer.bytecode.cast.CastBoolean;
 import lucee.transformer.bytecode.statement.tag.Attribute;
 import lucee.transformer.bytecode.statement.tag.Tag;
 import lucee.transformer.cfml.attributes.AttributeEvaluator;
@@ -33,20 +32,18 @@ import lucee.transformer.library.tag.TagLibTag;
 public final class Function implements AttributeEvaluator {
 
 	@Override
-	public TagLibTag evaluate( TagLibTag tagLibTag, Tag tag) throws AttributeEvaluatorException {
+	public TagLibTag evaluate(TagLibTag tagLibTag, Tag tag) throws AttributeEvaluatorException {
 		tagLibTag.setParseBody(false);
-		
+
 		Attribute attrOutput = tag.getAttribute("output");
-		if(attrOutput==null) return tagLibTag;
-		
-		Expression expr = CastBoolean.toExprBoolean(attrOutput.getValue());
-		
-		if(!(expr instanceof LitBoolean))
-			throw new AttributeEvaluatorException("Attribute output of the Tag Function, must be a literal boolean value (true or false)");
-		boolean output = ((LitBoolean)expr).getBooleanValue();
-		if(output)
-			tagLibTag.setParseBody(true);
-		
+		if (attrOutput == null) return tagLibTag;
+
+		Expression expr = tag.getFactory().toExprBoolean(attrOutput.getValue());
+
+		if (!(expr instanceof LitBoolean)) throw new AttributeEvaluatorException("Attribute output of the Tag Function, must be a literal boolean value (true or false)");
+		boolean output = ((LitBoolean) expr).getBooleanValue();
+		if (output) tagLibTag.setParseBody(true);
+
 		return tagLibTag;
 	}
 }

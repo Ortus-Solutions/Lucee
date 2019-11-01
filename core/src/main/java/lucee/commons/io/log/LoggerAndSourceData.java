@@ -23,94 +23,99 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import lucee.commons.digest.HashUtil;
-import lucee.commons.io.log.log4j.Log4jUtil;
-import lucee.commons.io.log.log4j.LogAdapter;
 import lucee.runtime.config.Config;
+import lucee.runtime.config.ConfigImpl;
 import lucee.runtime.db.ClassDefinition;
-
-import org.apache.log4j.Appender;
-import org.apache.log4j.Layout;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
+import lucee.runtime.engine.ThreadLocalPageContext;
 
 /**
  * 
  */
 public final class LoggerAndSourceData {
-    
-    private LogAdapter _log;
-    private final ClassDefinition cdAppender;
-    private Appender _appender;
+
+	private static final String DEFAULT_PATTERN = "%d{dd.MM.yyyy HH:mm:ss,SSS} %-5p [%c] %m%n";
+
+	private Log _log;
+	private final ClassDefinition cdAppender;
+	private Object _appender;
 	private final Map<String, String> appenderArgs;
 	private final ClassDefinition cdLayout;
-	private Layout layout;
+	private Object layout;
 	private final Map<String, String> layoutArgs;
-	private final Level level;
+	private final int level;
 	private final String name;
-	private final Config config;
+	private Config config;
 	private final boolean readOnly;
 	private final String id;
+	private boolean dyn;
 
- 
-    public LoggerAndSourceData(Config config,String id,String name,ClassDefinition appender, Map<String, String> appenderArgs, ClassDefinition layout, Map<String, String> layoutArgs, Level level, boolean readOnly) {
-    	//this.log=new LogAdapter(logger);
-    	this.config=config;
-    	this.id=id;
-    	this.name=name;
-    	this.cdAppender=appender;
-    	this.appenderArgs=appenderArgs;
-    	this.cdLayout=layout;
-    	this.layoutArgs=layoutArgs;
-    	this.level=level;
-    	this.readOnly=readOnly;
-    }
+	public LoggerAndSourceData(Config config, String id, String name, ClassDefinition appender, Map<String, String> appenderArgs, ClassDefinition layout,
+			Map<String, String> layoutArgs, int level, boolean readOnly, boolean dyn) {
+		// this.log=new LogAdapter(logger);
+		this.config = config;
+
+		this.id = id;
+		this.name = name;
+		this.cdAppender = appender;
+		this.appenderArgs = appenderArgs;
+		this.cdLayout = layout;
+		this.layoutArgs = layoutArgs;
+		this.level = level;
+		this.readOnly = readOnly;
+		this.dyn = dyn;
+	}
 
 	public String id() {
 		return id;
 	}
+
 	public String getName() {
 		return name;
 	}
-	
+
+	public boolean getDyn() {
+		return dyn;
+	}
+
 	public ClassDefinition getAppenderClassDefinition() {
 		return cdAppender;
 	}
-	
-	public Appender getAppender() {
-		getLog();// initilaize if necessary
-		return _appender;
-	}
-	
-	public void close() {
-		if(_log!=null) {
-			Appender a = _appender;
-    		_log=null;
-			layout = null;
-    		if(a!=null)a.close();
-    		_appender=null;
-    	}
-	}
 
+	/*
+	 * public Object getAppender() { getLog();// initialize if necessary return _appender; }
+	 */
+
+	public void close() {
+
+		if (_log != null) {
+
+			Object a = _appender;
+			_log = null;
+			layout = null;
+			if (a != null) eng().closeAppender(a);// a.close();
+			_appender = null;
+		}
+	}
 
 	public Map<String, String> getAppenderArgs() {
-		getLog();// initilaize if necessary
+		getLog();// initialize if necessary
 		return appenderArgs;
 	}
 
-	public Layout getLayout() {
-		getLog();// initilaize if necessary
-		return layout;
-	}
+	/*
+	 * public Object getLayout() { getLog();// initialize if necessary return layout; }
+	 */
+
 	public ClassDefinition getLayoutClassDefinition() {
 		return cdLayout;
 	}
 
 	public Map<String, String> getLayoutArgs() {
-		getLog();// initilaize if necessary
+		getLog();// initialize if necessary
 		return layoutArgs;
 	}
 
-	public Level getLevel() {
+	public int getLevel() {
 		return level;
 	}
 
@@ -118,51 +123,44 @@ public final class LoggerAndSourceData {
 		return readOnly;
 	}
 
-    public Log getLog() {
-    	if(_log==null) {
-    		layout = Log4jUtil.getLayout(cdLayout, layoutArgs);
-    		_appender = Log4jUtil.getAppender(config, layout,name, cdAppender, appenderArgs);
-    		_log=new LogAdapter(Log4jUtil.getLogger(config, _appender, name, level));
-    	}
-    	return _log;
-    }
-    
-    public Logger getLogger() {
-    	getLog();// make sure it exists
-        return _log.getLogger();
-    }
+	public Log getLog() {
+		if (_log == null) {
+			config = ThreadLocalPageContext.getConfig(config);
+			layout = eng().getLayout(cdLayout, layoutArgs, cdAppender, name);
+			_appender = eng().getAppender(config, layout, name, cdAppender, appenderArgs);
+			_log = eng().getLogger(config, _appender, name, level);
+		}
+		return _log;
+	}
 
-	public static String id(String name
-			,ClassDefinition appender, Map<String, String> appenderArgs
-			,ClassDefinition layout, Map<String, String> layoutArgs
-			,Level level,
+	private LogEngine eng() {
+		return ((ConfigImpl) config).getLogEngine();
+	}
+
+	/*
+	 * public Logger getLogger() { getLog();// make sure it exists return
+	 * ((LogAdapter)_log).getLogger(); }
+	 */
+
+	public static String id(String name, ClassDefinition appender, Map<String, String> appenderArgs, ClassDefinition layout, Map<String, String> layoutArgs, int level,
 			boolean readOnly) {
-		StringBuilder sb = new StringBuilder(name)
-		.append(';')
-		.append(appender)
-		.append(';');
-		toString(sb,appenderArgs);
-		sb.append(';')
-		.append(layout)
-		.append(';');
-		toString(sb,layoutArgs);
-		sb.append(';')
-		.append(level.toInt())
-		.append(';')
-		.append(readOnly);
-		
-		return HashUtil.create64BitHashAsString( sb.toString(),Character.MAX_RADIX);
+		StringBuilder sb = new StringBuilder(name).append(';').append(appender).append(';');
+		toString(sb, appenderArgs);
+		sb.append(';').append(layout).append(';');
+		toString(sb, layoutArgs);
+		sb.append(';').append(level).append(';').append(readOnly);
+
+		return HashUtil.create64BitHashAsString(sb.toString(), Character.MAX_RADIX);
 	}
 
 	private static void toString(StringBuilder sb, Map<String, String> map) {
-		if(map==null) return;
+		if (map == null) return;
 		Iterator<Entry<String, String>> it = map.entrySet().iterator();
 		Entry<String, String> e;
-		while(it.hasNext()){
+		while (it.hasNext()) {
 			e = it.next();
 			sb.append(e.getKey()).append(':').append(e.getValue()).append('|');
 		}
 	}
 
-    
 }

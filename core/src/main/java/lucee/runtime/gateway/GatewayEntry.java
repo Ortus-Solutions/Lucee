@@ -18,40 +18,36 @@
  **/
 package lucee.runtime.gateway;
 
+import org.osgi.framework.BundleException;
+
 import lucee.commons.lang.ClassException;
 import lucee.runtime.config.Config;
 import lucee.runtime.db.ClassDefinition;
 import lucee.runtime.exp.PageException;
 import lucee.runtime.type.Struct;
 
-import org.osgi.framework.BundleException;
-
 public interface GatewayEntry {
-
 
 	public static int STARTUP_MODE_AUTOMATIC = 1;
 	public static int STARTUP_MODE_MANUAL = 2;
 	public static int STARTUP_MODE_DISABLED = 4;
-	
 
 	/**
 	 * @return the gateway
-	 * @throws ClassException 
-	 * @throws PageException 
-	 * @throws BundleException 
+	 * @throws ClassException
+	 * @throws PageException
+	 * @throws BundleException
 	 */
-	public void createGateway(Config config) throws ClassException,PageException, BundleException;
-	
-	public Gateway getGateway() ;
+	public void createGateway(Config config) throws ClassException, PageException, BundleException;
 
-	
+	public Gateway getGateway();
+
 	/**
 	 * @return the id
 	 */
 	public abstract String getId();
 
-	
-	//public abstract Class getClazz();
+	// public abstract Class getClazz();
 
 	/**
 	 * @return the custom
@@ -62,13 +58,12 @@ public interface GatewayEntry {
 	 * @return the readOnly
 	 */
 	public abstract boolean isReadOnly();
-	
 
 	/**
 	 * @return the cfcPath
 	 */
 	public String getListenerCfcPath();
-	
+
 	public String getCfcPath();
 
 	/**
@@ -76,8 +71,6 @@ public interface GatewayEntry {
 	 */
 	public int getStartupMode();
 
-
 	public ClassDefinition getClassDefinition();
-	
 
 }

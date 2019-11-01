@@ -22,29 +22,29 @@ import lucee.commons.io.log.Log;
 import lucee.runtime.CFMLFactoryImpl;
 
 public class StorageScopeEngine {
-	
+
 	private StorageScopeCleaner[] cleaners;
 
 	private CFMLFactoryImpl factory;
 
 	private Log log;
 
-	public StorageScopeEngine(CFMLFactoryImpl factory, Log log,StorageScopeCleaner[] cleaners){
-		this.cleaners=cleaners;
-		this.factory=factory;
-		this.log=log;
-		
-		for(int i=0;i<cleaners.length;i++){
+	public StorageScopeEngine(CFMLFactoryImpl factory, Log log, StorageScopeCleaner[] cleaners) {
+		this.cleaners = cleaners;
+		this.factory = factory;
+		this.log = log;
+
+		for (int i = 0; i < cleaners.length; i++) {
 			cleaners[i].init(this);
 		}
 	}
-	
+
 	public void clean() {
-		for(int i=0;i<cleaners.length;i++){
+		for (int i = 0; i < cleaners.length; i++) {
 			cleaners[i].clean();
 		}
 	}
-	
+
 	/**
 	 * @return the factory
 	 */
@@ -60,7 +60,7 @@ public class StorageScopeEngine {
 	}
 
 	public void remove(int type, String appName, String cfid) {
-		
-		getFactory().getScopeContext().remove(type,appName,cfid);
+
+		getFactory().getScopeContext().remove(type, appName, cfid);
 	}
 }

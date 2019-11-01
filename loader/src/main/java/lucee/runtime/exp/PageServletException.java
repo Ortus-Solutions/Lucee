@@ -29,16 +29,13 @@ import lucee.runtime.err.ErrorPage;
 import lucee.runtime.type.Struct;
 
 /**
- * by definition a JSP Tag can only throw JSPExceptions,
- * for that case the PageException is a Subclass of the JSPExceptions, but when
- * a PageException,
- * is escaleted to a parent page, this goes over the include method of the
- * PageContext Object, but this can only throw ServletException.
- * For that this class can Box a JSPException (PageException) in a
- * ServletException (PageServletException)
+ * by definition a JSP Tag can only throw JSPExceptions, for that case the PageException is a
+ * Subclass of the JSPExceptions, but when a PageException, is escaleted to a parent page, this goes
+ * over the include method of the PageContext Object, but this can only throw ServletException. For
+ * that this class can Box a JSPException (PageException) in a ServletException
+ * (PageServletException)
  */
-public final class PageServletException extends ServletException implements
-		IPageException, PageExceptionBox {
+public final class PageServletException extends ServletException implements IPageException, PageExceptionBox {
 
 	private static final long serialVersionUID = -3654238294705464067L;
 
@@ -105,8 +102,7 @@ public final class PageServletException extends ServletException implements
 	}
 
 	/**
-	 * @see lucee.runtime.exp.IPageException#getErrorBlock(PageContext
-	 *      pc,ErrorPage ep)
+	 * @see lucee.runtime.exp.IPageException#getErrorBlock(PageContext pc,ErrorPage ep)
 	 */
 	@Override
 	public Struct getErrorBlock(final PageContext pc, final ErrorPage ep) {
@@ -114,22 +110,20 @@ public final class PageServletException extends ServletException implements
 	}
 
 	/**
-	 * @see lucee.runtime.exp.IPageException#addContext(lucee.runtime.PageSource,
-	 *      int, int, java.lang.StackTraceElement)
+	 * @see lucee.runtime.exp.IPageException#addContext(lucee.runtime.PageSource, int, int,
+	 *      java.lang.StackTraceElement)
 	 */
 	@Override
-	public void addContext(final PageSource template, final int line,
-			final int column, final StackTraceElement ste) {
+	public void addContext(final PageSource template, final int line, final int column, final StackTraceElement ste) {
 		pe.addContext(template, line, column, ste);
 	}
 
 	/**
-	 * @see lucee.runtime.dump.Dumpable#toDumpData(lucee.runtime.PageContext,
-	 *      int, lucee.runtime.dump.DumpProperties)
+	 * @see lucee.runtime.dump.Dumpable#toDumpData(lucee.runtime.PageContext, int,
+	 *      lucee.runtime.dump.DumpProperties)
 	 */
 	@Override
-	public DumpData toDumpData(final PageContext pageContext,
-			final int maxlevel, final DumpProperties dp) {
+	public DumpData toDumpData(final PageContext pageContext, final int maxlevel, final DumpProperties dp) {
 		return pe.toDumpData(pageContext, maxlevel, dp);
 	}
 
@@ -181,12 +175,12 @@ public final class PageServletException extends ServletException implements
 		return pe.getCustomTypeAsString();
 	}
 
-	/* *
-	 * @see lucee.runtime.exp.IPageException#getLine()
-	 * /
-	public String getLine() {
-	    return pe.getLine();
-	}*/
+	/*
+	 * *
+	 * 
+	 * @see lucee.runtime.exp.IPageException#getLine() / public String getLine() { return pe.getLine();
+	 * }
+	 */
 
 	/**
 	 * @see lucee.runtime.exp.IPageException#getTracePointer()

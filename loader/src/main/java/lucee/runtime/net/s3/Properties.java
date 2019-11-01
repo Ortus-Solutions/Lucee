@@ -37,22 +37,22 @@ public interface Properties {
 	/**
 	 * @param host the host to set
 	 */
-	//public void setHost(String host);
+	// public void setHost(String host);
 
 	/**
 	 * @return the defaultLocation
 	 */
-	public int getDefaultLocation();
+	public String getDefaultLocation();
 
 	/**
 	 * @param defaultLocation the defaultLocation to set
 	 */
-	//public void setDefaultLocation(String defaultLocation);
+	// public void setDefaultLocation(String defaultLocation);
 
 	/**
 	 * @param accessKeyId the accessKeyId to set
 	 */
-	//public void setAccessKeyId(String accessKeyId);
+	// public void setAccessKeyId(String accessKeyId);
 
 	/**
 	 * @return the secretAccessKey
@@ -62,6 +62,6 @@ public interface Properties {
 	/**
 	 * @param secretAccessKey the secretAccessKey to set
 	 */
-	//public void setSecretAccessKey(String secretAccessKey);
+	// public void setSecretAccessKey(String secretAccessKey);
 
 }

@@ -18,29 +18,25 @@
  **/
 package lucee.transformer.bytecode.statement;
 
+import org.objectweb.asm.Type;
+import org.objectweb.asm.commons.GeneratorAdapter;
+import org.objectweb.asm.commons.Method;
+
 import lucee.transformer.Factory;
 import lucee.transformer.Position;
 import lucee.transformer.TransformerException;
 import lucee.transformer.bytecode.BytecodeContext;
 import lucee.transformer.bytecode.util.Types;
 
-import org.objectweb.asm.Type;
-import org.objectweb.asm.commons.GeneratorAdapter;
-import org.objectweb.asm.commons.Method;
-
 public final class Abort extends StatementBaseNoFinal {
 
 	private static final Type ABORT = Type.getType(lucee.runtime.exp.Abort.class);
-	
-	// ExpressionException newInstance(int)
-	private static final Method NEW_INSTANCE =  new Method(
-			"newInstance",
-			ABORT,
-			new Type[]{Types.INT_VALUE});
 
-	
+	// ExpressionException newInstance(int)
+	private static final Method NEW_INSTANCE = new Method("newInstance", ABORT, new Type[] { Types.INT_VALUE });
+
 	public Abort(Factory f, Position start, Position end) {
-		super(f,start,end);
+		super(f, start, end);
 	}
 
 	@Override
@@ -49,6 +45,6 @@ public final class Abort extends StatementBaseNoFinal {
 		adapter.push(lucee.runtime.exp.Abort.SCOPE_PAGE);
 		adapter.invokeStatic(ABORT, NEW_INSTANCE);
 		adapter.throwException();
-		
+
 	}
 }

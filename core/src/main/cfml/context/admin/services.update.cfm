@@ -1,337 +1,354 @@
-<!--- 
+<!---
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either 
+ * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
- * You should have received a copy of the GNU Lesser General Public 
+ *
+ * You should have received a copy of the GNU Lesser General Public
  * License along with this library.  If not, see <http://www.gnu.org/licenses/>.
- * 
- ---><cfif request.admintype EQ "web"><cflocation url="#request.self#" addtoken="no"></cfif>
+ *
+ --->
 
 <cfparam name="url.action2" default="none">
 <cfset error.message="">
 <cfset error.detail="">
-<cfset restBasePath="/rest/update/provider/">
-
-<cftry>
+ <cftry>
 <cfswitch expression="#url.action2#">
 	<cfcase value="settings">
-    	<cfif not len(form.location)>
-        	<cfset form.location=form.locationCustom>
-        </cfif>
-        
-		<cfadmin 
+		<cfif !structKeyExists(form, "location") OR !structKeyExists(form, "locationCustom")>
+			<cfset form.locationCustom = "http://release.lucee.org">
+		</cfif>
+		<cfadmin
 			action="UpdateUpdate"
 			type="#request.adminType#"
 			password="#session["password"&request.adminType]#"
-			
+
 			updateType="#form.type#"
-			updateLocation="#form.location#"
-			remoteClients="#request.getRemoteClients()#">
-	</cfcase>
-	<cfcase value="run">
-		<cfsetting requesttimeout="10000">
-		<cfadmin 
-			action="runUpdate"
-			type="#request.adminType#"
-			password="#session["password"&request.adminType]#"
-			remoteClients="#request.getRemoteClients()#">
-	</cfcase>
-	
-	<cfcase value="remove">
-		<cfadmin 
-			action="removeUpdate"
-            onlyLatest="#StructKeyExists(form,'latest')#"
-			type="#request.adminType#"
-			password="#session["password"&request.adminType]#"
+			updateLocation="#form.locationCustom#"
 			remoteClients="#request.getRemoteClients()#">
 	</cfcase>
 </cfswitch>
-	<cfcatch>
+<cfcatch>
 		<cfset error.message=cfcatch.message>
 		<cfset error.detail=cfcatch.Detail>
+		<cfset error.cfcatch=cfcatch>
 	</cfcatch>
 </cftry>
+ <cfif request.admintype EQ "web"><cflocation url="#request.self#" addtoken="no"></cfif>
+<cfset error.message="">
+<cfset error.detail="">
 
-<!--- 
-Redirtect to entry --->
-<cfif cgi.request_method EQ "POST" and error.message EQ "">
-	<cflocation url="#request.self#?action=#url.action#" addtoken="no">
-</cfif>
+ <cfscript>
+	include template="ext.functions.cfm";
+	include template="services.update.functions.cfm";
 
-<!--- 
-Error Output --->
-<cfset printError(error)>
-
-
-<cfadmin 
-			action="listPatches"
-			returnvariable="patches"
-            type="#request.adminType#"
-            password="#session["password"&request.adminType]#">
-            
-<!---- 
-<cfadmin 
-			action="needNewJars"
-			returnvariable="needNewJars"
-            type="#request.adminType#"
-            password="#session["password"&request.adminType]#">
-because this is only about optional updates, we do this only in background from now
----->
-<cfset needNewJars=false>
-
-<cfscript>
-stText.services.update.serverNotReachable="Could not reach server {url}.";
-stText.services.update.serverFailed="server {url} failed to return a valid response.";
-
-	struct function getAvailableVersion() localmode="true"{
-		try{
-			
-			admin 
-				action="getAPIKey"
-				type="#request.adminType#"
-				password="#session["password"&request.adminType]#"
-				returnVariable="apiKey";
-
-			http 
-			url="#update.location##restBasePath#info/#server.lucee.version#" 
-			method="get" resolveurl="no" result="local.http" {
-				if(!isNull(apiKey))httpparam type="header" name="ioid" value="#apikey#";
-
-			}
-			// i have a response
-			if(isJson(http.filecontent)) {
-				rsp=deserializeJson(http.filecontent);
-			}
-			// service not available
-			else if(http.status_code==404) {
-				rsp={"type":"warning","message":replace(stText.services.update.serverNotReachable,'{url}',update.location)};
-			}
-			// server failed
-			else {
-				rsp={"type":"warning","message":replace(stText.services.update.serverFailed,'{url}',update.location)&" "&http.filecontent};
-			}
-		}
-		catch(e){
-			rsp={"type":"warning","message":replace(stText.services.update.serverFailed,'{url}',update.location)&" "&e.message};
-		}
-		return rsp;
+	ud=getUpdateData();
+	if(isNull(application.UpdateProvider[ud.location]))  {
+		application.UpdateProvider[ud.location]=getAvailableVersion();
 	}
-
-// get info for the update location
-admin 
-	action="getUpdate"
-	type="#request.adminType#"
-	password="#session["password"&request.adminType]#"
-	returnvariable="update";
-
-
-curr=server.lucee.version;
-updateData=getAvailableVersion();
-hasAccess=1;
-hasUpdate=structKeyExists(updateData,"available");
-
-</cfscript>
-
-
-
-<cfoutput>
-	<div class="pageintro">#stText.services.update.desc#</div>
+	updateData = application.UpdateProvider[ud.location];
 	
-	<!--- Settings --->
-	<h2>#stText.services.update.setTitle#</h2>
-	<div class="itemintro">#stText.services.update.setDesc#</div>
-	<cfform onerror="customError" action="#go(url.action,"settings")#" method="post">
-		<table class="maintbl">
+
+	admin
+			action="getUpdate"
+			type="#request.adminType#"
+			password="#session["password"&request.adminType]#"
+			returnvariable="upd";
+	
+	stText.services.update.downUpDesc=replace(stText.services.update.downUpDesc,'{version}',server.lucee.version);
+
+		/*if(isNull(providerData.message) || providerData.type == 'warning'){
+			error.message = "Couldn't able to reach the server. Please try after some times";
+			result.otherVersions = [];
+		} else{
+			result = providerData;
+		}
+		updateData=getAvailableVersion();*/
+
+
+		if(updateData.provider.location EQ "http://update.lucee.org"){
+			version = "lucee";
+		} 
+		else{
+			version = "custom";
+		}
+		versionsStr = {};
+		versionsStr.snapShot = {};
+		versionsStr.pre_Release= {};
+		versionsStr.release = {};
+		if(version eq 'custom'){
+			versionsStr.custom = {};
+		}
+		for(type in versionsStr){
+			versionsStr[type].upgrade = [];
+			versionsStr[type].downgrade = [];
+		}
+		if(version eq 'custom' && structKeyExists(updateData, "otherVersions") && Len(updateData.otherVersions)){
+			for(versions in updateData.otherVersions){
+				if(toVersionSortable(versions) LTE toVersionSortable(server.lucee.version)){
+						arrayPrepend(versionsStr.custom.downgrade, versions);
+				}else{
+					arrayPrepend(versionsStr.custom.upgrade, versions);
+				}
+			}
+		}
+		
+		admin
+			action="getMinVersion"
+			type="#request.adminType#"
+			password="#session["password"&request.adminType]#"
+			returnvariable="minVersion";
+		minVs = toVersionSortable(minVersion);
+
+		if(len(updateData.otherVersions)){
+
+			for(versions in updateData.otherVersions ){
+				if(versions EQ server.lucee.version) cfcontinue;
+				vs=toVersionSortable(versions);
+				if(vs LTE minVS) cfcontinue;
+				;
+				if(FindNoCase("SNAPSHOT", versions)){
+					if(vs LTE toVersionSortable(server.lucee.version)){
+						arrayPrepend(versionsStr.SNAPSHOT.downgrade, versions);
+					} else{
+						arrayPrepend(versionsStr.SNAPSHOT.upgrade, versions);
+					}
+				} 
+				else if(FindNoCase("ALPHA", versions) || FindNoCase("BETA", versions) || FindNoCase("RC", versions)){
+					if(vs LTE toVersionSortable(server.lucee.version)){
+						arrayPrepend(versionsStr.pre_Release.downgrade, versions);
+					} else{
+						arrayPrepend(versionsStr.pre_Release.upgrade, versions);
+					}
+				}
+				else{
+					if(vs LTE toVersionSortable(server.lucee.version)){
+						arrayPrepend(versionsStr.release.downgrade, versions);
+					} else{
+						arrayPrepend(versionsStr.release.upgrade, versions);
+					}
+				}
+			}
+		}
+		//dump(var:versionsStr,expand:false);
+		//dump(var:updateData,expand:false);
+	printError(error);
+</cfscript>
+<cfoutput>
+
+<style>
+	.btn {
+		color:white;
+		background-color:##CC0000;
+	}
+</style>
+
+
+	<!--- <h1>#stText.services.update.luceeProvider#</h1>--->
+	<p>
+		#replace(stText.services.update.titleDesc,'{version}',"<b>"&server.lucee.version&"</b>") #
+	</p>
+	<cfset hiddenFormContents = "" >
+	<cfset count = 1>
+	<cfset listVrs = "Release,Pre_Release,SnapShot">
+	<cfloop list="#listVrs#" index="key">
+		<cfset len = 0>
+		<cfset len = len(versionsStr[key].upgrade) + len(versionsStr[key].downgrade)>
+		<span>
+			<input
+				<cfif count EQ 1>class="bl button alignLeft" <cfelseif count EQ StructCount(versionsStr)> class="br button" <cfelse> class="bm button" </cfif>  
+				style="width:180px"
+				name="changeConnection" 
+				id="btn_#UcFirst(Lcase(key))#" 
+				value="#stText.services.update.short[key]# (#len#)" 
+				onclick="enableVersion('#UcFirst(Lcase(key))#');"  
+				type="button"></span>
+		<cfset count++>
+	</cfloop>
+	<div class="msg"></div>
+	<cfsavecontent variable="tmpContent">
+		<div  class="topBottomSpace">
+			<div class="whitePanel">
+				<cfformClassic onerror="customError" action="#request.self#?action=#url.action#" method="post">
+					<select name="UPDATE" id="upt_version"  class="large">
+						<option value="">--- select the version ---</option>
+						<cfloop list="#listVrs#" index="key">
+							<cfif len(versionsStr[key].upgrade) || len(versionsStr[key].downgrade)>
+								<optgroup class="td_#UcFirst(Lcase(key))#" label="#stText.services.update.short[key]#">
+									<cfloop array="#versionsStr[key].upgrade#" index="i">
+										<option class="td_#UcFirst(Lcase(key))#" value="#i#">#stText.services.update.upgradeTo# #i#</option>
+									</cfloop>
+
+									<cfloop array="#versionsStr[key].downgrade#" index="i">
+										<option class="td_#UcFirst(Lcase(key))#" value="#i#">#stText.services.update.downgradeTo# #i#</option>
+									</cfloop>
+								</optgroup>
+							</cfif>
+						</cfloop>
+					</select>
+					<input type="button" class="button submit"
+						onclick="changeVersion(this, UPDATE)" 
+						name="mainAction" 
+						value="#stText.services.update.downUpBtn#">
+					<div class="comment">
+						<cfloop list="#listVrs#" index="key">
+							<div class="itemintro"><b>#stText.services.update.short[key]# :</b> #stText.services.update[key&"Desc"]#</div>
+						</cfloop>
+					</div>
+				</cfformClassic>
+			</div>
+		</div>
+	</cfsavecontent>
+
+	<div id="updateInfoDesc" style="text-align: center;"></div>
+	<div id="group_Connection">
+		#tmpContent#
+	</div>
+
+	<!--- for custom --->
+	<cfformClassic onerror="customError" action="#go(url.action,"settings")#" method="post">
+		<h1>#stText.services.update.customProvider#</h1>
+		<table class="maintbl alignLeft">
 			<tbody>
 				<tr>
 					<th scope="row">#stText.services.update.provider#</th>
 					<td>
-						<cfif hasAccess>
-							<cfset isCustom=true>
-							<ul class="radiolist" id="updatelocations">
-								<!--- Release --->
-								<li>
-									<label>
-										<input type="radio" class="radio" name="location" value="http://release.lucee.org"<cfif update.location EQ 'http://release.lucee.org'> <cfset isCustom=false>checked="checked"</cfif> />
-										<b>#stText.services.update.location_release#</b>
-									</label>
-									<div class="comment">#stText.services.update.location_releaseDesc#</div>
-								</li>
-								<!--- Snapshot --->
-								<li>
-									<label>
-										<input type="radio" class="radio" name="location" value="http://snapshot.lucee.org"<cfif update.location EQ 'http://snapshot.lucee.org'> <cfset isCustom=false>checked="checked"</cfif> />
-										<b>#stText.services.update.location_snapshot#</b>
-									</label>
-									<div class="comment">#stText.services.update.location_snapshotDesc#</div>
-								</li>
-								<li>
-									<label>
-										<input type="radio" class="radio" id="sp_radio_custom" name="location"<cfif isCustom> checked="checked"</cfif> value="" />
-										<b>#stText.services.update.location_custom#</b>
-									</label>
-									<input id="customtextinput" type="text" class="text" name="locationCustom" size="40" value="<cfif isCustom>#update.location#</cfif>">
-									<div class="comment">#stText.services.update.location_customDesc#</div>
-									
-									<cfsavecontent variable="headText">
+						<ul class="radiolist" id="updatelocations">
+							<!--- Release --->
+							<li>
+								<label>
+									<input type="checkbox" id="sp_radio_custom" name="location"<cfif  version EQ 'custom'> checked</cfif> value="cutsomVersion" />
+									<input type="hidden" value="#updateData.provider.location#" name="updatedInfo">
+									<b>#stText.services.update.location_custom#</b>
+								</label>
+								<input id="customtextinput" type="text" class="text" name="locationCustom" size="40" value="<cfif  version EQ 'custom'>#updateData.provider.location#</cfif>" disabled>
+								<div class="comment">#replace("#stText.services.update.location_customDesc#","{url}","<a href=""http://docs.lucee.org"">http://docs.lucee.org</a>")#</div>
+								<cfif version EQ 'custom'>
+									<cfhtmlbody>
 										<script type="text/javascript">
-											function sp_clicked()
-											{
-												var iscustom = $('##sp_radio_custom')[0].checked;
-												$('##customtextinput').css('opacity', (iscustom ? 1:.5)).prop('disabled', !iscustom);
-											}
-											$(function(){
-												$('##updatelocations input.radio').bind('click change', sp_clicked);
-												sp_clicked();
-											});
+											$( '##customtextinput' ).attr( 'disabled', false);
 										</script>
-									</cfsavecontent>
-									<cfhtmlhead text="#headText#" />
-								</li>
-							</ul>
-						<cfelse>
-							<b>#update.location#</b>
-						</cfif>
+									</cfhtmlbody>
+								</cfif>
+							</li>
+						</ul>
 					</td>
 				</tr>
 				<tr>
 					<th scope="row">#stText.services.update.type#</th>
 					<td>
-						<cfif hasAccess>
-							<select name="type">
-								<option value="manual" <cfif update.type EQ "manual">selected</cfif>>#stText.services.update.type_manually#</option>
-								<option value="auto" <cfif update.type EQ "auto">selected</cfif>>#stText.services.update.type_auto#</option>
-							</select>
-						<cfelse>
-							<b>#update.type#</b>
-						</cfif>
+						<select name="type">
+							<option value="manual" <cfif upd.type EQ "manual">selected</cfif>>#stText.services.update.type_manually#</option>
+							<option value="auto" <cfif upd.type EQ "auto">selected</cfif>>#stText.services.update.type_auto#</option>
+						</select>
 						<div class="comment">#stText.services.update.typeDesc#</div>
 					</td>
 				</tr>
-				<cfif hasAccess>
-					<cfmodule template="remoteclients.cfm" colspan="2">
-				</cfif>
 			</tbody>
-			<cfif hasAccess>
-				<tfoot>
-					<tr>
-						<td colspan="2">
-							<input type="submit" class="bl button submit" name="mainAction" value="#stText.Buttons.Update#">
-							<input type="reset" class="br button reset" name="cancel" value="#stText.Buttons.Cancel#">
-						</td>
-					</tr>
-				</tfoot>
-			</cfif>
+			<tfoot>
+				<tr>
+					<td colspan="2">
+						<input type="submit" class="bl button submit" name="mainAction" value="#stText.Buttons.Update#">
+						<input type="reset" class="br button reset" name="cancel" value="#stText.Buttons.Cancel#">
+					</td>
+				</tr>
+			</tfoot>
 		</table>
-	</cfform>
+	</cfformClassic>
 
-	<!--- 
-For testing
-<cfset updatedata.changeLog={
-	"331":"cached query not disconnect from life query",
-	"LDEV-327":"add frontend for request Queue"
+	<cfhtmlbody>
+		<script type="text/javascript">
+			$(document).ready(function(){
+				if($('##sp_radio_custom').prop("checked")){
+					$( '##customtextinput' ).attr( 'disabled', false);
+					$('##customURL').attr( 'disabled', false);
+				}
+				if('#server.lucee.state#' == 'SNAPSHOT')
+					var version = 'Snapshot';
+				else if('#server.lucee.state#' == 'RC')
+					var version = 'Pre_release';
+				else
+					var version = 'Release';
+				enableVersion(version, "intial");
+				$("##btn_"+version).addClass("btn");
+			});
 
-	}>--->
+			function enableVersion(v, i){
+				if(i== 'intial'){
+					$("##group_Connection").find('optgroup' ).each(function(index) {
+						var xx = $(this).attr('class');
+						window[xx] = $("."+xx).detach();
+						if("td_"+v == xx){
+							$("##upt_version").append(window[xx]);
+						}
+				  		$(".btn").removeClass('btn');
+				  		$("##btn_"+v).addClass("btn");
+					});
+				} else {
+					if($( "##btn_"+v).hasClass( "btn" )){
+						window[v] = $(".td_"+v).detach();
+						$("##btn_"+v).removeClass('btn');
+					} else {
+						if(v == "Snapshot"){
+							$(".td_Pre_release").remove();
+							$(".td_Release").remove();
+						}
+						if(v == "Pre_release"){
+							$(".td_Snapshot").remove();
+							$(".td_Release").remove();
+						}
+						if(v == "Release"){
+							$(".td_Snapshot").remove();
+							$(".td_Pre_release").remove();
+						}
+						$("##upt_version").append(window["td_"+v]);
+						$(".btn").removeClass('btn');
+						$("##btn_"+v).addClass('btn');
+					}
+				}
+			}
+
+			function changeVersion(field, frm) {
+				if( frm.value != ""){
+					submitted = true;
+					$('##group_Connection').hide();
+					url='changeto.cfm?#session.urltoken#&adminType=#request.admintype#&version='+frm.value;
+					$(document).ready(function(){
+						$('##updateInfoDesc').html('<img src="../res/img/spinner16.gif.cfm">');
+						disableBlockUI=true;
+
+				 		$.get(url, function(response) {
+				      		field.disabled = false;
+
+				 			if((response+"").trim()=="")
+								window.location=('#request.self#?action=#url.action#'); //$('##updateInfoDesc').html("<p>#stText.services.update.restartOKDesc#</p>");
+							else
+								$('##updateInfoDesc').html('<div class="error">'+response+'</div>');
+								//window.location=('#request.self#?action=#url.action#'); //$('##updateInfoDesc').html(response);
+				 		});
+					});
+				} else {
+					$( ".msg" ).append( "<div class='error'>Please Choose any version</p>" );
+				}
+			}
+
+			$('##sp_radio_custom').change(function(){
+				// enable / disable custom URL field
+				if($(this).prop("checked")){
+					$( '##customtextinput' ).attr( 'disabled', false);
+				} else{
+					$( '##customtextinput' ).attr( 'disabled', true);
+				}
+			});
+		</script>
+	</cfhtmlbody>
+
+	<p class="comment">* #replace(stText.services.update.titleDesc2,'{min-version}',"<b>"&minVersion&"</b>") #</p>
 	
-	<!--- 
-	Info --->
-	<cfif hasUpdate>
-		<cfscript>
-			// Jira
-			jira=stText.services.update.jira;
-			jira=replace(jira,'{a}','<a href="https://issues.lucee.org" target="_blank">');
-			jira=replace(jira,'{/a}','</a>');
-		</cfscript>
-		<h2>#stText.services.update.infoTitle#</h2>
-		<div class="text">
-			#updatedata.message#
-		</div>
-		<div style="overflow:auto;height:200px;border-style:solid;border-width:1px;padding:10px">
-<pre><cfloop list="#listSort(structKeyList(updateData.changelog),'textnocase')#" item="key"><!--- 
-			---><cfif findNoCase("LDEV",key)><a target="_blank" href="http://issues.lucee.org/browse/#key#">#key#</a><cfelse><a target="_blank" href="https://bitbucket.org/lucee/lucee/issue/#key#">###key#</a></cfif> - #updateData.changelog[key]#
-</cfloop></pre></div>
-		#jira#
-	<cfelse>
-		<h2>#stText.services.update.infoTitle#</h2>
-		<div class="text">#updateData.message#</div>
-	</cfif>
-	
-	
-	<cfif hasUpdate>
-		<!--- run update --->
-		<h2>#stText.services.update.exe#</h2>
-		<div class="itemintro">#stText.services.update.exeDesc#</div>
-		<cfform onerror="customError" action="#go(url.action,"Run")#" method="post">
-			<table class="maintbl">
-				<tbody>
-					<cfmodule template="remoteclients.cfm" colspan="1">
-				</tbody>
-				<tfoot>
-					<tr>
-						<td>
-							<input type="submit" class="bs button submit" name="mainAction" value="#stText.services.update.exeRun#">
-						</td>
-					</tr>
-				</tfoot>
-			</table>
-		</cfform>
-	<cfelseif needNewJars>
-		<h2>#stText.services.update.lib#</h2>
-		<div class="itemintro">#stText.services.update.libDesc#</div>
-		<cfform onerror="customError" action="#go(url.action,"updateJars")#" method="post">
-			<table class="maintbl">
-				<tbody>
-					<cfmodule template="remoteclients.cfm" colspan="2">
-				</tbody>
-				<tfoot>
-					<tr>
-						<td colspan="2">
-							<input type="submit" class="button submit" name="mainAction" value="#stText.services.update.lib#">
-						</td>
-					</tr>
-				</tfoot>
-			</table>
-		</cfform>
-	</cfif>
-	
-	<!--- remove update --->
-	<cfset size=arrayLen(patches)>
-	<cfif size>
-		<h2>#stText.services.update.remove#</h2>
-		<div class="itemintro">#stText.services.update.removeDesc#</div>
-		<cfform onerror="customError" action="#go(url.action,"Remove")#" method="post">
-			<table class="maintbl">
-				<thead>
-					<tr>
-						<th>#stText.services.update.patch#</th>
-					</tr>
-				</thead>
-				<tbody>
-					<cfloop index="i" from="1" to="#size#">
-						<tr>
-							<td>#patches[i]#</td>
-						</tr>
-						<cfset version=patches[i]>
-					</cfloop>
-					<cfmodule template="remoteclients.cfm" colspan="2">
-				</tbody>
-				<tfoot>
-					<tr>
-						<td>
-							<input type="submit" class="button submit" name="mainAction" value="#stText.services.update.removeRun#">
-							<input type="submit" class="button submit" name="latest" value="#replace(stText.services.update.removeLatest,'{version}',version)#">
-						</td>
-					</tr>
-				</tfoot>
-			</table>
-		</cfform>
-	</cfif>
 </cfoutput>

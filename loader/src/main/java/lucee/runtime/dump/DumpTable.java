@@ -39,19 +39,15 @@ public class DumpTable implements DumpData {
 	private String id;
 	private String ref;
 
-	public DumpTable(final String highLightColor, final String normalColor,
-			final String borderColor) {
+	public DumpTable(final String highLightColor, final String normalColor, final String borderColor) {
 		this(null, highLightColor, normalColor, borderColor, borderColor);
 	}
 
-	public DumpTable(final String type, final String highLightColor,
-			final String normalColor, final String borderColor) {
+	public DumpTable(final String type, final String highLightColor, final String normalColor, final String borderColor) {
 		this(type, highLightColor, normalColor, borderColor, borderColor);
 	}
 
-	public DumpTable(final String type, final String highLightColor,
-			final String normalColor, final String borderColor,
-			final String fontColor) {
+	public DumpTable(final String type, final String highLightColor, final String normalColor, final String borderColor, final String fontColor) {
 		this.highLightColor = highLightColor;
 		this.normalColor = normalColor;
 		this.borderColor = borderColor;
@@ -106,16 +102,14 @@ public class DumpTable implements DumpData {
 	}
 
 	/**
-	 * @param width sets the With of the HTML Box, can be a number or a
-	 *            procentual value
+	 * @param width sets the With of the HTML Box, can be a number or a percentage value
 	 */
 	public void setWidth(final String width) {
 		this.width = width;
 	}
 
 	/**
-	 * @param height sets the Height of the HTML Box, can be a number or a
-	 *            procentual value
+	 * @param height sets the Height of the HTML Box, can be a number or a percentage value
 	 */
 	public void setHeight(final String height) {
 		this.height = height;
@@ -199,35 +193,25 @@ public class DumpTable implements DumpData {
 		appendRow(new DumpRow(highlightType, new DumpData[] { item1 }));
 	}
 
-	public void appendRow(final int highlightType, final DumpData item1,
-			final DumpData item2) {
+	public void appendRow(final int highlightType, final DumpData item1, final DumpData item2) {
 		appendRow(new DumpRow(highlightType, new DumpData[] { item1, item2 }));
 	}
 
-	public void appendRow(final int highlightType, final DumpData item1,
-			final DumpData item2, final DumpData item3) {
-		appendRow(new DumpRow(highlightType, new DumpData[] { item1, item2,
-				item3 }));
+	public void appendRow(final int highlightType, final DumpData item1, final DumpData item2, final DumpData item3) {
+		appendRow(new DumpRow(highlightType, new DumpData[] { item1, item2, item3 }));
 	}
 
-	public void appendRow(final int highlightType, final DumpData item1,
-			final DumpData item2, final DumpData item3, final DumpData item4) {
-		appendRow(new DumpRow(highlightType, new DumpData[] { item1, item2,
-				item3, item4 }));
+	public void appendRow(final int highlightType, final DumpData item1, final DumpData item2, final DumpData item3, final DumpData item4) {
+		appendRow(new DumpRow(highlightType, new DumpData[] { item1, item2, item3, item4 }));
 	}
 
-	public void appendRow(final int highlightType, final DumpData item1,
-			final DumpData item2, final DumpData item3, final DumpData item4,
-			final DumpData item5) {
-		appendRow(new DumpRow(highlightType, new DumpData[] { item1, item2,
-				item3, item4, item5 }));
+	public void appendRow(final int highlightType, final DumpData item1, final DumpData item2, final DumpData item3, final DumpData item4, final DumpData item5) {
+		appendRow(new DumpRow(highlightType, new DumpData[] { item1, item2, item3, item4, item5 }));
 	}
 
-	public void appendRow(final int highlightType, final DumpData item1,
-			final DumpData item2, final DumpData item3, final DumpData item4,
-			final DumpData item5, final DumpData item6) {
-		appendRow(new DumpRow(highlightType, new DumpData[] { item1, item2,
-				item3, item4, item5, item6 }));
+	public void appendRow(final int highlightType, final DumpData item1, final DumpData item2, final DumpData item3, final DumpData item4, final DumpData item5,
+			final DumpData item6) {
+		appendRow(new DumpRow(highlightType, new DumpData[] { item1, item2, item3, item4, item5, item6 }));
 	}
 
 	public void prependRow(final DumpRow row) {

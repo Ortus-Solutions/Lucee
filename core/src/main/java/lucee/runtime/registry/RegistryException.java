@@ -18,7 +18,6 @@
  **/
 package lucee.runtime.registry;
 
-
 /**
  * Registry Exception Class
  */

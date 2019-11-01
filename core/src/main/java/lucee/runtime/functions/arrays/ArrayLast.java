@@ -18,9 +18,9 @@
  **/
 package lucee.runtime.functions.arrays;
 
-
 import lucee.runtime.PageContext;
 import lucee.runtime.exp.ExpressionException;
+import lucee.runtime.exp.FunctionException;
 import lucee.runtime.exp.PageException;
 import lucee.runtime.ext.function.BIF;
 import lucee.runtime.op.Caster;
@@ -30,14 +30,15 @@ public final class ArrayLast extends BIF {
 
 	private static final long serialVersionUID = -2378677202092684813L;
 
-	public static Object call(PageContext pc , Array array) throws PageException {
-        if(array.size()==0) throw new ExpressionException("Cannot return last element of array; array is empty");
-        return array.getE(array.size());
-    }
-	
+	public static Object call(PageContext pc, Array array) throws PageException {
+		if (array.size() == 0) throw new ExpressionException("Cannot return last element of array; array is empty");
+		return array.getE(array.size());
+	}
+
 	@Override
 	public Object invoke(PageContext pc, Object[] args) throws PageException {
-		return call(pc,Caster.toArray(args[0]));
+		if (args.length == 1) return call(pc, Caster.toArray(args[0]));
+		else throw new FunctionException(pc, "ArrayLast", 1, 1, args.length);
 	}
-    
+
 }

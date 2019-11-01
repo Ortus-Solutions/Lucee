@@ -34,13 +34,13 @@ import lucee.commons.io.res.filter.ResourceNameFilter;
 public abstract class ResourceSupport implements Resource {
 
 	@Override
-	public void copyFrom(Resource res,boolean append) throws IOException {
-		IOUtil.copy(res, this.getOutputStream(append),true);
+	public void copyFrom(Resource res, boolean append) throws IOException {
+		IOUtil.copy(res, this.getOutputStream(append), true);
 	}
 
 	@Override
-	public void copyTo(Resource res,boolean append) throws IOException {
-		IOUtil.copy(this, res.getOutputStream(append),true);
+	public void copyTo(Resource res, boolean append) throws IOException {
+		IOUtil.copy(this, res.getOutputStream(append), true);
 	}
 
 	@Override
@@ -70,44 +70,44 @@ public abstract class ResourceSupport implements Resource {
 
 	@Override
 	public void moveTo(Resource dest) throws IOException {
-		ResourceUtil.moveTo(this, dest,false);
+		ResourceUtil.moveTo(this, dest, false);
 	}
-	
+
 	@Override
 	public String[] list(ResourceFilter filter) {
 		String[] files = list();
-		if(files==null) return null;
-		List list=new ArrayList();
+		if (files == null) return null;
+		List list = new ArrayList();
 		Resource res;
-		for(int i=0;i<files.length;i++) {
-			res=getRealResource(files[i]);
-			if(filter.accept(res))list.add(files[i]);
+		for (int i = 0; i < files.length; i++) {
+			res = getRealResource(files[i]);
+			if (filter.accept(res)) list.add(files[i]);
 		}
 		return (String[]) list.toArray(new String[list.size()]);
 	}
 
 	@Override
 	public String[] list(ResourceNameFilter filter) {
-		String[] lst=list();
-		if(lst==null) return null;
-		
-		List list=new ArrayList();
-		for(int i=0;i<lst.length;i++) {
-			if(filter.accept(getParentResource(),lst[i]))list.add(lst[i]);
+		String[] lst = list();
+		if (lst == null) return null;
+
+		List list = new ArrayList();
+		for (int i = 0; i < lst.length; i++) {
+			if (filter.accept(getParentResource(), lst[i])) list.add(lst[i]);
 		}
-		if(list.size()==0) return new String[0];
-		if(list.size()==lst.length) return lst;
+		if (list.size() == 0) return new String[0];
+		if (list.size() == lst.length) return lst;
 		return (String[]) list.toArray(new String[list.size()]);
 	}
 
 	@Override
 	public Resource[] listResources(ResourceNameFilter filter) {
 		String[] files = list();
-		if(files==null) return null;
-		
-		List list=new ArrayList();
-		for(int i=0;i<files.length;i++) {
-			if(filter.accept(this,files[i]))list.add(getRealResource(files[i]));
+		if (files == null) return null;
+
+		List list = new ArrayList();
+		for (int i = 0; i < files.length; i++) {
+			if (filter.accept(this, files[i])) list.add(getRealResource(files[i]));
 		}
 		return (Resource[]) list.toArray(new Resource[list.size()]);
 	}
@@ -115,13 +115,13 @@ public abstract class ResourceSupport implements Resource {
 	@Override
 	public Resource[] listResources(ResourceFilter filter) {
 		String[] files = list();
-		if(files==null) return null;
-		
-		List list=new ArrayList();
+		if (files == null) return null;
+
+		List list = new ArrayList();
 		Resource res;
-		for(int i=0;i<files.length;i++) {
-			res=this.getRealResource(files[i]);
-			if(filter.accept(res))list.add(res);
+		for (int i = 0; i < files.length; i++) {
+			res = this.getRealResource(files[i]);
+			if (filter.accept(res)) list.add(res);
 		}
 		return (Resource[]) list.toArray(new Resource[list.size()]);
 	}
@@ -130,19 +130,17 @@ public abstract class ResourceSupport implements Resource {
 	public String getReal(String realpath) {
 		return getRealResource(realpath).getPath();
 	}
-	
 
 	@Override
 	public String[] list() {
 		Resource[] children = listResources();
-		if(children==null) return null;
-		String[] rtn=new String[children.length];
-		for(int i=0;i<children.length;i++) {
-			rtn[i]=children[i].getName();
+		if (children == null) return null;
+		String[] rtn = new String[children.length];
+		for (int i = 0; i < children.length; i++) {
+			rtn[i] = children[i].getName();
 		}
 		return rtn;
 	}
-	
 
 	@Override
 	public boolean canRead() {
@@ -163,7 +161,7 @@ public abstract class ResourceSupport implements Resource {
 		catch (IOException e) {
 			return false;
 		}
-		
+
 	}
 
 	@Override
@@ -171,7 +169,7 @@ public abstract class ResourceSupport implements Resource {
 		try {
 			createFile(false);
 			return true;
-		} 
+		}
 		catch (IOException e) {}
 		return false;
 	}
@@ -196,14 +194,13 @@ public abstract class ResourceSupport implements Resource {
 			return false;
 		}
 	}
-	
 
 	@Override
 	public boolean delete() {
 		try {
 			remove(false);
 			return true;
-		} 
+		}
 		catch (IOException e) {}
 		return false;
 	}
@@ -242,24 +239,24 @@ public abstract class ResourceSupport implements Resource {
 	public void setSystem(boolean value) throws IOException {
 		setAttribute(ATTRIBUTE_SYSTEM, value);
 	}
-	
+
 	@Override
 	public boolean equals(Object obj) {
-		if(this==obj) return true;
-		if(!(obj instanceof Resource)) return false;
-		Resource other=(Resource) obj;
-		
-		if(getResourceProvider()!=other.getResourceProvider()) return false;
-		
-		if(getResourceProvider().isCaseSensitive()) {
-			if(getPath().equals(other.getPath())) return true;
+		if (this == obj) return true;
+		if (!(obj instanceof Resource)) return false;
+		Resource other = (Resource) obj;
+
+		if (getResourceProvider() != other.getResourceProvider()) return false;
+
+		if (getResourceProvider().isCaseSensitive()) {
+			if (getPath().equals(other.getPath())) return true;
 			return ResourceUtil.getCanonicalPathEL(this).equals(ResourceUtil.getCanonicalPathEL(other));
 		}
-		if(getPath().equalsIgnoreCase(other.getPath())) return true;
+		if (getPath().equalsIgnoreCase(other.getPath())) return true;
 		return ResourceUtil.getCanonicalPathEL(this).equalsIgnoreCase(ResourceUtil.getCanonicalPathEL(other));
-		
+
 	}
-	
+
 	@Override
 	public String toString() {
 		return getPath();
@@ -272,6 +269,6 @@ public abstract class ResourceSupport implements Resource {
 
 	@Override
 	public void setAttribute(short attribute, boolean value) throws IOException {
-		throw new IOException("the resource ["+getPath()+"] does not support attributes");
+		throw new IOException("the resource [" + getPath() + "] does not support attributes");
 	}
 }

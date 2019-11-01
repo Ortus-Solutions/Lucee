@@ -36,23 +36,14 @@ public interface Form extends Scope {
 	public abstract String getEncoding();
 
 	/**
-	 * @param encoding The encoding to set.
-	 * @throws UnsupportedEncodingException
-	 * @deprecated use instead
-	 *             <code>setEncoding(ApplicationContext ac,String encoding)</code>
-	 */
-	//public abstract void setEncoding(String encoding) throws UnsupportedEncodingException;
-
-	/**
 	 * @param ac current ApplicationContext
 	 * @param encoding The encoding to set.
 	 * @throws UnsupportedEncodingException
 	 */
-	public abstract void setEncoding(ApplicationContext ac, String encoding)
-			throws UnsupportedEncodingException;
+	public abstract void setEncoding(ApplicationContext ac, String encoding) throws UnsupportedEncodingException;
 
 	/**
-	 * @return return the exception when initialised
+	 * @return return the exception when initialized
 	 */
 	public abstract PageException getInitException();
 

@@ -28,30 +28,27 @@ public class Operation3 extends ExpressionSupport implements Operation {
 	private Expression right;
 	private int operator;
 
-
 	public Operation3(Expression exp, Expression left, Expression right, int operator) {
-		this.exp=exp;
-		this.left=left;
-		this.right=right;
-		this.operator=operator;
+		this.exp = exp;
+		this.left = left;
+		this.right = right;
+		this.operator = operator;
 	}
 
 	@Override
 	public String toString(boolean noAlias) {
 		// like escape
-		if(Operation.OPERATION3_LIKE==operator){
-			if(!hasAlias() || noAlias) {
-				return exp.toString(true)+" like "+
-						left.toString(true)+" escape "+
-						right.toString(true);
+		if (Operation.OPERATION3_LIKE == operator) {
+			if (!hasAlias() || noAlias) {
+				return exp.toString(true) + " like " + left.toString(true) + " escape " + right.toString(true);
 			}
-			return toString(true)+" as "+getAlias();
+			return toString(true) + " as " + getAlias();
 		}
 		// between
-		if(!hasAlias() || noAlias) {
-			return exp.toString(true)+" between "+left.toString(true)+" and "+right.toString(true);
+		if (!hasAlias() || noAlias) {
+			return exp.toString(true) + " between " + left.toString(true) + " and " + right.toString(true);
 		}
-		return toString(true)+" as "+getAlias();
+		return toString(true) + " as " + getAlias();
 	}
 
 	/**

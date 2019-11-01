@@ -28,19 +28,16 @@ public class AjaxProxy extends TagImpl {
 	private String jsClassName;
 	private String onError;
 	private String onSuccess;
-	
-
 
 	@Override
-	public void release()	{
+	public void release() {
 		super.release();
-		bind=null;
-		cfc=null;
-		jsClassName=null;
-		onError=null;
-		onSuccess=null;
+		bind = null;
+		cfc = null;
+		jsClassName = null;
+		onError = null;
+		onSuccess = null;
 	}
-
 
 	/**
 	 * @param bind the bind to set
@@ -49,14 +46,12 @@ public class AjaxProxy extends TagImpl {
 		this.bind = bind;
 	}
 
-
 	/**
 	 * @param cfc the cfc to set
 	 */
 	public void setCfc(String cfc) {
 		this.cfc = cfc;
 	}
-
 
 	/**
 	 * @param jsClassName the jsClassName to set
@@ -65,7 +60,6 @@ public class AjaxProxy extends TagImpl {
 		this.jsClassName = jsClassName;
 	}
 
-
 	/**
 	 * @param onError the onError to set
 	 */
@@ -73,23 +67,21 @@ public class AjaxProxy extends TagImpl {
 		this.onError = onError;
 	}
 
-
 	/**
 	 * @param onSuccess the onSuccess to set
 	 */
 	public void setOnsuccess(String onSuccess) {
 		this.onSuccess = onSuccess;
 	}
- 
 
 	@Override
-	public int doStartTag() throws PageException	{
+	public int doStartTag() throws PageException {
 		throw new TagNotSupported("AjaxProxy");
-		//return SKIP_BODY;
+		// return SKIP_BODY;
 	}
 
 	@Override
-	public int doEndTag()	{
+	public int doEndTag() {
 		return EVAL_PAGE;
 	}
 }

@@ -16,7 +16,6 @@ Defaults --->
 <cfparam name="form.mainAction" default="none">
 <cfparam name="form.subAction" default="none">
 
-<cfset stText.setting.handleUnquotedAttrValueAsString="Tag attribute values">
 <cfset stText.setting.handleUnquotedAttrValueAsStringDesc='Handle unquoted tag attribute values as strings.
 <br>Example:<br>
 &lt;cfmail subject=sub from="##f##" to="##t##"/><br>
@@ -50,6 +49,7 @@ Defaults --->
                 suppressWSBeforeArg="#form.suppressWSBeforeArg#"
                 handleUnquotedAttrValueAsString="#form.handleUnquotedAttrValueAsString#"
 				templateCharset="#form.templateCharset#"
+				externalizeStringGTE="#form.externalizeStringGTE#"
 				remoteClients="#request.getRemoteClients()#">
 	
 		</cfcase>
@@ -66,7 +66,8 @@ Defaults --->
 				suppressWSBeforeArg=""
 				templateCharset=""
 				handleUnquotedAttrValueAsString=""
-					
+				externalizeStringGTE=""
+
 				remoteClients="#request.getRemoteClients()#">
 	
 		</cfcase>
@@ -74,11 +75,12 @@ Defaults --->
 	<cfcatch>
 		<cfset error.message=cfcatch.message>
 		<cfset error.detail=cfcatch.Detail>
+		<cfset error.cfcatch=cfcatch>
 	</cfcatch>
 </cftry>
 
 
-<!--- 
+<!---  	templates.error.error_cfm$cf.str(Llucee/runtime/PageContext;II)Ljava/lang/String;
 Error Output --->
 <cfset printError(error)>
 
@@ -98,12 +100,11 @@ Redirtect to entry --->
 	password="#session["password"&request.adminType]#"
 	returnVariable="setting">
 
-
 <cfif not hasAccess><cfset noAccess(stText.setting.noAccess)></cfif>
 
 <cfoutput>
 	<div class="pageintro">#stText.setting.compiler#</div>
-	<cfform onerror="customError" action="#request.self#?action=#url.action#" method="post">
+	<cfformClassic onerror="customError" action="#request.self#?action=#url.action#" method="post">
 		<table class="maintbl">
 			<tbody>
 				
@@ -127,6 +128,60 @@ Redirtect to entry --->
 						<cfset renderCodingTip( codeSample ,stText.settings.codetip)>
 					</td>
 				</tr>
+
+				<!--- Externalize Strings --->
+				<cfset stText.settings.externalizeStringGTE="Externalize strings">
+				<cfset stText.settings.externalizeStringGTEDesc="Externalize strings from generated class files to separate files. This can drastically reduce the memory footprint for templates but can have a negative impact on execution times. A lower ""breakpoint"" will cause slower execution than a higher breakpoint.">
+
+				<cfset stText.settings.externalizeString_1="do not externalize any strings">
+				<cfset stText.settings.externalizeString10="externalize strings larger than 10 characters">
+				<cfset stText.settings.externalizeString100="externalize strings larger than 100 characters">
+				<cfset stText.settings.externalizeString1000="externalize strings larger than 1000 characters">
+				<cfset stText.settings.externalizeStringDisabled="disabled">
+				<cfscript>
+					if(setting.externalizeStringGTE < 10)setting.externalizeStringGTE=-1;
+					else if(setting.externalizeStringGTE < 100)setting.externalizeStringGTE=10;
+					else if(setting.externalizeStringGTE < 1000)setting.externalizeStringGTE=100;
+					else  setting.externalizeStringGTE=1000;
+				</cfscript>
+				
+				<tr>
+					<th scope="row">#stText.settings.externalizeStringGTE#</th>
+					<td>
+						<!---<div class="warning nofocus">
+					This feature is experimental.
+					If you have any problems while using this functionality,
+					please post the bugs and errors in our
+					<a href="http://issues.lucee.org" target="_blank">bugtracking system</a>. 
+				</div>--->
+
+						<cfif hasAccess>
+
+
+							<ul class="radiolist">
+								
+								<!--- not --->
+								<cfloop list="-1,1000,100,10" item="val">
+									<li>
+										<label>
+											<input class="radio" type="radio" name="externalizeStringGTE" value="#val#"<cfif setting.externalizeStringGTE == val> checked="checked"</cfif>>
+											<b>#stText.settings["externalizeString"&replace(val,"-","_")]#</b>
+										</label>
+									</li>
+								</cfloop>
+								<!--- <div class="comment">#replace(stText.setting.dotNotationOriginalCaseDesc, server.separator.line, '<br />', 'all')#</div> --->
+								
+							</ul>
+						<cfelse>
+							<input type="hidden" name="externalizeStringGTE" value="#setting.externalizeStringGTE#">
+							<b><cfif setting.externalizeStringGTE==-1>#yesNoFormat(false)#<cfelse>#stText.settings["externalizeString"&replace(setting.externalizeStringGTE,"-","_")]#</cfif></b>
+						</cfif>
+						<div class="comment">#stText.settings.externalizeStringGTEDesc#</div>
+						
+					</td>
+				</tr>
+
+<!---
 			</tbody>
 		</table>
 
@@ -135,12 +190,12 @@ Redirtect to entry --->
 		
 		<table class="maintbl">
 			<tbody>
-
+--->
 				<!--- Null Support --->
 				<tr>
 					<th scope="row">#stText.compiler.nullSupport#</th>
 					<td>
-						<cfif hasAccess && request.admintype EQ "server">
+						<cfif hasAccess >
 							<ul class="radiolist">
 								<li>
 									<!--- full --->
@@ -164,7 +219,6 @@ Redirtect to entry --->
 							<input type="hidden" name="nullSupport" value="#setting.nullSupport#">
 							<b>#stText.compiler["nullSupport"& strNullSupport]#</b><br />
 							<div class="comment">#stText.compiler["nullSupport"& strNullSupport&"Desc"]#</div>
-							<cfif request.admintype EQ "web"><div class="warning nofocus">#stText.compiler.nullSupportOnlyServer#</div></cfif>
 						</cfif>
 					</td>
 				</tr>
@@ -251,5 +305,5 @@ Redirtect to entry --->
 				</tfoot>
 			</cfif>
 		</table>
-	</cfform>
+	</cfformClassic>
 </cfoutput>

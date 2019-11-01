@@ -20,17 +20,17 @@ package lucee.runtime.debug;
 
 public class ImplicitAccessImpl implements ImplicitAccess {
 
-	private int count=1;
+	private int count = 1;
 	private String scope;
 	private String template;
 	private int line;
 	private String name;
 
 	public ImplicitAccessImpl(String scope, String name, String template, int line) {
-		this.scope=scope;
-		this.name=name;
-		this.template=template;
-		this.line=line;
+		this.scope = scope;
+		this.name = name;
+		this.template = template;
+		this.line = line;
 	}
 
 	@Override

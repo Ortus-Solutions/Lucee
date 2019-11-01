@@ -26,18 +26,18 @@ import lucee.runtime.orm.ORMUtil;
 
 public class ORMReload {
 	public static String call(PageContext pc) throws PageException {
-		
+
 		// flush and close session
-		ORMSession session = ORMUtil.getSession(pc,false);
-		if(session!=null) {// MUST do the same with all sesson using the same engine
+		ORMSession session = ORMUtil.getSession(pc, false);
+		if (session != null) {// MUST do the same with all sesson using the same engine
 			ORMConfiguration config = session.getEngine().getConfiguration(pc);
-			if(config.autoManageSession()) {
+			if (config.autoManageSession()) {
 				session.flushAll(pc);
 				session.closeAll(pc);
 			}
 		}
 		pc.getApplicationContext().reinitORM(pc);
-		ORMUtil.resetEngine(pc,true);
+		ORMUtil.resetEngine(pc, true);
 		return null;
 	}
 }

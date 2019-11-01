@@ -25,37 +25,36 @@ public final class Formitem extends BodyTagImpl {
 
 	private int type;
 	private String style;
-	private int width=-1;
-	private int height=-1;
-	private boolean enabled=true;
-	private boolean visible=true;
+	private int width = -1;
+	private int height = -1;
+	private boolean enabled = true;
+	private boolean visible = true;
 	private String tooltip;
-	private  String bind;
-	
+	private String bind;
 
 	public Formitem() throws TagNotSupported {
 		throw new TagNotSupported("formitem");
 		// TODO impl. Tag formItem
 	}
-	
+
 	@Override
 	public void release() {
 		super.release();
-		style=null;
-		width=-1;
-		height=-1;
-		enabled=true;
-		visible=true;
-		tooltip=null;
-		bind=null;
-		
+		style = null;
+		width = -1;
+		height = -1;
+		enabled = true;
+		visible = true;
+		tooltip = null;
+		bind = null;
+
 	}
 
 	/**
 	 * @param type the type to set
 	 */
 	public void setType(String type) {
-		//this.type = type;
+		// this.type = type;
 	}
 
 	/**
@@ -106,6 +105,5 @@ public final class Formitem extends BodyTagImpl {
 	public void setWidth(double width) {
 		this.width = (int) width;
 	}
-
 
 }

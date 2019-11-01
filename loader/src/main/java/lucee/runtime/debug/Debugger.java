@@ -36,9 +36,8 @@ import lucee.runtime.type.Struct;
  */
 public interface Debugger {
 
-    
-    public void init(Config config);
-    
+	public void init(Config config);
+
 	/**
 	 * reset the debug object
 	 */
@@ -57,12 +56,10 @@ public interface Debugger {
 	 * @param key
 	 * @return returns a single DebugEntry with a key
 	 */
-	public DebugEntryTemplate getEntry(PageContext pc, PageSource source,
-			String key);
+	public DebugEntryTemplate getEntry(PageContext pc, PageSource source, String key);
 
 	/**
-	 * returns a single DebugEntry for a specific postion (startPos,endPos in
-	 * the PageSource)
+	 * returns a single DebugEntry for a specific postion (startPos,endPos in the PageSource)
 	 * 
 	 * @param pc current PagContext
 	 * @param source Page Source for the entry
@@ -70,8 +67,7 @@ public interface Debugger {
 	 * @param endPos end position in the file
 	 * @return
 	 */
-	public DebugEntryTemplatePart getEntry(PageContext pc, PageSource source,
-			int startPos, int endPos);
+	public DebugEntryTemplatePart getEntry(PageContext pc, PageSource source, int startPos, int endPos);
 
 	/**
 	 * sets if toHTML print html output info or not
@@ -98,8 +94,7 @@ public interface Debugger {
 	 */
 	public Struct getDebuggingData(PageContext pc) throws PageException;
 
-	public Struct getDebuggingData(PageContext pc, boolean addAddionalInfo)
-			throws PageException;
+	public Struct getDebuggingData(PageContext pc, boolean addAddionalInfo) throws PageException;
 
 	/**
 	 * adds ne Timer info to debug
@@ -120,12 +115,9 @@ public interface Debugger {
 	 * @param varValue
 	 * @return debug trace object
 	 */
-	public DebugTrace addTrace(int type, String category, String text,
-			PageSource page, String varName, String varValue);
+	public DebugTrace addTrace(int type, String category, String text, PageSource page, String varName, String varValue);
 
-	public DebugTrace addTrace(int type, String category, String text,
-			String template, int line, String action, String varName,
-			String varValue);
+	public DebugTrace addTrace(int type, String category, String text, String template, int line, String action, String varName, String varValue);
 
 	public abstract DebugTrace[] getTraces();
 
@@ -148,11 +140,10 @@ public interface Debugger {
 	 * @param src
 	 * @param time
 	 * @deprecated use instead
-	 * @see  #addQuery(Query, String, String, SQL, int, PageSource, long)
+	 * @see #addQuery(Query, String, String, SQL, int, PageSource, long)
 	 */
 	@Deprecated
-	public void addQuery(Query query, String datasource, String name, SQL sql,
-			int recordcount, PageSource src, int time);
+	public void addQuery(Query query, String datasource, String name, SQL sql, int recordcount, PageSource src, int time);
 
 	/**
 	 * add new query execution time
@@ -165,15 +156,14 @@ public interface Debugger {
 	 * @param src
 	 * @param time
 	 */
-	public void addQuery(Query query, String datasource, String name, SQL sql,
-			int recordcount, PageSource src, long time);
+	public void addQuery(Query query, String datasource, String name, SQL sql, int recordcount, PageSource src, long time);
 
 	public DebugTrace[] getTraces(PageContext pc);
 
 	/**
 	 * 
-	 * @param labelCategory the name of the category, multiple records with the
-	 *            same category get combined
+	 * @param labelCategory the name of the category, multiple records with the same category get
+	 *            combined
 	 * @param data you wanna show
 	 */
 	public void addGenericData(String labelCategory, Map<String, String> data);
@@ -185,7 +175,7 @@ public interface Debugger {
 	 */
 	public Map<String, Map<String, List<String>>> getGenericData();
 
-    public DebugDump addDump(PageSource ps,String dump);
+	public DebugDump addDump(PageSource ps, String dump);
 
-    public void setOutputLog(DebugOutputLog outputLog);
+	public void setOutputLog(DebugOutputLog outputLog);
 }

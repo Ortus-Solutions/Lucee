@@ -34,10 +34,10 @@ public final class IntergralContext implements Function {
 	private static final long serialVersionUID = -330160528570830717L;
 
 	public static Struct call(PageContext pc) throws PageException {
-		Struct sct=new StructImpl();
+		Struct sct = new StructImpl();
 		sct.setEL(KeyImpl.init("scopeNames"), Caster.toArray(pc.undefinedScope().getScopeNames()));
-		//sct.setEL("stack", FDThreadImpl.getStack((PageContextImpl)pc));
-		
+		// sct.setEL("stack", FDThreadImpl.getStack((PageContextImpl)pc));
+
 		return sct;
 	}
 }

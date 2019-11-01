@@ -22,18 +22,19 @@ import java.io.IOException;
 import java.io.Writer;
 
 /**
- * Close the Writer automaticlly when object will destroyed by the garbage
+ * Close the Writer automatically when object will destroyed by the garbage
  */
 public final class AutoCloseWriter extends Writer {
-	
+
 	private final Writer writer;
 
 	/**
 	 * constructor of the class
+	 * 
 	 * @param writer
 	 */
 	public AutoCloseWriter(Writer writer) {
-		this.writer=writer;
+		this.writer = writer;
 	}
 
 	@Override
@@ -48,7 +49,7 @@ public final class AutoCloseWriter extends Writer {
 
 	@Override
 	public void write(char[] cbuf, int off, int len) throws IOException {
-		writer.write(cbuf,off,len);
+		writer.write(cbuf, off, len);
 	}
 
 	@Override
@@ -63,22 +64,21 @@ public final class AutoCloseWriter extends Writer {
 
 	@Override
 	public void write(String str, int off, int len) throws IOException {
-		writer.write(str,off,len);
+		writer.write(str, off, len);
 	}
 
 	@Override
 	public void write(String str) throws IOException {
 		writer.write(str);
 	}
-	
+
 	@Override
 	public void finalize() throws Throwable {
 		super.finalize();
 		try {
 			writer.close();
 		}
-		catch(Exception e) {}
+		catch (Exception e) {}
 	}
-	
 
 }

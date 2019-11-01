@@ -23,23 +23,24 @@ import java.io.IOException;
 import lucee.commons.io.cache.Cache;
 import lucee.commons.lang.StringUtil;
 import lucee.runtime.PageContext;
+import lucee.runtime.cache.CacheUtil;
 import lucee.runtime.config.Config;
 import lucee.runtime.exp.FunctionException;
 import lucee.runtime.exp.PageException;
-import lucee.runtime.ext.function.Function;
+import lucee.runtime.ext.function.BIF;
 import lucee.runtime.op.Caster;
 
 /**
  * 
  */
-public final class CacheGet implements Function {
+public final class CacheGet extends BIF {
 
 	private static final long serialVersionUID = -7164470356423036571L;
 
 	public static Object call(PageContext pc, String key) throws PageException {
 		try {
-			return _call(pc, key, false, Util.getDefault(pc, Config.CACHE_TYPE_OBJECT));
-		} 
+			return _call(pc, key, false, CacheUtil.getDefault(pc, Config.CACHE_TYPE_OBJECT));
+		}
 		catch (IOException e) {
 			throw Caster.toPageException(e);
 		}
@@ -47,51 +48,59 @@ public final class CacheGet implements Function {
 
 	public static Object call(PageContext pc, String key, Object objThrowWhenNotExist) throws PageException {
 		// default behavior, second parameter is a boolean
-		Boolean throwWhenNotExist=Caster.toBoolean(objThrowWhenNotExist,null);
-		if(throwWhenNotExist!=null) {
+		Boolean throwWhenNotExist = Caster.toBoolean(objThrowWhenNotExist, null);
+		if (throwWhenNotExist != null) {
 			try {
-				return _call(pc, key, throwWhenNotExist.booleanValue(), Util.getDefault(pc, Config.CACHE_TYPE_OBJECT));
-			} 
+				return _call(pc, key, throwWhenNotExist.booleanValue(), CacheUtil.getDefault(pc, Config.CACHE_TYPE_OBJECT));
+			}
 			catch (IOException e) {
 				throw Caster.toPageException(e);
 			}
 		}
-		
-		// compatibility behavior, second parameter is a cacheName 
-		if(objThrowWhenNotExist instanceof String) {
-			String cacheName=(String)objThrowWhenNotExist;
-			if(!StringUtil.isEmpty(cacheName)) {
+
+		// compatibility behavior, second parameter is a cacheName
+		if (objThrowWhenNotExist instanceof String) {
+			String cacheName = (String) objThrowWhenNotExist;
+			if (!StringUtil.isEmpty(cacheName)) {
 				try {
-					Cache cache = Util.getCache(pc.getConfig(),cacheName,null);
-					
-					if(cache!=null) 
-						return _call(pc, key, false, cache);
-				} 
+					Cache cache = CacheUtil.getCache(pc, cacheName, null);
+
+					if (cache != null) return _call(pc, key, false, cache);
+				}
 				catch (IOException e) {
 					throw Caster.toPageException(e);
 				}
 			}
 		}
-		
+
 		// not a boolean or cacheName
-		throw new FunctionException(pc, "cacheGet", 2, "ThrowWhenNotExist", "arguments needs to be a boolean value, but also a valid cacheName is supported for compatibility reasons to other engines");
+		throw new FunctionException(pc, "cacheGet", 2, "ThrowWhenNotExist",
+				"arguments needs to be a boolean value, but also a valid cacheName is supported for compatibility reasons to other engines");
 	}
-	
-	public static Object call(PageContext pc, String key, Object objThrowWhenNotExist,String cacheName) throws PageException {
-		
-		
-		Boolean throwWhenNotExist=Caster.toBoolean(objThrowWhenNotExist,null);
-		if(throwWhenNotExist==null)throw new FunctionException(pc, "cacheGet", 2, "ThrowWhenNotExist", "arguments needs to be a boolean value");
-		
+
+	public static Object call(PageContext pc, String key, Object objThrowWhenNotExist, String cacheName) throws PageException {
+
+		Boolean throwWhenNotExist = Caster.toBoolean(objThrowWhenNotExist, null);
+		if (throwWhenNotExist == null) throw new FunctionException(pc, "cacheGet", 2, "ThrowWhenNotExist", "arguments needs to be a boolean value");
+
 		try {
-			Cache cache = Util.getCache(pc,cacheName,Config.CACHE_TYPE_OBJECT);
+			Cache cache = CacheUtil.getCache(pc, cacheName, Config.CACHE_TYPE_OBJECT);
 			return _call(pc, key, throwWhenNotExist.booleanValue(), cache);
-		} catch (IOException e) {
+		}
+		catch (IOException e) {
 			throw Caster.toPageException(e);
 		}
 	}
 
-	private static Object _call(PageContext pc, String key, boolean throwWhenNotExist,Cache cache) throws IOException {
-		return throwWhenNotExist?cache.getValue(Util.key(key)):cache.getValue(Util.key(key),null);
+	private static Object _call(PageContext pc, String key, boolean throwWhenNotExist, Cache cache) throws IOException {
+		return throwWhenNotExist ? cache.getValue(CacheUtil.key(key)) : cache.getValue(CacheUtil.key(key), null);
+	}
+
+	@Override
+	public Object invoke(PageContext pc, Object[] args) throws PageException {
+		if (args.length == 1) return call(pc, Caster.toString(args[0]));
+		if (args.length == 2) return call(pc, Caster.toString(args[0]), args[1]);
+		if (args.length == 3) return call(pc, Caster.toString(args[0]), args[1], Caster.toString(args[2]));
+		throw new FunctionException(pc, "CacheGet", 1, 3, args.length);
 	}
 }

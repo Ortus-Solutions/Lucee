@@ -25,21 +25,26 @@ import java.util.TimeZone;
 
 public class OtherCast implements Cast {
 
+	private final int type;
+
+	public OtherCast(int type) {
+		this.type = type;
+	}
 
 	@Override
-	public Object toCFType(TimeZone tz, int type, ResultSet rst, int columnIndex) throws SQLException {
-		if(type!=Types.SMALLINT) return rst.getObject(columnIndex);
-		
-		
-		try{
+	public Object toCFType(TimeZone tz, ResultSet rst, int columnIndex) throws SQLException {
+		if (type != Types.SMALLINT) return rst.getObject(columnIndex);
+
+		try {
 			return rst.getObject(columnIndex);
 		}
-		// workaround for MSSQL Driver, in some situation getObject throws a cast exception using getString avoids this
-		catch(SQLException e){
-			try{
+		// workaround for MSSQL Driver, in some situation getObject throws a cast exception using getString
+		// avoids this
+		catch (SQLException e) {
+			try {
 				return rst.getString(columnIndex);
 			}
-			catch(SQLException e2){
+			catch (SQLException e2) {
 				throw e;
 			}
 		}

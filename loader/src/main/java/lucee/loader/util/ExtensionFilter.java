@@ -22,8 +22,8 @@ import java.io.File;
 import java.io.FileFilter;
 
 /**
- * Filter fuer die <code>listFiles</code> Methode des FIle Objekt,
- * zum filtern von FIles mit einer bestimmten Extension.
+ * Filter fuer die <code>listFiles</code> Methode des FIle Objekt, zum filtern von FIles mit einer
+ * bestimmten Extension.
  */
 public final class ExtensionFilter implements FileFilter {
 
@@ -31,7 +31,7 @@ public final class ExtensionFilter implements FileFilter {
 	private final boolean allowDir;
 	private final boolean ignoreCase;
 
-	//private int extLen;
+	// private int extLen;
 
 	/**
 	 * Konstruktor des Filters
@@ -59,13 +59,10 @@ public final class ExtensionFilter implements FileFilter {
 		this(extensions, allowDir, true);
 	}
 
-	public ExtensionFilter(final String[] extensions, final boolean allowDir,
-			final boolean ignoreCase) {
+	public ExtensionFilter(final String[] extensions, final boolean allowDir, final boolean ignoreCase) {
 		for (int i = 0; i < extensions.length; i++) {
-			if (!extensions[i].startsWith("."))
-				extensions[i] = "." + extensions[i];
-			if (ignoreCase)
-				extensions[i] = extensions[i].toLowerCase();
+			if (!extensions[i].startsWith(".")) extensions[i] = "." + extensions[i];
+			if (ignoreCase) extensions[i] = extensions[i].toLowerCase();
 		}
 		this.extensions = extensions;
 		this.allowDir = allowDir;
@@ -77,14 +74,11 @@ public final class ExtensionFilter implements FileFilter {
 	 */
 	@Override
 	public boolean accept(final File res) {
-		if (res.isDirectory())
-			return allowDir;
+		if (res.isDirectory()) return allowDir;
 		if (res.exists()) {
-			final String name = ignoreCase ? res.getName().toLowerCase() : res
-					.getName();
-			for (final String extension : extensions)
-				if (name.endsWith(extension))
-					return true;
+			final String name = ignoreCase ? res.getName().toLowerCase() : res.getName();
+			for (final String extension: extensions)
+				if (name.endsWith(extension)) return true;
 		}
 		return false;
 	}

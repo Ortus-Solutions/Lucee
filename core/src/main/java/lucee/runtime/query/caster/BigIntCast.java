@@ -28,12 +28,12 @@ import lucee.runtime.op.Caster;
 public class BigIntCast implements Cast {
 
 	@Override
-	public Object toCFType(TimeZone tz, int type, ResultSet rst, int columnIndex) throws SQLException, IOException {
-		String str=rst.getString(columnIndex);
-		if(str!=null && str.length()>9) return str;
-		
-		Double dbl = Caster.toDouble(str,null);
-		if(dbl!=null) return dbl;
+	public Object toCFType(TimeZone tz, ResultSet rst, int columnIndex) throws SQLException, IOException {
+		String str = rst.getString(columnIndex);
+		if (str != null && str.length() > 9) return str;
+
+		Double dbl = Caster.toDouble(str, null);
+		if (dbl != null) return dbl;
 		return str;
 	}
 

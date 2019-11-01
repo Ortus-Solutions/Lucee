@@ -28,12 +28,12 @@ import lucee.runtime.op.Caster;
 public class FileClose {
 
 	public static String call(PageContext pc, Object fileObj) throws PageException {
-		if(!(fileObj instanceof FileStreamWrapper)) 
-			throw new FunctionException(pc,"FileClose",1,"fileObj",
-					"invalid type ["+Caster.toTypeName(fileObj)+"], only File Object produced by FileOpen supported");
+		if (!(fileObj instanceof FileStreamWrapper))
+			throw new FunctionException(pc, "FileClose", 1, "fileObj", "invalid type [" + Caster.toTypeName(fileObj) + "], only File Object produced by FileOpen supported");
 		try {
-			((FileStreamWrapper)fileObj).close();
-		} catch (IOException e) {
+			((FileStreamWrapper) fileObj).close();
+		}
+		catch (IOException e) {
 			throw Caster.toPageException(e);
 		}
 		return null;

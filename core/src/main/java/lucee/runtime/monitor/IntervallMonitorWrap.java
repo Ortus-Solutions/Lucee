@@ -34,32 +34,34 @@ public class IntervallMonitorWrap extends MonitorWrap implements IntervallMonito
 	private Method getData;
 
 	public IntervallMonitorWrap(Object monitor) {
-		super(monitor,TYPE_INTERVAL);
+		super(monitor, TYPE_INTERVAL);
 	}
 
 	@Override
 	public void log() throws IOException {
 
 		try {
-			if(log==null) {
-				log=monitor.getClass().getMethod("log", new Class[0]);
+			if (log == null) {
+				log = monitor.getClass().getMethod("log", new Class[0]);
 			}
 			log.invoke(monitor, PARAMS_LOG);
-		} catch (Exception e) {e.printStackTrace();
+		}
+		catch (Exception e) {
 			throw ExceptionUtil.toIOException(e);
-		} 
+		}
 	}
 
 	@Override
-	public Query getData(Map<String,Object> arguments) throws PageException{
+	public Query getData(Map<String, Object> arguments) throws PageException {
 		try {
-			if(getData==null) {
-				getData=monitor.getClass().getMethod("getData", new Class[]{Map.class});
+			if (getData == null) {
+				getData = monitor.getClass().getMethod("getData", new Class[] { Map.class });
 			}
-			return (Query) getData.invoke(monitor, new Object[]{arguments});
-		} catch (Exception e) {
+			return (Query) getData.invoke(monitor, new Object[] { arguments });
+		}
+		catch (Exception e) {
 			throw Caster.toPageException(e);
-		} 
+		}
 	}
 
 }

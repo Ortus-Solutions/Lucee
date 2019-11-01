@@ -28,8 +28,7 @@ public class Closer extends Thread {
 	private final long idleTime;
 	private final CLIInvokerImpl invoker;
 
-	public Closer(final Registry reg, final CLIInvokerImpl invoker,
-			final String name, final long idleTime) {
+	public Closer(final Registry reg, final CLIInvokerImpl invoker, final String name, final long idleTime) {
 		this.reg = reg;
 		this.name = name;
 		this.idleTime = idleTime;
@@ -46,7 +45,8 @@ public class Closer extends Thread {
 		try {
 			reg.unbind(name);
 			UnicastRemoteObject.unexportObject(invoker, true);
-		} catch (final Throwable t) {
+		}
+		catch (final Throwable t) {
 			t.printStackTrace();
 		}
 
@@ -55,7 +55,8 @@ public class Closer extends Thread {
 	private void sleepEL(final long millis) {
 		try {
 			sleep(millis);
-		} catch (final Throwable t) {
+		}
+		catch (final Throwable t) {
 			t.printStackTrace();
 		}
 	}

@@ -23,6 +23,7 @@ package lucee.runtime.functions.international;
 
 import java.util.Locale;
 
+import lucee.commons.lang.ExceptionUtil;
 import lucee.runtime.PageContext;
 import lucee.runtime.ext.function.Function;
 
@@ -30,19 +31,24 @@ public final class LSIsCurrency implements Function {
 
 	private static final long serialVersionUID = -8659567712610988769L;
 
-	public static boolean call(PageContext pc , String string) {
+	public static boolean call(PageContext pc, String string) {
 		try {
-			LSParseCurrency.toDoubleValue(pc.getLocale(),string,true);
+			LSParseCurrency.toDoubleValue(pc.getLocale(), string, true);
 			return true;
-		} catch (Throwable t) {
+		}
+		catch (Throwable t) {
+			ExceptionUtil.rethrowIfNecessary(t);
 			return false;
-		}		
+		}
 	}
-	public static boolean call(PageContext pc , String string,Locale locale) {
+
+	public static boolean call(PageContext pc, String string, Locale locale) {
 		try {
-			LSParseCurrency.toDoubleValue(locale==null?pc.getLocale():locale,string,false);
+			LSParseCurrency.toDoubleValue(locale == null ? pc.getLocale() : locale, string, false);
 			return true;
-		} catch (Throwable t) {
+		}
+		catch (Throwable t) {
+			ExceptionUtil.rethrowIfNecessary(t);
 			return false;
 		}
 	}

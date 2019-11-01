@@ -18,7 +18,6 @@
  **/
 package lucee.runtime.net.mail;
 
-
 /**
  * Exception used by teh Mail-Classes
  */

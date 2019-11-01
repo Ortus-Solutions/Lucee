@@ -24,9 +24,6 @@ import java.util.Hashtable;
 import lucee.loader.engine.CFMLEngineFactory;
 import lucee.runtime.cfx.QueryWrap;
 
-/**
- * 
- */
 public final class DebugResponse implements Response {
 
 	private final StringBuffer write = new StringBuffer();
@@ -34,39 +31,23 @@ public final class DebugResponse implements Response {
 	private final Hashtable variables = new Hashtable();
 	private final Hashtable queries = new Hashtable();
 
-	/**
-	 * @see com.allaire.cfx.Response#addQuery(java.lang.String,
-	 *      java.lang.String[])
-	 */
 	@Override
 	public Query addQuery(final String name, final String[] columns) {
-		final QueryWrap query = new QueryWrap(CFMLEngineFactory.getInstance()
-				.getCreationUtil().createQuery(columns, 0, name),
-				name.toLowerCase());
+		final QueryWrap query = new QueryWrap(CFMLEngineFactory.getInstance().getCreationUtil().createQuery(columns, 0, name), name.toLowerCase());
 		queries.put(name.toLowerCase(), query);
 		return query;
 	}
 
-	/**
-	 * @see com.allaire.cfx.Response#setVariable(java.lang.String,
-	 *      java.lang.String)
-	 */
 	@Override
 	public void setVariable(final String key, final String value) {
 		variables.put(key.toLowerCase(), value);
 	}
 
-	/**
-	 * @see com.allaire.cfx.Response#write(java.lang.String)
-	 */
 	@Override
 	public void write(final String str) {
 		write.append(str);
 	}
 
-	/**
-	 * @see com.allaire.cfx.Response#writeDebug(java.lang.String)
-	 */
 	@Override
 	public void writeDebug(final String str) {
 		writeDebug.append(str);
@@ -115,7 +96,7 @@ public final class DebugResponse implements Response {
 	/**
 	 * print out a query
 	 * 
-	 * @param query
+	 * @param query query to print
 	 */
 	public void printQuery(final Query query) {
 		if (query != null) {
@@ -123,16 +104,14 @@ public final class DebugResponse implements Response {
 			final int rows = query.getRowCount();
 			System.out.println("[Query:" + query.getName() + "]");
 			for (int i = 0; i < cols.length; i++) {
-				if (i > 0)
-					System.out.print(", ");
+				if (i > 0) System.out.print(", ");
 				System.out.print(cols[i]);
 			}
 			System.out.println();
 
 			for (int row = 1; row <= rows; row++) {
 				for (int col = 1; col <= cols.length; col++) {
-					if (col > 1)
-						System.out.print(", ");
+					if (col > 1) System.out.print(", ");
 					System.out.print(escapeString(query.getData(row, col)));
 				}
 				System.out.println();
@@ -145,20 +124,13 @@ public final class DebugResponse implements Response {
 		final StringBuffer sb = new StringBuffer(len);
 		for (int i = 0; i < len; i++) {
 			final char c = string.charAt(i);
-			if (c == '\n')
-				sb.append("\\n");
-			else if (c == '\t')
-				sb.append("\\t");
-			else if (c == '\\')
-				sb.append("\\\\");
-			else if (c == '\b')
-				sb.append("\\b");
-			else if (c == '\r')
-				sb.append("\\r");
-			else if (c == '\"')
-				sb.append("\\\"");
-			else
-				sb.append(c);
+			if (c == '\n') sb.append("\\n");
+			else if (c == '\t') sb.append("\\t");
+			else if (c == '\\') sb.append("\\\\");
+			else if (c == '\b') sb.append("\\b");
+			else if (c == '\r') sb.append("\\r");
+			else if (c == '\"') sb.append("\\\"");
+			else sb.append(c);
 		}
 
 		return "\"" + sb.toString() + "\"";

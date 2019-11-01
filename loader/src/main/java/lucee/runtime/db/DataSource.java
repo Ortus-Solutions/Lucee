@@ -22,12 +22,12 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.TimeZone;
 
+import org.osgi.framework.BundleException;
+
 import lucee.commons.io.log.Log;
 import lucee.commons.lang.ClassException;
 import lucee.runtime.config.Config;
 import lucee.runtime.type.Struct;
-
-import org.osgi.framework.BundleException;
 
 /**
  * interface for a datasource
@@ -82,9 +82,7 @@ public interface DataSource extends Cloneable {
 	/**
 	 * Field <code>ALLOW_ALL</code>
 	 */
-	public static final int ALLOW_ALL = ALLOW_SELECT + ALLOW_DELETE
-			+ ALLOW_UPDATE + ALLOW_INSERT + ALLOW_CREATE + ALLOW_GRANT
-			+ ALLOW_REVOKE + ALLOW_DROP + ALLOW_ALTER;
+	public static final int ALLOW_ALL = ALLOW_SELECT + ALLOW_DELETE + ALLOW_UPDATE + ALLOW_INSERT + ALLOW_CREATE + ALLOW_GRANT + ALLOW_REVOKE + ALLOW_DROP + ALLOW_ALTER;
 
 	/**
 	 * @deprecated use instead <code>getConnectionString()</code>
@@ -113,8 +111,7 @@ public interface DataSource extends Cloneable {
 	 */
 	public abstract String getConnectionStringTranslated();
 
-	public abstract Connection getConnection(Config config, String user,
-			String pass) throws ClassException, BundleException, SQLException;
+	public abstract Connection getConnection(Config config, String user, String pass) throws ClassException, BundleException, SQLException;
 
 	/**
 	 * @return Returns the password.

@@ -38,6 +38,7 @@ import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.Map;
 
+import lucee.commons.lang.ExceptionUtil;
 import lucee.runtime.exp.PageRuntimeException;
 import lucee.runtime.op.Caster;
 
@@ -46,8 +47,8 @@ public class CallableStatementProxy extends PreparedStatementProxy implements Ca
 	protected CallableStatement stat;
 
 	public CallableStatementProxy(ConnectionProxy conn, CallableStatement prepareCall, String sql) {
-		super(conn,prepareCall,sql);
-		this.stat=prepareCall; 
+		super(conn, prepareCall, sql);
+		this.stat = prepareCall;
 	}
 
 	@Override
@@ -381,7 +382,7 @@ public class CallableStatementProxy extends PreparedStatementProxy implements Ca
 	}
 
 	@Override
-	public void setAsciiStream(String parameterName, InputStream x, int length)throws SQLException {
+	public void setAsciiStream(String parameterName, InputStream x, int length) throws SQLException {
 		stat.setAsciiStream(parameterName, x, length);
 	}
 
@@ -441,20 +442,17 @@ public class CallableStatementProxy extends PreparedStatementProxy implements Ca
 	}
 
 	@Override
-	public void setCharacterStream(String parameterName, Reader reader)
-			throws SQLException {
+	public void setCharacterStream(String parameterName, Reader reader) throws SQLException {
 		stat.setCharacterStream(parameterName, reader);
 	}
 
 	@Override
-	public void setCharacterStream(String parameterName, Reader reader, int length)
-			throws SQLException {
+	public void setCharacterStream(String parameterName, Reader reader, int length) throws SQLException {
 		stat.setCharacterStream(parameterName, reader, length);
 	}
 
 	@Override
-	public void setCharacterStream(String parameterName, Reader reader, long length)
-			throws SQLException {
+	public void setCharacterStream(String parameterName, Reader reader, long length) throws SQLException {
 		stat.setCharacterStream(parameterName, reader, length);
 	}
 
@@ -469,8 +467,7 @@ public class CallableStatementProxy extends PreparedStatementProxy implements Ca
 	}
 
 	@Override
-	public void setClob(String parameterName, Reader reader, long length)
-			throws SQLException {
+	public void setClob(String parameterName, Reader reader, long length) throws SQLException {
 		stat.setClob(parameterName, reader, length);
 	}
 
@@ -480,8 +477,7 @@ public class CallableStatementProxy extends PreparedStatementProxy implements Ca
 	}
 
 	@Override
-	public void setDate(String parameterName, Date x, Calendar cal)
-			throws SQLException {
+	public void setDate(String parameterName, Date x, Calendar cal) throws SQLException {
 		stat.setDate(parameterName, x, cal);
 	}
 
@@ -506,14 +502,12 @@ public class CallableStatementProxy extends PreparedStatementProxy implements Ca
 	}
 
 	@Override
-	public void setNCharacterStream(String parameterName, Reader value)
-			throws SQLException {
+	public void setNCharacterStream(String parameterName, Reader value) throws SQLException {
 		stat.setNCharacterStream(parameterName, value);
 	}
 
 	@Override
-	public void setNCharacterStream(String parameterName, Reader value, long length)
-			throws SQLException {
+	public void setNCharacterStream(String parameterName, Reader value, long length) throws SQLException {
 		stat.setNCharacterStream(parameterName, value, length);
 	}
 
@@ -528,8 +522,7 @@ public class CallableStatementProxy extends PreparedStatementProxy implements Ca
 	}
 
 	@Override
-	public void setNClob(String parameterName, Reader reader, long length)
-			throws SQLException {
+	public void setNClob(String parameterName, Reader reader, long length) throws SQLException {
 		stat.setNClob(parameterName, reader, length);
 	}
 
@@ -554,14 +547,12 @@ public class CallableStatementProxy extends PreparedStatementProxy implements Ca
 	}
 
 	@Override
-	public void setObject(String parameterName, Object x, int targetSqlType)
-			throws SQLException {
+	public void setObject(String parameterName, Object x, int targetSqlType) throws SQLException {
 		stat.setObject(parameterName, x, targetSqlType);
 	}
 
 	@Override
-	public void setObject(String parameterName, Object x, int targetSqlType, int scale)
-			throws SQLException {
+	public void setObject(String parameterName, Object x, int targetSqlType, int scale) throws SQLException {
 		stat.setObject(parameterName, x, targetSqlType, scale);
 	}
 
@@ -591,8 +582,7 @@ public class CallableStatementProxy extends PreparedStatementProxy implements Ca
 	}
 
 	@Override
-	public void setTime(String parameterName, Time x, Calendar cal)
-			throws SQLException {
+	public void setTime(String parameterName, Time x, Calendar cal) throws SQLException {
 		stat.setTime(parameterName, x, cal);
 	}
 
@@ -602,8 +592,7 @@ public class CallableStatementProxy extends PreparedStatementProxy implements Ca
 	}
 
 	@Override
-	public void setTimestamp(String parameterName, Timestamp x, Calendar cal)
-			throws SQLException {
+	public void setTimestamp(String parameterName, Timestamp x, Calendar cal) throws SQLException {
 		stat.setTimestamp(parameterName, x, cal);
 	}
 
@@ -621,11 +610,12 @@ public class CallableStatementProxy extends PreparedStatementProxy implements Ca
 	public <T> T getObject(int parameterIndex, Class<T> type) throws SQLException {
 		// used reflection to make sure this work with Java 5 and 6
 		try {
-			return (T) stat.getClass().getMethod("getObject", new Class[]{int.class,Class.class}).invoke(stat, new Object[]{parameterIndex,type});
+			return (T) stat.getClass().getMethod("getObject", new Class[] { int.class, Class.class }).invoke(stat, new Object[] { parameterIndex, type });
 		}
 		catch (Throwable t) {
-			if(t instanceof InvocationTargetException && ((InvocationTargetException)t).getTargetException() instanceof SQLException)
-				throw (SQLException)((InvocationTargetException)t).getTargetException();
+			ExceptionUtil.rethrowIfNecessary(t);
+			if (t instanceof InvocationTargetException && ((InvocationTargetException) t).getTargetException() instanceof SQLException)
+				throw (SQLException) ((InvocationTargetException) t).getTargetException();
 			throw new PageRuntimeException(Caster.toPageException(t));
 		}
 	}
@@ -634,11 +624,12 @@ public class CallableStatementProxy extends PreparedStatementProxy implements Ca
 	public <T> T getObject(String parameterName, Class<T> type) throws SQLException {
 		// used reflection to make sure this work with Java 5 and 6
 		try {
-			return (T) stat.getClass().getMethod("getObject", new Class[]{String.class,Class.class}).invoke(stat, new Object[]{parameterName,type});
+			return (T) stat.getClass().getMethod("getObject", new Class[] { String.class, Class.class }).invoke(stat, new Object[] { parameterName, type });
 		}
 		catch (Throwable t) {
-			if(t instanceof InvocationTargetException && ((InvocationTargetException)t).getTargetException() instanceof SQLException)
-				throw (SQLException)((InvocationTargetException)t).getTargetException();
+			ExceptionUtil.rethrowIfNecessary(t);
+			if (t instanceof InvocationTargetException && ((InvocationTargetException) t).getTargetException() instanceof SQLException)
+				throw (SQLException) ((InvocationTargetException) t).getTargetException();
 			throw new PageRuntimeException(Caster.toPageException(t));
 		}
 	}

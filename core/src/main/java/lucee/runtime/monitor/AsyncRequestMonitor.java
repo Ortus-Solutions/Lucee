@@ -22,7 +22,6 @@ import java.io.IOException;
 import java.util.Map;
 
 import lucee.commons.io.log.Log;
-import lucee.commons.io.log.LogUtil;
 import lucee.commons.lang.PageContextThread;
 import lucee.runtime.PageContext;
 import lucee.runtime.config.ConfigImpl;
@@ -32,19 +31,19 @@ import lucee.runtime.engine.ThreadLocalPageContext;
 import lucee.runtime.exp.PageException;
 import lucee.runtime.type.Query;
 
-public class AsyncRequestMonitor implements RequestMonitor {
-	
-	private RequestMonitor monitor;
+public class AsyncRequestMonitor implements RequestMonitorPro {
+
+	private RequestMonitorPro monitor;
 	private boolean logEnabled;
 
-	public AsyncRequestMonitor(RequestMonitor monitor){
-		this.monitor=monitor;
+	public AsyncRequestMonitor(RequestMonitorPro monitor) {
+		this.monitor = monitor;
 	}
-	
+
 	@Override
 	public void init(ConfigServer configServer, String name, boolean logEnabled) {
 		monitor.init(configServer, name, logEnabled);
-		this.logEnabled=logEnabled;
+		this.logEnabled = logEnabled;
 	}
 
 	@Override
@@ -73,37 +72,45 @@ public class AsyncRequestMonitor implements RequestMonitor {
 	}
 
 	@Override
+	public void init(PageContext pc) throws IOException {
+		new _Log(monitor, pc, false, logEnabled, true).start();
+	}
+
+	@Override
 	public void log(PageContext pc, boolean error) throws IOException {
-		new _Log(monitor,pc,error,logEnabled).start();
+		new _Log(monitor, pc, error, logEnabled, false).start();
 	}
 
 	static class _Log extends PageContextThread {
-		private RequestMonitor monitor;
+		private RequestMonitorPro monitor;
 		private boolean error;
 		private boolean logEnabled;
+		private boolean init;
 
-		public _Log(RequestMonitor monitor, PageContext pc, boolean error, boolean logEnabled) {
+		public _Log(RequestMonitorPro monitor, PageContext pc, boolean error, boolean logEnabled, boolean init) {
 			super(pc);
-			this.monitor=monitor;
-			this.error=error;
-			this.logEnabled=logEnabled;
+			this.monitor = monitor;
+			this.error = error;
+			this.logEnabled = logEnabled;
+			this.init = init;
 		}
 
 		@Override
-		public void run(PageContext pc){
-			try{
+		public void run(PageContext pc) {
+			try {
 				ThreadLocalPageContext.register(pc);
 				try {
-					monitor.log(pc, error);
+					if (init) monitor.log(pc, error);
+					else monitor.init(pc);
 				}
 				catch (IOException e) {
-					if(logEnabled) {
-						Log log=((ConfigImpl)pc.getConfig()).getLog("io");
-						if(log!=null) LogUtil.log(log, Log.LEVEL_ERROR, "io", e);
+					if (logEnabled) {
+						Log log = ((ConfigImpl) pc.getConfig()).getLog("io");
+						if (log != null) log.log(Log.LEVEL_ERROR, "io", e);
 					}
 				}
 			}
-			finally{
+			finally {
 				ThreadLocalPageContext.release();
 			}
 		}

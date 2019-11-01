@@ -15,11 +15,12 @@
  * License along with this library.  If not, see <http://www.gnu.org/licenses/>.
  */
 component {
-	this.name = "lucee_context";
+	this.name = "lucee_context#server.lucee.version#";
 	this.clientmanagement="no";
 	this.clientstorage="file"; 
 	this.scriptprotect="all";
 	this.sessionmanagement="yes";
+	this.sessionStorage="memory";
 	this.sessiontimeout="#createTimeSpan(0,0,30,0)#";
 	this.setclientcookies="yes";
 	this.setdomaincookies="no"; 

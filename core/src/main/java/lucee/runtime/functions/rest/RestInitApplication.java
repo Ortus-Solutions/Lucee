@@ -18,80 +18,79 @@
  **/
 package lucee.runtime.functions.rest;
 
-
 import lucee.commons.io.res.Resource;
 import lucee.commons.lang.StringUtil;
 import lucee.runtime.PageContext;
+import lucee.runtime.cache.CacheUtil;
 import lucee.runtime.config.ConfigWebImpl;
 import lucee.runtime.config.Password;
 import lucee.runtime.config.XMLConfigAdmin;
 import lucee.runtime.exp.PageException;
-import lucee.runtime.functions.cache.Util;
 import lucee.runtime.op.Caster;
 import lucee.runtime.rest.Mapping;
 import lucee.runtime.rest.RestUtil;
 
 public class RestInitApplication {
 
-	public static String call(PageContext pc , String dirPath) throws PageException {
-		return _call(pc, dirPath, null,null,null);
-	}
-	
-	public static String call(PageContext pc , String dirPath, String serviceMapping) throws PageException {
-		return _call(pc, dirPath, serviceMapping, null,null);
+	public static String call(PageContext pc, String dirPath) throws PageException {
+		return _call(pc, dirPath, null, null, null);
 	}
 
-	public static String call(PageContext pc , String dirPath, String serviceMapping, boolean defaultMapping) throws PageException {
+	public static String call(PageContext pc, String dirPath, String serviceMapping) throws PageException {
+		return _call(pc, dirPath, serviceMapping, null, null);
+	}
+
+	public static String call(PageContext pc, String dirPath, String serviceMapping, boolean defaultMapping) throws PageException {
 		return _call(pc, dirPath, serviceMapping, defaultMapping, null);
 	}
 
-	public static String call(PageContext pc , String dirPath, String serviceMapping, boolean defaultMapping, String webAdminPassword) throws PageException {
+	public static String call(PageContext pc, String dirPath, String serviceMapping, boolean defaultMapping, String webAdminPassword) throws PageException {
 		return _call(pc, dirPath, serviceMapping, defaultMapping, webAdminPassword);
 	}
-	
-	public static String _call(PageContext pc , String dirPath, String serviceMapping, Boolean defaultMapping, String webAdminPassword) throws PageException {
-		if(StringUtil.isEmpty(serviceMapping,true)){
-			serviceMapping=pc.getApplicationContext().getName();
+
+	public static String _call(PageContext pc, String dirPath, String serviceMapping, Boolean defaultMapping, String webAdminPassword) throws PageException {
+		if (StringUtil.isEmpty(serviceMapping, true)) {
+			serviceMapping = pc.getApplicationContext().getName();
 		}
-		Resource dir=RestDeleteApplication.toResource(pc,dirPath);
-		
-		ConfigWebImpl config=(ConfigWebImpl) pc.getConfig();
+		Resource dir = RestDeleteApplication.toResource(pc, dirPath);
+
+		ConfigWebImpl config = (ConfigWebImpl) pc.getConfig();
 		Mapping[] mappings = config.getRestMappings();
 		Mapping mapping;
-		
+
 		// id is mapping name
-		
-		String virtual=serviceMapping.trim();
-		if(!virtual.startsWith("/")) virtual="/"+virtual;
-		if(!virtual.endsWith("/")) virtual+="/";
-		boolean hasResetted=false;
-		for(int i=0;i<mappings.length;i++){
-			mapping=mappings[i];
-			if(mapping.getVirtualWithSlash().equals(virtual)){
+
+		String virtual = serviceMapping.trim();
+		if (!virtual.startsWith("/")) virtual = "/" + virtual;
+		if (!virtual.endsWith("/")) virtual += "/";
+		boolean hasResetted = false;
+		for (int i = 0; i < mappings.length; i++) {
+			mapping = mappings[i];
+			if (mapping.getVirtualWithSlash().equals(virtual)) {
 				// directory has changed
-				if(!RestUtil.isMatch(pc, mapping, dir) || (defaultMapping!=null && mapping.isDefault()!=defaultMapping.booleanValue())) {
-					update(pc,dir,virtual,Util.getPassword(pc,webAdminPassword,false),defaultMapping==null?mapping.isDefault():defaultMapping.booleanValue());
+				if (!RestUtil.isMatch(pc, mapping, dir) || (defaultMapping != null && mapping.isDefault() != defaultMapping.booleanValue())) {
+					update(pc, dir, virtual, CacheUtil.getPassword(pc, webAdminPassword, false), defaultMapping == null ? mapping.isDefault() : defaultMapping.booleanValue());
 				}
 				mapping.reset(pc);
-				hasResetted=true;
+				hasResetted = true;
 			}
 		}
-		if(!hasResetted) {
-			update(pc,dir,virtual,Util.getPassword(pc,webAdminPassword,false),defaultMapping==null?false:defaultMapping.booleanValue());
+		if (!hasResetted) {
+			update(pc, dir, virtual, CacheUtil.getPassword(pc, webAdminPassword, false), defaultMapping == null ? false : defaultMapping.booleanValue());
 		}
-	
+
 		return null;
 	}
 
-	private static void update(PageContext pc,Resource dir, String virtual, Password webAdminPassword, boolean defaultMapping) throws PageException {
+	private static void update(PageContext pc, Resource dir, String virtual, Password webAdminPassword, boolean defaultMapping) throws PageException {
 		try {
-			XMLConfigAdmin admin = XMLConfigAdmin.newInstance((ConfigWebImpl)pc.getConfig(),webAdminPassword);
+			XMLConfigAdmin admin = XMLConfigAdmin.newInstance((ConfigWebImpl) pc.getConfig(), webAdminPassword);
 			admin.updateRestMapping(virtual, dir.getAbsolutePath(), defaultMapping);
 			admin.storeAndReload();
-		} 
+		}
 		catch (Exception e) {
 			throw Caster.toPageException(e);
 		}
 	}
-	
+
 }

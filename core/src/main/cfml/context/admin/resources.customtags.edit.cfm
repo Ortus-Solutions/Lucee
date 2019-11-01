@@ -12,7 +12,7 @@
 
 <cfoutput>
 	<div class="pageintro">#stText.Mappings.editDesc#</div>
-	<cfform onerror="customError" action="#request.self#?virtual=#mapping.virtual#&action=#url.action#&action2=#url.action2#" method="post">
+	<cfformClassic onerror="customError" action="#request.self#?virtual=#mapping.virtual#&action=#url.action#&action2=#url.action2#" method="post">
 		<input type="hidden" name="mainAction" value="#stText.Buttons.Update#">
 		<input type="hidden"  name="row_#mapping.id#" value="#mapping.id#">
 		<input type="hidden"  name="virtual_#mapping.id#" value="#mapping.virtual#">
@@ -39,7 +39,7 @@
 						<cfif mapping.readOnly>
 							#cut(mapping.strPhysical,72)#
 						<cfelse>
-							<cfinput onKeyDown="checkTheBox(this)" type="text" 
+							<cfinputClassic onKeyDown="checkTheBox(this)" type="text" 
 								name="physical_#mapping.id#" value="#mapping.strPhysical#" required="no"  
 								style="width:100%" message="#stText.Mappings.PhysicalMissing##mapping.id#)">
 						</cfif>
@@ -53,7 +53,7 @@
 						<cfif mapping.readOnly>
 							#cut(mappings.strArchive,72)#
 						<cfelse>
-							<cfinput onKeyDown="checkTheBox(this)" type="text" 
+							<cfinputClassic onKeyDown="checkTheBox(this)" type="text" 
 								name="archive_#mapping.id#" value="#mapping.strArchive#" required="no"  
 								class="xlarge" message="#stText.Mappings.ArchiveMissing##mapping.id#)">
 						</cfif>
@@ -120,7 +120,7 @@
 
 
 <cfsavecontent variable="codeSample"><cfset count=0><cfset del="">
-this.customtagpaths=["#mapping.virtual#"]=<cfif len(mapping.strPhysical) && !len(mapping.strArchive)>
+this.customtagpaths["#mapping.virtual#"]=<cfif len(mapping.strPhysical) && !len(mapping.strArchive)>
 &nbsp;&nbsp;&nbsp;"#mapping.strPhysical#"<cfelse>{<cfif len(mapping.strPhysical)><cfset count++>
 &nbsp;&nbsp;&nbsp;physical:"#mapping.strPhysical#"<cfset del=","></cfif><cfif len(mapping.strArchive)><cfset count++>
 &nbsp;&nbsp;&nbsp;#del#archive:"#mapping.strArchive#"<cfset del=","></cfif><cfif count==2 && !mapping.PhysicalFirst>
@@ -193,5 +193,5 @@ this.customtagpaths=["#mapping.virtual#"]=<cfif len(mapping.strPhysical) && !len
 				</tfoot>
 			</cfif>
 		</table>
-	</cfform>
+	</cfformClassic>
 </cfoutput>

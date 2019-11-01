@@ -24,7 +24,7 @@ public class ActiveQuery {
 	public final long startTime;
 
 	public ActiveQuery(String sql, long startTime) {
-		this.sql=sql;
-		this.startTime=startTime;
+		this.sql = sql;
+		this.startTime = startTime;
 	}
 }

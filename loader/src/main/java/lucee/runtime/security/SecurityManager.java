@@ -159,15 +159,13 @@ public interface SecurityManager {
 
 	/**
 	 * @param access
-	 * @return return access value (all,local,none ...) for given type (cfx,file
-	 *         ...)
+	 * @return return access value (all,local,none ...) for given type (cfx,file ...)
 	 */
 	public abstract short getAccess(int access);
 
 	/**
 	 * @param access
-	 * @return return access value (all,local,none ...) for given type (cfx,file
-	 *         ...)
+	 * @return return access value (all,local,none ...) for given type (cfx,file ...)
 	 * @throws PageException
 	 */
 	public abstract short getAccess(String access) throws PageException;
@@ -184,8 +182,7 @@ public interface SecurityManager {
 	 * @param serverPassword
 	 * @throws PageException
 	 */
-	public abstract void checkFileLocation(ConfigWeb config, Resource res,
-			String serverPassword) throws PageException;
+	public abstract void checkFileLocation(ConfigWeb config, Resource res, String serverPassword) throws PageException;
 
 	/**
 	 * @return clone the security Manager

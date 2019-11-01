@@ -21,6 +21,12 @@ package lucee.runtime.text.xml;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import org.w3c.dom.Attr;
+import org.w3c.dom.DOMException;
+import org.w3c.dom.Document;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+
 import lucee.runtime.PageContext;
 import lucee.runtime.dump.DumpData;
 import lucee.runtime.dump.DumpProperties;
@@ -42,17 +48,10 @@ import lucee.runtime.type.it.ValueIterator;
 import lucee.runtime.type.util.ListUtil;
 import lucee.runtime.type.util.StructSupport;
 
-import org.w3c.dom.Attr;
-import org.w3c.dom.DOMException;
-import org.w3c.dom.Document;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
-
 /**
  * represent a Struct and a NamedNodeMap
  */
-public final class XMLAttributes extends StructSupport implements Struct,NamedNodeMap {
-	
+public final class XMLAttributes extends StructSupport implements Struct, NamedNodeMap {
 
 	private final NamedNodeMap nodeMap;
 	private final Document owner;
@@ -61,194 +60,199 @@ public final class XMLAttributes extends StructSupport implements Struct,NamedNo
 
 	/**
 	 * constructor of the class (readonly)
+	 * 
 	 * @param nodeMap
 	 */
 	public XMLAttributes(Node parent, boolean caseSensitive) {
-		this.owner=parent.getOwnerDocument();
-		this.parent=parent;
-		this.nodeMap=parent.getAttributes();
-		this.caseSensitive=caseSensitive;
+		this.owner = XMLUtil.getDocument(parent);
+		this.parent = parent;
+		this.nodeMap = parent.getAttributes();
+		this.caseSensitive = caseSensitive;
 	}
 
 	@Override
 	public DumpData toDumpData(PageContext pageContext, int maxlevel, DumpProperties dp) {
-		Collection.Key[] keys=keys();
+		Collection.Key[] keys = keys();
 		maxlevel--;
-		DumpTable table = new DumpTable("xml","#999966","#cccc99","#000000");
+		DumpTable table = new DumpTable("xml", "#999966", "#cccc99", "#000000");
 		table.setTitle("Struct (XML Attributes)");
 
-		int maxkeys=dp.getMaxKeys();
-		int index=0;
+		int maxkeys = dp.getMaxKeys();
+		int index = 0;
 		Collection.Key k;
-		for(int i=0;i<keys.length;i++) {
-			k=keys[i];
-			
-			if(DumpUtil.keyValid(dp,maxlevel, k)){
-				if(maxkeys<=index++)break;
-				table.appendRow(1,new SimpleDumpData(k.getString()),DumpUtil.toDumpData(get(k.getString(),null), pageContext,maxlevel,dp));
+		for (int i = 0; i < keys.length; i++) {
+			k = keys[i];
+
+			if (DumpUtil.keyValid(dp, maxlevel, k)) {
+				if (maxkeys <= index++) break;
+				table.appendRow(1, new SimpleDumpData(k.getString()), DumpUtil.toDumpData(get(k.getString(), null), pageContext, maxlevel, dp));
 			}
 		}
 		return table;
 	}
-	
 
 	@Override
 	public int size() {
 		return nodeMap.getLength();
 	}
-	
+
 	@Override
 	public Collection.Key[] keys() {
-		int len=nodeMap.getLength();
-		ArrayList<Collection.Key> list =new ArrayList<Collection.Key>();
-		for(int i=0;i<len;i++) {
+		int len = nodeMap.getLength();
+		ArrayList<Collection.Key> list = new ArrayList<Collection.Key>();
+		for (int i = 0; i < len; i++) {
 			Node item = nodeMap.item(i);
-			if(item instanceof Attr)
-				list.add(KeyImpl.init(((Attr)item).getName()));
+			if (item instanceof Attr) list.add(KeyImpl.init(((Attr) item).getName()));
 		}
 		return list.toArray(new Collection.Key[list.size()]);
 	}
-    
+
 	@Override
 	public Object remove(Collection.Key k) throws PageException {
-		String key=k.getString();
-		Node rtn=null;
-		if(!caseSensitive){
+		String key = k.getString();
+		Node rtn = null;
+		if (!caseSensitive) {
 			int len = nodeMap.getLength();
 			String nn;
-			for(int i=len-1;i>=0;i--) {
-				nn=nodeMap.item(i).getNodeName();
-				if(key.equalsIgnoreCase(nn)) rtn=nodeMap.removeNamedItem(nn);
+			for (int i = len - 1; i >= 0; i--) {
+				nn = nodeMap.item(i).getNodeName();
+				if (key.equalsIgnoreCase(nn)) rtn = nodeMap.removeNamedItem(nn);
 			}
 		}
-		else rtn=nodeMap.removeNamedItem(toName(key));
-		
-		if(rtn!=null) return rtn.getNodeValue();
-		throw new ExpressionException("can't remove element with name ["+key+"], element doesn't exist");
-	}	
-    
-    @Override
-    public Object removeEL(Collection.Key k) {
-    	String key=k.getString();
-		Node rtn=null;
-		if(!caseSensitive){
+		else rtn = nodeMap.removeNamedItem(toName(key));
+
+		if (rtn != null) return rtn.getNodeValue();
+		throw new ExpressionException("can't remove element with name [" + key + "], element doesn't exist");
+	}
+
+	@Override
+	public Object removeEL(Collection.Key k) {
+		String key = k.getString();
+		Node rtn = null;
+		if (!caseSensitive) {
 			int len = nodeMap.getLength();
 			String nn;
-			for(int i=len-1;i>=0;i--) {
-				nn=nodeMap.item(i).getNodeName();
-				if(key.equalsIgnoreCase(nn)) rtn=nodeMap.removeNamedItem(nn);
+			for (int i = len - 1; i >= 0; i--) {
+				nn = nodeMap.item(i).getNodeName();
+				if (key.equalsIgnoreCase(nn)) rtn = nodeMap.removeNamedItem(nn);
 			}
 		}
-		else rtn=nodeMap.removeNamedItem(toName(key));
-		
-		if(rtn!=null) return rtn.getNodeValue();
+		else rtn = nodeMap.removeNamedItem(toName(key));
+
+		if (rtn != null) return rtn.getNodeValue();
 		return null;
-    }
-    
+	}
+
 	@Override
 	public void clear() {
-		Collection.Key[] keys=keys();
-		for(int i=0;i<keys.length;i++) {
+		Collection.Key[] keys = keys();
+		for (int i = 0; i < keys.length; i++) {
 			nodeMap.removeNamedItem(keys[i].getString());
 		}
 	}
 
 	@Override
-	public Object get(Collection.Key key) throws ExpressionException {
-		Node rtn = nodeMap.getNamedItem(key.getString());
-		if(rtn!=null) return rtn.getNodeValue();
-		
-		Collection.Key[] keys=keys();
-		for(int i=0;i<keys.length;i++) {
-			if(key.equalsIgnoreCase(keys[i]))
-				return nodeMap.getNamedItem(keys[i].getString()).getNodeValue();
-		}
-		throw new ExpressionException("No Attribute "+key.getString()+" defined for tag","attributes are ["+ListUtil.arrayToList(keys,", ")+"]");
+	public final Object get(Collection.Key key) throws ExpressionException {
+		return get((PageContext) null, key);
 	}
 
 	@Override
-	public Object get(Collection.Key key, Object defaultValue) {
+	public final Object get(PageContext pc, Collection.Key key) throws ExpressionException {
 		Node rtn = nodeMap.getNamedItem(key.getString());
-		if(rtn!=null) return rtn.getNodeValue();
-		
-		Collection.Key[] keys=keys();
-		for(int i=0;i<keys.length;i++) {
-			if(key.equalsIgnoreCase(keys[i]))
-				return nodeMap.getNamedItem(keys[i].getString()).getNodeValue();
+		if (rtn != null) return rtn.getNodeValue();
+
+		Collection.Key[] keys = keys();
+		for (int i = 0; i < keys.length; i++) {
+			if (key.equalsIgnoreCase(keys[i])) return nodeMap.getNamedItem(keys[i].getString()).getNodeValue();
+		}
+		throw new ExpressionException("No Attribute " + key.getString() + " defined for tag", "attributes are [" + ListUtil.arrayToList(keys, ", ") + "]");
+	}
+
+	@Override
+	public final Object get(Collection.Key key, Object defaultValue) {
+		return get((PageContext) null, key, defaultValue);
+	}
+
+	@Override
+	public final Object get(PageContext pc, Collection.Key key, Object defaultValue) {
+		Node rtn = nodeMap.getNamedItem(key.getString());
+		if (rtn != null) return rtn.getNodeValue();
+
+		Collection.Key[] keys = keys();
+		for (int i = 0; i < keys.length; i++) {
+			if (key.equalsIgnoreCase(keys[i])) return nodeMap.getNamedItem(keys[i].getString()).getNodeValue();
 		}
 		return defaultValue;
 	}
 
 	@Override
 	public Object set(Collection.Key key, Object value) throws PageException {
-		if(owner==null) return value;
-		
+		if (owner == null) return value;
+
 		try {
-			Attr attr=owner.createAttribute(toName(key.getString()));
+			Attr attr = owner.createAttribute(toName(key.getString()));
 			attr.setValue(Caster.toString(value));
 			nodeMap.setNamedItem(attr);
-			
+
 		}
-		catch(DOMException de) {
+		catch (DOMException de) {
 			throw new XMLException(de);
 		}
-		
-		
-		
-		
+
 		return value;
 	}
 
 	private String toName(String name) {
-		return toName(name,name);
+		return toName(name, name);
 	}
+
 	private String toName(String name, String defaultValue) {
-		if(caseSensitive) return name;
-		
+		if (caseSensitive) return name;
+
 		Node n = nodeMap.getNamedItem(name);
-		if(n!=null) return n.getNodeName();
-		
+		if (n != null) return n.getNodeName();
+
 		int len = nodeMap.getLength();
 		String nn;
-		for(int i=0;i<len;i++) {
-			nn=nodeMap.item(i).getNodeName();
-			if(name.equalsIgnoreCase(nn)) return nn;
+		for (int i = 0; i < len; i++) {
+			nn = nodeMap.item(i).getNodeName();
+			if (name.equalsIgnoreCase(nn)) return nn;
 		}
 		return defaultValue;
 	}
-	
+
 	@Override
 	public Object setEL(Collection.Key key, Object value) {
-		if(owner==null) return value;
+		if (owner == null) return value;
 		try {
-			Attr attr=owner.createAttribute(toName(key.getString()));
+			Attr attr = owner.createAttribute(toName(key.getString()));
 			attr.setValue(Caster.toString(value));
 			nodeMap.setNamedItem(attr);
 		}
-		catch(Exception e) {
+		catch (Exception e) {
 			return null;
 		}
 		return value;
 	}
-	
+
 	@Override
 	public Iterator<Collection.Key> keyIterator() {
 		return new KeyIterator(keys());
 	}
-    
-    @Override
+
+	@Override
 	public Iterator<String> keysAsStringIterator() {
-    	return new StringIterator(keys());
-    }
-	
+		return new StringIterator(keys());
+	}
+
 	@Override
 	public Iterator<Entry<Key, Object>> entryIterator() {
-		return new EntryIterator(this,keys());
+		return new EntryIterator(this, keys());
 	}
-	
+
 	@Override
 	public Iterator<Object> valueIterator() {
-		return new ValueIterator(this,keys());
+		return new ValueIterator(this, keys());
 	}
 
 	@Override
@@ -283,7 +287,7 @@ public final class XMLAttributes extends StructSupport implements Struct,NamedNo
 
 	@Override
 	public Node getNamedItemNS(String namespaceURI, String localName) {
-		return nodeMap.getNamedItemNS(namespaceURI,localName);
+		return nodeMap.getNamedItemNS(namespaceURI, localName);
 	}
 
 	@Override
@@ -293,10 +297,9 @@ public final class XMLAttributes extends StructSupport implements Struct,NamedNo
 
 	@Override
 	public Collection duplicate(boolean deepCopy) {
-		return new XMLAttributes(parent.cloneNode(deepCopy),caseSensitive);
+		return new XMLAttributes(parent.cloneNode(deepCopy), caseSensitive);
 	}
-	
-	
+
 	/**
 	 * @return returns named Node map
 	 */
@@ -305,51 +308,54 @@ public final class XMLAttributes extends StructSupport implements Struct,NamedNo
 	}
 
 	@Override
-	public boolean containsKey(Collection.Key key) {
-        return get(key,null)!=null;
+	public final boolean containsKey(Collection.Key key) {
+		return get(key, null) != null;
 	}
-    
-    @Override
-    public String castToString() throws ExpressionException {
-        throw new ExpressionException("Can't cast XML NamedNodeMap to String");
-    }
-    
+
+	@Override
+	public final boolean containsKey(PageContext pc, Collection.Key key) {
+		return get(pc, key, null) != null;
+	}
+
+	@Override
+	public String castToString() throws ExpressionException {
+		throw new ExpressionException("Can't cast XML NamedNodeMap to String");
+	}
+
 	@Override
 	public String castToString(String defaultValue) {
 		return defaultValue;
 	}
 
-    @Override
-    public boolean castToBooleanValue() throws ExpressionException {
-        throw new ExpressionException("Can't cast XML NamedNodeMap to a boolean value");
-    }
-    
-    @Override
-    public Boolean castToBoolean(Boolean defaultValue) {
-        return defaultValue;
-    }
+	@Override
+	public boolean castToBooleanValue() throws ExpressionException {
+		throw new ExpressionException("Can't cast XML NamedNodeMap to a boolean value");
+	}
 
+	@Override
+	public Boolean castToBoolean(Boolean defaultValue) {
+		return defaultValue;
+	}
 
-    @Override
-    public double castToDoubleValue() throws ExpressionException {
-        throw new ExpressionException("Can't cast XML NamedNodeMap to a number value");
-    }
-    
-    @Override
-    public double castToDoubleValue(double defaultValue) {
-        return defaultValue;
-    }
+	@Override
+	public double castToDoubleValue() throws ExpressionException {
+		throw new ExpressionException("Can't cast XML NamedNodeMap to a number value");
+	}
 
+	@Override
+	public double castToDoubleValue(double defaultValue) {
+		return defaultValue;
+	}
 
-    @Override
-    public DateTime castToDateTime() throws ExpressionException {
-    	throw new ExpressionException("Can't cast XML NamedNodeMap to a date value");
-    }
-    
-    @Override
-    public DateTime castToDateTime(DateTime defaultValue) {
-        return defaultValue;
-    }
+	@Override
+	public DateTime castToDateTime() throws ExpressionException {
+		throw new ExpressionException("Can't cast XML NamedNodeMap to a date value");
+	}
+
+	@Override
+	public DateTime castToDateTime(DateTime defaultValue) {
+		return defaultValue;
+	}
 
 	@Override
 	public int compareTo(boolean b) throws ExpressionException {
@@ -369,5 +375,10 @@ public final class XMLAttributes extends StructSupport implements Struct,NamedNo
 	@Override
 	public int compareTo(String str) throws PageException {
 		throw new ExpressionException("can't compare XML NamedNodeMap with a String");
+	}
+
+	@Override
+	public int getType() {
+		return Struct.TYPE_LINKED;
 	}
 }

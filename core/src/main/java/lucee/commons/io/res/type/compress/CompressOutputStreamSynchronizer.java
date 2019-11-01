@@ -27,10 +27,10 @@ public final class CompressOutputStreamSynchronizer extends OutputStream {
 	private final Compress zip;
 	private final boolean async;
 
-	public CompressOutputStreamSynchronizer(OutputStream os, Compress zip,boolean async) {
-		this.os=os;
-		this.zip=zip;
-		this.async=async;
+	public CompressOutputStreamSynchronizer(OutputStream os, Compress zip, boolean async) {
+		this.os = os;
+		this.zip = zip;
+		this.async = async;
 	}
 
 	@Override

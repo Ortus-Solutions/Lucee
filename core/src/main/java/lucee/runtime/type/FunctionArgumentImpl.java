@@ -29,11 +29,10 @@ import lucee.commons.lang.ExternalizableUtil;
 /**
  * a single argument of a function
  */
-public final class FunctionArgumentImpl implements FunctionArgument,Externalizable {
-	
+public final class FunctionArgumentImpl implements FunctionArgument, Externalizable {
 
 	private static final long serialVersionUID = -7275048405949174352L; // do not change
-	
+
 	private String dspName;
 	private String hint;
 	private Collection.Key name;
@@ -43,60 +42,67 @@ public final class FunctionArgumentImpl implements FunctionArgument,Externalizab
 	private Struct meta;
 	private int defaultType;
 	private boolean passByReference;
-	
 
 	/** @deprecated use other constructor */
 	@Deprecated
-	public FunctionArgumentImpl(String name,String type,boolean required) {
-		this(name,type,required,"","");
+	public FunctionArgumentImpl(String name, String type, boolean required) {
+		this(name, type, required, "", "");
 	}
+
 	/** @deprecated use other constructor */
 	@Deprecated
-	public FunctionArgumentImpl(String name,String type,boolean required,String dspName,String hint) {
-		this(name,type,required,DEFAULT_TYPE_RUNTIME_EXPRESSION,true,dspName,hint,null);
+	public FunctionArgumentImpl(String name, String type, boolean required, String dspName, String hint) {
+		this(name, type, required, DEFAULT_TYPE_RUNTIME_EXPRESSION, true, dspName, hint, null);
 	}
+
 	/** @deprecated use other constructor */
 	@Deprecated
-	public FunctionArgumentImpl(String name,String type,boolean required,String dspName,String hint,StructImpl meta) {
-		this(name,type,required,DEFAULT_TYPE_RUNTIME_EXPRESSION,true,dspName,hint,meta);
+	public FunctionArgumentImpl(String name, String type, boolean required, String dspName, String hint, StructImpl meta) {
+		this(name, type, required, DEFAULT_TYPE_RUNTIME_EXPRESSION, true, dspName, hint, meta);
 	}
+
 	/** @deprecated use other constructor */
 	@Deprecated
-	public FunctionArgumentImpl(String name,String type,boolean required,int defaultType,String dspName,String hint,StructImpl meta) {
-		this(name, type, required, defaultType,true, dspName, hint, meta);
+	public FunctionArgumentImpl(String name, String type, boolean required, int defaultType, String dspName, String hint, StructImpl meta) {
+		this(name, type, required, defaultType, true, dspName, hint, meta);
 	}
+
 	/** @deprecated use other constructor */
 	@Deprecated
-	public FunctionArgumentImpl(String name,String type,boolean required,double defaultType,String dspName,String hint,StructImpl meta) {
-		this(name, type, required, (int)defaultType,true, dspName, hint, meta);
+	public FunctionArgumentImpl(String name, String type, boolean required, double defaultType, String dspName, String hint, StructImpl meta) {
+		this(name, type, required, (int) defaultType, true, dspName, hint, meta);
 	}
+
 	/** @deprecated use other constructor */
 	@Deprecated
-	public FunctionArgumentImpl(String name,String type,boolean required,double defaultType,boolean passByReference,String dspName,String hint,StructImpl meta) {
-		this(name, type, required, (int)defaultType,passByReference, dspName, hint, meta);
+	public FunctionArgumentImpl(String name, String type, boolean required, double defaultType, boolean passByReference, String dspName, String hint, StructImpl meta) {
+		this(name, type, required, (int) defaultType, passByReference, dspName, hint, meta);
 	}
+
 	/** @deprecated use other constructor */
 	@Deprecated
-	public FunctionArgumentImpl(String name,String type,boolean required,int defaultType,boolean passByReference,String dspName,String hint,StructImpl meta) {
-		this(KeyImpl.init(name),type,required,defaultType,passByReference,dspName,hint,meta);
+	public FunctionArgumentImpl(String name, String type, boolean required, int defaultType, boolean passByReference, String dspName, String hint, StructImpl meta) {
+		this(KeyImpl.init(name), type, required, defaultType, passByReference, dspName, hint, meta);
 	}
+
 	/** @deprecated use other constructor */
 	@Deprecated
-	public FunctionArgumentImpl(String name,String strType,short type,boolean required,int defaultType,boolean passByReference,String dspName,String hint,StructImpl meta) {
+	public FunctionArgumentImpl(String name, String strType, short type, boolean required, int defaultType, boolean passByReference, String dspName, String hint, StructImpl meta) {
 		this(KeyImpl.init(name), strType, type, required, defaultType, passByReference, dspName, hint, meta);
 	}
+
 	/** @deprecated use other constructor */
 	@Deprecated
-	public FunctionArgumentImpl(Collection.Key name,String type,boolean required,int defaultType,boolean passByReference,String dspName,String hint,StructImpl meta) {
-		this.name=name;
-		this.strType=(type);
-		this.type=CFTypes.toShortStrict(type,CFTypes.TYPE_UNKNOW);
-		this.required=required;
-		this.defaultType=defaultType;
-		this.dspName=dspName;
-		this.hint=hint;
-		this.meta=meta;
-		this.passByReference=passByReference;		
+	public FunctionArgumentImpl(Collection.Key name, String type, boolean required, int defaultType, boolean passByReference, String dspName, String hint, StructImpl meta) {
+		this.name = name;
+		this.strType = (type);
+		this.type = CFTypes.toShortStrict(type, CFTypes.TYPE_UNKNOW);
+		this.required = required;
+		this.defaultType = defaultType;
+		this.dspName = dspName;
+		this.hint = hint;
+		this.meta = meta;
+		this.passByReference = passByReference;
 	}
 
 	/**
@@ -104,59 +110,52 @@ public final class FunctionArgumentImpl implements FunctionArgument,Externalizab
 	 */
 	public FunctionArgumentImpl() {}
 
-	
 	public FunctionArgumentImpl(Collection.Key name) {
 		this(name, "any", CFTypes.TYPE_ANY, false, DEFAULT_TYPE_NULL, true, "", "", null);
 	}
 
-	public FunctionArgumentImpl(Collection.Key name,short type) {
-		this(name, CFTypes.toString(type,"any"), type, false, DEFAULT_TYPE_NULL, true, "", "", null);
+	public FunctionArgumentImpl(Collection.Key name, short type) {
+		this(name, CFTypes.toString(type, "any"), type, false, DEFAULT_TYPE_NULL, true, "", "", null);
 	}
 
-	public FunctionArgumentImpl(Collection.Key name,String strType,short type) {
+	public FunctionArgumentImpl(Collection.Key name, String strType, short type) {
 		this(name, strType, type, false, DEFAULT_TYPE_NULL, true, "", "", null);
 	}
 
-	public FunctionArgumentImpl(Collection.Key name,String strType,short type,boolean required) {
+	public FunctionArgumentImpl(Collection.Key name, String strType, short type, boolean required) {
 		this(name, strType, type, required, DEFAULT_TYPE_NULL, true, "", "", null);
 	}
-	
-	public FunctionArgumentImpl(Collection.Key name,String strType,short type,boolean required,int defaultType) {
+
+	public FunctionArgumentImpl(Collection.Key name, String strType, short type, boolean required, int defaultType) {
 		this(name, strType, type, required, defaultType, true, "", "", null);
 	}
-	
-	public FunctionArgumentImpl(Collection.Key name,String strType,short type,boolean required,int defaultType,boolean passByReference) {
+
+	public FunctionArgumentImpl(Collection.Key name, String strType, short type, boolean required, int defaultType, boolean passByReference) {
 		this(name, strType, type, required, defaultType, passByReference, "", "", null);
 	}
-	
-	public FunctionArgumentImpl(Collection.Key name,String strType,short type,boolean required,int defaultType,boolean passByReference,String dspName) {
+
+	public FunctionArgumentImpl(Collection.Key name, String strType, short type, boolean required, int defaultType, boolean passByReference, String dspName) {
 		this(name, strType, type, required, defaultType, passByReference, dspName, "", null);
 	}
 
-	public FunctionArgumentImpl(Collection.Key name,String strType,short type,boolean required,int defaultType,boolean passByReference,String dspName,String hint) {
+	public FunctionArgumentImpl(Collection.Key name, String strType, short type, boolean required, int defaultType, boolean passByReference, String dspName, String hint) {
 		this(name, strType, type, required, defaultType, passByReference, dspName, hint, null);
 	}
-	
-	public FunctionArgumentImpl(Collection.Key name,String strType,short type,boolean required,int defaultType,boolean passByReference,String dspName,String hint,StructImpl meta) {
-		this.name=name;
-		this.strType=strType;
-		this.type=type;
-		this.required=required;
-		this.defaultType=defaultType;
-		this.dspName=dspName;
-		this.hint=hint;
-		this.meta=meta;
-		this.passByReference=passByReference;
-	}
-	
-	
-	
-	
-	
-	
-	
-	//private static StructImpl sct=new StructImpl();
 
+	public FunctionArgumentImpl(Collection.Key name, String strType, short type, boolean required, int defaultType, boolean passByReference, String dspName, String hint,
+			StructImpl meta) {
+		this.name = name;
+		this.strType = strType;
+		this.type = type;
+		this.required = required;
+		this.defaultType = defaultType;
+		this.dspName = dspName;
+		this.hint = hint;
+		this.meta = meta;
+		this.passByReference = passByReference;
+	}
+
+	// private static StructImpl sct=new StructImpl();
 
 	/**
 	 * @return the defaultType
@@ -165,7 +164,6 @@ public final class FunctionArgumentImpl implements FunctionArgument,Externalizab
 	public int getDefaultType() {
 		return defaultType;
 	}
-
 
 	@Override
 	public Collection.Key getName() {
@@ -192,36 +190,33 @@ public final class FunctionArgumentImpl implements FunctionArgument,Externalizab
 		return hint;
 	}
 
-
 	@Override
 	public String getDisplayName() {
 		return dspName;
 	}
-	
+
 	@Override
 	public Struct getMetaData() {
 		return meta;
 	}
-	
+
 	@Override
 	public boolean isPassByReference() {
 		return passByReference;
 	}
 
-
 	@Override
-	public void readExternal(ObjectInput in) throws IOException,ClassNotFoundException {
-		dspName=ExternalizableUtil.readString(in);
-		hint=ExternalizableUtil.readString(in);
-		name=KeyImpl.init(ExternalizableUtil.readString(in));
-		type=in.readShort();
-		strType=ExternalizableUtil.readString(in);
-		required=in.readBoolean();
-		meta=(Struct) in.readObject();
-		defaultType=in.readInt();
-		passByReference=in.readBoolean();
+	public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+		dspName = ExternalizableUtil.readString(in);
+		hint = ExternalizableUtil.readString(in);
+		name = KeyImpl.init(ExternalizableUtil.readString(in));
+		type = in.readShort();
+		strType = ExternalizableUtil.readString(in);
+		required = in.readBoolean();
+		meta = (Struct) in.readObject();
+		defaultType = in.readInt();
+		passByReference = in.readBoolean();
 	}
-
 
 	@Override
 	public void writeExternal(ObjectOutput out) throws IOException {
@@ -235,31 +230,23 @@ public final class FunctionArgumentImpl implements FunctionArgument,Externalizab
 		out.writeInt(defaultType);
 		out.writeBoolean(passByReference);
 	}
-	
 
 	@Override
-	public boolean equals(Object obj){
-		if(!(obj instanceof FunctionArgument)) return false;
-		return equals(this,(FunctionArgument)obj);
+	public boolean equals(Object obj) {
+		if (!(obj instanceof FunctionArgument)) return false;
+		return equals(this, (FunctionArgument) obj);
 	}
-	
+
 	public static boolean equals(FunctionArgument left, FunctionArgument right) {
-		if(
-				left.getDefaultType()!=right.getDefaultType()
-				|| left.getType()!=right.getType()
-				|| !_eq(left.getName(), right.getName())
-				|| !_eq(left.getTypeAsString(), right.getTypeAsString())
-				|| left.isPassByReference()!=right.isPassByReference()
-				|| left.isRequired()!=right.isRequired()
-		)
+		if (left.getDefaultType() != right.getDefaultType() || left.getType() != right.getType() || !_eq(left.getName(), right.getName())
+				|| !_eq(left.getTypeAsString(), right.getTypeAsString()) || left.isPassByReference() != right.isPassByReference() || left.isRequired() != right.isRequired())
 			return false;
-		
-		
+
 		return true;
 	}
-	
+
 	private static boolean _eq(Object left, Object right) {
-		if(left==null) return right==null;
+		if (left == null) return right == null;
 		return left.equals(right);
 	}
 }

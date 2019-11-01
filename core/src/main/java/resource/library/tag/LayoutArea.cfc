@@ -32,7 +32,7 @@
  		<cfset variables.attributes = arguments.attributes />
    			
 		<cfif parent.getAttribute('type') eq 'tab' and attributes.title eq "">
-			<cfthrow message="Attributes [title] is required for a tab layoutarea." />
+			<cfthrow message="Attributes [title] is required for a tag [layoutarea]." />
 		</cfif>
    				
 		<!--- If there is no end tag add the attributes to tee parent collection --->
@@ -64,8 +64,8 @@
     </cffunction>
 	
 	<!---   attributes   --->
-	<cffunction name="getAtttributes" access="public" output="false" returntype="struct">
-		<cfreturn variables.atttributes/>
+	<cffunction name="getAttributes" access="public" output="false" returntype="struct">
+		<cfreturn variables.attributes/>
 	</cffunction>
 
     <cffunction name="getAttribute" output="false" access="public" returntype="any">

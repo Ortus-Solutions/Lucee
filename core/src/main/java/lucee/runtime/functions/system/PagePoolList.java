@@ -39,35 +39,34 @@ public final class PagePoolList implements Function {
 
 	public static Array call(PageContext pc) throws PageException {
 		ArrayImpl arr = new ArrayImpl();
-		fill(arr,ConfigWebUtil.getAllMappings(pc));
+		fill(arr, ConfigWebUtil.getAllMappings(pc));
 		return arr;
 	}
 
 	private static void fill(Array arr, Mapping[] mappings) throws PageException {
-		if(mappings==null) return;
+		if (mappings == null) return;
 		MappingImpl mapping;
-		for(int i=0;i<mappings.length;i++)	{
-			mapping=(MappingImpl) mappings[i];
-			toArray(arr,mapping.getPageSourcePool());
-		}		
+		for (int i = 0; i < mappings.length; i++) {
+			mapping = (MappingImpl) mappings[i];
+			toArray(arr, mapping.getPageSourcePool());
+		}
 	}
 
 	private static Array toArray(Array arr, PageSourcePool psp) throws PageException {
-		Object[] keys = psp.keys();
-		
+		String[] keys = psp.keys();
+
 		PageSourceImpl ps;
-		for(int y=0;y<keys.length;y++)	{
+		for (int y = 0; y < keys.length; y++) {
 			ps = (PageSourceImpl) psp.getPageSource(keys[y], false);
-			if(ps.isLoad())
-				arr.append(ps.getDisplayPath());
+			if (ps.isLoad()) arr.append(ps.getDisplayPath());
 		}
 		return arr;
 	}
 
 	public static String removeStartingSlash(String virtual) {
-		virtual=virtual.trim();
-		if(StringUtil.startsWith(virtual, '/'))virtual=virtual.substring(1);
-		if(StringUtil.isEmpty(virtual)) return "root";
+		virtual = virtual.trim();
+		if (StringUtil.startsWith(virtual, '/')) virtual = virtual.substring(1);
+		if (StringUtil.isEmpty(virtual)) return "root";
 		return virtual;
 	}
 }

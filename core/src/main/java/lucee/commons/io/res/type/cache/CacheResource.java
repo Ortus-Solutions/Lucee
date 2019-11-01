@@ -35,60 +35,59 @@ import lucee.runtime.exp.PageRuntimeException;
 import lucee.runtime.op.Caster;
 import lucee.runtime.type.Struct;
 
-
 /**
  * a ram resource
  */
 public final class CacheResource extends ResourceSupport implements ResourceMetaData {
-	
+
 	private final CacheResourceProvider provider;
-	
+
 	private final String parent;
 	private final String name;
-	//private CacheResourceCore _core;
+	// private CacheResourceCore _core;
 
 	CacheResource(CacheResourceProvider provider, String path) {
-		this.provider=provider;
-		if(path.equals("/")) {
-			this.parent=null;
-			this.name="";
+		this.provider = provider;
+		if (path.equals("/")) {
+			this.parent = null;
+			this.name = "";
 		}
 		else {
 			String[] pn = ResourceUtil.translatePathName(path);
-			this.parent=pn[0];
-			this.name=pn[1];
+			this.parent = pn[0];
+			this.name = pn[1];
 		}
 	}
-	
-	private CacheResource(CacheResourceProvider provider, String parent,String name) {
-		this.provider=provider;
-		this.parent=parent ;
-		this.name=name;
+
+	private CacheResource(CacheResourceProvider provider, String parent, String name) {
+		this.provider = provider;
+		this.parent = parent;
+		this.name = name;
 	}
 
 	private CacheResourceCore getCore() {
-		return provider.getCore(parent,name);
+		return provider.getCore(parent, name);
 	}
 
 	private void removeCore() throws IOException {
-		provider.removeCore(parent,name);
+		provider.removeCore(parent, name);
 	}
-	
+
 	private CacheResourceCore createCore(int type) throws IOException {
-		return provider.createCore(parent,name,type);
+		return provider.createCore(parent, name, type);
 	}
-	
 
 	private void touch() throws IOException {
-		provider.touch(parent,name);
+		provider.touch(parent, name);
 	}
 
 	@Override
 	public String getPath() {
 		return provider.getScheme().concat("://").concat(getInnerPath());
 	}
+
 	private String getInnerPath() {
-		if(parent==null) return "/";
+		if (parent == null) return "/";
 		return parent.concat(name);
 	}
 
@@ -99,7 +98,7 @@ public final class CacheResource extends ResourceSupport implements ResourceMeta
 
 	@Override
 	public String getParent() {
-		if(isRoot()) return null;
+		if (isRoot()) return null;
 		return provider.getScheme().concat("://").concat(ResourceUtil.translatePath(parent, true, false));
 	}
 
@@ -115,20 +114,18 @@ public final class CacheResource extends ResourceSupport implements ResourceMeta
 
 	@Override
 	public void remove(boolean force) throws IOException {
-		if(isRoot()) 
-			throw new IOException("can't remove root resource ["+getPath()+"]");
+		if (isRoot()) throw new IOException("can't remove root resource [" + getPath() + "]");
 
 		provider.read(this);
 		CacheResourceCore core = getCore();
-		if(core==null)
-			throw new IOException("can't remove resource ["+getPath()+"],resource does not exist");
-		
+		if (core == null) throw new IOException("can't remove resource [" + getPath() + "],resource does not exist");
+
 		Resource[] children = listResources();
-		if(children!=null && children.length>0) {
-			if(!force) {
-				throw new IOException("can't delete directory ["+getPath()+"], directory is not empty");
+		if (children != null && children.length > 0) {
+			if (!force) {
+				throw new IOException("can't delete directory [" + getPath() + "], directory is not empty");
 			}
-			for(int i=0;i<children.length;i++) {
+			for (int i = 0; i < children.length; i++) {
 				children[i].remove(true);
 			}
 		}
@@ -139,10 +136,11 @@ public final class CacheResource extends ResourceSupport implements ResourceMeta
 	public boolean exists() {
 		try {
 			provider.read(this);
-		} catch (IOException e) {
+		}
+		catch (IOException e) {
 			return true;
 		}
-		return getCore()!=null;
+		return getCore() != null;
 	}
 
 	@Override
@@ -150,18 +148,17 @@ public final class CacheResource extends ResourceSupport implements ResourceMeta
 		return getParentRamResource();
 	}
 
-
 	private CacheResource getParentRamResource() {
-		if(isRoot()) return null;
-		return new CacheResource(provider,parent);
+		if (isRoot()) return null;
+		return new CacheResource(provider, parent);
 	}
 
 	@Override
 	public Resource getRealResource(String realpath) {
-		realpath=ResourceUtil.merge(getInnerPath(), realpath);
-		if(realpath.startsWith("../"))return null;
+		realpath = ResourceUtil.merge(getInnerPath(), realpath);
+		if (realpath.startsWith("../")) return null;
 
-		return new CacheResource(provider,realpath);
+		return new CacheResource(provider, realpath);
 	}
 
 	@Override
@@ -171,39 +168,39 @@ public final class CacheResource extends ResourceSupport implements ResourceMeta
 
 	@Override
 	public boolean isDirectory() {
-		return exists() && getCore().getType()==CacheResourceCore.TYPE_DIRECTORY;
+		return exists() && getCore().getType() == CacheResourceCore.TYPE_DIRECTORY;
 	}
 
 	@Override
 	public boolean isFile() {
-		return exists() && getCore().getType()==CacheResourceCore.TYPE_FILE;
+		return exists() && getCore().getType() == CacheResourceCore.TYPE_FILE;
 	}
 
 	@Override
 	public long lastModified() {
-		if(!exists()) return 0;
+		if (!exists()) return 0;
 		return getCore().getLastModified();
 	}
 
 	@Override
 	public long length() {
-		if(!exists()) return 0;
-		byte[] data= getCore().getData();
-		if(data==null) return 0;
+		if (!exists()) return 0;
+		byte[] data = getCore().getData();
+		if (data == null) return 0;
 		return data.length;
 	}
 
 	@Override
 	public String[] list() {
-		if(!exists()) return null;
-		
+		if (!exists()) return null;
+
 		CacheResourceCore core = getCore();
-		if(core.getType()!=CacheResourceCore.TYPE_DIRECTORY)
-			return null;
-		
+		if (core.getType() != CacheResourceCore.TYPE_DIRECTORY) return null;
+
 		try {
 			return provider.getChildNames(getInnerPath());
-		} catch (IOException e) {
+		}
+		catch (IOException e) {
 			throw new PageRuntimeException(Caster.toPageException(e));
 		}
 	}
@@ -211,20 +208,20 @@ public final class CacheResource extends ResourceSupport implements ResourceMeta
 	@Override
 	public Resource[] listResources() {
 		String[] list = list();
-		if(list==null)return null;
-		
-		Resource[] children=new Resource[list.length];
-		String p=getInnerPath();
-		if(!isRoot())p=p.concat("/");
-		for(int i=0;i<children.length;i++) {
-			children[i]=new CacheResource(provider,p,list[i]);
+		if (list == null) return null;
+
+		Resource[] children = new Resource[list.length];
+		String p = getInnerPath();
+		if (!isRoot()) p = p.concat("/");
+		for (int i = 0; i < children.length; i++) {
+			children[i] = new CacheResource(provider, p, list[i]);
 		}
 		return children;
 	}
 
 	@Override
 	public boolean setLastModified(long time) {
-		if(!exists()) return false;
+		if (!exists()) return false;
 		getCore().setLastModified(time);
 		return true;
 	}
@@ -236,7 +233,7 @@ public final class CacheResource extends ResourceSupport implements ResourceMeta
 
 	@Override
 	public void createFile(boolean createParentWhenNotExists) throws IOException {
-		ResourceUtil.checkCreateFileOK(this,createParentWhenNotExists);
+		ResourceUtil.checkCreateFileOK(this, createParentWhenNotExists);
 		provider.lock(this);
 		try {
 			createCore(CacheResourceCore.TYPE_FILE);
@@ -246,10 +243,9 @@ public final class CacheResource extends ResourceSupport implements ResourceMeta
 		}
 	}
 
-
 	@Override
 	public void createDirectory(boolean createParentWhenNotExists) throws IOException {
-		ResourceUtil.checkCreateDirectoryOK(this,createParentWhenNotExists);
+		ResourceUtil.checkCreateDirectoryOK(this, createParentWhenNotExists);
 		provider.lock(this);
 		try {
 			createCore(CacheResourceCore.TYPE_DIRECTORY);
@@ -257,7 +253,7 @@ public final class CacheResource extends ResourceSupport implements ResourceMeta
 		finally {
 			provider.unlock(this);
 		}
-		
+
 	}
 
 	@Override
@@ -266,9 +262,9 @@ public final class CacheResource extends ResourceSupport implements ResourceMeta
 
 		provider.lock(this);
 		CacheResourceCore core = getCore();
-		
+
 		byte[] data = core.getData();
-		if(data==null)data=new byte[0];
+		if (data == null) data = new byte[0];
 		provider.unlock(this);
 		return new ByteArrayInputStream(data);
 	}
@@ -277,7 +273,7 @@ public final class CacheResource extends ResourceSupport implements ResourceMeta
 	public OutputStream getOutputStream(boolean append) throws IOException {
 		ResourceUtil.checkGetOutputStreamOK(this);
 		provider.lock(this);
-		return new CacheOutputStream(this,append);
+		return new CacheOutputStream(this, append);
 	}
 
 	public ContentType getContentType() {
@@ -288,14 +284,14 @@ public final class CacheResource extends ResourceSupport implements ResourceMeta
 	public ResourceProvider getResourceProvider() {
 		return provider;
 	}
+
 	@Override
 	public String toString() {
 		return getPath();
 	}
-	
 
 	/**
-	 * This is useed by the MemoryResource too write back data to, that are written to outputstream
+	 * This is used by the MemoryResource too write back data to, that are written to outputstream
 	 */
 	class CacheOutputStream extends ByteArrayOutputStream {
 
@@ -304,11 +300,12 @@ public final class CacheResource extends ResourceSupport implements ResourceMeta
 
 		/**
 		 * Constructor of the class
+		 * 
 		 * @param res
 		 */
 		public CacheOutputStream(CacheResource res, boolean append) {
-			this.append=append;
-			this.res=res;
+			this.append = append;
+			this.res = res;
 		}
 
 		@Override
@@ -316,9 +313,9 @@ public final class CacheResource extends ResourceSupport implements ResourceMeta
 			try {
 				super.close();
 				CacheResourceCore core = res.getCore();
-				if(core==null)core=res.createCore(CacheResourceCore.TYPE_FILE);
+				if (core == null) core = res.createCore(CacheResourceCore.TYPE_FILE);
 				else core.setLastModified(System.currentTimeMillis());
-				core.setData(this.toByteArray(),append);
+				core.setData(this.toByteArray(), append);
 				touch();
 			}
 			finally {
@@ -329,63 +326,67 @@ public final class CacheResource extends ResourceSupport implements ResourceMeta
 
 	@Override
 	public boolean setReadable(boolean value) {
-		if(!exists())return false;
+		if (!exists()) return false;
 		try {
 			setMode(ModeUtil.setReadable(getMode(), value));
 			return true;
-		} catch (IOException e) {
+		}
+		catch (IOException e) {
 			return false;
 		}
-		
+
 	}
-	
+
 	@Override
 	public boolean setWritable(boolean value) {
-		if(!exists())return false;
+		if (!exists()) return false;
 		try {
 			setMode(ModeUtil.setWritable(getMode(), value));
 			return true;
-		} catch (IOException e) {
+		}
+		catch (IOException e) {
 			return false;
 		}
 	}
 
 	private boolean isRoot() {
-		return parent==null;
+		return parent == null;
 	}
-	
+
 	@Override
 	public int getMode() {
-		if(!exists())return 0;
+		if (!exists()) return 0;
 		return getCore().getMode();
 	}
-	
+
 	@Override
 	public void setMode(int mode) throws IOException {
-		if(!exists())throw new IOException("can't set mode on resource ["+this+"], resource does not exist");
+		if (!exists()) throw new IOException("can't set mode on resource [" + this + "], resource does not exist");
 		getCore().setMode(mode);
 	}
+
 	@Override
 	public boolean getAttribute(short attribute) {
-		if(!exists())return false;
-		return (getCore().getAttributes()&attribute)>0;
+		if (!exists()) return false;
+		return (getCore().getAttributes() & attribute) > 0;
 	}
+
 	@Override
 	public void setAttribute(short attribute, boolean value) throws IOException {
-		if(!exists())throw new IOException("can't get attributes on resource ["+this+"], resource does not exist");
+		if (!exists()) throw new IOException("can't get attributes on resource [" + this + "], resource does not exist");
 		int attr = getCore().getAttributes();
-		if(value) {
-			if((attr&attribute)==0) attr+=attribute;
+		if (value) {
+			if ((attr & attribute) == 0) attr += attribute;
 		}
 		else {
-			if((attr&attribute)>0) attr-=attribute;
+			if ((attr & attribute) > 0) attr -= attribute;
 		}
 		getCore().setAttributes(attr);
 	}
 
 	@Override
 	public Struct getMetaData() {
-		return provider.getMeta(parent,name);
+		return provider.getMeta(parent, name);
 	}
-	
+
 }

@@ -30,25 +30,26 @@ import lucee.runtime.PageContext;
  */
 public final class CFMLWriterWS extends CFMLWriterImpl implements WhiteSpaceWriter {
 
-	public static final char CHAR_EMPTY=0;
-	public static final char CHAR_NL='\n';
-	public static final char CHAR_SPACE=' ';
-	public static final char CHAR_TAB='\t';
-	public static final char CHAR_BS='\b'; // \x0B\
-	public static final char CHAR_FW='\f';
-	public static final char CHAR_RETURN='\r';
+	public static final char CHAR_EMPTY = 0;
+	public static final char CHAR_NL = '\n';
+	public static final char CHAR_SPACE = ' ';
+	public static final char CHAR_TAB = '\t';
+	public static final char CHAR_BS = '\b'; // \x0B\
+	public static final char CHAR_FW = '\f';
+	public static final char CHAR_RETURN = '\r';
 
-	char charBuffer=CHAR_EMPTY;
-	
+	char charBuffer = CHAR_EMPTY;
+
 	/**
 	 * constructor of the class
+	 * 
 	 * @param rsp
-	 * @param bufferSize 
-	 * @param autoFlush 
+	 * @param bufferSize
+	 * @param autoFlush
 	 */
-	public CFMLWriterWS(PageContext pc,HttpServletRequest req, HttpServletResponse rsp, int bufferSize, boolean autoFlush, boolean closeConn, 
-			boolean showVersion, boolean contentLength) {
-		super(pc,req,rsp, bufferSize, autoFlush,closeConn,showVersion,contentLength);
+	public CFMLWriterWS(PageContext pc, HttpServletRequest req, HttpServletResponse rsp, int bufferSize, boolean autoFlush, boolean closeConn, boolean showVersion,
+			boolean contentLength) {
+		super(pc, req, rsp, bufferSize, autoFlush, closeConn, showVersion, contentLength);
 	}
 
 	/**
@@ -56,40 +57,40 @@ public final class CFMLWriterWS extends CFMLWriterImpl implements WhiteSpaceWrit
 	 */
 	@Override
 	public void print(char c) throws IOException {
-		switch(c) {
+		switch (c) {
 		case CHAR_NL:
-			if(charBuffer!=CHAR_NL)charBuffer=c;
-		break;
+			if (charBuffer != CHAR_NL) charBuffer = c;
+			break;
 		case CHAR_BS:
 		case CHAR_FW:
 		case CHAR_RETURN:
 		case CHAR_SPACE:
 		case CHAR_TAB:
-			if(charBuffer==CHAR_EMPTY)charBuffer=c;
-		break;
-		
+			if (charBuffer == CHAR_EMPTY) charBuffer = c;
+			break;
+
 		default:
 			printBuffer();
 			super.print(c);
-		break;
+			break;
 		}
 	}
-	
+
 	synchronized void printBuffer() throws IOException {
-		if(charBuffer!=CHAR_EMPTY) {
+		if (charBuffer != CHAR_EMPTY) {
 			char b = charBuffer;// muss so bleiben!
-			charBuffer=CHAR_EMPTY;
+			charBuffer = CHAR_EMPTY;
 			super.print(b);
 		}
 	}
 
 	void printBufferEL() {
-		if(charBuffer!=CHAR_EMPTY) {
+		if (charBuffer != CHAR_EMPTY) {
 			try {
 				char b = charBuffer;
-				charBuffer=CHAR_EMPTY;
+				charBuffer = CHAR_EMPTY;
 				super.print(b);
-			} 
+			}
 			catch (IOException e) {}
 		}
 	}
@@ -101,19 +102,17 @@ public final class CFMLWriterWS extends CFMLWriterImpl implements WhiteSpaceWrit
 	public void writeRaw(String str) throws IOException {
 		printBuffer();
 		super.write(str);
-	}    
-	
+	}
+
 	/**
-     * just a wrapper function for ACF
-     * @throws IOException 
-     */
-    @Override
-	public void initHeaderBuffer() throws IOException{
-    	resetHTMLHead();
-    }
-	
-    
-    
+	 * just a wrapper function for ACF
+	 * 
+	 * @throws IOException
+	 */
+	@Override
+	public void initHeaderBuffer() throws IOException {
+		resetHTMLHead();
+	}
 
 	/**
 	 * @see lucee.runtime.writer.CFMLWriterImpl#clear()
@@ -182,7 +181,7 @@ public final class CFMLWriterWS extends CFMLWriterImpl implements WhiteSpaceWrit
 	 */
 	@Override
 	public final void print(char[] chars) throws IOException {
-		write(chars,0,chars.length);
+		write(chars, 0, chars.length);
 	}
 
 	/**
@@ -234,7 +233,10 @@ public final class CFMLWriterWS extends CFMLWriterImpl implements WhiteSpaceWrit
 	 */
 	@Override
 	public final void print(String str) throws IOException {
-		write(str.toCharArray(),0,str.length());
+		int len = str.length();
+		for (int i = 0; i < len; i++) {
+			print(str.charAt(i));
+		}
 	}
 
 	/**
@@ -269,7 +271,7 @@ public final class CFMLWriterWS extends CFMLWriterImpl implements WhiteSpaceWrit
 	 */
 	@Override
 	public final void println(char[] chars) throws IOException {
-		write(chars,0,chars.length);
+		write(chars, 0, chars.length);
 		print(CHAR_NL);
 	}
 
@@ -328,7 +330,7 @@ public final class CFMLWriterWS extends CFMLWriterImpl implements WhiteSpaceWrit
 	public final void println(String str) throws IOException {
 		print(str);
 		print(CHAR_NL);
-		
+
 	}
 
 	/**
@@ -336,26 +338,25 @@ public final class CFMLWriterWS extends CFMLWriterImpl implements WhiteSpaceWrit
 	 */
 	@Override
 	public final void write(char[] chars, int off, int len) throws IOException {
-		for(int i=off;i<len;i++) {
+		for (int i = off; i < len; i++) {
 			print(chars[i]);
 		}
 	}
-	
+
 	/**
 	 * @see lucee.runtime.writer.CFMLWriterImpl#write(java.lang.String, int, int)
 	 */
 	@Override
 	public final void write(String str, int off, int len) throws IOException {
-		write(str.toCharArray(),off,len);
+		write(str.toCharArray(), off, len);
 	}
-	
 
 	/**
 	 * @see lucee.runtime.writer.CFMLWriterImpl#write(char[])
 	 */
 	@Override
 	public final void write(char[] chars) throws IOException {
-		write(chars,0,chars.length);
+		write(chars, 0, chars.length);
 	}
 
 	/**
@@ -371,6 +372,6 @@ public final class CFMLWriterWS extends CFMLWriterImpl implements WhiteSpaceWrit
 	 */
 	@Override
 	public final void write(String str) throws IOException {
-        write(str.toCharArray(),0,str.length());
+		write(str.toCharArray(), 0, str.length());
 	}
 }

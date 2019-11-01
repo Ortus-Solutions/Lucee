@@ -25,10 +25,11 @@ import lucee.runtime.PageSource;
  */
 public final class ThreadLocalPageSource {
 
-	private static ThreadLocal<PageSource> local=new ThreadLocal<PageSource>();
+	private static ThreadLocal<PageSource> local = new ThreadLocal<PageSource>();
 
 	/**
 	 * register a Config for he current thread
+	 * 
 	 * @param config Config to register
 	 */
 	public static void register(PageSource ps) {
@@ -37,12 +38,13 @@ public final class ThreadLocalPageSource {
 
 	/**
 	 * returns Config registered for the current thread
-	 * @return Config for the current thread or null 
+	 * 
+	 * @return Config for the current thread or null
 	 */
 	public static PageSource get() {
 		return local.get();
 	}
-	
+
 	/**
 	 * release the pagecontext for the current thread
 	 */

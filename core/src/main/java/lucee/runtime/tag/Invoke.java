@@ -20,6 +20,8 @@ package lucee.runtime.tag;
 
 import lucee.commons.lang.StringUtil;
 import lucee.runtime.PageContext;
+import lucee.runtime.config.ConfigImpl;
+import lucee.runtime.engine.ThreadLocalPageContext;
 import lucee.runtime.exp.ApplicationException;
 import lucee.runtime.exp.PageException;
 import lucee.runtime.ext.tag.BodyTagImpl;
@@ -38,48 +40,45 @@ import lucee.runtime.type.UDF;
  * Attributes: servicePort,timeout
  * */
 
-
 /**
-* Invokes component methods from within a page or component. 
-* 			You use this tag to reference a WSDL file and consume a web service from within a block of CFML code.
-*
-*
-*
-**/
-public final class Invoke  extends BodyTagImpl implements DynamicAttributes {
+ * Invokes component methods from within a page or component. You use this tag to reference a WSDL
+ * file and consume a web service from within a block of CFML code.
+ *
+ *
+ *
+ **/
+public final class Invoke extends BodyTagImpl implements DynamicAttributes {
 
-	private Struct data=new StructImpl(StructImpl.TYPE_LINKED);
-	//private Map attributes = new HashTable();
-	//private HashSet keys = new HashSet();
-	
+	private Struct data = new StructImpl(StructImpl.TYPE_LINKED);
+	// private Map attributes = new HashTable();
+	// private HashSet keys = new HashSet();
+
 	private boolean hasBody;
-	
+
 	private Object component;
 	private String method;
 	private String returnvariable;
 	private String username;
 	private String password;
 	private String webservice;
-	private int timeout=-1;
+	private int timeout = -1;
 	private String serviceport;
-	private ProxyData proxy=new ProxyDataImpl();
-
+	private ProxyData proxy = new ProxyDataImpl();
 
 	@Override
-	public void release()	{
+	public void release() {
 		super.release();
 		data.clear();
-		component=null;
-		method=null;
-		returnvariable=null;
-		username=null;
-		password=null;
-		webservice=null;
-		timeout=-1;
-		serviceport=null;
+		component = null;
+		method = null;
+		returnvariable = null;
+		username = null;
+		password = null;
+		webservice = null;
+		timeout = -1;
+		serviceport = null;
 		proxy.release();
 	}
-
 
 	/**
 	 * @param component the component to set
@@ -88,14 +87,12 @@ public final class Invoke  extends BodyTagImpl implements DynamicAttributes {
 		this.component = component;
 	}
 
-
 	/**
 	 * @param method the method to set
 	 */
 	public void setMethod(String method) {
 		this.method = method;
 	}
-
 
 	/**
 	 * @param password the password to set
@@ -115,7 +112,7 @@ public final class Invoke  extends BodyTagImpl implements DynamicAttributes {
 	 * @param proxyport the proxyport to set
 	 */
 	public void setProxyport(double proxyport) {
-		proxy.setPort((int)proxyport);
+		proxy.setPort((int) proxyport);
 	}
 
 	/**
@@ -139,14 +136,12 @@ public final class Invoke  extends BodyTagImpl implements DynamicAttributes {
 		this.returnvariable = returnvariable.trim();
 	}
 
-
 	/**
 	 * @param serviceport the serviceport to set
 	 */
 	public void setServiceport(String serviceport) {
 		this.serviceport = serviceport;
 	}
-
 
 	/**
 	 * @param timeout the timeout to set
@@ -155,7 +150,6 @@ public final class Invoke  extends BodyTagImpl implements DynamicAttributes {
 		this.timeout = (int) timeout;
 	}
 
-
 	/**
 	 * @param username the username to set
 	 */
@@ -163,80 +157,72 @@ public final class Invoke  extends BodyTagImpl implements DynamicAttributes {
 		this.username = username;
 	}
 
-
 	/**
 	 * @param webservice the webservice to set
 	 */
 	public void setWebservice(String webservice) {
 		this.webservice = webservice.trim();
 	}
-	
+
 	@Override
 	public void setDynamicAttribute(String uri, String localName, Object value) {
 		setDynamicAttribute(uri, KeyImpl.init(localName), value);
 	}
-	
+
 	@Override
 	public void setDynamicAttribute(String uri, lucee.runtime.type.Collection.Key localName, Object value) {
 		data.setEL(localName, value);
 	}
 
-
 	@Override
-	public int doStartTag() throws PageException	{
-	    return EVAL_BODY_INCLUDE;
+	public int doStartTag() throws PageException {
+		return EVAL_BODY_INCLUDE;
 	}
 
 	@Override
-	public int doEndTag() throws PageException	{
+	public int doEndTag() throws PageException {
 		// CFC
-		if(component!=null){
+		if (component != null) {
 			doComponent(component);
 		}
 		// Webservice
-		else if(!StringUtil.isEmpty(webservice)){
+		else if (!StringUtil.isEmpty(webservice)) {
 			doWebService(webservice);
 		}
 		// call active cfc or component
 		else {
-            doFunction(pageContext);
-        }
+			doFunction(pageContext);
+		}
 		return EVAL_PAGE;
 	}
-
-
 
 	/**
 	 * @param oComponent
 	 * @throws PageException
 	 */
 	private void doComponent(Object oComponent) throws PageException {
-		lucee.runtime.Component component=null;
-		if(oComponent instanceof lucee.runtime.Component)
-			component=(lucee.runtime.Component)oComponent;
-		else
-			component=pageContext.loadComponent(Caster.toString(oComponent));
-			
+		lucee.runtime.Component component = null;
+		if (oComponent instanceof lucee.runtime.Component) component = (lucee.runtime.Component) oComponent;
+		else component = pageContext.loadComponent(Caster.toString(oComponent));
+
 		// execute
-		Object rtn=component.callWithNamedValues(pageContext,method,data);
-		
-		// return 
-		if(!StringUtil.isEmpty(returnvariable)) pageContext.setVariable(returnvariable,rtn);
+		Object rtn = component.callWithNamedValues(pageContext, method, data);
+
+		// return
+		if (!StringUtil.isEmpty(returnvariable)) pageContext.setVariable(returnvariable, rtn);
 	}
-	
+
 	private void doFunction(PageContext pc) throws PageException {
-			
+
 		// execute
-		if(StringUtil.isEmpty(method,true))
-			throw new ApplicationException("Attribute [method] for tag [invoke] is required in this context.");
-		
-		Object oUDF=pc.getVariable(method);
-		if(!(oUDF instanceof UDF))throw new ApplicationException("there is no function with name "+method); 
-		Object rtn = ((UDF)oUDF).callWithNamedValues(pageContext, data, false);
-		
-		
-		// return 
-		if(!StringUtil.isEmpty(returnvariable)) pageContext.setVariable(returnvariable,rtn);
+		if (StringUtil.isEmpty(method, true)) throw new ApplicationException("Attribute [method] for tag [invoke] is required in this context.");
+
+		Object oUDF = pc.getVariable(method);
+		if (!(oUDF instanceof UDF)) throw new ApplicationException("there is no function with name " + method);
+		Object rtn = ((UDF) oUDF).callWithNamedValues(pageContext, data, false);
+
+		// return
+		if (!StringUtil.isEmpty(returnvariable)) pageContext.setVariable(returnvariable, rtn);
 	}
 
 	/**
@@ -244,17 +230,18 @@ public final class Invoke  extends BodyTagImpl implements DynamicAttributes {
 	 * @throws PageException
 	 */
 	private void doWebService(String webservice) throws PageException {
-        if(username!=null)   {
-            if(password==null)password = "";
-        }
-        ProxyData pd=StringUtil.isEmpty(proxy.getServer())?null:proxy;
-        WSClient ws = username!=null?WSClient.getInstance(pageContext,webservice,username,password,pd):WSClient.getInstance(pageContext,webservice,null,null,pd);
-        Object rtn = ws.callWithNamedValues(pageContext,KeyImpl.init(method),data);
-        
-        // return
-        if(!StringUtil.isEmpty(returnvariable)) pageContext.setVariable(returnvariable,rtn);
-        
-        //throw new ApplicationException("type webservice is not yet implemented for tag invoke");
+		if (username != null) {
+			if (password == null) password = "";
+		}
+		ProxyData pd = StringUtil.isEmpty(proxy.getServer()) ? null : proxy;
+		WSClient ws = username != null ? ((ConfigImpl) ThreadLocalPageContext.getConfig()).getWSHandler().getWSClient(webservice, username, password, pd)
+				: ((ConfigImpl) ThreadLocalPageContext.getConfig()).getWSHandler().getWSClient(webservice, null, null, pd);
+		Object rtn = ws.callWithNamedValues(pageContext, KeyImpl.init(method), data);
+
+		// return
+		if (!StringUtil.isEmpty(returnvariable)) pageContext.setVariable(returnvariable, rtn);
+
+		// throw new ApplicationException("type webservice is not yet implemented for tag invoke");
 	}
 
 	/**
@@ -262,16 +249,17 @@ public final class Invoke  extends BodyTagImpl implements DynamicAttributes {
 	 * @param value
 	 * @throws PageException
 	 */
-	public void setArgument(String name,Object value) throws PageException {
-		data.set(name,value);		
+	public void setArgument(String name, Object value) throws PageException {
+		data.set(name, value);
 	}
-	
+
 	/**
 	 * sets if taf has a body or not
+	 * 
 	 * @param hasBody
 	 */
 	public void hasBody(boolean hasBody) {
-		this.hasBody=hasBody;
+		this.hasBody = hasBody;
 	}
 
 }

@@ -25,28 +25,26 @@ import lucee.runtime.type.Collection;
 import lucee.runtime.type.Collection.Key;
 
 public class ValueIterator implements Iterator<Object>, Enumeration<Object> {
-	
-	
 
 	private Collection coll;
 	protected Key[] keys;
 	protected int pos;
 
-	public ValueIterator(Collection coll, Collection.Key[] keys){
-		this.coll=coll;
-		this.keys=keys;
+	public ValueIterator(Collection coll, Collection.Key[] keys) {
+		this.coll = coll;
+		this.keys = keys;
 	}
-	
+
 	@Override
 	public boolean hasNext() {
-		return (keys.length)>pos;
+		return (keys.length) > pos;
 	}
 
 	@Override
 	public Object next() {
 		Key key = keys[pos++];
-		if(key==null) return null;
-		return coll.get(key,null);
+		if (key == null) return null;
+		return coll.get(key, null);
 	}
 
 	@Override

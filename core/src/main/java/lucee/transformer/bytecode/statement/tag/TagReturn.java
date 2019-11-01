@@ -28,8 +28,8 @@ import lucee.transformer.expression.Expression;
 
 public final class TagReturn extends TagBaseNoFinal {
 
-	public TagReturn(Factory f, Position start,Position end) {
-		super(f, start,end);
+	public TagReturn(Factory f, Position start, Position end) {
+		super(f, start, end);
 		setHasFlowController(true);
 	}
 
@@ -40,9 +40,9 @@ public final class TagReturn extends TagBaseNoFinal {
 	@Override
 	public void _writeOut(BytecodeContext bc) throws TransformerException {
 		Attribute attr = getAttribute("expr");
-		Expression expr=null;
-		if(attr!=null)expr=attr.getValue();
-		new Return(expr,expr.getStart(),expr.getEnd()).writeOut(bc);
+		Expression expr = null;
+		if (attr != null) expr = attr.getValue();
+		new Return(expr, expr.getStart(), expr.getEnd()).writeOut(bc);
 	}
 
 	/**

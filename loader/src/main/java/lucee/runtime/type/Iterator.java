@@ -26,31 +26,32 @@ import lucee.runtime.exp.PageException;
 public interface Iterator {
 
 	/**
-	 * set the intern pointer of the iterator to the next position,
-	 * return true if next position exist otherwise false.
+	 * set the intern pointer of the iterator to the next position, return true if next position exist
+	 * otherwise false.
 	 * 
 	 * @return boolean
-	 * @throws PageException
+	 * @throws PageException thrown when fail to execute action
 	 * @deprecated use instead <code>{@link #next(int)}</code>
 	 */
 	@Deprecated
 	public boolean next() throws PageException;
 
 	/**
-	 * set the intern pointer of the iterator to the next position,
-	 * return true if next position exist otherwise false.
+	 * set the intern pointer of the iterator to the next position, return true if next position exist
+	 * otherwise false.
 	 * 
+	 * @param pid pointer id
 	 * @return boolean
-	 * @throws PageException
+	 * @throws PageException thrown when fail to execute action
 	 */
 	public boolean next(int pid) throws PageException;
 
 	public boolean previous(int pid);
 
 	/**
-	 * reset ther intern pointer
+	 * reset the intern pointer
 	 * 
-	 * @throws PageException
+	 * @throws PageException thrown when fail to reset
 	 * @deprecated use instead <code>{@link #reset(int)}</code>
 	 */
 	@Deprecated
@@ -58,9 +59,10 @@ public interface Iterator {
 
 	/**
 	 * 
-	 * reset ther intern pointer
+	 * reset the intern pointer
 	 * 
-	 * @throws PageException
+	 * @param pid pointer id
+	 * @throws PageException thrown when fail to reset
 	 */
 	public void reset(int pid) throws PageException;
 
@@ -74,6 +76,7 @@ public interface Iterator {
 	/**
 	 * return the current position of the internal pointer
 	 * 
+	 * @param pid pointer id
 	 * @return int
 	 */
 	public int getCurrentrow(int pid);
@@ -82,9 +85,10 @@ public interface Iterator {
 	 * 
 	 * set the internal pointer to defined position
 	 * 
-	 * @param index
-	 * @return int
-	 * @throws PageException
+	 * @param index index
+	 * @param pid pointer id
+	 * @return if it was successful or not
+	 * @throws PageException thrown when fail to execute action
 	 */
 	public boolean go(int index, int pid) throws PageException;
 
@@ -93,7 +97,7 @@ public interface Iterator {
 	 */
 	public boolean isEmpty();
 
-	//public ArrayList column(String strColumn)throws PageException;
+	// public ArrayList column(String strColumn)throws PageException;
 
-	//public String[] row(int number);
+	// public String[] row(int number);
 }

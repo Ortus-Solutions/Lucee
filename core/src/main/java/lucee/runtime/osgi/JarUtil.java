@@ -25,41 +25,23 @@ import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import lucee.commons.io.IOUtil;
-import lucee.commons.io.res.Resource;
-
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.commons.Remapper;
 import org.objectweb.asm.commons.RemappingClassAdapter;
 
+import lucee.commons.io.IOUtil;
+import lucee.commons.io.log.LogUtil;
+import lucee.commons.io.res.Resource;
+import lucee.runtime.engine.ThreadLocalPageContext;
+
 public class JarUtil {
-	
-	public static final String[] DEFAULT_IGNORES=new String[]{
-		"java.*"
-		,"javax.*"
-		,"sun.*"
-		,"com.sun.*"
+
+	public static final String[] DEFAULT_IGNORES = new String[] { "java.*"
 
 	};
-	/*public static final String[] DEFAULT_IGNORES=new String[]{
-		"java."
-		,"javax."
-		,"org.w3c"
-		,"org.osgi."
-		,"lucee."
-		,"org.xml."
-		,"sun."
-		,"coldfusion."
-		,"com.allaire.cfx."
-		,"com.integral.fusiondebug.server."
-		,"org.apache.xalan."
-		,"org.apache.xerces."
-		,"org.apache.xml."
 
-	};*/
-	
 	/**
 	 * 
 	 * @param res
@@ -67,144 +49,137 @@ public class JarUtil {
 	 * @return
 	 * @throws IOException
 	 */
-	public static Set<String> getExternalImports(Resource res,String[] ignores) throws IOException {
+	public static Set<String> getExternalImports(Resource res, String[] ignores) throws IOException {
 		InputStream is = res.getInputStream();
 		try {
-			return getExternalImports(is,ignores);
+			return getExternalImports(is, ignores);
 		}
-		finally{
+		finally {
 			IOUtil.closeEL(is);
 		}
 	}
 
-	
-	public static Set<String> getExternalImports(InputStream is,String[] ignores) {
-		Set<String> imports=new HashSet<>();
-		Set<String> classNames=new HashSet<>();
+	public static Set<String> getExternalImports(InputStream is, String[] ignores) {
+		Set<String> imports = new HashSet<>();
+		Set<String> classNames = new HashSet<>();
 		ZipInputStream zis = null;
-		try{
+		try {
 			zis = new ZipInputStream(is);
 			ZipEntry entry;
 			String name;
-			while((entry=zis.getNextEntry())!=null){
-				if(entry.isDirectory() || !entry.getName().endsWith(".class")) continue;
-				name=entry.getName();
-				name=name.replace('/', '.');
-				name=name.substring(0,name.length()-6);
+			while ((entry = zis.getNextEntry()) != null) {
+				if (entry.isDirectory() || !entry.getName().endsWith(".class")) continue;
+				name = entry.getName();
+				name = name.replace('/', '.');
+				name = name.substring(0, name.length() - 6);
 				classNames.add(name);
-				_getExternalImports(imports,zis,ignores);
+				_getExternalImports(imports, zis, ignores);
 			}
 		}
-		catch(IOException ioe) {
-			ioe.printStackTrace();
+		catch (IOException ioe) {
+			LogUtil.log(ThreadLocalPageContext.getConfig(), JarUtil.class.getName(), ioe);
 		}
 		finally {
 			IOUtil.closeEL(zis);
 		}
-		
+
 		// remove all class from this jar
 		Iterator<String> it = classNames.iterator();
 		String cn;
-		while(it.hasNext()){
-			cn=it.next();
+		while (it.hasNext()) {
+			cn = it.next();
 			imports.remove(cn);
 		}
-		
+
 		// create package set
-		Set<String> importPackages=new HashSet<>();
+		Set<String> importPackages = new HashSet<>();
 		it = imports.iterator();
 		int index;
-		while(it.hasNext()){
-			cn=it.next();
-			index=cn.lastIndexOf('.');
-			if(index==-1) continue; // no package
-			importPackages.add(cn.substring(0,index));
+		while (it.hasNext()) {
+			cn = it.next();
+			index = cn.lastIndexOf('.');
+			if (index == -1) continue; // no package
+			importPackages.add(cn.substring(0, index));
 		}
 		return importPackages;
 	}
-	
 
-
-	private static void _getExternalImports(Set<String> imports, InputStream src,String[] ignores) throws IOException{
+	private static void _getExternalImports(Set<String> imports, InputStream src, String[] ignores) throws IOException {
 		final ClassReader reader = new ClassReader(src);
-		final Remapper remapper = new Collector(imports,ignores);
+		final Remapper remapper = new Collector(imports, ignores);
 		final ClassVisitor inner = new EmptyVisitor();
-		final RemappingClassAdapter visitor =
-			new RemappingClassAdapter(inner, remapper);
+		final RemappingClassAdapter visitor = new RemappingClassAdapter(inner, remapper);
 		reader.accept(visitor, 0);
 	}
-	
-	public static class Collector extends Remapper{
+
+	public static class Collector extends Remapper {
 
 		private final Set<String> imports;
 		private final String[] ignores;
-		
-		
-		public Collector(final Set<String> imports,String[] ignores){
+
+		public Collector(final Set<String> imports, String[] ignores) {
 			this.imports = imports;
 			this.ignores = ignores;
 		}
 
 		@Override
-		public String mapDesc(final String desc){
-			if(desc.startsWith("L")){
+		public String mapDesc(final String desc) {
+			if (desc.startsWith("L")) {
 				this.addType(desc.substring(1, desc.length() - 1));
 			}
 			return super.mapDesc(desc);
 		}
 
 		@Override
-		public String[] mapTypes(final String[] types){
-			for(final String type : types){
+		public String[] mapTypes(final String[] types) {
+			for (final String type: types) {
 				this.addType(type);
 			}
 			return super.mapTypes(types);
 		}
 
 		@Override
-		public String mapType(final String type){
+		public String mapType(final String type) {
 			this.addType(type);
 			return type;
 		}
 
-		private void addType(final String type){
+		private void addType(final String type) {
 			String className = type.replace('/', '.');
-			int index=className.lastIndexOf('.');
-			if(index==-1) return;// class with no package
-			String ignore,pack;
-			
-			for(int i=0;i<DEFAULT_IGNORES.length;i++){
-				ignore=DEFAULT_IGNORES[i];
+			int index = className.lastIndexOf('.');
+			if (index == -1) return;// class with no package
+			String ignore, pack;
+
+			for (int i = 0; i < DEFAULT_IGNORES.length; i++) {
+				ignore = DEFAULT_IGNORES[i];
 				// also ignore sub directories
-				if(ignore.endsWith(".*")) {
-					ignore=ignore.substring(0,ignore.length()-1);
-					if(className.startsWith(ignore)) return;
+				if (ignore.endsWith(".*")) {
+					ignore = ignore.substring(0, ignore.length() - 1);
+					if (className.startsWith(ignore)) return;
 				}
 				else {
-					pack=className.substring(0,index);
-					if(pack.equals(ignore)) return;
+					pack = className.substring(0, index);
+					if (pack.equals(ignore)) return;
 				}
 			}
-			
-			for(int i=0;i<ignores.length;i++){
-				ignore=ignores[i];
+
+			for (int i = 0; i < ignores.length; i++) {
+				ignore = ignores[i];
 				// also ignore sub directories
-				if(ignore.endsWith(".*")) {
-					ignore=ignore.substring(0,ignore.length()-1);
-					if(className.startsWith(ignore)) return;
+				if (ignore.endsWith(".*")) {
+					ignore = ignore.substring(0, ignore.length() - 1);
+					if (className.startsWith(ignore)) return;
 				}
 				else {
-					pack=className.substring(0,index);
-					if(pack.equals(ignore)) return;
+					pack = className.substring(0, index);
+					if (pack.equals(ignore)) return;
 				}
-				
-				
+
 			}
 			this.imports.add(className);
 		}
 	}
-	
-	
+
 	private static class EmptyVisitor extends ClassVisitor implements Opcodes {
 		public EmptyVisitor() {
 			super(ASM4);

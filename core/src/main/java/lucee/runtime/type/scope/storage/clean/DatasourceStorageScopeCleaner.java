@@ -21,6 +21,7 @@ package lucee.runtime.type.scope.storage.clean;
 import java.sql.SQLException;
 
 import lucee.commons.io.log.Log;
+import lucee.commons.lang.ExceptionUtil;
 import lucee.runtime.config.ConfigImpl;
 import lucee.runtime.config.ConfigWeb;
 import lucee.runtime.config.ConfigWebImpl;
@@ -34,14 +35,14 @@ import lucee.runtime.type.scope.storage.db.SQLExecutionFactory;
 import lucee.runtime.type.scope.storage.db.SQLExecutor;
 
 public class DatasourceStorageScopeCleaner extends StorageScopeCleanerSupport {
-	
-	//private String strType;
-	
-	public DatasourceStorageScopeCleaner(int type,StorageScopeListener listener) {
-		super(type,listener,INTERVALL_HOUR);
-		//this.strType=VariableInterpreter.scopeInt2String(type);
+
+	// private String strType;
+
+	public DatasourceStorageScopeCleaner(int type, StorageScopeListener listener) {
+		super(type, listener, INTERVALL_HOUR);
+		// this.strType=VariableInterpreter.scopeInt2String(type);
 	}
-	
+
 	@Override
 	public void init(StorageScopeEngine engine) {
 		super.init(engine);
@@ -51,30 +52,32 @@ public class DatasourceStorageScopeCleaner extends StorageScopeCleanerSupport {
 	protected void _clean() {
 		ConfigWeb config = engine.getFactory().getConfig();
 		DataSource[] datasources = config.getDataSources();
-		for(int i=0;i<datasources.length;i++){
-			if(datasources[i].isStorage()) {
+		for (int i = 0; i < datasources.length; i++) {
+			if (datasources[i].isStorage()) {
 				try {
-					clean(config,datasources[i]);
-				} catch (Throwable t) {
+					clean(config, datasources[i]);
+				}
+				catch (Throwable t) {
+					ExceptionUtil.rethrowIfNecessary(t);
 					error(t);
 				}
 			}
 		}
 	}
 
-	private void clean(ConfigWeb config, DataSource dataSource) throws PageException, SQLException	{
-		ConfigWebImpl cwi=(ConfigWebImpl) config;
-		DatasourceConnection dc=null;
-		
+	private void clean(ConfigWeb config, DataSource dataSource) throws PageException, SQLException {
+		ConfigWebImpl cwi = (ConfigWebImpl) config;
+		DatasourceConnection dc = null;
+
 		DatasourceConnectionPool pool = cwi.getDatasourceConnectionPool();
 		try {
-			dc=pool.getDatasourceConnection(null,dataSource,null,null);
-			Log log=((ConfigImpl)config).getLog("scope");
-			SQLExecutor executor=SQLExecutionFactory.getInstance(dc);
-			executor.clean(config, dc, type, engine,this, listener, log);
+			dc = pool.getDatasourceConnection(null, dataSource, null, null);
+			Log log = ((ConfigImpl) config).getLog("scope");
+			SQLExecutor executor = SQLExecutionFactory.getInstance(dc);
+			executor.clean(config, dc, type, engine, this, listener, log);
 		}
-	    finally {
-	    	if(dc!=null) pool.releaseDatasourceConnection(config,dc,true);
-	    }
+		finally {
+			if (dc != null) pool.releaseDatasourceConnection(dc);
+		}
 	}
 }

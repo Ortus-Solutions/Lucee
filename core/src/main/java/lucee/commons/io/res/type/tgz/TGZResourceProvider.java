@@ -27,12 +27,12 @@ import lucee.commons.io.res.type.compress.CompressResourceProvider;
 public final class TGZResourceProvider extends CompressResourceProvider {
 
 	public TGZResourceProvider() {
-		scheme="tgz";
+		scheme = "tgz";
 	}
-	
+
 	@Override
 	public Compress getCompress(Resource file) throws IOException {
-		return Compress.getInstance(file,Compress.FORMAT_TGZ,caseSensitive);
+		return Compress.getInstance(file, Compress.FORMAT_TGZ, caseSensitive);
 	}
 
 	@Override

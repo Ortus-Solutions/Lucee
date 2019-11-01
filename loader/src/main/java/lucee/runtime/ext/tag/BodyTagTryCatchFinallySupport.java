@@ -25,10 +25,9 @@ import lucee.runtime.exp.PageServletException;
 import lucee.runtime.util.Excepton;
 
 /**
- * extends Body Support Tag eith TryCatchFinally Functionality
+ * extends Body Support Tag with TryCatchFinally Functionality
  */
-public abstract class BodyTagTryCatchFinallySupport extends BodyTagSupport
-		implements TryCatchFinally {
+public abstract class BodyTagTryCatchFinallySupport extends BodyTagSupport implements TryCatchFinally {
 
 	/**
 	 * @see javax.servlet.jsp.tagext.TryCatchFinally#doCatch(java.lang.Throwable)
@@ -40,10 +39,8 @@ public abstract class BodyTagTryCatchFinallySupport extends BodyTagSupport
 			t = pse.getPageException();
 		}
 		if (bodyContent != null) {
-			final Excepton util = CFMLEngineFactory.getInstance()
-					.getExceptionUtil();
-			if (util.isOfType(Excepton.TYPE_ABORT, t))
-				bodyContent.writeOut(bodyContent.getEnclosingWriter());
+			final Excepton util = CFMLEngineFactory.getInstance().getExceptionUtil();
+			if (util.isOfType(Excepton.TYPE_ABORT, t)) bodyContent.writeOut(bodyContent.getEnclosingWriter());
 			bodyContent.clearBuffer();
 		}
 		throw t;

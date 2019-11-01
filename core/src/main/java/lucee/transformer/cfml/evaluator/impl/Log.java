@@ -27,10 +27,10 @@ import lucee.transformer.library.tag.TagLibTag;
 public final class Log extends EvaluatorSupport {
 
 	@Override
-	public void evaluate(Tag tag,TagLibTag tagLibTag,FunctionLib[] flibs) throws EvaluatorException {
-		//TagLoop loop=(TagLoop) tag;
+	public void evaluate(Tag tag, TagLibTag tagLibTag, FunctionLib[] flibs) throws EvaluatorException {
+		// TagLoop loop=(TagLoop) tag;
 		// attribute text or exception must be defined
-        if(!tag.containsAttribute("attributecollection") && !tag.containsAttribute("text") && !tag.containsAttribute("exception"))
-        	throw new EvaluatorException("Wrong Context, you must define one of the following attributes [text,exception]");
+		if (!tag.containsAttribute("attributecollection") && !tag.containsAttribute("text") && !tag.containsAttribute("exception"))
+			throw new EvaluatorException("Wrong Context, you must define one of the following attributes [text,exception]");
 	}
 }

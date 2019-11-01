@@ -23,135 +23,122 @@ import java.util.List;
 
 import lucee.commons.lang.StringUtil;
 
-
 public class CSVString {
 
-    private char[] buffer;
-    private int pos;
-    private char delim;
+	private static final char LF = 10;
+	private static final char CR = 13;
 
-    public CSVString( String input, char delim ) {
+	private char[] buffer;
+	private int pos;
+	private char delim;
 
-        this.buffer = input.toCharArray();
-        this.delim = delim;
-    }
+	public CSVString(String input, char delim) {
+		this.buffer = input.toCharArray();
+		this.delim = delim;
+	}
 
-    public List<List<String>> parse() {
+	public List<List<String>> parse() {
 
-        List<List<String>> result = new ArrayList();
-        List<String> line = new ArrayList();
+		List<List<String>> result = new ArrayList<List<String>>();
+		List<String> line = new ArrayList<String>();
 
-        if ( buffer.length == 0 )
-            return result;
+		if (buffer.length == 0) return result;
 
-        StringBuilder sb = new StringBuilder();
-        char c;
+		StringBuilder sb = new StringBuilder();
+		char c;
 
-        do {
+		do {
 
-            c = buffer[ pos ];
+			c = buffer[pos];
+			if (c == '"' || c == '\'') {
+				sb.append(fwdQuote(c));
+			}
+			else if (c == LF || c == CR) {
+				if (c == CR && isNext(LF)) next();
+				line.add(sb.toString().trim());
+				sb = new StringBuilder();
+				if (isValidLine(line)) result.add(line);
+				line = new ArrayList<String>();
+			}
+			else if (c == delim) {
 
-            if ( c == '"' || c == '\'' ) {
+				line.add(sb.toString().trim());
+				sb = new StringBuilder();
+			}
+			else sb.append(c);
 
-                sb.append( fwdQuote( c ) );
-            }
-            else if ( c == '\n' ) {
+			next();
+		}
+		while (pos < buffer.length);
 
-                line.add( sb.toString().trim() );
-                sb = new StringBuilder();
-                if ( isValidLine( line ) )
-                    result.add( line );
-                line = new ArrayList();
-            }
-            else if ( c == delim ) {
+		line.add(sb.toString());
 
-                line.add( sb.toString().trim() );
-                sb = new StringBuilder();
-            }
-            else
-                sb.append( c );
+		if (isValidLine(line)) result.add(line);
+		return result;
+	}
 
-            next();
-        } while ( hasNext() );
+	/** forward pos until the end of quote */
+	StringBuilder fwdQuote(char q) {
 
-        sb.append( buffer[ pos ] );
-        line.add( sb.toString().trim() );
+		StringBuilder sb = new StringBuilder();
 
-        if ( isValidLine( line ) )
-            result.add( line );
+		while (hasNext()) {
 
-        return result;
-    }
+			next();
+			sb.append(buffer[pos]);
 
+			if (isCurr(q)) {
+				if (isNext(q)) { // consecutive quote sign
+					next();
+				}
+				else {
+					break;
+				}
+			}
+		}
 
-    /** forward pos until the end of quote */
-    StringBuilder fwdQuote( char q ) {
+		if (sb.length() > 0) sb.setLength(sb.length() - 1); // remove closing quote sign
 
-        StringBuilder sb = new StringBuilder();
+		return sb;
+	}
 
-        while ( hasNext() ) {
+	void next() {
 
-            next();
-            sb.append( buffer[ pos ] );
+		pos++;
+	}
 
-            if ( isCurr( q ) ) {
-                if ( isNext( q ) ) {            // consecutive quote sign
-                    next();
-                }
-                else {
-                    break;
-                }
-            }
-        }
+	boolean hasNext() {
 
-        if ( sb.length() > 0 )
-            sb.setLength( sb.length() - 1 );    // remove closing quote sign
+		return pos < (buffer.length - 1);
+	}
 
-        return sb;
-    }
+	boolean isNext(char c) {
 
-    void next() {
+		if (!hasNext()) return false;
 
-        pos++;
-    }
+		return buffer[pos + 1] == c;
+	}
 
-    boolean hasNext() {
+	boolean isCurr(char c) {
 
-        return pos < ( buffer.length - 1 );
-    }
+		if (!isValidPos()) return false;
 
-    boolean isNext( char c ) {
+		return buffer[pos] == c;
+	}
 
-        if ( !hasNext() )   return false;
+	boolean isValidPos() {
 
-        return buffer[ pos + 1 ] == c;
-    }
+		return pos >= 0 && pos < buffer.length - 1;
+	}
 
+	boolean isValidLine(List<String> line) {
 
-    boolean isCurr( char c ) {
+		for (String s: line) {
 
-        if ( !isValidPos() )
-            return false;
+			if (!StringUtil.isEmpty(s, true)) return true;
+		}
 
-        return buffer[ pos ] == c;
-    }
-
-
-    boolean isValidPos() {
-
-        return pos >= 0 && pos < buffer.length - 1;
-    }
-
-
-    boolean isValidLine( List<String> line ) {
-
-        for ( String s : line ) {
-
-            if ( !StringUtil.isEmpty( s, true ) )
-                return true;
-        }
-
-        return false;
-    }
+		return false;
+	}
 
 }

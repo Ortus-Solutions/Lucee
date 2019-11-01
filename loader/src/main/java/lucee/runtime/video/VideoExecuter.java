@@ -28,11 +28,9 @@ public interface VideoExecuter {
 
 	public void test(ConfigWeb config) throws IOException;
 
-	public VideoInfo[] convert(ConfigWeb config, VideoInput[] inputs,
-			VideoOutput output, VideoProfile quality) throws IOException;
+	public VideoInfo[] convert(ConfigWeb config, VideoInput[] inputs, VideoOutput output, VideoProfile quality) throws IOException;
 
-	public VideoInfo info(ConfigWeb config, VideoInput input)
-			throws IOException;
+	public VideoInfo info(ConfigWeb config, VideoInput input) throws IOException;
 
 	public void install(ConfigWeb config, Struct data) throws IOException;
 

@@ -37,40 +37,37 @@ public abstract class BaseScriptEngineFactory implements ScriptEngineFactory {
 
 	public BaseScriptEngineFactory(final boolean tag, final int dialect) throws ServletException {
 		try {
-			
-		System.setProperty("lucee.cli.call", "true");
 
-		// returns null when not used within Lucee
-		CFMLEngine engine = null;
-		try {
-			engine = CFMLEngineFactory.getInstance();
-		} catch (final RuntimeException re) {
-		}
+			System.setProperty("lucee.cli.call", "true");
 
-		// create Engine
-		if (engine == null) {
-			final String servletName = "";
-			final Map<String, Object> attributes = new HashMap<String, Object>();
-			final Map<String, String> initParams = new HashMap<String, String>();
-			final File root = new File("."); // working directory that the java command was called from
+			// returns null when not used within Lucee
+			CFMLEngine engine = null;
+			try {
+				engine = CFMLEngineFactory.getInstance();
+			}
+			catch (final RuntimeException re) {}
 
-			final ServletContextImpl servletContext = new ServletContextImpl(
-					root, attributes, initParams, 1, 0);
-			final ServletConfigImpl servletConfig = new ServletConfigImpl(
-					servletContext, servletName);
-			engine = CFMLEngineFactory.getInstance(servletConfig);
-		}
+			// create Engine
+			if (engine == null) {
+				final String servletName = "";
+				final Map<String, Object> attributes = new HashMap<String, Object>();
+				final Map<String, String> initParams = new HashMap<String, String>();
+				final File root = new File("."); // working directory that the java command was called from
 
-		factory = tag ? CFMLEngineFactory.getInstance().getTagEngineFactory(
-				dialect) : CFMLEngineFactory.getInstance()
-				.getScriptEngineFactory(dialect);
+				final ServletContextImpl servletContext = new ServletContextImpl(root, attributes, initParams, 1, 0);
+				final ServletConfigImpl servletConfig = new ServletConfigImpl(servletContext, servletName);
+				engine = CFMLEngineFactory.getInstance(servletConfig);
+				servletContext.setLogger(engine.getCFMLEngineFactory().getLogger());
+			}
+
+			factory = tag ? CFMLEngineFactory.getInstance().getTagEngineFactory(dialect) : CFMLEngineFactory.getInstance().getScriptEngineFactory(dialect);
 
 		}
-		catch(ServletException se) {
+		catch (ServletException se) {
 			se.printStackTrace();
 			throw se;
 		}
-		catch(RuntimeException re) {
+		catch (RuntimeException re) {
 			re.printStackTrace();
 			throw re;
 		}
@@ -117,8 +114,7 @@ public abstract class BaseScriptEngineFactory implements ScriptEngineFactory {
 	}
 
 	@Override
-	public String getMethodCallSyntax(final String obj, final String m,
-			final String... args) {
+	public String getMethodCallSyntax(final String obj, final String m, final String... args) {
 		return factory.getMethodCallSyntax(obj, m, args);
 	}
 

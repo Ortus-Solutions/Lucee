@@ -31,10 +31,10 @@ public class TestTask extends SpoolerTaskSupport {
 	private int fail;
 	private String label;
 
-	public TestTask(ExecutionPlan[] plans,String label, int fail) {
+	public TestTask(ExecutionPlan[] plans, String label, int fail) {
 		super(plans);
-		this.label=label;
-		this.fail=fail;
+		this.label = label;
+		this.fail = fail;
 	}
 
 	@Override
@@ -49,8 +49,8 @@ public class TestTask extends SpoolerTaskSupport {
 
 	@Override
 	public Object execute(Config config) throws PageException {
-		//print.out("execute:"+label+":"+fail+":"+new Date());
-		if(fail-->0)throw new ExpressionException("no idea");
+		// print.out("execute:"+label+":"+fail+":"+new Date());
+		if (fail-- > 0) throw new ExpressionException("no idea");
 
 		return null;
 	}

@@ -30,15 +30,12 @@ public class BundleCollection {
 	private final List<Bundle> slaves;
 	public final Felix felix;
 
-	public BundleCollection(final Felix felix, final Bundle master,
-			final List<Bundle> slaves) {
+	public BundleCollection(final Felix felix, final Bundle master, final List<Bundle> slaves) {
 		this.felix = felix;
 		this.core = master;
 		this.slaves = new ArrayList<Bundle>();
-		if (slaves != null)
-			for (final Bundle slave : slaves)
-				if (!slave.equals(master))
-					this.slaves.add(slave);
+		if (slaves != null) for (final Bundle slave: slaves)
+			if (!slave.equals(master)) this.slaves.add(slave);
 	}
 
 	public Iterator<Bundle> getSlaves() {

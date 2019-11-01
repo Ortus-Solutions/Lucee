@@ -29,13 +29,13 @@ import lucee.commons.io.IOUtil;
 public class ClobCast implements Cast {
 
 	@Override
-	public Object toCFType(TimeZone tz, int type, ResultSet rst, int columnIndex) throws SQLException, IOException {
-		//IOUtil.toString(rst.getClob(columnIndex).getCharacterStream())
-		
+	public Object toCFType(TimeZone tz, ResultSet rst, int columnIndex) throws SQLException, IOException {
+		// IOUtil.toString(rst.getClob(columnIndex).getCharacterStream())
+
 		Reader reader = null;
 		try {
-			reader = rst.getCharacterStream( columnIndex );
-			if(reader==null) return null;
+			reader = rst.getCharacterStream(columnIndex);
+			if (reader == null) return null;
 			return IOUtil.toString(reader);
 		}
 		finally {

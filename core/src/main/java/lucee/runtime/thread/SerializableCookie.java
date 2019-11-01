@@ -38,7 +38,6 @@ public class SerializableCookie implements Serializable {
 	private int version;
 	private boolean httpOnly;
 
-
 	public SerializableCookie(String comment, String domain, int maxAge, String name, String path, boolean secure, String value, int version, boolean httpOnly) {
 		this.comment = comment;
 		this.domain = domain;
@@ -50,7 +49,7 @@ public class SerializableCookie implements Serializable {
 		this.version = version;
 		this.httpOnly = httpOnly;
 	}
-	
+
 	public SerializableCookie(Cookie cookie) {
 		this.comment = cookie.getComment();
 		this.domain = cookie.getDomain();
@@ -94,70 +93,69 @@ public class SerializableCookie implements Serializable {
 	public int getVersion() {
 		return version;
 	}
-	
-	public boolean isHttpOnly(){
+
+	public boolean isHttpOnly() {
 		return httpOnly;
 	}
 
 	public void setComment(String purpose) {
-		this.comment=purpose;
+		this.comment = purpose;
 	}
 
 	public void setDomain(String pattern) {
-		this.domain=pattern;
+		this.domain = pattern;
 	}
 
 	public void setMaxAge(int expiry) {
-		this.maxAge=expiry;
+		this.maxAge = expiry;
 	}
 
 	public void setPath(String uri) {
-		this.path=uri;
+		this.path = uri;
 	}
 
 	public void setSecure(boolean secure) {
-		this.secure=secure;
+		this.secure = secure;
 	}
 
 	public void setValue(String value) {
-		this.value=value;
+		this.value = value;
 	}
 
 	public void setVersion(int version) {
-		this.version=version;
-	}
-	
-	public void setHttpOnly(boolean httpOnly){
-		this.httpOnly=httpOnly;
+		this.version = version;
 	}
 
-	
+	public void setHttpOnly(boolean httpOnly) {
+		this.httpOnly = httpOnly;
+	}
+
 	public Cookie toCookie() {
-		Cookie c = new Cookie(name,value);
-		if(comment!=null)c.setComment(comment);
-		if(domain!=null)c.setDomain(domain);
+		Cookie c = new Cookie(name, value);
+		if (comment != null) c.setComment(comment);
+		if (domain != null) c.setDomain(domain);
 		c.setMaxAge(maxAge);
-		if(path!=null)c.setPath(path);
+		if (path != null) c.setPath(path);
 		c.setSecure(secure);
 		c.setVersion(version);
-		if(httpOnly)CookieImpl.setHTTPOnly(c);
+		if (httpOnly) CookieImpl.setHTTPOnly(c);
 		return c;
 	}
 
 	public static Cookie[] toCookies(SerializableCookie[] src) {
-		if(src==null)return new Cookie[0];
-		Cookie[] dest=new Cookie[src.length];
-		for(int i=0;i<src.length;i++) {
-			dest[i]=src[i].toCookie();
+		if (src == null) return new Cookie[0];
+		Cookie[] dest = new Cookie[src.length];
+		for (int i = 0; i < src.length; i++) {
+			dest[i] = src[i].toCookie();
 		}
 		return dest;
 	}
-	
+
 	public static SerializableCookie[] toSerializableCookie(Cookie[] src) {
-		if(src==null)return new SerializableCookie[0];
-		SerializableCookie[] dest=new SerializableCookie[src.length];
-		for(int i=0;i<src.length;i++) {
-			dest[i]=new SerializableCookie(src[i]);
+		if (src == null) return new SerializableCookie[0];
+		SerializableCookie[] dest = new SerializableCookie[src.length];
+		for (int i = 0; i < src.length; i++) {
+			dest[i] = new SerializableCookie(src[i]);
 		}
 		return dest;
 	}

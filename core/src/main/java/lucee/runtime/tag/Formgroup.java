@@ -22,55 +22,53 @@ import lucee.runtime.exp.TagNotSupported;
 import lucee.runtime.ext.tag.BodyTagImpl;
 
 public final class Formgroup extends BodyTagImpl {
-	
+
 	private int type;
 	private Query query;
-	private int startrow=0;
-	private int maxrows=-1;
+	private int startrow = 0;
+	private int maxrows = -1;
 	private String label;
 	private String style;
-	private int selectedIndex=-1;
-	private int width=-1;
-	private int height=-1;
-	private boolean enabled=true;
-	private boolean visible=true;
+	private int selectedIndex = -1;
+	private int width = -1;
+	private int height = -1;
+	private boolean enabled = true;
+	private boolean visible = true;
 	private String onChange;
 	private String tooltip;
-	private  String id;
-	
+	private String id;
+
 	public Formgroup() throws TagNotSupported {
 		throw new TagNotSupported("formgroup");
 		// TODO impl tag formgroup
 	}
-	
+
 	@Override
 	public void release() {
 		super.release();
-		query=null;
-		startrow=0;
-		maxrows=-1;
-		label=null;
-		style=null;
-		selectedIndex=-1;
-		width=-1;
-		height=-1;
-		enabled=true;
-		visible=true;
-		onChange=null;
-		tooltip=null;
-		id=null;
-		
+		query = null;
+		startrow = 0;
+		maxrows = -1;
+		label = null;
+		style = null;
+		selectedIndex = -1;
+		width = -1;
+		height = -1;
+		enabled = true;
+		visible = true;
+		onChange = null;
+		tooltip = null;
+		id = null;
+
 	}
-
-
 
 	/**
 	 * @param type the type to set
 	 */
 	public void setType(String type) {
-		//this.type = type;
+		// this.type = type;
 	}
-	
+
 	/**
 	 * @param label the label to set
 	 */
@@ -96,7 +94,7 @@ public final class Formgroup extends BodyTagImpl {
 	 * @param query the query to set
 	 */
 	public void setQuery(String queryName) {
-		//this.query = query;
+		// this.query = query;
 	}
 
 	/**
@@ -140,6 +138,5 @@ public final class Formgroup extends BodyTagImpl {
 	public void setWidth(double width) {
 		this.width = (int) width;
 	}
-	
-	
+
 }

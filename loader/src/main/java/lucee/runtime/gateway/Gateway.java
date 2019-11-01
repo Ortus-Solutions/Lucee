@@ -37,8 +37,7 @@ public interface Gateway {
 	 * @param cfcPath the path to the listener component
 	 * @param config the configuration as map
 	 */
-	public void init(GatewayEngine engine, String id, String cfcPath,
-			Map<String, String> config) throws IOException;
+	public void init(GatewayEngine engine, String id, String cfcPath, Map<String, String> config) throws IOException;
 
 	/**
 	 * returns the id of the gateway
@@ -84,8 +83,7 @@ public interface Gateway {
 	public void doRestart() throws IOException;
 
 	/**
-	 * returns a string that is used by the event gateway administrator to
-	 * display status
+	 * returns a string that is used by the event gateway administrator to display status
 	 * 
 	 * @return status (STARTING, RSTOPPING, STOPPED, FAILED)
 	 */

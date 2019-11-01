@@ -37,28 +37,26 @@ public class DataWriter extends Thread {
 	private DatasourceResourceProvider drp;
 
 	public DataWriter(Core core, DatasourceConnection dc, String prefix, Attr attr, InputStream is, DatasourceResourceProvider drp, boolean append) {
-		this.core=core;
-		this.dc=dc;
-		this.prefix=prefix;
-		this.attr=attr;
-		this.is=is;
-		this.drp=drp;
-		this.append=append;
+		this.core = core;
+		this.dc = dc;
+		this.prefix = prefix;
+		this.attr = attr;
+		this.is = is;
+		this.drp = drp;
+		this.append = append;
 	}
 
 	@Override
-	public void run(){
+	public void run() {
 		try {
-			core.write(dc, prefix, attr, is,append);
+			core.write(dc, prefix, attr, is, append);
 			drp.release(dc);
-	    	//manager.releaseConnection(connId,dc);
-		} 
+			// manager.releaseConnection(connId,dc);
+		}
 		catch (SQLException e) {
-			this.e=e;
+			this.e = e;
 		}
 	}
-	
-
 
 	public SQLException getException() {
 		return e;

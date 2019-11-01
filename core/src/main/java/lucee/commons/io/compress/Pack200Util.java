@@ -23,7 +23,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.PrintStream;
 import java.util.Map;
+import java.util.SortedMap;
 import java.util.jar.JarInputStream;
 import java.util.jar.JarOutputStream;
 import java.util.jar.Pack200;
@@ -32,75 +34,90 @@ import java.util.jar.Pack200.Unpacker;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
+import lucee.commons.io.DevNullOutputStream;
 import lucee.commons.io.IOUtil;
 import lucee.commons.io.res.Resource;
 
-
 public class Pack200Util {
-	
 
-
-	public static void decompress(InputStream is,Resource jar, boolean closeIS) throws IOException {
-		if(!jar.exists())jar.createFile(false);
-		decompress(is, jar.getOutputStream(), closeIS, true);
-	}
-	
-	public static void decompress(Resource p200,OutputStream os, boolean closeOS) throws IOException {
-		decompress(p200.getInputStream(), os, true, closeOS);
-	}
-	
-	public static void decompress(Resource p200,Resource jar) throws IOException {
-		if(!jar.exists())jar.createFile(false);
-		decompress(p200.getInputStream(), jar.getOutputStream(), true, true);
-	}
-	
-	public static void decompress(File p200,File jar) throws IOException {
-		if(!jar.exists())jar.createNewFile();
-		decompress(new FileInputStream(p200), new FileOutputStream(jar), true, true);
+	public static void pack2Jar(InputStream is, Resource jar, boolean closeIS) throws IOException {
+		if (!jar.exists()) jar.createFile(false);
+		pack2Jar(is, jar.getOutputStream(), closeIS, true);
 	}
 
-	public static void compress(InputStream is, Resource p200, boolean closeIS) throws IOException {
-		if(!p200.exists())p200.createFile(false);
-		compress(is, p200.getOutputStream(), closeIS, true);
-	}
-	
-	public static void compress(Resource jar, OutputStream os, boolean closeOS) throws IOException {
-		compress(jar.getInputStream(), os, true, closeOS);
-	}
-	
-	public static void compress(Resource jar, Resource p200) throws IOException {
-		if(!p200.exists())p200.createFile(false);
-		compress(jar.getInputStream(), p200.getOutputStream(), true, true);
-	}
-	
-	public static void compress(File jar, File p200) throws IOException {
-		if(!p200.exists())p200.createNewFile();
-		compress(new FileInputStream(jar), new FileOutputStream(p200), true, true);
+	public static void pack2Jar(Resource p200, OutputStream os, boolean closeOS) throws IOException {
+		pack2Jar(p200.getInputStream(), os, true, closeOS);
 	}
 
-	public static void decompress(InputStream is,OutputStream os, boolean closeIS, boolean closeOS) throws IOException {
-		
+	public static void pack2Jar(Resource p200, Resource jar) throws IOException {
+		if (!jar.exists()) jar.createFile(false);
+		pack2Jar(p200.getInputStream(), jar.getOutputStream(), true, true);
+	}
+
+	public static void pack2Jar(File p200, File jar) throws IOException {
+		if (!jar.exists()) jar.createNewFile();
+		pack2Jar(new FileInputStream(p200), new FileOutputStream(jar), true, true);
+	}
+
+	public static void jar2pack(InputStream is, Resource p200, boolean closeIS) throws IOException {
+		if (!p200.exists()) p200.createFile(false);
+		jar2pack(is, p200.getOutputStream(), closeIS, true);
+	}
+
+	public static void jar2pack(Resource jar, OutputStream os, boolean closeOS) throws IOException {
+		jar2pack(jar.getInputStream(), os, true, closeOS);
+	}
+
+	public static void jar2pack(Resource jar, Resource p200) throws IOException {
+		if (!p200.exists()) p200.createFile(false);
+		jar2pack(jar.getInputStream(), p200.getOutputStream(), true, true);
+	}
+
+	public static void jar2pack(File jar, File p200) throws IOException {
+		if (!p200.exists()) p200.createNewFile();
+		jar2pack(new FileInputStream(jar), new FileOutputStream(p200), true, true);
+	}
+
+	public static void pack2Jar(InputStream is, OutputStream os, boolean closeIS, boolean closeOS) throws IOException {
+		File tmp = null;
+
+		// we do this because Pack200 closes the stram
+		if (!closeIS) {
+			tmp = File.createTempFile("temp-pack200-file", "packgz");
+			FileOutputStream tmpos = new FileOutputStream(tmp);
+			IOUtil.copy(is, tmpos, false, true);
+			is = new FileInputStream(tmp);
+			closeIS = true;
+		}
+
 		Unpacker unpacker = Pack200.newUnpacker();
-		is=new GZIPInputStream(is);
-		JarOutputStream jos=null;
-		try{
+
+		SortedMap<String, String> p = unpacker.properties();
+		p.put(Unpacker.DEFLATE_HINT, Unpacker.TRUE);
+
+		is = new GZIPInputStream(is);
+		JarOutputStream jos = null;
+		try {
 			jos = new JarOutputStream(os);
 			unpacker.unpack(is, jos);
+			jos.finish();
 		}
-		finally{
-			if(closeIS)IOUtil.closeEL(is);
-			if(closeOS)IOUtil.closeEL(jos);
+		finally {
+
+			if (closeIS) IOUtil.closeEL(is);
+			if (closeOS) IOUtil.closeEL(jos);
+			if (tmp != null && tmp.isFile()) tmp.delete();
 		}
 	}
-	
-	public static void compress(InputStream is,OutputStream os, boolean closeIS, boolean closeOS) throws IOException {
+
+	public static void jar2pack(InputStream is, OutputStream os, boolean closeIS, boolean closeOS) throws IOException {
 		// Create the Packer object
 		Packer packer = Pack200.newPacker();
 
 		// Initialize the state by setting the desired properties
 		Map p = packer.properties();
 		// take more time choosing codings for better compression
-		p.put(Packer.EFFORT, "7");  // default is "5"
+		p.put(Packer.EFFORT, "7"); // default is "5"
 		// use largest-possible archive segments (>10% better compression).
 		p.put(Packer.SEGMENT_LIMIT, "-1");
 		// reorder files for better compression.
@@ -111,21 +128,30 @@ public class Pack200Util {
 		// transmitting a single request to use "store" mode.
 		p.put(Packer.DEFLATE_HINT, Packer.FALSE);
 		// discard debug attributes
-		p.put(Packer.CODE_ATTRIBUTE_PFX+"LineNumberTable", Packer.STRIP);
+		p.put(Packer.CODE_ATTRIBUTE_PFX + "LineNumberTable", Packer.STRIP);
 		// throw an error if an attribute is unrecognized
 		p.put(Packer.UNKNOWN_ATTRIBUTE, Packer.ERROR);
-		
-		
-		JarInputStream jis=null;
-		os=new GZIPOutputStream(os);
-		try{
+
+		JarInputStream jis = null;
+		os = new GZIPOutputStream(os);
+
+		PrintStream err = System.err;
+		try {
+			System.setErr(new PrintStream(DevNullOutputStream.DEV_NULL_OUTPUT_STREAM));
 			jis = new JarInputStream(is);
 			packer.pack(jis, os);
 		}
-		finally{
-			if(closeIS)IOUtil.closeEL(jis);
-			if(closeOS)IOUtil.closeEL(os);
+		finally {
+			System.setErr(err);
+			if (closeIS) IOUtil.closeEL(jis);
+			if (closeOS) IOUtil.closeEL(os);
 		}
 	}
-	
+
+	public static String removePack200Ext(String name) {
+		int index = name.indexOf(".pack.gz");
+		if (index == -1) return name;
+		return name.substring(0, index);
+	}
+
 }

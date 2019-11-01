@@ -23,13 +23,14 @@ import java.io.Reader;
 import java.nio.CharBuffer;
 
 public final class CountingReader extends Reader {
-	
-	private final Reader reader;
-    private int count=0;
 
-    public CountingReader(Reader reader) {
-        this.reader=reader;
-    }
+	private final Reader reader;
+	private int count = 0;
+
+	public CountingReader(Reader reader) {
+		this.reader = reader;
+	}
+
 	@Override
 	public void mark(int readAheadLimit) throws IOException {
 		reader.mark(readAheadLimit);
@@ -48,7 +49,7 @@ public final class CountingReader extends Reader {
 
 	@Override
 	public int read(char[] cbuf) throws IOException {
-		
+
 		return reader.read(cbuf);
 	}
 

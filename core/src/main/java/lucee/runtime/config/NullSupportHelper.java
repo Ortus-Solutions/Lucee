@@ -18,41 +18,49 @@
  **/
 package lucee.runtime.config;
 
-import lucee.loader.engine.CFMLEngine;
 import lucee.runtime.PageContext;
+import lucee.runtime.PageContextImpl;
 import lucee.runtime.engine.ThreadLocalPageContext;
 import lucee.runtime.type.Null;
 
 public class NullSupportHelper {
-	private static final Null NULL=Null.NULL;
-	
-	protected static boolean fullNullSupport=false;
 
 	public static boolean full(PageContext pc) {
-		pc=ThreadLocalPageContext.get(pc);
-		if(pc==null) return false;
-		return pc.getCurrentTemplateDialect()!=CFMLEngine.DIALECT_CFML || pc.getConfig().getFullNullSupport();
+
+		if (pc == null) {
+			pc = ThreadLocalPageContext.get();
+			if (pc == null) return false;
+		}
+		return ((PageContextImpl) pc).getFullNullSupport();
 	}
-	public static Object NULL(PageContext pc) {
-		return full(pc)?NULL:null;
-	}
-	
-	public static Object empty(PageContext pc) {
-		return full(pc)?null:"";
-	}
-	
+
 	public static boolean full() {
-		PageContext pc = ThreadLocalPageContext.get();
-		//print.ds("has-pc:"+(ThreadLocalPageContext.get()!=null));
-		if(pc!=null) return full(pc);
-			
-		//print.ds("has-config:"+(ThreadLocalPageContext.getConfig()!=null));
-		
-		
-		return true;
+		/*
+		 * String str = ExceptionUtil.getStacktrace(new Throwable(), false); if
+		 * (str.indexOf("lucee.runtime.reflection.storage.SoftMethodStorage.storeArgs") == -1 &&
+		 * str.indexOf("lucee.runtime.type.scope.CGIImplReadOnly.get") == -1 &&
+		 * str.indexOf("lucee.runtime.type.scope.RequestImpl.get") == -1 &&
+		 * str.indexOf("lucee.runtime.type.QueryImpl.getAt") == -1
+		 * 
+		 * ) print.e(str);
+		 */
+
+		return full(ThreadLocalPageContext.get());
 	}
-	
+
+	public static Object NULL(boolean fns) {
+		return fns ? Null.NULL : null;
+	}
+
+	public static Object NULL(PageContext pc) {
+		return full(pc) ? Null.NULL : null;
+	}
+
 	public static Object NULL() {
-		return full()?NULL:null;
+		return full() ? Null.NULL : null;
+	}
+
+	public static Object empty(PageContext pc) {
+		return full(pc) ? null : "";
 	}
 }

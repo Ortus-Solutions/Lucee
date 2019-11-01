@@ -17,6 +17,19 @@
  */
 package lucee.transformer.expression.var;
 
+import lucee.transformer.expression.Expression;
+
 public interface Member {
-	
+
+	public void setParent(Variable var);
+
+	public Variable getParent();
+
+	public void setSafeNavigated(boolean b);
+
+	public boolean getSafeNavigated();
+
+	public void setSafeNavigatedValue(Expression obj);
+
+	public Expression getSafeNavigatedValue();
 }

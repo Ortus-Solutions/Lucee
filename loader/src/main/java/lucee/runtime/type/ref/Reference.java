@@ -42,30 +42,29 @@ public interface Reference {
 	public abstract Collection.Key getKey() throws PageException;
 
 	/**
-	 * @param pc PageContext of the actual Request
+	 * @param pc PageContext of the current Request
 	 * @return returns the value of the Variable
 	 * @throws PageException
 	 */
 	public abstract Object get(PageContext pc) throws PageException;
 
 	/**
-	 * @param pc PageContext of the actual Request
-	 * @param defaultValue defaukt value
+	 * @param pc PageContext of the current Request
+	 * @param defaultValue default value
 	 * @return returns the value of the Variable
 	 */
 	public abstract Object get(PageContext pc, Object defaultValue);
 
 	/**
-	 * @param pc PageContext of the actual Request
+	 * @param pc PageContext of the current Request
 	 * @param value resets the value of the variable
 	 * @return new Value set
 	 * @throws PageException
 	 */
-	public abstract Object set(PageContext pc, Object value)
-			throws PageException;
+	public abstract Object set(PageContext pc, Object value) throws PageException;
 
 	/**
-	 * @param pc PageContext of the actuell Request
+	 * @param pc PageContext of the current Request
 	 * @param value resets the value of the variable
 	 * @return new value set
 	 */

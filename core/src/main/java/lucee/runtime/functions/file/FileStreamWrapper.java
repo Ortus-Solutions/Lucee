@@ -42,73 +42,69 @@ public abstract class FileStreamWrapper extends StructSupport implements Struct 
 
 	public static final String STATE_OPEN = "open";
 	public static final String STATE_CLOSE = "close";
-	
+
 	protected Resource res;
-	private String status=STATE_OPEN;
-	private Struct info;
+	private String status = STATE_OPEN;
+	private StructImpl info;
 	private long lastModifed;
 	private long length;
-	
-	
+
 	public FileStreamWrapper(Resource res) {
-		this.res=res;
-		this.lastModifed=System.currentTimeMillis();
-		this.length=res.length();
+		this.res = res;
+		this.lastModifed = System.currentTimeMillis();
+		this.length = res.length();
 	}
 
 	public final String getFilename() {
 		return res.getName();
 	}
 
-	public final String getLabel(){
-		return StringUtil.ucFirst(res.getResourceProvider().getScheme())+": "+getFilename();
+	public final String getLabel() {
+		return StringUtil.ucFirst(res.getResourceProvider().getScheme()) + ": " + getFilename();
 	}
-	
-	
+
 	public final String getFilepath() {
 		return res.getAbsolutePath();
 	}
-	
 
 	public final String getStatus() {
 		return status;
 	}
 
 	public final void setStatus(String status) {
-		this.status=status;
+		this.status = status;
 	}
-	
+
 	public final Date getLastmodified() {
-		return new DateTimeImpl(lastModifed,false);
+		return new DateTimeImpl(lastModifed, false);
 	}
-	
+
 	public Object getMetadata() {
 		return info();
 	}
-	
+
 	public Struct info() {
-		if(info==null) {
-			info=new StructImpl();
+		if (info == null) {
+			info = new StructImpl();
 			info.setEL(KeyConstants._mode, getMode());
 			info.setEL(KeyConstants._name, res.getName());
 			info.setEL(KeyConstants._path, res.getParent());
 			info.setEL(KeyConstants._status, getStatus());
-			info.setEL(KeyConstants._size, getSize()+" bytes");
+			info.setEL(KeyConstants._size, getSize() + " bytes");
 			info.setEL(KeyConstants._lastmodified, getLastmodified());
 		}
-		
+
 		return info;
 	}
-	
+
 	public boolean isEndOfFile() {
 		return false;
 	}
-	
+
 	public long getSize() {
 		return length;
 	}
-	
-	
+
 	public void write(Object obj) throws IOException {
 		throw notSupported("write");
 	}
@@ -116,16 +112,17 @@ public abstract class FileStreamWrapper extends StructSupport implements Struct 
 	public String readLine() throws IOException {
 		throw notSupported("readLine");
 	}
-	
-	public Object read(int len) throws IOException{
+
+	public Object read(int len) throws IOException {
 		throw notSupported("read");
 	}
-	
+
 	public abstract String getMode();
+
 	public abstract void close() throws IOException;
-	
+
 	private IOException notSupported(String method) {
-		return new IOException(method+" can't be called when the file is opened in ["+getMode()+"] mode");
+		return new IOException(method + " can't be called when the file is opened in [" + getMode() + "] mode");
 	}
 
 	public Resource getResource() {
@@ -140,11 +137,16 @@ public abstract class FileStreamWrapper extends StructSupport implements Struct 
 	@Override
 	public void clear() {
 		throw new RuntimeException("can't clear struct, struct is readonly");
-		
+
 	}
-	
+
 	@Override
-	public boolean containsKey(Key key) {
+	public final boolean containsKey(Key key) {
+		return info().containsKey(key);
+	}
+
+	@Override
+	public final boolean containsKey(PageContext pc, Key key) {
 		return info().containsKey(key);
 	}
 
@@ -152,16 +154,25 @@ public abstract class FileStreamWrapper extends StructSupport implements Struct 
 	public Collection duplicate(boolean deepCopy) {
 		throw new RuntimeException("can't duplicate File Object, Object depends on File Stream");
 	}
-	
-	
+
 	@Override
-	public Object get(Key key) throws PageException {
+	public final Object get(Key key) throws PageException {
 		return info().get(key);
 	}
 
 	@Override
-	public Object get(Key key, Object defaultValue) {
+	public final Object get(PageContext pc, Key key) throws PageException {
+		return info().get(pc, key);
+	}
+
+	@Override
+	public final Object get(Key key, Object defaultValue) {
 		return info().get(key, defaultValue);
+	}
+
+	@Override
+	public final Object get(PageContext pc, Key key, Object defaultValue) {
+		return info().get(pc, key, defaultValue);
 	}
 
 	@Override
@@ -171,22 +182,22 @@ public abstract class FileStreamWrapper extends StructSupport implements Struct 
 
 	@Override
 	public Object remove(Key key) throws PageException {
-		throw new PageRuntimeException("can't remove key ["+key.getString()+"] from struct, struct is readonly");
+		throw new PageRuntimeException("can't remove key [" + key.getString() + "] from struct, struct is readonly");
 	}
 
 	@Override
 	public Object removeEL(Key key) {
-		throw new PageRuntimeException("can't remove key ["+key.getString()+"] from struct, struct is readonly");
+		throw new PageRuntimeException("can't remove key [" + key.getString() + "] from struct, struct is readonly");
 	}
 
 	@Override
 	public Object set(Key key, Object value) throws PageException {
-		throw new ExpressionException("can't set key ["+key.getString()+"] to struct, struct is readonly");
+		throw new ExpressionException("can't set key [" + key.getString() + "] to struct, struct is readonly");
 	}
 
 	@Override
 	public Object setEL(Key key, Object value) {
-		throw new PageRuntimeException("can't set key ["+key.getString()+"] to struct, struct is readonly");
+		throw new PageRuntimeException("can't set key [" + key.getString() + "] to struct, struct is readonly");
 	}
 
 	@Override
@@ -196,24 +207,24 @@ public abstract class FileStreamWrapper extends StructSupport implements Struct 
 
 	@Override
 	public DumpData toDumpData(PageContext pageContext, int maxlevel, DumpProperties dp) {
-		return info().toDumpData(pageContext, maxlevel,dp);
+		return info().toDumpData(pageContext, maxlevel, dp);
 	}
 
 	@Override
 	public Iterator<Collection.Key> keyIterator() {
 		return info().keyIterator();
 	}
-    
-    @Override
+
+	@Override
 	public Iterator<String> keysAsStringIterator() {
-    	return info().keysAsStringIterator();
-    }
-	
+		return info().keysAsStringIterator();
+	}
+
 	@Override
 	public Iterator<Entry<Key, Object>> entryIterator() {
 		return info().entryIterator();
 	}
-	
+
 	@Override
 	public Iterator<Object> valueIterator() {
 		return info().valueIterator();
@@ -223,36 +234,37 @@ public abstract class FileStreamWrapper extends StructSupport implements Struct 
 	public boolean castToBooleanValue() throws PageException {
 		return info().castToBooleanValue();
 	}
-    
-    @Override
-    public Boolean castToBoolean(Boolean defaultValue) {
-        return info().castToBoolean(defaultValue);
-    }
+
+	@Override
+	public Boolean castToBoolean(Boolean defaultValue) {
+		return info().castToBoolean(defaultValue);
+	}
 
 	@Override
 	public DateTime castToDateTime() throws PageException {
 		return info().castToDateTime();
 	}
-    
-    @Override
-    public DateTime castToDateTime(DateTime defaultValue) {
-        return info().castToDateTime(defaultValue);
-    }
+
+	@Override
+	public DateTime castToDateTime(DateTime defaultValue) {
+		return info().castToDateTime(defaultValue);
+	}
 
 	@Override
 	public double castToDoubleValue() throws PageException {
 		return info().castToDoubleValue();
 	}
-    
-    @Override
-    public double castToDoubleValue(double defaultValue) {
-        return info().castToDoubleValue(defaultValue); 
-    }
+
+	@Override
+	public double castToDoubleValue(double defaultValue) {
+		return info().castToDoubleValue(defaultValue);
+	}
 
 	@Override
 	public String castToString() throws PageException {
 		return info().castToString();
 	}
+
 	@Override
 	public String castToString(String defaultValue) {
 		return info().castToString(defaultValue);
@@ -291,4 +303,9 @@ public abstract class FileStreamWrapper extends StructSupport implements Struct 
 	public abstract void skip(int len) throws PageException;
 
 	public abstract void seek(long pos) throws PageException;
+
+	@Override
+	public int getType() {
+		return Struct.TYPE_REGULAR;
+	}
 }

@@ -10,14 +10,14 @@ import lucee.runtime.type.scope.Variables;
 import lucee.runtime.type.scope.VariablesImpl;
 
 public class VariablesBinding implements Bindings {
-	
+
 	private VariablesImpl var;
 
 	public VariablesBinding() {
-		this.var=new VariablesImpl();
+		this.var = new VariablesImpl();
 	}
-	
-	public Variables getVaraibles(){
+
+	public Variables getVaraibles() {
 		return var;
 	}
 
@@ -80,6 +80,5 @@ public class VariablesBinding implements Bindings {
 	public Object remove(Object key) {
 		return var.remove(key);
 	}
-
 
 }

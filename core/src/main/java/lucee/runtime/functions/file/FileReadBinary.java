@@ -29,11 +29,12 @@ import lucee.runtime.op.Caster;
 public class FileReadBinary {
 
 	public static Object call(PageContext pc, Object oSrc) throws PageException {
-		Resource src = Caster.toResource(pc,oSrc,false);
+		Resource src = Caster.toResource(pc, oSrc, false);
 		pc.getConfig().getSecurityManager().checkFileLocation(src);
 		try {
 			return IOUtil.toBytes(src);
-		} catch (IOException e) {
+		}
+		catch (IOException e) {
 			throw Caster.toPageException(e);
 		}
 	}

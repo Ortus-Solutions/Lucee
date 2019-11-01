@@ -31,35 +31,28 @@ public abstract class StorageScopeMemory extends StorageScopeImpl implements Mem
 
 	private static final long serialVersionUID = -6917303245683342065L;
 
-
 	/**
 	 * Constructor of the class
+	 * 
 	 * @param pc
-	 * @param log 
+	 * @param log
 	 * @param name
 	 */
-	protected StorageScopeMemory(PageContext pc,String strType, int type, Log log) {
-		super(
-				new StructImpl(),
-				new DateTimeImpl(pc.getConfig()),
-				null,
-				-1,1,strType,type);
-		ScopeContext.info(log,"create new memory based "+strType+" scope for "+pc.getApplicationContext().getName()+"/"+pc.getCFID());
-		
+	protected StorageScopeMemory(PageContext pc, String strType, int type, Log log) {
+		super(new StructImpl(), new DateTimeImpl(pc.getConfig()), null, -1, 1, strType, type);
+		ScopeContext.info(log, "create new memory based " + strType + " scope for " + pc.getApplicationContext().getName() + "/" + pc.getCFID());
+
 	}
 
 	/**
 	 * Constructor of the class, clone existing
+	 * 
 	 * @param other
 	 */
-	protected StorageScopeMemory(StorageScopeMemory other,boolean deepCopy) {
-		super(other,deepCopy);
+	protected StorageScopeMemory(StorageScopeMemory other, boolean deepCopy) {
+		super(other, deepCopy);
 	}
-	
-	
-	
 
-	
 	@Override
 	public String getStorageType() {
 		return "Memory";

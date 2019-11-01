@@ -37,8 +37,7 @@ public interface DumpWriter {
 	 * @param writer
 	 * @throws IOException
 	 */
-	public void writeOut(PageContext pc, DumpData data, Writer writer,
-			boolean expand) throws IOException;
+	public void writeOut(PageContext pc, DumpData data, Writer writer, boolean expand) throws IOException;
 
 	/**
 	 * cast dumpdata to a string

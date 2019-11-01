@@ -29,34 +29,29 @@ import lucee.runtime.type.Struct;
 public interface VariableUtil {
 
 	/**
-	 * return a property from the given Object, when property doesn't exists
-	 * return null
+	 * return a property from the given Object, when property doesn't exists return null
 	 * 
 	 * @param pc
 	 * @param coll Collection to check
 	 * @param key to get from Collection
 	 * @return value or null
 	 * @deprecated use instead
-	 * @see #getCollection(PageContext, Object, lucee.runtime.type.Collection.Key, Object)
 	 */
-	public abstract Object getCollection(PageContext pc, Object coll,
-			String key, Object defaultValue);
-	
+	@Deprecated
+	public abstract Object getCollection(PageContext pc, Object coll, String key, Object defaultValue);
+
 	/**
-	 * return a property from the given Object, when property doesn't exists
-	 * return null
+	 * return a property from the given Object, when property doesn't exists return null
 	 * 
 	 * @param pc
 	 * @param coll Collection to check
 	 * @param key to get from Collection
 	 * @return value or null
 	 */
-	public Object getCollection(PageContext pc, Object coll, 
-			Collection.Key key, Object defaultValue);
+	public Object getCollection(PageContext pc, Object coll, Collection.Key key, Object defaultValue);
 
 	/**
-	 * return a property from the given Object, when property doesn't exists
-	 * return null
+	 * return a property from the given Object, when property doesn't exists return null
 	 * 
 	 * @param pc
 	 * @param coll Collection to check
@@ -66,36 +61,31 @@ public interface VariableUtil {
 	 *             <code>get(PageContext pc, Object coll, Collection.Key key, Object defaultValue);</code>
 	 */
 	@Deprecated
-	public abstract Object get(PageContext pc, Object coll, String key,
-			Object defaultValue);
+	public abstract Object get(PageContext pc, Object coll, String key, Object defaultValue);
 
 	/**
-	 * return a property from the given Object, when property doesn't exists
-	 * return null
+	 * return a property from the given Object, when property doesn't exists return null
 	 * 
 	 * @param pc
 	 * @param coll Collection to check
 	 * @param key to get from Collection
 	 * @return value or null
 	 */
-	public abstract Object get(PageContext pc, Object coll, Collection.Key key,
-			Object defaultValue);
+	public abstract Object get(PageContext pc, Object coll, Collection.Key key, Object defaultValue);
 
 	/**
-	 * return a property from the given Object, when property doesn't exists
-	 * return null
+	 * return a property from the given Object, when property doesn't exists return null
 	 * 
 	 * @param pc
 	 * @param coll Collection to check
 	 * @param key to get from Collection
 	 * @return value or null
 	 */
-	public abstract Object getLight(PageContext pc, Object coll, String key,
-			Object defaultValue);
+	public abstract Object getLight(PageContext pc, Object coll, String key, Object defaultValue);
 
 	/**
-	 * return a property from the given Object, when coll is a query return a
-	 * Column,when property doesn't exists throw exception
+	 * return a property from the given Object, when coll is a query return a Column,when property
+	 * doesn't exists throw exception
 	 * 
 	 * @param pc
 	 * @param coll Collection to check
@@ -103,12 +93,10 @@ public interface VariableUtil {
 	 * @return value value to get
 	 * @throws PageException
 	 */
-	public abstract Object getCollection(PageContext pc, Object coll, String key)
-			throws PageException;
+	public abstract Object getCollection(PageContext pc, Object coll, String key) throws PageException;
 
 	/**
-	 * return a property from the given Object, when property doesn't exists
-	 * throw exception
+	 * return a property from the given Object, when property doesn't exists throw exception
 	 * 
 	 * @param pc
 	 * @param coll Collection to check
@@ -116,8 +104,7 @@ public interface VariableUtil {
 	 * @return value value to get
 	 * @throws PageException
 	 */
-	public abstract Object get(PageContext pc, Object coll, String key)
-			throws PageException;
+	public abstract Object get(PageContext pc, Object coll, String key) throws PageException;
 
 	/**
 	 * sets a value to the Object
@@ -132,11 +119,9 @@ public interface VariableUtil {
 	 *             <code>set(PageContext pc, Object coll, Collection.Key key,Object value)</code>
 	 */
 	@Deprecated
-	public Object set(PageContext pc, Object coll, String key, Object value)
-			throws PageException;
+	public Object set(PageContext pc, Object coll, String key, Object value) throws PageException;
 
-	public Object set(PageContext pc, Object coll, Collection.Key key,
-			Object value) throws PageException;
+	public Object set(PageContext pc, Object coll, Collection.Key key, Object value) throws PageException;
 
 	/**
 	 * sets a value to the Object
@@ -150,8 +135,7 @@ public interface VariableUtil {
 	 *             <code>setEL(PageContext pc, Object coll, Collection.Key key,Object value);</code>
 	 */
 	@Deprecated
-	public abstract Object setEL(PageContext pc, Object coll, String key,
-			Object value);
+	public abstract Object setEL(PageContext pc, Object coll, String key, Object value);
 
 	/**
 	 * sets a value to the Object
@@ -162,8 +146,7 @@ public interface VariableUtil {
 	 * @param value Value to set
 	 * @return value setted or null if can't set
 	 */
-	public abstract Object setEL(PageContext pc, Object coll,
-			Collection.Key key, Object value);
+	public abstract Object setEL(PageContext pc, Object coll, Collection.Key key, Object value);
 
 	/**
 	 * remove value from Collection
@@ -188,8 +171,7 @@ public interface VariableUtil {
 	@Deprecated
 	public abstract Object remove(Object coll, String key) throws PageException;
 
-	public abstract Object remove(Object coll, Collection.Key key)
-			throws PageException;
+	public abstract Object remove(Object coll, Collection.Key key) throws PageException;
 
 	/**
 	 * call a Function (UDF, Method) with or witout named values
@@ -201,8 +183,7 @@ public interface VariableUtil {
 	 * @return return value of the function
 	 * @throws PageException
 	 */
-	public abstract Object callFunction(PageContext pc, Object coll,
-			String key, Object[] args) throws PageException;
+	public abstract Object callFunction(PageContext pc, Object coll, String key, Object[] args) throws PageException;
 
 	/**
 	 * call a Function (UDF, Method) without Named Values
@@ -217,8 +198,7 @@ public interface VariableUtil {
 	 *             <code>callFunctionWithoutNamedValues(PageContext pc, Object coll, Collection.Key key, Object[] args)</code>
 	 */
 	@Deprecated
-	public abstract Object callFunctionWithoutNamedValues(PageContext pc,
-			Object coll, String key, Object[] args) throws PageException;
+	public abstract Object callFunctionWithoutNamedValues(PageContext pc, Object coll, String key, Object[] args) throws PageException;
 
 	/**
 	 * call a Function (UDF, Method) without Named Values
@@ -230,8 +210,7 @@ public interface VariableUtil {
 	 * @return return value of the function
 	 * @throws PageException
 	 */
-	public Object callFunctionWithoutNamedValues(PageContext pc, Object coll,
-			Collection.Key key, Object[] args) throws PageException;
+	public Object callFunctionWithoutNamedValues(PageContext pc, Object coll, Collection.Key key, Object[] args) throws PageException;
 
 	/**
 	 * call a Function (UDF, Method) with Named Values
@@ -246,8 +225,7 @@ public interface VariableUtil {
 	 *             <code>callFunctionWithNamedValues(PageContext pc, Object coll, Collection.Key key, Object[] args)</code>
 	 */
 	@Deprecated
-	public abstract Object callFunctionWithNamedValues(PageContext pc,
-			Object coll, String key, Object[] args) throws PageException;
+	public abstract Object callFunctionWithNamedValues(PageContext pc, Object coll, String key, Object[] args) throws PageException;
 
 	/**
 	 * call a Function (UDF, Method) with Named Values
@@ -259,10 +237,8 @@ public interface VariableUtil {
 	 * @return return value of the function
 	 * @throws PageException
 	 */
-	public Object callFunctionWithNamedValues(PageContext pc, Object coll,
-			Collection.Key key, Object[] args) throws PageException;
+	public Object callFunctionWithNamedValues(PageContext pc, Object coll, Collection.Key key, Object[] args) throws PageException;
 
-	public Object callFunctionWithNamedValues(PageContext pc, Object coll,
-			Collection.Key key, Struct args) throws PageException;
+	public Object callFunctionWithNamedValues(PageContext pc, Object coll, Collection.Key key, Struct args) throws PageException;
 
 }

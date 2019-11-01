@@ -21,6 +21,7 @@ package lucee.runtime.functions.file;
 import java.io.IOException;
 
 import lucee.commons.io.res.Resource;
+import lucee.commons.lang.ExceptionUtil;
 import lucee.commons.lang.StringUtil;
 import lucee.runtime.PageContext;
 import lucee.runtime.PageContextImpl;
@@ -30,20 +31,19 @@ import lucee.runtime.op.Caster;
 public class FileAppend {
 
 	public static String call(PageContext pc, String path, Object data) throws PageException {
-		return call(pc,path,data,((PageContextImpl)pc).getResourceCharset().name());
+		return call(pc, path, data, ((PageContextImpl) pc).getResourceCharset().name());
 	}
-	
-	public static String call(PageContext pc, String path, Object data,String charset) throws PageException {
-		FileStreamWrapper fsw=null;
-		if(StringUtil.isEmpty(charset,true))
-			charset=((PageContextImpl)pc).getResourceCharset().name();
-		
+
+	public static String call(PageContext pc, String path, Object data, String charset) throws PageException {
+		FileStreamWrapper fsw = null;
+		if (StringUtil.isEmpty(charset, true)) charset = ((PageContextImpl) pc).getResourceCharset().name();
+
 		try {
-			Resource res = Caster.toResource(pc,path,false);
+			Resource res = Caster.toResource(pc, path, false);
 			pc.getConfig().getSecurityManager().checkFileLocation(res);
-			fsw=new FileStreamWrapperWrite(res,charset,true,false);
-			fsw.write(data);	
-		} 
+			fsw = new FileStreamWrapperWrite(res, charset, true, false);
+			fsw.write(data);
+		}
 		catch (IOException e) {
 			throw Caster.toPageException(e);
 		}
@@ -54,9 +54,12 @@ public class FileAppend {
 	}
 
 	private static void closeEL(FileStreamWrapper fsw) {
-		if(fsw==null)return;
+		if (fsw == null) return;
 		try {
 			fsw.close();
-		} catch (Throwable t) {}
+		}
+		catch (Throwable t) {
+			ExceptionUtil.rethrowIfNecessary(t);
+		}
 	}
 }

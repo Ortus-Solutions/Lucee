@@ -36,13 +36,12 @@ public final class ByteArrayInputStreamReader extends InputStreamReader {
 	private final BufferedReader br;
 	private final Charset charset;
 
-	
 	public ByteArrayInputStreamReader(ByteArrayInputStream bais, Charset charset) throws IOException {
 		super(bais, charset);
-		this.br=IOUtil.toBufferedReader(IOUtil.getReader(bais, charset));
-		this.charset=charset;
+		this.br = IOUtil.toBufferedReader(IOUtil.getReader(bais, charset));
+		this.charset = charset;
 	}
-	
+
 	public ByteArrayInputStreamReader(byte[] barr, Charset charset) throws IOException {
 		this(new ByteArrayInputStream(barr), charset);
 	}
@@ -50,9 +49,10 @@ public final class ByteArrayInputStreamReader extends InputStreamReader {
 	public ByteArrayInputStreamReader(String str, Charset charset) throws IOException {
 		this(new ByteArrayInputStream(str.getBytes(charset)), charset);
 	}
-	
+
 	/**
-	 * @deprecated use instead <code>{@link #ByteArrayInputStreamReader(ByteArrayInputStream, Charset)}</code>
+	 * @deprecated use instead
+	 *             <code>{@link #ByteArrayInputStreamReader(ByteArrayInputStream, Charset)}</code>
 	 * @param bais
 	 * @param charsetName
 	 * @throws IOException
@@ -61,7 +61,7 @@ public final class ByteArrayInputStreamReader extends InputStreamReader {
 	public ByteArrayInputStreamReader(ByteArrayInputStream bais, String charsetName) throws IOException {
 		this(bais, CharsetUtil.toCharset(charsetName));
 	}
-	
+
 	/**
 	 * @deprecated use instead <code>{@link #ByteArrayInputStreamReader(byte[], Charset)}</code>
 	 * @param barr
@@ -93,6 +93,7 @@ public final class ByteArrayInputStreamReader extends InputStreamReader {
 	public String getEncoding() {
 		return charset.name();
 	}
+
 	public Charset getCharset() {
 		return charset;
 	}

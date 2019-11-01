@@ -18,7 +18,6 @@
  */
 package lucee.runtime.tag;
 
-
 import java.io.IOException;
 
 import lucee.runtime.PageContextImpl;
@@ -30,6 +29,11 @@ public final class HtmlBody extends HtmlHeadBodyBase {
 	@Override
 	public String getTagName() {
 		return "htmlbody";
+	}
+
+	@Override
+	public boolean getDefaultForce() {
+		return false;
 	}
 
 	@Override
@@ -60,7 +64,7 @@ public final class HtmlBody extends HtmlHeadBodyBase {
 	@Override
 	public void actionFlush() throws IOException {
 
-		PageContextImpl pci = (PageContextImpl)pageContext;
+		PageContextImpl pci = (PageContextImpl) pageContext;
 
 		pci.write(pci.getRootOut().getHTMLBody());
 		pci.getRootOut().resetHTMLBody();

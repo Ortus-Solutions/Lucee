@@ -25,18 +25,17 @@ import lucee.runtime.gateway.Gateway;
 import lucee.runtime.gateway.GatewayEngine;
 
 public class GatewayProxy implements Gateway {
-	
+
 	private final Gateway gateway;
 
-	public GatewayProxy(Gateway gateway){
-		this.gateway=gateway;
+	public GatewayProxy(Gateway gateway) {
+		this.gateway = gateway;
 	}
-	
+
 	@Override
 	public void init(GatewayEngine engine, String id, String cfcPath, Map config) throws IOException {
 		gateway.init(engine, id, cfcPath, config);
 	}
-
 
 	@Override
 	public String getId() {

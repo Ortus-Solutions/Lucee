@@ -21,43 +21,41 @@ package lucee.runtime.op;
 import lucee.runtime.exp.PageException;
 
 public class NumericOpDouble implements NumericOp {
-    
 
-    @Override
+	@Override
 	public Double divideRef(Object left, Object right) throws PageException {
 		double r = Caster.toDoubleValue(right);
-    	if(r==0d)
-			throw new ArithmeticException("Division by zero is not possible");
-		return Caster.toDouble(Caster.toDoubleValue(left)/r);
+		if (r == 0d) throw new ArithmeticException("Division by zero is not possible");
+		return Caster.toDouble(Caster.toDoubleValue(left) / r);
 	}
-    
-    @Override
+
+	@Override
 	public Double exponentRef(Object left, Object right) throws PageException {
-		return Caster.toDouble(StrictMath.pow(Caster.toDoubleValue(left),Caster.toDoubleValue(right)));
+		return Caster.toDouble(StrictMath.pow(Caster.toDoubleValue(left), Caster.toDoubleValue(right)));
 	}
-    
-    @Override
+
+	@Override
 	public Double intdivRef(Object left, Object right) throws PageException {
-		return Caster.toDouble(Caster.toIntValue(left)/Caster.toIntValue(right));
+		return Caster.toDouble(Caster.toIntValue(left) / Caster.toIntValue(right));
 	}
-    
-    @Override
+
+	@Override
 	public Double plusRef(Object left, Object right) throws PageException {
-		return Caster.toDouble(Caster.toDoubleValue(left)+Caster.toDoubleValue(right));
+		return Caster.toDouble(Caster.toDoubleValue(left) + Caster.toDoubleValue(right));
 	}
-    
-    @Override
+
+	@Override
 	public Double minusRef(Object left, Object right) throws PageException {
-		return Caster.toDouble(Caster.toDoubleValue(left)-Caster.toDoubleValue(right));
+		return Caster.toDouble(Caster.toDoubleValue(left) - Caster.toDoubleValue(right));
 	}
-    
-    @Override
+
+	@Override
 	public Double modulusRef(Object left, Object right) throws PageException {
-		return Caster.toDouble(Caster.toDoubleValue(left)%Caster.toDoubleValue(right));
+		return Caster.toDouble(Caster.toDoubleValue(left) % Caster.toDoubleValue(right));
 	}
-    
-    @Override
+
+	@Override
 	public Double multiplyRef(Object left, Object right) throws PageException {
-		return Caster.toDouble(Caster.toDoubleValue(left)*Caster.toDoubleValue(right));
+		return Caster.toDouble(Caster.toDoubleValue(left) * Caster.toDoubleValue(right));
 	}
 }

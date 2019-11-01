@@ -18,12 +18,12 @@
  */
 package lucee.transformer.bytecode.visitor;
 
+import org.objectweb.asm.Label;
+import org.objectweb.asm.Opcodes;
+
 import lucee.transformer.Position;
 import lucee.transformer.bytecode.BytecodeContext;
 import lucee.transformer.bytecode.util.ExpressionUtil;
-
-import org.objectweb.asm.Label;
-import org.objectweb.asm.Opcodes;
 
 public final class WhileVisitor implements LoopVisitor {
 
@@ -32,7 +32,7 @@ public final class WhileVisitor implements LoopVisitor {
 
 	public void visitBeforeExpression(BytecodeContext bc) {
 		begin = new Label();
-		end = new Label();		
+		end = new Label();
 		bc.getAdapter().visitLabel(begin);
 	}
 
@@ -40,7 +40,7 @@ public final class WhileVisitor implements LoopVisitor {
 		bc.getAdapter().ifZCmp(Opcodes.IFEQ, end);
 	}
 
-	public void visitAfterBody(BytecodeContext bc,Position endline) {
+	public void visitAfterBody(BytecodeContext bc, Position endline) {
 		bc.getAdapter().visitJumpInsn(Opcodes.GOTO, begin);
 		bc.getAdapter().visitLabel(end);
 		ExpressionUtil.visitLine(bc, endline);
@@ -54,7 +54,7 @@ public final class WhileVisitor implements LoopVisitor {
 	public void visitContinue(BytecodeContext bc) {
 		bc.getAdapter().visitJumpInsn(Opcodes.GOTO, begin);
 	}
-	
+
 	/**
 	 *
 	 * @see lucee.transformer.bytecode.visitor.LoopVisitor#visitBreak(org.objectweb.asm.commons.GeneratorAdapter)

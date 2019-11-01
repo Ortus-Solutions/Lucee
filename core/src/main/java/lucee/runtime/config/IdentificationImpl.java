@@ -18,29 +18,27 @@
 package lucee.runtime.config;
 
 import java.io.IOException;
+import java.io.Serializable;
 
 import lucee.commons.digest.Hash;
 import lucee.commons.io.SystemUtil;
 import lucee.commons.io.res.Resource;
+import lucee.commons.lang.ExceptionUtil;
 import lucee.commons.lang.Md5;
 import lucee.loader.util.Util;
 
-public abstract class IdentificationImpl implements Identification {
+public abstract class IdentificationImpl implements Identification, Serializable {
 
 	private final String apiKey;
-	private final String id;
+	private String id;
 	private final String securityKey;
-	private final String securityToken; 
-
-	
+	private final String securityToken;
 
 	public IdentificationImpl(ConfigImpl c, String securityKey, String apiKey) {
-		this.apiKey=apiKey;
-		this.securityKey=securityKey;
-		this.securityToken=createSecurityToken(c.getConfigDir());
-		this.id=createId(securityKey,securityToken,true,securityKey);
+		this.apiKey = apiKey;
+		this.securityKey = securityKey;
+		this.securityToken = createSecurityToken(c.getConfigDir());
 	}
-	
 
 	@Override
 	public String getApiKey() {
@@ -49,6 +47,8 @@ public abstract class IdentificationImpl implements Identification {
 
 	@Override
 	public String getId() {
+		// this is here for performance reasons
+		if (id == null) id = createId(securityKey, securityToken, false, securityKey);
 		return id;
 	}
 
@@ -62,34 +62,34 @@ public abstract class IdentificationImpl implements Identification {
 		return securityToken;
 	}
 
-	
-	static String createId(String key, String token,boolean addMacAddress,String defaultValue) {
-    	
+	static String createId(String key, String token, boolean addMacAddress, String defaultValue) {
+
 		try {
-			if(addMacAddress){// because this was new we could swutch to a new ecryption // FUTURE cold we get rid of the old one?
-				return Hash.sha256(key+";"+token+":"+SystemUtil.getMacAddress());
+			if (addMacAddress) {// because this was new we could swutch to a new ecryption // FUTURE cold we get rid of the old one?
+				return Hash.sha256(key + ";" + token + ":" + SystemUtil.getMacAddress(""));
 			}
-			return Md5.getDigestAsString(key+token);
-		} 
-    	catch (Throwable t) {
+			return Md5.getDigestAsString(key + token);
+		}
+		catch (Throwable t) {
+			ExceptionUtil.rethrowIfNecessary(t);
 			return defaultValue;
 		}
 	}
-	
+
 	private static String createSecurityToken(Resource dir) {
-    	try {
-    		return Md5.getDigestAsString(dir.getAbsolutePath());
-		} 
-	    catch (IOException e) {
+		try {
+			return Md5.getDigestAsString(dir.getAbsolutePath());
+		}
+		catch (IOException e) {
 			return null;
 		}
-    	
+
 	}
 
 	protected static void append(StringBuilder qs, String name, String value) {
-		if(Util.isEmpty(value,true)) return; 
-		
-		if(qs.length()>0)qs.append('&');
+		if (Util.isEmpty(value, true)) return;
+
+		if (qs.length() > 0) qs.append('&');
 		else qs.append('?');
 		qs.append(name).append('=').append(value); // TODO encoding
 	}

@@ -24,6 +24,5 @@ public abstract class BIF implements Function {
 
 	private static final long serialVersionUID = 4225918715709971629L;
 
-	public abstract Object invoke(PageContext pc, Object[] args)
-			throws PageException;
+	public abstract Object invoke(PageContext pc, Object[] args) throws PageException;
 }

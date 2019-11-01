@@ -29,38 +29,33 @@ import lucee.runtime.op.Caster;
 import lucee.runtime.type.util.ListUtil;
 
 public final class ListFirst extends BIF {
-	
+
 	private static final long serialVersionUID = 1098339742182832847L;
-	
-	public static String call(PageContext pc, String list) {
+
+	public static String call(PageContext pc, String list) throws FunctionException {
 		return ListUtil.first(list, ",", true, 1);
 	}
-	
-	public static String call(PageContext pc, String list, String delimiter) {
+
+	public static String call(PageContext pc, String list, String delimiter) throws FunctionException {
 		return ListUtil.first(list, delimiter, true, 1);
 	}
-	
-	public static String call(PageContext pc, String list, String delimiter, boolean includeEmptyFields) {
+
+	public static String call(PageContext pc, String list, String delimiter, boolean includeEmptyFields) throws FunctionException {
 		return ListUtil.first(list, delimiter, !includeEmptyFields, 1);
 	}
 
 	public static String call(PageContext pc, String list, String delimiter, boolean includeEmptyFields, double count) throws FunctionException {
-
-		if (count < 1)
-			throw new FunctionException(pc, "ListFirst", 4, "count", "Argument count must be a positive value greater than 0");
-
-		return ListUtil.first(list, delimiter, !includeEmptyFields, (int)count);
+		if (count < 1) throw new FunctionException(pc, "ListFirst", 4, "count", "Argument count must be a positive value greater than 0");
+		return ListUtil.first(list, delimiter, !includeEmptyFields, (int) count);
 	}
 
-    @Override
+	@Override
 	public Object invoke(PageContext pc, Object[] args) throws PageException {
-    	if(args.length==1)
-			return call(pc, Caster.toString(args[0]));
-    	if(args.length==2)
-			return call(pc, Caster.toString(args[0]), Caster.toString(args[1]));
-    	if(args.length==3)
-			return call(pc, Caster.toString(args[0]), Caster.toString(args[1]), Caster.toBooleanValue(args[2]));
-    	
-		throw new FunctionException(pc, "ListFirst", 1, 3, args.length);
+		if (args.length == 1) return call(pc, Caster.toString(args[0]), ",", false, 1);
+		if (args.length == 2) return call(pc, Caster.toString(args[0]), Caster.toString(args[1]), false, 1);
+		if (args.length == 3) return call(pc, Caster.toString(args[0]), Caster.toString(args[1]), Caster.toBooleanValue(args[2]), 1);
+		if (args.length == 4) return call(pc, Caster.toString(args[0]), Caster.toString(args[1]), Caster.toBooleanValue(args[2]), Caster.toDoubleValue(args[3]));
+
+		throw new FunctionException(pc, "ListFirst", 1, 4, args.length);
 	}
 }

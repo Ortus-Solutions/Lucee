@@ -65,21 +65,18 @@ public interface SpoolerEngine {
 	 */
 	public PageException execute(SpoolerTask task);
 
-	public Query getOpenTasksAsQuery(int startrow, int maxrow)
-			throws PageException;
+	public Query getOpenTasksAsQuery(int startrow, int maxrow) throws PageException;
 
-	public Query getClosedTasksAsQuery(int startrow, int maxrow)
-			throws PageException;
+	public Query getClosedTasksAsQuery(int startrow, int maxrow) throws PageException;
 
-	public Query getAllTasksAsQuery(int startrow, int maxrow)
-			throws PageException;
+	public Query getAllTasksAsQuery(int startrow, int maxrow) throws PageException;
 
 	public int getOpenTaskCount();
 
 	public int getClosedTaskCount();
 
-	//public void setLabel(String label);
-	//public void setPersisDirectory(Resource persisDirectory);
-	//public void setLog(Log log);
-	//public void setConfig(Config config);
+	// public void setLabel(String label);
+	// public void setPersisDirectory(Resource persisDirectory);
+	// public void setLog(Log log);
+	// public void setConfig(Config config);
 }

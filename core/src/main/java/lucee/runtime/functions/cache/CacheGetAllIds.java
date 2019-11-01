@@ -23,10 +23,12 @@ import java.util.List;
 
 import lucee.commons.io.cache.Cache;
 import lucee.runtime.PageContext;
+import lucee.runtime.cache.CacheUtil;
 import lucee.runtime.cache.util.WildCardFilter;
 import lucee.runtime.config.Config;
+import lucee.runtime.exp.FunctionException;
 import lucee.runtime.exp.PageException;
-import lucee.runtime.ext.function.Function;
+import lucee.runtime.ext.function.BIF;
 import lucee.runtime.op.Caster;
 import lucee.runtime.type.Array;
 import lucee.runtime.type.ArrayImpl;
@@ -34,38 +36,44 @@ import lucee.runtime.type.ArrayImpl;
 /**
  * 
  */
-public final class CacheGetAllIds implements Function {
-	
+public final class CacheGetAllIds extends BIF {
+
 	private static final long serialVersionUID = 4831944874663718056L;
 
-
 	public static Array call(PageContext pc) throws PageException {
-		return call(pc, null,null);
+		return call(pc, null, null);
 	}
-	
 
 	public static Array call(PageContext pc, String filter) throws PageException {
 		return call(pc, filter, null);
 	}
-	
+
 	public static Array call(PageContext pc, String filter, String cacheName) throws PageException {
 		try {
-			Cache cache = Util.getCache(pc,cacheName,Config.CACHE_TYPE_OBJECT);
-			
-			List<String> keys = isFilter(filter)?cache.keys(new WildCardFilter(filter,true)):cache.keys();
+			Cache cache = CacheUtil.getCache(pc, cacheName, Config.CACHE_TYPE_OBJECT);
+
+			List<String> keys = isFilter(filter) ? cache.keys(new WildCardFilter(filter, true)) : cache.keys();
 			Iterator<String> it = keys.iterator();
 			Array arr = new ArrayImpl();
-			while(it.hasNext()){
+			while (it.hasNext()) {
 				arr.append(it.next());
 			}
 			return arr;
-		} catch (Exception e) {
+		}
+		catch (Exception e) {
 			throw Caster.toPageException(e);
 		}
 	}
 
+	@Override
+	public Object invoke(PageContext pc, Object[] args) throws PageException {
+		if (args.length == 0) return call(pc);
+		if (args.length == 1) return call(pc, Caster.toString(args[0]));
+		if (args.length == 2) return call(pc, Caster.toString(args[0]), Caster.toString(args[1]));
+		throw new FunctionException(pc, "CacheGetAllIds", 0, 2, args.length);
+	}
 
 	protected static boolean isFilter(String filter) {
-		return filter!=null && filter.length()>0 && !filter.equals("*");
+		return filter != null && filter.length() > 0 && !filter.equals("*");
 	}
 }

@@ -21,27 +21,28 @@ package lucee.commons.io.res.type.ftp;
 import java.io.IOException;
 import java.util.Map;
 
+import org.apache.commons.net.ftp.FTPClient;
+import org.apache.commons.net.ftp.FTPFile;
+
 import lucee.commons.collection.MapFactory;
 import lucee.commons.lang.SerializableObject;
 import lucee.commons.lang.StringUtil;
 
-import org.apache.commons.net.ftp.FTPClient;
-import org.apache.commons.net.ftp.FTPFile;
-
 public final class FTPResourceClient extends FTPClient {
 
-	private String workingDirectory=null;
-	
-	
+	private String workingDirectory = null;
+
 	private final FTPConnectionData ftpConnectionData;
 	private long lastAccess;
-	private final Object token=new SerializableObject();
-	private final Map<String,FTPFileWrap> files=MapFactory.<String,FTPFileWrap>getConcurrentMap();
+	private final Object token = new SerializableObject();
+	private final Object sync = new SerializableObject();
+
+	private final Map<String, FTPFileWrap> files = MapFactory.<String, FTPFileWrap>getConcurrentMap();
 	private final int cacheTimeout;
 
-	public FTPResourceClient(FTPConnectionData ftpConnectionData,int cacheTimeout) {
-		this.ftpConnectionData=ftpConnectionData;
-		this.cacheTimeout=cacheTimeout;
+	public FTPResourceClient(FTPConnectionData ftpConnectionData, int cacheTimeout) {
+		this.ftpConnectionData = ftpConnectionData;
+		this.cacheTimeout = cacheTimeout;
 	}
 
 	/**
@@ -52,7 +53,7 @@ public final class FTPResourceClient extends FTPClient {
 	}
 
 	public void touch() {
-		this.lastAccess=System.currentTimeMillis();
+		this.lastAccess = System.currentTimeMillis();
 	}
 
 	/**
@@ -65,68 +66,68 @@ public final class FTPResourceClient extends FTPClient {
 	public Object getToken() {
 		return token;
 	}
-	
+
 	@Override
 	public boolean changeWorkingDirectory(String pathname) throws IOException {
-		if(StringUtil.endsWith(pathname,'/') && pathname.length()!=1)pathname=pathname.substring(0,pathname.length()-1);
-		
-		if(pathname.equals(workingDirectory)) return true;
-		workingDirectory=pathname;
+		if (StringUtil.endsWith(pathname, '/') && pathname.length() != 1) pathname = pathname.substring(0, pathname.length() - 1);
+
+		if (pathname.equals(workingDirectory)) return true;
+		workingDirectory = pathname;
 		return super.changeWorkingDirectory(pathname);
 	}
 
 	public String id() {
-		return ftpConnectionData.key();
+		return ftpConnectionData.toString();
 	}
 
 	@Override
 	public boolean equals(Object obj) {
-		
-		return ((FTPResourceClient)obj).id().equals(id());
+
+		return ((FTPResourceClient) obj).id().equals(id());
 	}
 
 	public FTPFile getFTPFile(FTPResource res) throws IOException {
-		String path=res.getInnerPath();
+		String path = res.getInnerPath();
 		FTPFileWrap fw = files.get(path);
-		
-		if(fw==null) {
+
+		if (fw == null) {
 			return createFTPFile(res);
 		}
-		if(fw.time+cacheTimeout<System.currentTimeMillis()) {
+		if (fw.time + cacheTimeout < System.currentTimeMillis()) {
 			files.remove(path);
 			return createFTPFile(res);
 		}
 		return fw.file;
 	}
-	public void registerFTPFile(FTPResource res,FTPFile file) {
-		files.put(res.getInnerPath(),new FTPFileWrap(file));	
+
+	public void registerFTPFile(FTPResource res, FTPFile file) {
+		files.put(res.getInnerPath(), new FTPFileWrap(file));
 	}
 
 	public void unregisterFTPFile(FTPResource res) {
 		files.remove(res.getInnerPath());
 	}
-	
-	
+
 	private FTPFile createFTPFile(FTPResource res) throws IOException {
-		FTPFile[] children=null;
-		boolean isRoot=res.isRoot();
-		String path=isRoot?res.getInnerPath():res.getInnerParent();
-		
-		synchronized(getToken()){ 
+		FTPFile[] children = null;
+		boolean isRoot = res.isRoot();
+		String path = isRoot ? res.getInnerPath() : res.getInnerParent();
+
+		synchronized (sync) {
 			changeWorkingDirectory(path);
 			children = listFiles();
 		}
-		
-		if(children.length>0) {
-			for(int i=0;i<children.length;i++) {
-				if(isRoot){
-					if(children[i].getName().equals(".")) {
+
+		if (children.length > 0) {
+			for (int i = 0; i < children.length; i++) {
+				if (isRoot) {
+					if (children[i].getName().equals(".")) {
 						registerFTPFile(res, children[i]);
 						return children[i];
 					}
 				}
-				else{
-					if(children[i].getName().equals(res.getName())) {
+				else {
+					if (children[i].getName().equals(res.getName())) {
 						registerFTPFile(res, children[i]);
 						return children[i];
 					}
@@ -135,7 +136,7 @@ public final class FTPResourceClient extends FTPClient {
 		}
 		return null;
 	}
-	
+
 	@Override
 	public boolean deleteFile(String pathname) throws IOException {
 		files.remove(pathname);
@@ -148,9 +149,9 @@ public final class FTPResourceClient extends FTPClient {
 		private long time;
 
 		public FTPFileWrap(FTPFile file) {
-			this.file=file;
-			this.time=System.currentTimeMillis();
+			this.file = file;
+			this.time = System.currentTimeMillis();
 		}
-		
+
 	}
 }

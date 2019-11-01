@@ -30,8 +30,7 @@ public interface TagMetaDataAttr {
 	public abstract String getDescription();
 
 	/**
-	 * The runtime type of the attribute's value
-	 * For example:String,Number,Boolean,Object,...
+	 * The runtime type of the attribute's value For example:String,Number,Boolean,Object,...
 	 * 
 	 * @return the type of the attribute
 	 */
@@ -45,8 +44,7 @@ public interface TagMetaDataAttr {
 	public abstract Collection.Key getName();
 
 	/**
-	 * return the default value for this attribute or null if no default value
-	 * is defined
+	 * return the default value for this attribute or null if no default value is defined
 	 * 
 	 * @return the default value of the attribute
 	 */

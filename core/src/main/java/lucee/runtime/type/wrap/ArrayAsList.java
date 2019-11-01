@@ -32,23 +32,22 @@ import lucee.runtime.type.it.ArrayListIteratorImpl;
 public class ArrayAsList implements List {
 
 	Array array;
-	
+
 	private ArrayAsList(Array array) {
-		this.array=array;
+		this.array = array;
 	}
-	
+
 	public static List toList(Array array) {
-		if(array instanceof ListAsArray) return ((ListAsArray)array).list;
-		if(array instanceof List) return (List) array;
+		if (array instanceof ListAsArray) return ((ListAsArray) array).list;
+		if (array instanceof List) return (List) array;
 		return new ArrayAsList(array);
 	}
-	
-	
+
 	@Override
 	public boolean add(Object o) {
 		try {
 			array.append(o);
-		} 
+		}
 		catch (PageException e) {
 			return false;
 		}
@@ -58,8 +57,9 @@ public class ArrayAsList implements List {
 	@Override
 	public void add(int index, Object element) {
 		try {
-			array.insert(index+1, element);
-		} catch (PageException e) {
+			array.insert(index + 1, element);
+		}
+		catch (PageException e) {
 			throw new IndexOutOfBoundsException(e.getMessage());
 		}
 	}
@@ -67,7 +67,7 @@ public class ArrayAsList implements List {
 	@Override
 	public boolean addAll(Collection c) {
 		Iterator it = c.iterator();
-		while(it.hasNext()) {
+		while (it.hasNext()) {
 			add(it.next());
 		}
 		return !c.isEmpty();
@@ -76,8 +76,8 @@ public class ArrayAsList implements List {
 	@Override
 	public boolean addAll(int index, Collection c) {
 		Iterator it = c.iterator();
-		while(it.hasNext()) {
-			add(index++,it.next());
+		while (it.hasNext()) {
+			add(index++, it.next());
 		}
 		return !c.isEmpty();
 	}
@@ -89,14 +89,14 @@ public class ArrayAsList implements List {
 
 	@Override
 	public boolean contains(Object o) {
-		return indexOf(o)!=-1;
+		return indexOf(o) != -1;
 	}
 
 	@Override
 	public boolean containsAll(Collection c) {
 		Iterator it = c.iterator();
-		while(it.hasNext()) {
-			if(!contains(it.next()))return false;
+		while (it.hasNext()) {
+			if (!contains(it.next())) return false;
 		}
 		return true;
 	}
@@ -104,18 +104,19 @@ public class ArrayAsList implements List {
 	@Override
 	public Object get(int index) {
 		try {
-			return array.getE(index+1);
-		} catch (PageException e) {
+			return array.getE(index + 1);
+		}
+		catch (PageException e) {
 			throw new IndexOutOfBoundsException(e.getMessage());
 		}
 	}
 
 	@Override
 	public int indexOf(Object o) {
-		Iterator<Object> it=array.valueIterator();
-		int index=0;
-		while(it.hasNext()) {
-			if(it.next().equals(o))return index;
+		Iterator<Object> it = array.valueIterator();
+		int index = 0;
+		while (it.hasNext()) {
+			if (it.next().equals(o)) return index;
 			index++;
 		}
 		return -1;
@@ -123,7 +124,7 @@ public class ArrayAsList implements List {
 
 	@Override
 	public boolean isEmpty() {
-		return array.size()==0;
+		return array.size() == 0;
 	}
 
 	@Override
@@ -133,11 +134,11 @@ public class ArrayAsList implements List {
 
 	@Override
 	public int lastIndexOf(Object o) {
-		Iterator<Object> it=array.valueIterator();
-		int index=0;
-		int rtn=-1;
-		while(it.hasNext()) {
-			if(it.next().equals(o))rtn=index;
+		Iterator<Object> it = array.valueIterator();
+		int index = 0;
+		int rtn = -1;
+		while (it.hasNext()) {
+			if (it.next().equals(o)) rtn = index;
 			index++;
 		}
 		return rtn;
@@ -150,19 +151,19 @@ public class ArrayAsList implements List {
 
 	@Override
 	public ListIterator listIterator(int index) {
-		return new ArrayListIteratorImpl(array,index);
-		//return array.toList().listIterator(index);
+		return new ArrayListIteratorImpl(array, index);
+		// return array.toList().listIterator(index);
 	}
-	
 
 	@Override
 	public boolean remove(Object o) {
 		int index = indexOf(o);
-		if(index==-1) return false;
-		
+		if (index == -1) return false;
+
 		try {
-			array.removeE(index+1);
-		} catch (PageException e) {
+			array.removeE(index + 1);
+		}
+		catch (PageException e) {
 			return false;
 		}
 		return true;
@@ -171,8 +172,9 @@ public class ArrayAsList implements List {
 	@Override
 	public Object remove(int index) {
 		try {
-			return array.removeE(index+1);
-		} catch (PageException e) {
+			return array.removeE(index + 1);
+		}
+		catch (PageException e) {
 			throw new IndexOutOfBoundsException(e.getMessage());
 		}
 	}
@@ -180,22 +182,23 @@ public class ArrayAsList implements List {
 	@Override
 	public boolean removeAll(Collection c) {
 		Iterator it = c.iterator();
-		boolean rtn=false;
-		while(it.hasNext()) {
-			if(remove(it.next()))rtn=true;
+		boolean rtn = false;
+		while (it.hasNext()) {
+			if (remove(it.next())) rtn = true;
 		}
 		return rtn;
 	}
 
 	@Override
-	public boolean retainAll(Collection c) {new ArrayList().retainAll(c);
+	public boolean retainAll(Collection c) {
+		new ArrayList().retainAll(c);
 		boolean modified = false;
 		Iterator it = iterator();
 		while (it.hasNext()) {
-		    if(!c.contains(it.next())) {
-			it.remove();
-			modified = true;
-		    }
+			if (!c.contains(it.next())) {
+				it.remove();
+				modified = true;
+			}
 		}
 		return modified;
 	}
@@ -203,9 +206,10 @@ public class ArrayAsList implements List {
 	@Override
 	public Object set(int index, Object element) {
 		try {
-			if(!array.containsKey(index+1)) throw new IndexOutOfBoundsException("Index: "+(index+1)+", Size: "+size());
-			return array.setE(index+1,element);
-		} catch (PageException e) {
+			if (!array.containsKey(index + 1)) throw new IndexOutOfBoundsException("Index: " + (index + 1) + ", Size: " + size());
+			return array.setE(index + 1, element);
+		}
+		catch (PageException e) {
 			throw new PageRuntimeException(e);
 		}
 	}
